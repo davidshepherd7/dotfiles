@@ -1,0 +1,56 @@
+# Files to ignore with git in any/every project
+
+# Compiled source #
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.libs
+*.la
+*.lo
+*.hi
+*-i386-linux
+*-x86_64-linux
+
+# build files
+Makefile
+Makefile.in
+.deps/
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+configure.ac
+libtool
+install-sh
+ltmain.sh
+missing
+
+# oomph-lib
+oomph-lib-config.h
+validation.log
+stamp-h1
+fig2poly
+depcomp
+
+# backups/emacs files #
+*~
+\#*\#
+TAGS
+
+
+# Packages #
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.bz2

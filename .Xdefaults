@@ -1,0 +1,90 @@
+! ! xscreensaver ---------------------------------------------------------------
+
+! !font settings
+! xscreensaver.Dialog.headingFont:        -*-dina-bold-r-*-*-10-*-*-*-*-*-*-*
+! xscreensaver.Dialog.bodyFont:           -*-dina-medium-r-*-*-10-*-*-*-*-*-*-*
+! xscreensaver.Dialog.labelFont:          -*-dina-medium-r-*-*-10-*-*-*-*-*-*-*
+! xscreensaver.Dialog.unameFont:          -*-dina-medium-r-*-*-10-*-*-*-*-*-*-*
+! xscreensaver.Dialog.buttonFont:         -*-dina-bold-r-*-*-10-*-*-*-*-*-*-*
+! xscreensaver.Dialog.dateFont:           -*-dina-medium-r-*-*-10-*-*-*-*-*-*-*
+! xscreensaver.passwd.passwdFont:         -*-dina-bold-r-*-*-10-*-*-*-*-*-*-*
+! !general dialog box (affects main hostname, username, password text)
+! xscreensaver.Dialog.foreground:         #EDEDED
+! xscreensaver.Dialog.background:         #202020
+! xscreensaver.Dialog.topShadowColor:     #202024
+! xscreensaver.Dialog.bottomShadowColor:  #202024
+! xscreensaver.Dialog.Button.foreground:  #EDEDFF
+! xscreensaver.Dialog.Button.background:  #444
+! !username/password input box and date text colour
+! xscreensaver.Dialog.text.foreground:    #EDEDFF
+! xscreensaver.Dialog.text.background:    #444
+! xscreensaver.Dialog.internalBorderWidth:24
+! xscreensaver.Dialog.borderWidth:        20
+! xscreensaver.Dialog.shadowThickness:    2
+! !timeout bar (background is actually determined by Dialog.text.background)
+! xscreensaver.passwd.thermometer.foreground:  #A9B7C4
+! xscreensaver.passwd.thermometer.background:  #202020
+! xscreensaver.passwd.thermometer.width:       8
+! !datestamp format--see the strftime(3) manual page for details
+! xscreensaver.dateFormat:    %I:%M%P %a %b %d, %Y
+
+!------------------------------------------------------------------------------
+! u r x v t
+!------------------------------------------------------------------------------
+
+! Standard colors:
+!         Normal   Light  
+! black   color0   color8 
+! red     color1   color9 
+! green   color2   color10
+! yellow  color3   color11
+! blue    color4   color12
+! purple  color5   color13
+! cyan    color6   color14
+! white   color7   color15
+
+! Note: we CANNOT PUT COMMENTS AFTER COLOURS. For some stupid reason it
+! tries to read any characters after the colour as part of the colour
+! specified. So everything comes out a horrible bright pink...
+
+! Nicer dark (background) colours
+URxvt*color0: #000000
+URxvt*color1: #9c4955
+URxvt*color2: #0b2800
+URxvt*color3: #ccc678
+URxvt*color4: #1e3e58
+URxvt*color5: #963c59
+URxvt*color6: #418179
+URxvt*color7: #bebebe
+
+! Nicer light (foreground) colours
+!URxvt*color8: 
+URxvt*color9: #cf6171
+URxvt*color10: #31AD00
+URxvt*color11: #fff796
+URxvt*color12: #4186be
+URxvt*color13: #cf9ebe
+URxvt*color14: #71bebe
+!URxvt*color15:
+
+! Light grey standard text
+URxvt*foreground: #c2c2c2
+
+! Nice fonts
+urxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
+!urxvt*boldFont: xft:Bitstream Vera Sans Mono:pixelsize=12:bold:antialias=true:hinting=true
+
+! Clickable urls
+URxvt*perl-ext-common: default,matcher,-option-popup,-selection-popup,-realine
+URxvt*matcher.button: 1
+URxvt*urlLauncher: google-chrome  
+
+! Scroll bar
+URxvt*scrollBar: false
+
+! Transparent background (with xcompmgr)
+URxvt*transparent: true
+URxvt*shading: 20
+
+! Save lots of lines
+URxvt*saveLines:32767

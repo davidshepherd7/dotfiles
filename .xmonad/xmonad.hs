@@ -1,0 +1,219 @@
+-- Main/utilities
+import XMonad
+import Data.Monoid
+import System.Exit
+import qualified XMonad.StackSet as W
+import qualified Data.Map        as M
+import XMonad.Util.EZConfig
+
+-- Xfce compatability (turns out that config.gnome is the same for xfce but better for gnome)
+import XMonad.Config.Gnome
+import XMonad.Hooks.ManageDocks
+  
+-- Chose workspace to spawn a window on
+import XMonad.Actions.SpawnOn
+
+-- Better cycling through workspaces and screens
+import XMonad.Actions.CycleWS
+
+-- No border if in full screen mode
+import XMonad.Layout.NoBorders
+
+-- More layouts
+import XMonad.Layout.ResizableTile
+import XMonad.Layout.StackTile
+
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
+
+-- Handle fullscreen
+import XMonad.Hooks.EwmhDesktops
+
+------------------------------------------------------------------------
+-- Applications
+
+-- If possible just launch a new emacs client frame with the most recent
+-- not currently shown buffer. If not possible then probably the emacs
+-- daemon is not running. So run a new emacs daemon (via bash so that it
+-- inherits all the shell variables from .bashrc), then launch an
+-- emacsclient frame.
+myEditor = "emacsclient -c -n -e '(switch-to-buffer nil)' || (bash -l -c \"emacs --daemon\" && emacsclient -c -n )"
+
+-- Try various terminals till one works.
+myTerminal = "urxvt || xfce4-terminal || gnome-terminal"
+
+-- Try various browsers until one works.
+myBrowser = "google-chrome || chromium-browser || firefox"
+
+-- Run dmenu for executables with whatever other stuff I've set up.
+myLauncher =  "~/.xmonad/dmenu/my-dmenu-run.sh"
+
+-- Run dmenu for folders and open in whatever gui file manager we have.
+guiFolderOpen = "~/.xmonad/dmenu/dfoldermenu.sh"
+
+-- Try various locking mechanisms until one works.
+myLockScreen = "mate-screensaver-command -l || xflock4 || gnome-screensaver-command -l"
+
+
+------------------------------------------------------------------------
+-- Window rules:
+
+-- Execute arbitrary actions and WindowSet manipulations when managing
+-- a new window. You can use this to, for example, always float a
+-- particular program, or have a client always appear on a particular
+-- workspace.
+--
+-- To find the property name associated with a program, use
+-- > xprop | grep WM_CLASS
+-- and click on the client you're interested in.
+--
+-- To match on the WM_NAME, you can use 'title' in the same way that
+-- 'className' and 'resource' are used below.
+
+myManageHook =
+  composeAll
+  [ className =? "Gimp"           --> doFloat
+  , resource  =? "desktop_window" --> doIgnore
+  , className =? "Paraview" --> doShift "pv"
+  , className =? "Mendeleydesktop" --> doShift "mly"
+  , isFullscreen --> doFullFloat
+  ]
+  <+> manageHook gnomeConfig -- keep gnome/xfce compatability settings
+
+------------------------------------------------------------------------
+-- Layouts
+
+-- You can specify and transform your layouts by modifying these values.
+-- If you change layout bindings be sure to use 'mod-shift-space' after
+-- restarting (with 'mod-q') to reset your layout state to the new
+-- defaults, as xmonad preserves your old layout settings by default.
+--
+-- * NOTE: XMonad.Hooks.EwmhDesktops users must remove the obsolete
+-- ewmhDesktopsLayout modifier from layoutHook. It no longer exists.
+-- Instead use the 'ewmh' function from that module to modify your
+-- defaultConfig as a whole. (See also logHook, handleEventHook, and
+-- startupHook ewmh notes.)
+--
+-- The available layouts.  Note that each layout is separated by |||,
+-- which denotes layout choice.
+
+myLayout = avoidStruts(tiled ||| Mirror matlabsucks ||| noBorders Full)
+  where
+    -- Default tiling algorithm: partitions the screen into two panes
+    tiled   = Tall nmaster delta ratio
+
+    -- Layout with roughly even sized windows, for the first few anyway..
+    matlabsucks = Tall 2 delta ratio
+
+    -- The default number of windows in the master pane
+    nmaster = 1
+
+    -- Default proportion of screen occupied by master pane
+    ratio   = 1/2
+
+    -- Percent of screen to increment by when resizing panes
+    delta   = 3/100
+
+------------------------------------------------------------------------
+-- Event handling
+
+-- Defines a custom handler function for X Events. The function should
+-- return (All True) if the default handler is to be run afterwards. To
+-- combine event hooks use mappend or mconcat from Data.Monoid.
+    
+-- Handle fullscreen properly and keep gnome compatability settings.
+myEventHook = fullscreenEventHook <+> handleEventHook gnomeConfig
+
+------------------------------------------------------------------------
+-- Status bars and logging
+
+-- Perform an arbitrary action on each internal state change or X event.
+-- See the 'XMonad.Hooks.DynamicLog' extension for examples.
+--
+--
+-- * NOTE: EwmhDesktops users should use the 'ewmh' function from
+-- XMonad.Hooks.EwmhDesktops to modify their defaultConfig as a whole.
+-- It will add EWMH logHook actions to your custom log hook by
+-- combining it with ewmhDesktopsLogHook.
+--
+-- myLogHook = return ()
+
+------------------------------------------------------------------------
+-- Startup hook
+
+-- Perform an arbitrary action each time xmonad starts or is restarted
+-- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
+-- per-workspace layout choices.
+
+myStartupHook = do
+  startupHook gnomeConfig
+
+
+------------------------------------------------------------------------
+-- Workspaces
+
+myWorkspaces = ["1","2","3","4","5","6","bws",
+                "pv","mly"]
+
+------------------------------------------------------------------------
+-- Now run xmonad with these settings and some others given here
+
+main = xmonad $ gnomeConfig
+        { terminal   = myTerminal
+        , modMask    = mod4Mask -- use super as modifier key
+        , borderWidth = 2
+        , manageHook = myManageHook
+        , workspaces = myWorkspaces
+        , layoutHook = smartBorders( myLayout )
+        , startupHook = myStartupHook
+        , normalBorderColor = "#242424" -- pale blue
+        , focusedBorderColor = "#87ceeb" -- pale grey 
+        , handleEventHook = myEventHook
+        }
+        -- Unbind some keys
+        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r"]
+        `additionalKeysP` myKeys
+
+-- Some additional keybinds, mostly inspired by chromes tab management
+-- keybinds and whatever else I was used to using.
+myKeys = [
+  -- next window - normal alt-tab
+  -- ("M1-<Tab>", windows W.focusDown)
+
+  -- close focused window
+  ("M-w", kill)
+
+    -- run things
+  , ("M-t", spawn myTerminal)
+  , ("M-e", spawn myEditor)
+  , ("M-p", spawn myLauncher)
+  , ("M-o", spawn guiFolderOpen)
+  , ("M-y", spawn myBrowser)
+
+    -- multiple screens
+  , ("M-a", nextScreen)
+  , ("M-S-a", shiftNextScreen)
+  , ("M-z", swapNextScreen)
+
+    -- Lock screen
+  , ("M-l", spawn myLockScreen)
+
+    -- go to previous workspace
+  , ("M-<Backspace>", toggleWS)
+
+    -- Next/previous workspace
+  , ("M-<R>", nextWS)
+  , ("M-<L>", prevWS)
+  , ("M-S-<R>", shiftToNext)
+  , ("M-S-<L>", shiftToPrev)
+    
+  ]
+         ++ -- ++ combines the two lists
+         
+         -- Create a list of bindings:
+         -- set all "M-number" to W.view that number
+         [ (otherModMasks ++ "M-" ++ [key], action tag)
+         | (tag, key)  <- zip myWorkspaces "123456789"
+         , (otherModMasks, action) <- [ ("", windows . W.view)
+                                      , ("S-", windows . W.shift)]]
