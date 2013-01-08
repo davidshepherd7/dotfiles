@@ -1,9 +1,8 @@
 
-
 Requirements:
 =======
 
-* emacs (duh..)
+* emacs
   * yasnippet
   * probably many other packages...
 
