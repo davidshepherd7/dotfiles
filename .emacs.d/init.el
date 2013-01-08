@@ -42,6 +42,10 @@
 ;; Auto-newlines after { } etc.
 ;; (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-newline 1)))
 
+;; Use chrome not firefox to open urls
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
  ;; Make new frames instead of new windows
