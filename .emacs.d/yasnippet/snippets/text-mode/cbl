@@ -1,0 +1,4 @@
+#name : comment block
+# --
+$0
+============================================================ `(let ((start (save-excursion (progn (forward-line -1) (point)))) (end (point))) (comment-region start end) (indent-region start end))`

@@ -1,0 +1,12 @@
+#name : if def paranoid then error
+# --
+#ifdef PARANOID
+if($1)
+{
+std::ostringstream error_msg;
+error_msg << "$2";
+throw OomphLibError(error_msg.str(),
+"$3",
+OOMPH_EXCEPTION_LOCATION);
+}
+#endif

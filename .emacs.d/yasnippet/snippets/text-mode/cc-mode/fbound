@@ -1,0 +1,6 @@
+#name : for boundaries loop
+# --
+for(unsigned b=0, nb=${1:mesh_pt()}->nboundary(); b < nb; b++)
+{
+$0
+}

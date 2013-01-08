@@ -1,0 +1,7 @@
+#name : loop over nodes
+# --
+for(unsigned nd=0, nnode=${1:mesh_pt()}->nnode(); nd<nnode; nd++)
+{          
+Node* nd_pt = $1->node_pt(nd); 
+$0
+}

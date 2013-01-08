@@ -1,0 +1,10 @@
+#name : loop over elements on boundaries
+# --
+for(unsigned b=0, nb=${1:mesh_pt()}->nboundary(); b < nb; b++)
+{
+for(unsigned e=0, ne=$1->nboundary_element(b); e < ne; e++)
+{
+ELEMENT* ele_pt = $1->boundary_element_pt(b,e);
+$0
+}
+}

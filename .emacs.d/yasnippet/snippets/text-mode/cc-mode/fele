@@ -1,0 +1,7 @@
+#name : for elements loop
+# --
+for(unsigned e=0, ne=${1:mesh_pt()}->nelement(); e < ne; e++)
+{
+ELEMENT* ele_pt = $1->element_pt(e);
+$0
+}
