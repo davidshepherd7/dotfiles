@@ -3,9 +3,6 @@
 ;; Set .h files to use c++ mode
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
-;; Autosave all modified buffers before compile
-(setq compilation-ask-about-save nil)
-
 (defun indent-buffer ()
   "Re-indent the whole buffer"
   (interactive)

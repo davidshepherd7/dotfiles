@@ -137,6 +137,9 @@ alias more='less'
 # Move thing to trash
 alias trsh='trash-put'
 
+# Fancy grep: exclude source control and binaries
+alias dg='grep -n -H --color=auto --exclude-dir=.git --exclude-dir=.svn -I --exclude-dir=*.deps --exclude=*.lo --exclude=*.la --exclude=*.lai  --exclude=Makefile*'
+
 # Get a sorted list of disk usage (take from http://www.commandlinefu.com/commands/view/4786/nice-disk-usage-sorted-by-size-see-description-for-full-command )
 sdu()
 {
@@ -165,8 +168,7 @@ alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
 alias rs='cd ~/Dropbox/phd/results'
 alias sicp='cd ~/programming/sicp/exercises4'
 
-alias now='cd ~/oomph-lib/user_drivers/micromagnetics/experiments/nmag_rectangle_duplication'
-alias now='cd ~/oomph-lib/user_drivers/micromagnetics/experiments/implicit_llg_multigrid'
+alias now='cd ~/oomph-lib/user_drivers/micromagnetics/experiments/spatially_constant_m_length_variations'
 
 # Aliases for cds upwards
 alias ....='cd ../../..'
@@ -187,7 +189,9 @@ function cs ()
 # General PATH additions
 # ============================================================
 # Add my scripts to PATH
-export PATH="$PATH:$HOME/Dropbox/other/programming/helperscripts/gnuplot:$HOME/Dropbox/other/programming/helperscripts/oomph-lib:$HOME/Dropbox/other/programming/helperscripts"
+export PATH="$PATH:$HOME/Dropbox/other/programming/helperscripts/gnuplot:$HOME/Dropbox/other/programming/helperscripts/oomph-lib:$HOME/Dropbox/other/programming/helperscripts" 
+PATH="$PATH:$HOME/Dropbox/other/programming/oomph-scripts" 
+
 # Add oomph-lib bin to path
 export PATH="$PATH:$HOME/oomph-lib/bin"
 
@@ -228,8 +232,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 # In git line in prompt: show symbols for non-clean state
 GIT_PS1_SHOWDIRTYSTATE=1
 
-# Append git branch followed by newline and $ to prompt. Note that we HAVE to
-# use single quotes for the __git_ps1 part. Stuff in \[ \] is colour commands.
 
 gitbranch()
 {
@@ -241,7 +243,9 @@ gitbranch()
     fi
 }
 
-# Now we can set up the prompt
+
+# Append git branch followed by newline and $ to prompt. Note that we HAVE to
+# use single quotes for the __git_ps1 part. Stuff in \[ \] is colour commands.
 PS1="$PS1"'\[\033[1;36m\]$(gitbranch " (%s)")\[\033[0m\] \$\n '
 
 
@@ -267,3 +271,9 @@ alias opython="ipython scipy"
 # ============================================================
 
 alias mytests='cd $HOME/oomph-lib/user_drivers/micromagnetics/test_collection && ./run_tests.sh'
+
+# magnum.fe
+# ============================================================
+# Add FEniCS environment variables
+source /home/david/code/dorsal_code/FEniCS/share/fenics/fenics.conf
+export PYTHONPATH=$PYTHONPATH:$HOME/code/magnum.fe/site-packages

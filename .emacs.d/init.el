@@ -25,6 +25,13 @@
                                     ;; are only a few.
 (setq tags-revert-without-query 1) ;; Autorevert if the tags table has changed
 
+;; Add a new line at end of file on save if none exists (note: doesn't play
+;; nice with scheme).
+(setq-default require-final-newline t)
+
+;; Autosave all modified buffers before compile
+(setq compilation-ask-about-save nil)
+
 ;; ;; Load desktop on startup (ignore desktop file being locked)
 ;; (setq desktop-load-locked-desktop t)
 ;; (desktop-read)
@@ -110,8 +117,8 @@
 (yas/load-directory "~/.emacs.d/yasnippet/snippets")
 
 
-;; replace abbrev with yas
-(defun expand-abbrev () (interactive) (yas/expand))
+;; ;; replace abbrev with yas
+;; (defun expand-abbrev () (interactive) (yas/expand))
 
 ;; Need to avoid infinite loop: self-insert calls yas/expand which then
 ;; tries to call self-insert if it fails. I actually hacked the source a
@@ -158,6 +165,7 @@
 (load-file "~/.emacs.d/my-files/octave.el")
 (load-file "~/.emacs.d/my-files/matlab.el")
 (load-file "~/.emacs.d/my-files/org.el")
+(load-file "~/.emacs.d/my-files/python.el")
 (load-file "~/.emacs.d/my-files/maxima.el")
 (load-file "~/.emacs.d/my-files/buffer-cycling.el")
 ;; (load-file "~/.emacs.d/my-files/python.el")
@@ -198,27 +206,27 @@
 ;; File open keybinds
 ;; ===============================================================
 (global-set-key (kbd "C-<f12>")
-		'(lambda () (interactive) (find-file "~/.bashrc")))
+                '(lambda () (interactive) (find-file "~/.bashrc")))
 (global-set-key (kbd "C-<f11>")
-		'(lambda () (interactive) (find-file "~/.emacs.d/init.el")))
+                '(lambda () (interactive) (find-file "~/.emacs.d/init.el")))
 (global-set-key (kbd "C-<f10>")
-		'(lambda () (interactive) (find-file "~/.emacs.d/abbrev_defs")))
+                '(lambda () (interactive) (find-file "~/.emacs.d/abbrev_defs")))
 (global-set-key (kbd "C-<f9>")
-		'(lambda () (interactive) (find-file "~/.emacs.d/skeletons.el")))
+                '(lambda () (interactive) (find-file "~/.emacs.d/skeletons.el")))
 (global-set-key (kbd "C-<f8>")
-		'(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
+                '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
 (global-set-key (kbd "C-<f7>")
-		'(lambda () (interactive)
-		   (find-file "~/Dropbox/linux_setup/Ubuntu_install_script.sh")))
+                '(lambda () (interactive)
+                   (find-file "~/Dropbox/linux_setup/Ubuntu_install_script.sh")))
 
 (global-set-key (kbd "C-<f6>") 'ibuffer)
 (global-set-key (kbd "C-<f5>")
-		'(lambda () (interactive) (find-file "~/Dropbox/org/uni.org")))
+                '(lambda () (interactive) (find-file "~/Dropbox/org/uni.org")))
 
 (global-set-key (kbd "C-<f1>") 'oomph-open-files)
 ;; (global-set-key (kbd "C-<f2>")
-;; 		'(lambda () (interactive)
-;; 		   (desktop-read "~/.emacs.d/writup-desktop")))
+;;              '(lambda () (interactive)
+;;                 (desktop-read "~/.emacs.d/writup-desktop")))
 
 ;; ;; Easier arranging windows - don't need if using frames
 ;; ;; ============================================================
@@ -239,10 +247,10 @@
 ;; Compile mode settings
 ;; ===============================================================
 (add-hook 'compilation-mode-hook
-	  '(lambda()
-	     (local-set-key (kbd "<f5>") 'recompile)
-	     (local-set-key (kbd "C-`") 'next-error)
-	     (local-set-key (kbd "C-¬") 'previous-error)))
+          '(lambda()
+             (local-set-key (kbd "<f5>") 'recompile)
+             (local-set-key (kbd "C-`") 'next-error)
+             (local-set-key (kbd "C-¬") 'previous-error)))
 
 ;; Edit with emacs (integrate with chrome)
 ;; ============================================================
@@ -346,7 +354,7 @@ If point was already at that position, move point to beginning of line."
                 (member major-mode '(emacs-lisp-mode lisp-mode
                                                      clojure-mode    scheme-mode
                                                      haskell-mode    ruby-mode
-                                                     rspec-mode      python-mode
+                                                     rspec-mode
                                                      c-mode          c++-mode
                                                      objc-mode       latex-mode
                                                      plain-tex-mode))
@@ -355,7 +363,7 @@ If point was already at that position, move point to beginning of line."
 
 
 ;; Package management
-;; ============================================================ 
+;; ============================================================
 
 ;; Add melpa
 (when (>= emacs-major-version 24)
@@ -366,3 +374,21 @@ If point was already at that position, move point to beginning of line."
 (when (>= emacs-major-version 24)
   (require 'page-break-lines)
   (global-page-break-lines-mode 't))
+
+;; Ctags
+;; ============================================================
+
+(setq ctags-command "ctags -e --recurse")
+(defun generate-tags (input-command)
+  "Generate tags file using ctags."
+  (interactive (list (read-string "Ctags command: " ctags-command)))
+  (setq ctags-command input-command)
+  (shell-command ctags-command))
+
+(defun regenerate-tags ()
+  (interactive)
+  "Generate tags file using ctags with previous command."
+  (shell-command ctags-command)
+  (visit-tags-table "TAGS"))
+
+(global-set-key (kbd "s-.") 'regenerate-tags)

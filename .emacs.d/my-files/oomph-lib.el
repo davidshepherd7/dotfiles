@@ -60,7 +60,8 @@
 ;;=================================================================
 (setq path-to-ctags "/usr/bin/ctags")
 ;; source directorys to use go here:
-(setq tags-source-directories "src/generic src/meshes user_drivers/micromagnetics")
+;;(setq tags-source-directories "src/generic src/meshes user_drivers/micromagnetics")
+(setq tags-source-directories "src/")
 (defun create-oomph-tags ()
   (interactive)
   "Create tags file."

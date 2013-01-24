@@ -13,6 +13,7 @@
 *.hi
 *-i386-linux
 *-x86_64-linux
+*.pyc
 
 # build files
 Makefile
@@ -30,6 +31,7 @@ libtool
 install-sh
 ltmain.sh
 missing
+.ropeproject
 
 # oomph-lib
 oomph-lib-config.h
@@ -54,3 +56,6 @@ TAGS
 *.tar
 *.zip
 *.bz2
+
+# Python lock files
+.~lock.*

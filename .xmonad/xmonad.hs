@@ -9,7 +9,7 @@ import XMonad.Util.EZConfig
 -- Xfce compatability (turns out that config.gnome is the same for xfce but better for gnome)
 import XMonad.Config.Gnome
 import XMonad.Hooks.ManageDocks
-  
+
 -- Chose workspace to spawn a window on
 import XMonad.Actions.SpawnOn
 
@@ -77,6 +77,7 @@ myManageHook =
   , resource  =? "desktop_window" --> doIgnore
   , className =? "Paraview" --> doShift "pv"
   , className =? "Mendeleydesktop" --> doShift "mly"
+  , className =? "Tk" --> doFloat
   , isFullscreen --> doFullFloat
   ]
   <+> manageHook gnomeConfig -- keep gnome/xfce compatability settings
@@ -121,7 +122,7 @@ myLayout = avoidStruts(tiled ||| Mirror matlabsucks ||| noBorders Full)
 -- Defines a custom handler function for X Events. The function should
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
-    
+
 -- Handle fullscreen properly and keep gnome compatability settings.
 myEventHook = fullscreenEventHook <+> handleEventHook gnomeConfig
 
@@ -168,11 +169,11 @@ main = xmonad $ gnomeConfig
         , layoutHook = smartBorders( myLayout )
         , startupHook = myStartupHook
         , normalBorderColor = "#242424" -- pale blue
-        , focusedBorderColor = "#87ceeb" -- pale grey 
+        , focusedBorderColor = "#87ceeb" -- pale grey
         , handleEventHook = myEventHook
         }
         -- Unbind some keys
-        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r"]
+        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-."]
         `additionalKeysP` myKeys
 
 -- Some additional keybinds, mostly inspired by chromes tab management
@@ -199,6 +200,11 @@ myKeys = [
     -- Lock screen
   , ("M-l", spawn myLockScreen)
 
+    -- We just unbound Expand so move both Shrink and Expand (otherwise
+    -- they don't make sense).
+  , ("M-g", sendMessage Shrink)
+  , ("M-h", sendMessage Expand)
+
     -- go to previous workspace
   , ("M-<Backspace>", toggleWS)
 
@@ -207,10 +213,10 @@ myKeys = [
   , ("M-<L>", prevWS)
   , ("M-S-<R>", shiftToNext)
   , ("M-S-<L>", shiftToPrev)
-    
+
   ]
          ++ -- ++ combines the two lists
-         
+
          -- Create a list of bindings:
          -- set all "M-number" to W.view that number
          [ (otherModMasks ++ "M-" ++ [key], action tag)
