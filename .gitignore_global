@@ -59,3 +59,19 @@ TAGS
 
 # Python lock files
 .~lock.*
+
+# Outputs/images
+*.pdf
+*.png
+*.svg
+*.ps
+*.dvi
+
+# Latex/bibtex temp files
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+_region_.prv

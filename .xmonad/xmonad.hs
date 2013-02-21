@@ -55,7 +55,6 @@ guiFolderOpen = "~/.xmonad/dmenu/dfoldermenu.sh"
 -- Try various locking mechanisms until one works.
 myLockScreen = "mate-screensaver-command -l || xflock4 || gnome-screensaver-command -l"
 
-
 ------------------------------------------------------------------------
 -- Window rules:
 
@@ -77,7 +76,8 @@ myManageHook =
   , resource  =? "desktop_window" --> doIgnore
   , className =? "Paraview" --> doShift "pv"
   , className =? "Mendeleydesktop" --> doShift "mly"
-  , className =? "Tk" --> doFloat
+  , className =? "Tk" --> doFullFloat
+  , className =? "Tk" --> doShift "plots"
   , isFullscreen --> doFullFloat
   ]
   <+> manageHook gnomeConfig -- keep gnome/xfce compatability settings
@@ -154,7 +154,7 @@ myStartupHook = do
 ------------------------------------------------------------------------
 -- Workspaces
 
-myWorkspaces = ["1","2","3","4","5","6","bws",
+myWorkspaces = ["1","2","3","4","5","6","plots",
                 "pv","mly"]
 
 ------------------------------------------------------------------------
@@ -184,6 +184,7 @@ myKeys = [
 
   -- close focused window
   ("M-w", kill)
+  , ("M-S-w", spawn "xkill")
 
     -- run things
   , ("M-t", spawn myTerminal)
@@ -191,6 +192,7 @@ myKeys = [
   , ("M-p", spawn myLauncher)
   , ("M-o", spawn guiFolderOpen)
   , ("M-y", spawn myBrowser)
+  , ("M-i", spawn "urxvt -e ipython || gnome-terminal -e ipython")
 
     -- multiple screens
   , ("M-a", nextScreen)

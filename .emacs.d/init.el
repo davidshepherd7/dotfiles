@@ -40,6 +40,9 @@
 ;; Remove trailing whitespace before save
 ;;(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; Shut up and just open symbolic links
+(setq vc-follow-symlinks t)
+
 ;; Allow some disabled commands
 (put 'narrow-to-region 'disabled nil)
 
@@ -165,10 +168,9 @@
 (load-file "~/.emacs.d/my-files/octave.el")
 (load-file "~/.emacs.d/my-files/matlab.el")
 (load-file "~/.emacs.d/my-files/org.el")
-(load-file "~/.emacs.d/my-files/python.el")
+(load-file "~/.emacs.d/my-files/my-python.el") ;; python mode is in file called python.el
 (load-file "~/.emacs.d/my-files/maxima.el")
 (load-file "~/.emacs.d/my-files/buffer-cycling.el")
-;; (load-file "~/.emacs.d/my-files/python.el")
 
 ;; General keybinds
 ;; ===============================================================
@@ -327,6 +329,7 @@ If point was already at that position, move point to beginning of line."
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

@@ -16,8 +16,8 @@ HISTCONTROL=ignoredups:ignorespace
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=100000
+HISTFILESIZE=200000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -43,12 +43,12 @@ force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -116,6 +116,9 @@ fi
 # Tell programs it's an xterm (even if it's not...) so they don't complain.
 export TERM='xterm'
 
+# Make sure it's using my readline config
+export INPUTRC='$HOME/.inputrc'
+
 
 # Some general aliases
 # ============================================================
@@ -140,6 +143,8 @@ alias trsh='trash-put'
 # Fancy grep: exclude source control and binaries
 alias dg='grep -n -H --color=auto --exclude-dir=.git --exclude-dir=.svn -I --exclude-dir=*.deps --exclude=*.lo --exclude=*.la --exclude=*.lai  --exclude=Makefile*'
 
+alias pylab='ipython --pylab'
+
 # Get a sorted list of disk usage (take from http://www.commandlinefu.com/commands/view/4786/nice-disk-usage-sorted-by-size-see-description-for-full-command )
 sdu()
 {
@@ -163,10 +168,13 @@ alias emacs='emacsclient -c -n'
 export om="$HOME/oomph-lib/user_drivers/micromagnetics"
 alias om='cd ~/oomph-lib/user_drivers/micromagnetics'
 
-alias hs='cd ~/Dropbox/other/programming/helperscripts'
+alias hs='cd ~/Dropbox/programming/helperscripts'
 alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
 alias rs='cd ~/Dropbox/phd/results'
 alias sicp='cd ~/programming/sicp/exercises4'
+
+alias sp='cd ~/programming/simplellg/simplellg'
+alias spe='cd ~/programming/simplellg/experiments'
 
 alias now='cd ~/oomph-lib/user_drivers/micromagnetics/experiments/spatially_constant_m_length_variations'
 
@@ -189,8 +197,9 @@ function cs ()
 # General PATH additions
 # ============================================================
 # Add my scripts to PATH
-export PATH="$PATH:$HOME/Dropbox/other/programming/helperscripts/gnuplot:$HOME/Dropbox/other/programming/helperscripts/oomph-lib:$HOME/Dropbox/other/programming/helperscripts" 
-PATH="$PATH:$HOME/Dropbox/other/programming/oomph-scripts" 
+export PATH="$PATH:$HOME/Dropbox/programming/helperscripts/gnuplot:$HOME/Dropbox/programming/helperscripts/oomph-lib:$HOME/Dropbox/programming/helperscripts"
+PATH="$PATH:$HOME/Dropbox/programming/oomph-scripts"
+PATH="$PATH:$HOME/bin"
 
 # Add oomph-lib bin to path
 export PATH="$PATH:$HOME/oomph-lib/bin"
@@ -263,7 +272,7 @@ export MAKEFLAGS="-j$NJOBS"
 # Python
 # ============================================================
 # Add my scripts to python path
-export PYTHONPATH="$HOME/programming/helperscripts/python:$HOME/programming/matplotlib"
+export PYTHONPATH="$HOME/programming/helperscripts/python:$HOME/programming/matplotlib:$HOME/programming/simplellg/"
 
 alias opython="ipython scipy"
 

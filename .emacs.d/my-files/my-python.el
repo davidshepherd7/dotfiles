@@ -1,5 +1,7 @@
 
+
 ;; Automatically use python mode from "python-mode.el"
+(require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
@@ -8,6 +10,12 @@
 (add-hook 'python-mode-hook 'lambda-mode 1)
 (setq lambda-symbol (string #x1d77a))
 (setq lambda-regex "lambda ")
+
+;; Turn off the stupid _ as part of word thing
+(modify-syntax-entry ?_ "_" python-mode-syntax-table)
+
+;; Don't split when we run some code (doesn't work well with frames).
+(py-split-windows-on-execute-off)
 
 
 ;; Build/test/check functions
@@ -29,6 +37,14 @@
 
 
 
+(defun run-this-file ()
+  "Recompile if possible, otherwise run current buffer. Will be
+weird with c++ compiles..."
+  (interactive)
+  (let* ((py-buffer (buffer-name)))
+    (compile (concat "python " py-buffer) t)))
+
+
 ;; Mode hooks
 ;; ============================================================
 (add-hook 'python-mode-hook 'add-py-save-hooks)
@@ -47,6 +63,7 @@
   (local-set-key (kbd "C-`") 'next-error)
   (local-set-key (kbd "C-¬") 'previous-error)
   (local-set-key (kbd "<f6>") 'renose)
+  (local-set-key (kbd "<f5>") 'run-this-file)
   (local-set-key (kbd "#") 'self-insert-command))
 
 
