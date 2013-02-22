@@ -9,6 +9,7 @@
 .emacs.d/ac-comphist*
 *.elc
 .emacs.d/tmp/
+.emacs.d/savehist
 
 
 # libs

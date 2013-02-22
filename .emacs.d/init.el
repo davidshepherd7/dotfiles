@@ -32,10 +32,6 @@
 ;; Autosave all modified buffers before compile
 (setq compilation-ask-about-save nil)
 
-;; ;; Load desktop on startup (ignore desktop file being locked)
-;; (setq desktop-load-locked-desktop t)
-;; (desktop-read)
-
 ;; Had to remove this because oomph-lib doesn't stick to no trailing whitespace...,
 ;; Remove trailing whitespace before save
 ;;(add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -119,34 +115,16 @@
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/yasnippet/snippets")
 
+;; (add-hook 'snippet-mode-hook
+;;           (lambda () (local-set-key (kbd "<f5>") 'yas/tryout-snippet)))
 
-;; ;; replace abbrev with yas
-;; (defun expand-abbrev () (interactive) (yas/expand))
-
-;; Need to avoid infinite loop: self-insert calls yas/expand which then
-;; tries to call self-insert if it fails. I actually hacked the source a
-;; little - replaced the default value because setq doesn't seem to work..
-
-;; Also in the source - set the defcustom for yas/trigger to nil (again
-;; setq doesn't work).
-
-(add-hook 'snippet-mode-hook
-          (lambda () (local-set-key (kbd "<f5>") 'yas/tryout-snippet)))
-
-
-;; ;; Icicles (more autocompletion)
-;; ;; ============================================================
-;; (add-to-list 'load-path "~/.emacs.d/icicles/")
-;; (require 'icicles)
-;; (icy-mode 1)
 
 ;; Undo tree
 ;;================================================================
 (load-file "~/.emacs.d/undo-tree/undo-tree-0.1.6.elc")
 (require 'undo-tree)
 (global-undo-tree-mode)
-(global-set-key (kbd "C-z") 'undo-tree-undo)
-(global-set-key (kbd "C-S-z") 'undo-tree-redo)
+(setq undo-tree-map '())
 
 ;; Unbind commands that might be hurting my hands
 ;; ============================================================
@@ -172,16 +150,11 @@
 (load-file "~/.emacs.d/my-files/maxima.el")
 (load-file "~/.emacs.d/my-files/buffer-cycling.el")
 
+;; Load major changes to keybinds
+(load-file "~/.emacs.d/my-files/sensible-keys.el")
+
 ;; General keybinds
 ;; ===============================================================
-(global-set-key (kbd "s-k") 'kill-whole-line)
-;; (global-set-key (kbd "s-w") 'backward-kill-word) ;used by window manager
-(global-set-key (kbd "M-n") 'forward-paragraph)
-(global-set-key (kbd "M-p") 'backward-paragraph)
-(global-set-key (kbd "M-;") 'comment-dwim)
-
-;;(global-set-key (kbd "M-Z") '(zap-to-char -1)) ;;??ds
-
 ;; ;; what I would like here is something like:
 ;; (defun just-one-space-dwim
 ;;   "If there are spaces or tabs to delete then delete them,
@@ -197,10 +170,6 @@
 (global-set-key [(shift delete)] 'clipboard-kill-region)
 (global-set-key [(control insert)] 'clipboard-kill-ring-save)
 (global-set-key [(shift insert)] 'clipboard-yank)
-(global-set-key (kbd "<f9>") 'find-file)
-(global-set-key (kbd "<f10>") 'switch-to-buffer)
-(global-set-key (kbd "<f12>") 'kill-buffer)
-(global-set-key (kbd "<f11>") 'save-buffer)
 
 ;; (kbd "M-q") to something that auto wraps, indents and arranges spaces..
 
@@ -226,24 +195,21 @@
                 '(lambda () (interactive) (find-file "~/Dropbox/org/uni.org")))
 
 (global-set-key (kbd "C-<f1>") 'oomph-open-files)
-;; (global-set-key (kbd "C-<f2>")
-;;              '(lambda () (interactive)
-;;                 (desktop-read "~/.emacs.d/writup-desktop")))
 
-;; ;; Easier arranging windows - don't need if using frames
-;; ;; ============================================================
-;; (global-set-key (kbd "M-0") 'delete-window)
-;; (global-set-key (kbd "M-1") 'delete-other-windows)
-;; (global-set-key (kbd "M-2") 'split-window-vertically)
-;; (global-set-key (kbd "M-3") 'split-window-horizontally)
-;; (global-set-key (kbd "M-9") 'other-window)
 
-;; History file
+;; Save command history between sessions
 ;; ===============================================================
-(savehist-mode 1) ;; Save command history between sessions
-;; save other things as well
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file "~/.emacs.d/tmp/savehist")
+;; Save other things as well
+(setq savehist-additional-variables '(kill-ring
+                                      search-ring
+                                      regexp-search-ring
+                                      compile-command))
+
+;; Save into a helpfully named file
+(setq savehist-file "~/.emacs.d/savehist")
+
+;; Enable (must be after changing any variables).
+(savehist-mode 1)
 
 
 ;; Compile mode settings
@@ -331,21 +297,20 @@ If point was already at that position, move point to beginning of line."
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(htmlize-output-type (quote font))
  '(indent-tabs-mode nil)
  '(markdown-bold-underscore nil)
- '(minibuffer-complete-cycle t nil (minibuffer-complete-cycle))
- '(split-width-threshold 110))
+ '(minibuffer-complete-cycle t nil (minibuffer-complete-cycle)))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(mode-line-inactive ((t (:inherit mode-line :background "grey2" :foreground "grey80" :box (:line-width -1 :color "grey2") :weight light)))))
 
 
@@ -394,4 +359,4 @@ If point was already at that position, move point to beginning of line."
   (shell-command ctags-command)
   (visit-tags-table "TAGS"))
 
-(global-set-key (kbd "s-.") 'regenerate-tags)
+(global-set-key (kbd "C-.") 'regenerate-tags)

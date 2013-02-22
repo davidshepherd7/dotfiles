@@ -18,23 +18,25 @@
 
 
 ;; Save and compile with f5
-(add-hook 'c-mode-common-hook
-	  '(lambda()
-	     (local-set-key (kbd "<f5>") 'my-recompile)
-	     (local-set-key (kbd "C-`") 'next-error)
-	     (local-set-key (kbd "C-¬") 'previous-error)
-	     (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+(add-hook 'c-mode-common-hook 'my-c-mode-keys)
+
+(defun my-c-mode-keys ()
+  (use-local-map '())
+  (local-set-key (kbd "<f5>") 'my-recompile)
+  (local-set-key (kbd "C-`") 'next-error)
+  (local-set-key (kbd "C-¬") 'previous-error)
+  (local-set-key (kbd "C-\\ o") 'ff-find-other-file))
 
 (defun cpp-access-function ()
   "Create set and get access functions for the selected member
 variable. Cannot deal with keywords like static or const. These
 access functions are BAD for class access (too much copying)."
   (let* ((var-string
-	  (replace-regexp-in-string ";" "" (buffer-substring (region-beginning)
-							     (region-end))))
-	 (var-string-list (split-string var-string))
-    	 (var-type (car var-string-list))
-    	 (var-name (cadr var-string-list)))
+          (replace-regexp-in-string ";" "" (buffer-substring (region-beginning)
+                                                             (region-end))))
+         (var-string-list (split-string var-string))
+         (var-type (car var-string-list))
+         (var-name (cadr var-string-list)))
     (concat
      (format "/// \\short Non-const access function for %s.\n" var-name)
      (format "%s& %s() {return %s;}\n\n" var-type (downcase var-name) var-name)

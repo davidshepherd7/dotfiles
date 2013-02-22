@@ -17,6 +17,9 @@
 ;; Don't split when we run some code (doesn't work well with frames).
 (py-split-windows-on-execute-off)
 
+;; Turn off outline minor mode (never use it an it messes up keybinds).
+(setq py-outline-minor-mode-p nil)
+
 
 ;; Build/test/check functions
 ;; ============================================================
@@ -60,11 +63,24 @@ weird with c++ compiles..."
     (untabify (point-min) (point-max)))
 
 (defun py-keybinds ()
+  (use-local-map '()) ;; disable all keys
   (local-set-key (kbd "C-`") 'next-error)
   (local-set-key (kbd "C-¬") 'previous-error)
   (local-set-key (kbd "<f6>") 'renose)
   (local-set-key (kbd "<f5>") 'run-this-file)
-  (local-set-key (kbd "#") 'self-insert-command))
+
+  ;; Some things copied from python mode that were actually useful:
+  (local-set-key (kbd "C-\\ <") 'py-shift-left)
+  (local-set-key (kbd "C-\\ >") 'py-shift-right)
+
+  (local-set-key [remap indent-for-tab-command] 'py-indent-line)
+  (local-set-key [remap delete-forward-char] 'py-electric-delete)
+  (local-set-key [remap delete-char] 'py-electric-delete)
+  (local-set-key [remap delete-backward-char] 'py-electric-backspace)
+  (local-set-key [remap newline] 'py-newline-and-indent)
+  (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
+  )
+
 
 
 ;; Crashy...
