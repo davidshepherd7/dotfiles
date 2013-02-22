@@ -117,7 +117,7 @@ fi
 export TERM='xterm'
 
 # Make sure it's using my readline config
-export INPUTRC='$HOME/.inputrc'
+export INPUTRC="$HOME/.inputrc"
 
 
 # Some general aliases

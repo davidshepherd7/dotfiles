@@ -108,15 +108,15 @@
 (add-hook 'c-mode-common-hook '(lambda ()
                                  (add-to-list 'ac-sources 'ac-source-clang)))
 
-;; yasnippet
-;; ============================================================
-(add-to-list 'load-path "~/.emacs.d/yasnippet")
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/yasnippet/snippets")
+;; ;; yasnippet
+;; ;; ============================================================
+;; (add-to-list 'load-path "~/.emacs.d/yasnippet")
+;; (require 'yasnippet)
+;; (yas/initialize)
+;; (yas/load-directory "~/.emacs.d/yasnippet/snippets")
 
-;; (add-hook 'snippet-mode-hook
-;;           (lambda () (local-set-key (kbd "<f5>") 'yas/tryout-snippet)))
+;; ;; (add-hook 'snippet-mode-hook
+;; ;;           (lambda () (local-set-key (kbd "<f5>") 'yas/tryout-snippet)))
 
 
 ;; Undo tree

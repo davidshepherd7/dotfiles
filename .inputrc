@@ -75,8 +75,26 @@ set completion-map-case On
 set expand-tilde On
 
 # Automatically append / to symlinks to directories (as is done with normal
-directories).
+# directories).
 set mark-symlinked-directories On
 
 # Show list of completions on first tab press if applicable.
 set show-all-if-ambiguous On
+
+
+# Changes to make it more like my emacs
+# ============================================================
+"\C-b": beginning-of-line
+
+"\C-h": backward-char
+"\C-l": forward-char
+"\C-k": previous-history
+"\C-j": next-history
+
+"\eh": backward-word
+"\el": forward-word
+
+"\C-y": backward-kill-word
+"\ex": kill-whole-line
+
+"\C-n": accept-line
