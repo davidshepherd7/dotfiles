@@ -112,8 +112,8 @@ the line break."
 
 (global-set-key (kbd "C-w") 'kill-buffer)
 
-(global-set-key (kbd "C-S-o") 'find-file)
-(global-set-key (kbd "C-o") 'switch-to-buffer)
+(global-set-key (kbd "C-o") 'find-file)
+(global-set-key (kbd "M-o") 'switch-to-buffer)
 
 (global-set-key (kbd "C-f") 'isearch-forward)
 (global-set-key (kbd "M-f") 'isearch-forward-regexp)
@@ -190,7 +190,7 @@ the line break."
 (define-key isearch-mode-map (kbd "C-s") nil)
 (define-key isearch-mode-map (kbd "C-q") nil)
 (define-key isearch-mode-map (kbd "C-l") nil)
-(define-key isearch-mode-map (kbd "C-w") nil)
+;; (define-key isearch-mode-map (kbd "C-w") nil)
 (define-key isearch-mode-map (kbd "C-x") nil)
 (define-key isearch-mode-map (kbd "C-y") nil)
 (define-key isearch-mode-map (kbd "C-z") nil)

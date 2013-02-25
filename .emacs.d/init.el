@@ -1,6 +1,26 @@
 ;; Generic emacs settings, other stuff is in individual files in ./my-files/
 
 
+;; Package management
+;; ============================================================
+
+;; Add melpa
+(if (not (>= emacs-major-version 24))
+    (error "Requires emacs version 24 or later."))
+(require 'package)
+(package-initialize)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+(defun package-install-if-not-installed (pkg)
+  "Install a package if it's not already installed."
+  (if (not (package-installed-p pkg))
+      (if (assoc pkg package-archive-contents)
+          (package-install pkg)
+          (error "Could not find package %s" pkg))
+    ))
+
+;; Auto update? Possibly not a good idea because things would break
+
 ;; Some simple, one-line stuff
 ;; ============================================================
 (server-start) ;; Start emacs as a server
@@ -21,8 +41,6 @@
                               ;; by e.g. diff, git log we lose some columns and
                               ;; it gets messy.
 (setq default-abbrev-mode t) ;; Use abbrev mode always
-(setq completion-cycle-threshold 5) ;; Cycle through completion options if there
-                                    ;; are only a few.
 (setq tags-revert-without-query 1) ;; Autorevert if the tags table has changed
 
 ;; Add a new line at end of file on save if none exists (note: doesn't play
@@ -52,6 +70,11 @@
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome")
 
+;; Draw a line accross the screen instead of ^L for page breaks
+(package-install-if-not-installed 'page-break-lines)
+(global-page-break-lines-mode t)
+
+
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
  ;; Make new frames instead of new windows
@@ -74,9 +97,69 @@
 ;; (py-split-windows-on-execute-off)
 ;; in a hook to prevent crazy window stuff happening.
 
-;; Display minibuffer completions in the minbuffer (to avoid needing extra
-;; frames to see them).
-(icomplete-mode 1)
+;; Using ido and smex is a huge help because they replace that stupid
+;; completions buffer with a list in the minibuffer itself (the completions
+;; buffer is a bit of a pain when using frames--doesn't behave quite
+;; right).
+
+;; Improving Auto complete in minibuffer
+;; ============================================================
+
+;; Use ido
+(require 'ido)
+(ido-mode t)
+(ido-everywhere) ;; (for all buffer/file name entry)
+
+;; Display ido results vertically, rather than horizontally
+(setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+
+;; sort ido filelist by modificiation time instead of alphabetically
+(add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+(add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
+(defun ido-sort-mtime ()
+  (setq ido-temp-list
+        (sort ido-temp-list
+              (lambda (a b)
+                (time-less-p
+                 (sixth (file-attributes (concat ido-current-directory b)))
+                 (sixth (file-attributes (concat ido-current-directory a)))))))
+  (ido-to-end  ;; move . files to end (again)
+   (delq nil (mapcar
+              (lambda (x) (and (char-equal (string-to-char x) ?.) x))
+              ido-temp-list))))
+
+;; Enable some fuzzy matching
+(setq ido-enable-flex-matching t)
+
+;; Allow completion (and opening of buffers that are actually closed).
+(setq ido-use-virtual-buffers t)
+
+;; Cycle through commands with tab if we can't complete any further.
+(setq ido-cannot-complete-command 'ido-next-match)
+
+;; Use ido style completion everywhere
+(package-install-if-not-installed 'ido-ubiquitous)
+(ido-ubiquitous-mode t)
+
+;; Add ignore regex for useless files?
+
+
+;; smex: ido based completion for commands
+(package-install-if-not-installed 'smex)
+
+;; Change the main keybinding
+(global-set-key [remap execute-extended-command] 'smex)
+
+;; Another one to Only list commands relevant to this major mode.
+(global-set-key (kbd "M-|") 'smex-major-mode-commands)
+
+;; Tell the prompt that I changed the binding for running commands
+(setq smex-prompt-string "M-\\: ")
+
+;; Change some keys in smex
+(defun smex-prepare-ido-bindings ()
+  (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
+  (define-key ido-completion-map (kbd "M-.") 'smex-find-function))
 
 
 ;; Auto complete
@@ -97,16 +180,13 @@
 ;; let me search even while autocomplete is up!
 (define-key ac-complete-mode-map (kbd "C-s") nil)
 
-;; Use alt tab for fuzzy complete (need to unbind other uses first).
+;; Use alt tab for fuzzy complete (need to unbind other, e.g. windows, uses
+;; first).
 (define-key ac-complete-mode-map (kbd "M-TAB") nil)
 (define-key ac-mode-map (kbd "M-TAB") nil)
 (define-key abbrev-map (kbd "M-TAB") nil)
 (global-set-key (kbd "M-TAB") 'ac-fuzzy-complete)
 
-;; Add clang source
-(require 'auto-complete-clang)
-(add-hook 'c-mode-common-hook '(lambda ()
-                                 (add-to-list 'ac-sources 'ac-source-clang)))
 
 ;; ;; yasnippet
 ;; ;; ============================================================
@@ -303,8 +383,7 @@ If point was already at that position, move point to beginning of line."
  ;; If there is more than one, they won't work right.
  '(htmlize-output-type (quote font))
  '(indent-tabs-mode nil)
- '(markdown-bold-underscore nil)
- '(minibuffer-complete-cycle t nil (minibuffer-complete-cycle)))
+ '(markdown-bold-underscore nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -329,19 +408,6 @@ If point was already at that position, move point to beginning of line."
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
-
-;; Package management
-;; ============================================================
-
-;; Add melpa
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  )
-(when (>= emacs-major-version 24)
-  (require 'page-break-lines)
-  (global-page-break-lines-mode 't))
 
 ;; Ctags
 ;; ============================================================

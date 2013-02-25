@@ -39,13 +39,15 @@
   (nose nose-command))
 
 
-
 (defun run-this-file ()
   "Recompile if possible, otherwise run current buffer. Will be
 weird with c++ compiles..."
   (interactive)
   (let* ((py-buffer (buffer-name)))
-    (compile (concat "python " py-buffer) t)))
+    (compile (concat "bash -l -c \"python " py-buffer "\"") t))
+  ;; Note: we need to run it via bash (and with -l) to get the .bashrc
+  ;; config options such as the correct $PYTHONPATH value.
+  )
 
 
 ;; Mode hooks
