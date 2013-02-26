@@ -110,6 +110,15 @@
 (ido-mode t)
 (ido-everywhere) ;; (for all buffer/file name entry)
 
+;; Change some keys in ido
+(defun my-ido-keys ()
+  (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
+  (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
+  (define-key ido-completion-map (kbd "C-n") 'ido-select-text)
+  (define-key ido-completion-map " " '()))
+
+(add-hook 'ido-setup-hook 'my-ido-keys t)
+
 ;; Display ido results vertically, rather than horizontally
 (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
 

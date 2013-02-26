@@ -55,6 +55,10 @@ guiFolderOpen = "~/.xmonad/dmenu/dfoldermenu.sh"
 -- Try various locking mechanisms until one works.
 myLockScreen = "mate-screensaver-command -l || xflock4 || gnome-screensaver-command -l"
 
+myiPythonCommand = "bash -l -c \"ipython\""
+myiPython = "urxvt -e " ++ myiPythonCommand ++
+            " || gnome-terminal -e " ++ myiPythonCommand
+
 ------------------------------------------------------------------------
 -- Window rules:
 
@@ -192,7 +196,7 @@ myKeys = [
   , ("M-p", spawn myLauncher)
   , ("M-o", spawn guiFolderOpen)
   , ("M-y", spawn myBrowser)
-  , ("M-i", spawn "urxvt -e ipython || gnome-terminal -e ipython")
+  , ("M-i", spawn myiPython)
 
     -- multiple screens
   , ("M-a", nextScreen)

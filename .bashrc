@@ -172,6 +172,7 @@ alias hs='cd ~/Dropbox/programming/helperscripts'
 alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
 alias rs='cd ~/Dropbox/phd/results'
 alias sicp='cd ~/programming/sicp/exercises4'
+alias rc='cd ~/Dropbox/linux_setup/rcfiles'
 
 alias sp='cd ~/programming/simplellg/simplellg'
 alias spe='cd ~/programming/simplellg/experiments'

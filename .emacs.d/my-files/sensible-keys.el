@@ -42,6 +42,10 @@
 (defun point-at-end-of-block (&optional repeat)
   (save-excursion (go-to-end-of-block) (point)))
 
+(defun point-at-beginning-of-next-line ()
+  (save-excursion (end-of-line) (forward-line)
+                  (point)))
+
 
 (defun dwim-end-of-line (function)
   "If a region is selected operate on it. Otherwise operate on
@@ -51,7 +55,7 @@ the line break."
       (funcall function (region-beginning) (region-end))
     ;; else
     (if (eq (point) (point-at-eol))
-        (funcall function (point) (save-excursion (forward-line) (beginning-of-line) (point)))
+        (funcall function (point) (point-at-beginning-of-next-line))
       ;; else
       (funcall function (point) (point-at-eol)))))
 
@@ -64,9 +68,7 @@ the line break."
   (if (region-active-p)
       (funcall function (region-beginning) (region-end))
     ;; else
-    (if (eq (point-at-bol) (point-at-eol))
-        (funcall function (point) (save-excursion (forward-line) (beginning-of-line) (point)))
-      (funcall function (point-at-bol) (point-at-eol)))))
+    (funcall function (point-at-bol) (point-at-beginning-of-next-line))))
 
 (defun function-on-block (function)
   (funcall function (point-at-beginning-of-block)
@@ -136,6 +138,7 @@ the line break."
 (global-set-key (kbd "M-k") 'backward-paragraph)
 (global-set-key (kbd "C-M-k") 'backward-sexp)
 
+
 ;; Just because they're useful:
 (global-set-key (kbd "C-y") 'backward-kill-word)
 (global-set-key (kbd "C-'") 'query-replace)
@@ -154,8 +157,17 @@ the line break."
 (global-set-key (kbd "M-C-b") 'backward-paragraph)
 (global-set-key (kbd "M-B") 'backward-sexp)
 
-
 (global-set-key (kbd "C-n") 'newline-and-indent)
+(global-set-key (kbd "M-n") 'newline-below-this-one)
+(global-set-key (kbd "M-N") 'newline-above-this-one)
+
+(defun newline-below-this-one ()
+  "Open a newline underneath this line and move to it."
+  (interactive) (end-of-line) (newline-and-indent))
+
+(defun newline-above-this-one ()
+  "Open a newline above this line and move to it."
+  (interactive) (previous-line) (newline-below-this-one))
 
 
 ;; New keymap for search
@@ -182,7 +194,13 @@ the line break."
 (define-key isearch-mode-map (kbd "M-e") 'isearch-edit-string)
 
 ;; Grab text from the main buffer
-(define-key isearch-mode-map (kbd "M-l") 'isearch-yank-word)
+(defun isearch-text-grab (movement-function)
+  (isearch-yank-internal '(lambda () (funcall movement-function) (point))))
+
+(define-key isearch-mode-map (kbd "M-l")
+  '(lambda () (interactive) (isearch-text-grab 'forward-word)))
+(define-key isearch-mode-map (kbd "C-l")
+  '(lambda () (interactive) (isearch-text-grab 'forward-char)))
 (define-key isearch-mode-map (kbd "C-e") 'isearch-yank-line)
 
 ;; Remove keys that overlap main keymap in weird or useless ways
