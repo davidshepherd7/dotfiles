@@ -44,7 +44,7 @@ depcomp
 *~
 \#*\#
 TAGS
-
+.#*
 
 # Packages #
 *.7z
@@ -75,3 +75,9 @@ TAGS
 *.bbl
 *.blg
 _region_.prv
+*.bcf
+*.run.xml
+*-blx.bib
+
+# Dropbox junk
+*conflicted\ copy*

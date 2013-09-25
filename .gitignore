@@ -12,6 +12,7 @@
 .emacs.d/savehist
 
 
+
 # libs
 .emacs.d/edit-server.el
 .emacs.d/fuzzy.el
@@ -39,6 +40,9 @@
 .emacs.d/yasnippet/simple-snippets.el
 .emacs.d/yasnippet/yasnippet.el
 
+
+
+.emacs.d/el-get/
 
 
 
