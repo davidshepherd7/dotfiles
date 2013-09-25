@@ -83,3 +83,8 @@ URxvt*shading: 20
 
 ! Save lots of lines
 URxvt*saveLines:32767
+
+! Only reset scroll position on keypress
+URxvt.scrollWithBuffer: true
+URxvt.scrollTtyOutput: false
+URxvt.scrollTtyKeypress: true
