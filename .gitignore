@@ -10,7 +10,9 @@
 *.elc
 .emacs.d/tmp/
 .emacs.d/savehist
-
+.emacs.d/tutorial/
+.emacs.d/smex-items
+.emacs.d/snippets/
 
 
 # libs
@@ -19,6 +21,7 @@
 .emacs.d/lambda-mode.el
 .emacs.d/ac-math.el
 .emacs.d/auto-complete-clang.el
+.emacs.d/auto-complete-clang-async.el
 .emacs.d/auto-complete-config.el
 .emacs.d/auto-complete.el
 .emacs.d/edit-server.el
