@@ -86,15 +86,19 @@ set show-all-if-ambiguous On
 # ============================================================
 "\C-b": beginning-of-line
 
-"\C-h": backward-char
-"\C-l": forward-char
+"\C-h": backward-word
+"\C-l": forward-word
 "\C-k": previous-history
 "\C-j": next-history
 
-"\eh": backward-word
-"\el": forward-word
+"\eh": backward-char
+"\el": forward-char
 
 "\C-y": backward-kill-word
+"\C-d": kill-word
 "\ex": kill-whole-line
+
+"\ed": delete-char
+"\ey": backward-delete-char
 
 "\C-n": accept-line
