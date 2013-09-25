@@ -1,0 +1,36 @@
+# My additions:
+# ============================================================
+
+maxHistorySize: Just 1000
+
+historyDuplicates: IgnoreConsecutive
+
+# Name some key sequences
+keyseq: "\b" ctrl-h
+
+
+# Changes to make it more like my emacs
+# ============================================================
+
+bind: ctrl-b ctrl-a
+
+bind: ctrl-h meta-b
+bind: ctrl-l meta-f
+bind: ctrl-k up
+# bind: ctrl-j down # Ruins return
+
+bind: meta-h ctrl-b
+bind: meta-l ctrl-f
+
+bind: meta-y ctrl-y
+
+bind: ctrl-y ctrl-w
+
+# Ruins "end of file" command
+# bind: meta-d ctrl-d
+# bind: ctrl-d meta-d
+
+# No binding exists for kill whole line as far as I can tell..
+# bind: meta-x
+
+bind: ctrl-n return
