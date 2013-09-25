@@ -3,9 +3,9 @@
 !------------------------------------------------------------------------------
 
 ! Standard colors:
-!         Normal   Light  
-! black   color0   color8 
-! red     color1   color9 
+!         Normal   Light
+! black   color0   color8
+! red     color1   color9
 ! green   color2   color10
 ! yellow  color3   color11
 ! blue    color4   color12
@@ -28,7 +28,7 @@
 ! URxvt*color7: #bebebe
 
 ! ! Nicer light (foreground) colours
-! !URxvt*color8: 
+! !URxvt*color8:
 ! URxvt*color9: #cf6171
 ! URxvt*color10: #31AD00
 ! URxvt*color11: #fff796
@@ -73,12 +73,6 @@
 
 ! Nice fonts
 urxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
-!urxvt*boldFont: xft:Bitstream Vera Sans Mono:pixelsize=12:bold:antialias=true:hinting=true
-
-! Clickable urls
-URxvt*perl-ext-common: default,matcher,-option-popup,-selection-popup,-realine
-URxvt*matcher.button: 1
-URxvt*urlLauncher: google-chrome  
 
 ! Scroll bar
 URxvt*scrollBar: false
