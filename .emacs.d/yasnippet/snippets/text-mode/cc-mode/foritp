@@ -1,6 +1,0 @@
-#name : for loop using iterator with pointer to object
-# --
-for(it=$1->begin(); it!=$1->end(); ++it)
-{
-$0
-}

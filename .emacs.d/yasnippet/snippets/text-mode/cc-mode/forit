@@ -1,6 +1,0 @@
-#name : for loop with iterator
-# --
-for(it=$1.begin(); it!=$1.end(); ++it)
-{
-$0
-}
