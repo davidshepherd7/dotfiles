@@ -5,6 +5,9 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import XMonad.Util.EZConfig
+import XMonad.Util.Run(spawnPipe)
+import System.IO
+
 
 -- Xfce compatability (turns out that config.gnome is the same for xfce but better for gnome)
 import XMonad.Config.Gnome
@@ -43,11 +46,19 @@ myEditor = "emacsclient -c -n -e '(switch-to-buffer nil)' || (bash -l -c \"emacs
 -- Try various terminals till one works.
 myTerminal = "urxvt || xfce4-terminal || gnome-terminal"
 
+-- Terminal running fish shell
+myFish = "urxvt -e fish || gnome-terminal -e fish"
+
+-- Terminal shortcuts, don't really use non-urxvt terminals anymore so
+-- can't be bothered with the || stuff...
+oomphTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib && /bin/bash'"
+
 -- Try various browsers until one works.
-myBrowser = "google-chrome || chromium-browser || firefox"
+myBrowser = "google-chrome || chromium || chromium-browser || firefox"
 
 -- Run dmenu for executables with whatever other stuff I've set up.
-myLauncher =  "~/.xmonad/dmenu/my-dmenu-run.sh"
+-- myLauncher =  "~/.xmonad/dmenu/my-dmenu-run.sh"
+myLauncher = "dmenu_run"
 
 -- Run dmenu for folders and open in whatever gui file manager we have.
 guiFolderOpen = "~/.xmonad/dmenu/dfoldermenu.sh"
@@ -80,8 +91,8 @@ myManageHook =
   , resource  =? "desktop_window" --> doIgnore
   , className =? "Paraview" --> doShift "pv"
   , className =? "Mendeleydesktop" --> doShift "mly"
-  , className =? "Tk" --> doFullFloat
-  , className =? "Tk" --> doShift "plots"
+  , className =? "Tk" --> doFloat
+  -- , className =? "Tk" --> doShift "plots"
   , isFullscreen --> doFullFloat
   ]
   <+> manageHook gnomeConfig -- keep gnome/xfce compatability settings
@@ -142,7 +153,11 @@ myEventHook = fullscreenEventHook <+> handleEventHook gnomeConfig
 -- It will add EWMH logHook actions to your custom log hook by
 -- combining it with ewmhDesktopsLogHook.
 --
--- myLogHook = return ()
+
+-- myLogHook xmproc = dynamicLogWithPP $ xmobarPP
+--                        { ppOutput = hPutStrLn xmproc
+--                        , ppTitle = xmobarColor "green" "" . shorten 50
+--                        }
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -164,13 +179,18 @@ myWorkspaces = ["1","2","3","4","5","6","plots",
 ------------------------------------------------------------------------
 -- Now run xmonad with these settings and some others given here
 
-main = xmonad $ gnomeConfig
+main = do
+     -- xmproc <- spawnPipe "xmobar ~/.xmobarrc"
+     xmonad $ gnomeConfig
         { terminal   = myTerminal
         , modMask    = mod4Mask -- use super as modifier key
         , borderWidth = 2
         , manageHook = myManageHook
         , workspaces = myWorkspaces
         , layoutHook = smartBorders( myLayout )
+        -- , logHook = myLogHook xmproc >> logHook gnomeConfig -- Attempt
+        -- to combine both log hooks... Doesn't quite work
+        , logHook = logHook gnomeConfig
         , startupHook = myStartupHook
         , normalBorderColor = "#242424" -- pale blue
         , focusedBorderColor = "#87ceeb" -- pale grey
@@ -192,9 +212,10 @@ myKeys = [
 
     -- run things
   , ("M-t", spawn myTerminal)
+  , ("M-f", spawn myFish)
   , ("M-e", spawn myEditor)
   , ("M-p", spawn myLauncher)
-  , ("M-o", spawn guiFolderOpen)
+  , ("M-o", spawn oomphTerminal)
   , ("M-y", spawn myBrowser)
   , ("M-i", spawn myiPython)
 
@@ -204,12 +225,10 @@ myKeys = [
   , ("M-z", swapNextScreen)
 
     -- Lock screen
-  , ("M-l", spawn myLockScreen)
+  , ("M-=", spawn myLockScreen)
 
-    -- We just unbound Expand so move both Shrink and Expand (otherwise
-    -- they don't make sense).
-  , ("M-g", sendMessage Shrink)
-  , ("M-h", sendMessage Expand)
+    -- Quit xmonad (e.g. if we have no gnome session this is the only way to log out)
+  , ("M-S-q", io (exitWith ExitSuccess))
 
     -- go to previous workspace
   , ("M-<Backspace>", toggleWS)
@@ -220,6 +239,9 @@ myKeys = [
   , ("M-S-<R>", shiftToNext)
   , ("M-S-<L>", shiftToPrev)
 
+
+    -- Floats
+  , ("M-u", withFocused $ windows . W.sink)
   ]
          ++ -- ++ combines the two lists
 
