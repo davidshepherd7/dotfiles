@@ -1,25 +1,60 @@
 ;; Generic emacs settings, other stuff is in individual files in ./my-files/
 
+;; TODO:
+
+;; actions on block: move to next block afterwards?
+
+;; allow grabbing text from point (like for search) in replace
+
+;; learn + bind bookmarks
+
+;; Enable comment command on empty lines
+
+;; goto last change?
+
+;; Fix stupid copy/paste mouse behvaiour
+
+;; Fix actions on block for last block in file
+
 
 ;; Package management
 ;; ============================================================
 
-;; Add melpa
-(if (not (>= emacs-major-version 24))
-    (error "Requires emacs version 24 or later."))
-(require 'package)
-(package-initialize)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; ;; Add melpa
+;; ;;(if (not (>= emacs-major-version 24))
+;; ;;    (error "Requires emacs version 24 or later."))
+;; ;;(require 'package)
+;; ;;(package-initialize)
+;; ;;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defun package-install-if-not-installed (pkg)
-  "Install a package if it's not already installed."
-  (if (not (package-installed-p pkg))
-      (if (assoc pkg package-archive-contents)
-          (package-install pkg)
-          (error "Could not find package %s" pkg))
-    ))
+;; (defun package-install-if-not-installed (pkg)
+;;   "Install a package if it's not already installed."
+;;   (if (not (package-installed-p pkg))
+;;       (if (assoc pkg package-archive-contents)
+;;           (package-install pkg)
+;;           (error "Could not find package %s" pkg))
+;;     ))
 
 ;; Auto update? Possibly not a good idea because things would break
+
+;; install + setup el-get
+;; ============================================================
+
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+;; Install el-get if we don't have it
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
+
+(add-to-list 'el-get-recipe-path "~/.emacs.d/my-recipes")
+
+(el-get 'sync)
+
 
 ;; Some simple, one-line stuff
 ;; ============================================================
@@ -45,7 +80,7 @@
 
 ;; Add a new line at end of file on save if none exists (note: doesn't play
 ;; nice with scheme).
-(setq-default require-final-newline t)
+(setq-default require-final-newline 0)
 
 ;; Autosave all modified buffers before compile
 (setq compilation-ask-about-save nil)
@@ -53,6 +88,8 @@
 ;; Had to remove this because oomph-lib doesn't stick to no trailing whitespace...,
 ;; Remove trailing whitespace before save
 ;;(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(remove-hook 'before-save-hook 'delete-trailing-whitespace)
+;; oomph-lib safe version is in oomph-lib.el
 
 ;; Shut up and just open symbolic links
 (setq vc-follow-symlinks t)
@@ -71,9 +108,31 @@
       browse-url-generic-program "google-chrome")
 
 ;; Draw a line accross the screen instead of ^L for page breaks
-(package-install-if-not-installed 'page-break-lines)
 (global-page-break-lines-mode t)
 
+;; Show messages on startup, not the stupid scratch buffer
+(switch-to-buffer "*Messages*")
+
+;; Set the default font
+(set-face-attribute 'default '()
+                    :family "DejaVu Sans Mono"
+                    :height 98)
+
+;; Don't do this: it makes everything very slow!
+;; ;; Use full .bashrc in evaluating shell commands (i.e. allow the use of
+;; ;; aliases in compile commands)
+;; (set 'shell-command-switch "-ic")
+
+;; Define + active modification to compile that locally sets
+;; shell-command-switch to "-ic".
+(defadvice compile (around use-bashrc activate)
+  "Load .bashrc in any calls to bash (e.g. so we can use aliases)"
+  (let ((shell-command-switch "-ic"))
+    ad-do-it))
+(defadvice recompile (around use-bashrc activate)
+  "Load .bashrc in any calls to bash (e.g. so we can use aliases)"
+  (let ((shell-command-switch "-ic"))
+    ad-do-it))
 
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
@@ -102,6 +161,11 @@
 ;; buffer is a bit of a pain when using frames--doesn't behave quite
 ;; right).
 
+;; gdb (gud) does some stupid things with windows, this stops some of it:
+(setq gdb-use-separate-io-buffer nil)
+(setq gdb-many-windows nil)
+
+
 ;; Improving Auto complete in minibuffer
 ;; ============================================================
 
@@ -115,7 +179,10 @@
   (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
   (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
   (define-key ido-completion-map (kbd "C-n") 'ido-select-text)
-  (define-key ido-completion-map " " '()))
+  (define-key ido-completion-map " " '())
+  (define-key ido-completion-map (kbd "S-TAB") 'ido-prev-match)
+  ;; Not sure why shift-tab = <backtab> but it works...
+  (define-key ido-completion-map (kbd "<backtab>") 'ido-prev-match))
 
 (add-hook 'ido-setup-hook 'my-ido-keys t)
 
@@ -125,142 +192,111 @@
 ;; sort ido filelist by modificiation time instead of alphabetically
 (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
 (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
-(defun ido-sort-mtime ()
-  (setq ido-temp-list
-        (sort ido-temp-list
-              (lambda (a b)
-                (time-less-p
-                 (sixth (file-attributes (concat ido-current-directory b)))
-                 (sixth (file-attributes (concat ido-current-directory a)))))))
-  (ido-to-end  ;; move . files to end (again)
-   (delq nil (mapcar
-              (lambda (x) (and (char-equal (string-to-char x) ?.) x))
-              ido-temp-list))))
+;; (defun ido-sort-mtime ()
+;;   (setq ido-temp-list
+;;         (sort ido-temp-list
+;;               (lambda (a b)
+;;                 (time-less-p
+;;                  (sixth (file-attributes (concat ido-current-directory b)))
+;;                  (sixth (file-attributes (concat ido-current-directory a)))))))
+;;   (ido-to-end  ;; move . files to end (again)
+;;    (delq nil (mapcar
+;;               (lambda (x) (and (char-equal (string-to-char x) ?.) x))
+;;               ido-temp-list))))
+
+(defun ido-sort-mtime () '()) ;; actually, disable it because it's so slow
 
 ;; Enable some fuzzy matching
 (setq ido-enable-flex-matching t)
 
-;; Allow completion (and opening of buffers that are actually closed).
+;; Allow completion (and opening) of buffers that are actually closed.
 (setq ido-use-virtual-buffers t)
+(setq recentf-max-saved-items 1000) ;; increase number of buffers to rememeber
 
 ;; Cycle through commands with tab if we can't complete any further.
 (setq ido-cannot-complete-command 'ido-next-match)
 
-;; Use ido style completion everywhere
-(package-install-if-not-installed 'ido-ubiquitous)
-(ido-ubiquitous-mode t)
+;; Use ido style completion everywhere (separate package)
+;;(ido-ubiquitous-mode t)
+
+;; Buffer selection even if already open elsewhere
+(setq ido-default-buffer-method 'selected-window)
+
+;; Create new buffers without prompting
+(setq ido-create-new-buffer 'always)
 
 ;; Add ignore regex for useless files?
 
 
 ;; smex: ido based completion for commands
-(package-install-if-not-installed 'smex)
+
 
 ;; Change the main keybinding
 (global-set-key [remap execute-extended-command] 'smex)
 
-;; Another one to Only list commands relevant to this major mode.
+;; Another key: only list commands relevant to this major mode.
 (global-set-key (kbd "M-|") 'smex-major-mode-commands)
 
 ;; Tell the prompt that I changed the binding for running commands
+;; (elsewhere)
 (setq smex-prompt-string "M-\\: ")
 
-;; Change some keys in smex
+;; Put its save file in .emacs.d
+(set 'smex-save-file "~/.emacs.d/smex-items")
+
+;; Change some keys in smex itself
 (defun smex-prepare-ido-bindings ()
   (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
   (define-key ido-completion-map (kbd "M-.") 'smex-find-function))
 
 
+;; yasnippet
+;; ============================================================
+(require 'yasnippet)
+(yas/global-mode 1)
+
+(add-hook 'snippet-mode-hook
+          (lambda () (local-set-key (kbd "<f5>") 'yas/tryout-snippet)))
+
+
 ;; Auto complete
 ;;================================================================
-(add-to-list 'load-path "~/.emacs.d/")
 (require 'auto-complete-config)
+(require 'fuzzy)
+(require 'pos-tip)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
+;; Options from
 (ac-config-default)
+
+(global-auto-complete-mode t)
 (setq ac-ignore-case nil)
 (setq ac-use-fuzzy t)
 (setq ac-fuzzy-enable t)
 (ac-flyspell-workaround)
 
 ;; Show quick help (function info display in tooltip)
-(setq ac-use-quick-help t)
+;; (set 'ac-use-quick-help t)
+(set 'ac-delay 0.5) ;; show completions quickly
+
+;; help is too annoying, press f1 to get it
+;; ;; (set 'ac-show-menu-immediately-on-auto-complete 1)
+;; (set 'ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
+;;                                        ;; completions
 
 ;; let me search even while autocomplete is up!
 (define-key ac-complete-mode-map (kbd "C-s") nil)
 
-;; Use alt tab for fuzzy complete (need to unbind other, e.g. windows, uses
-;; first).
-(define-key ac-complete-mode-map (kbd "M-TAB") nil)
-(define-key ac-mode-map (kbd "M-TAB") nil)
-(define-key abbrev-map (kbd "M-TAB") nil)
-(global-set-key (kbd "M-TAB") 'ac-fuzzy-complete)
-
-
-;; ;; yasnippet
-;; ;; ============================================================
-;; (add-to-list 'load-path "~/.emacs.d/yasnippet")
-;; (require 'yasnippet)
-;; (yas/initialize)
-;; (yas/load-directory "~/.emacs.d/yasnippet/snippets")
-
-;; ;; (add-hook 'snippet-mode-hook
-;; ;;           (lambda () (local-set-key (kbd "<f5>") 'yas/tryout-snippet)))
+;; Use f1 to show help in a buffer! Handy :) Don't even need to bind
+;; anything!
 
 
 ;; Undo tree
 ;;================================================================
-(load-file "~/.emacs.d/undo-tree/undo-tree-0.1.6.elc")
 (require 'undo-tree)
+(add-to-list 'minor-mode-map-alist '('undo-tree-mode (make-sparse-keymap)))
 (global-undo-tree-mode)
-(setq undo-tree-map '())
 
-;; Unbind commands that might be hurting my hands
-;; ============================================================
-(global-set-key (kbd "C-x C-s") '())
-(global-set-key (kbd "C-x s") '())
-(global-set-key (kbd "C-x k") '())
-(global-set-key (kbd "C-x b") '())
-
-
-;; Load skeletons
-(load-file "~/.emacs.d/skeletons.el")
-
-;; Load configs from other files
-(load-file "~/.emacs.d/my-files/cpp.el")
-(load-file "~/.emacs.d/my-files/colours.el")
-(load-file "~/.emacs.d/my-files/latex.el")
-(load-file "~/.emacs.d/my-files/oomph-lib.el")
-(load-file "~/.emacs.d/my-files/scheme.el")
-(load-file "~/.emacs.d/my-files/octave.el")
-(load-file "~/.emacs.d/my-files/matlab.el")
-(load-file "~/.emacs.d/my-files/org.el")
-(load-file "~/.emacs.d/my-files/my-python.el") ;; python mode is in file called python.el
-(load-file "~/.emacs.d/my-files/maxima.el")
-(load-file "~/.emacs.d/my-files/buffer-cycling.el")
-
-;; Load major changes to keybinds
-(load-file "~/.emacs.d/my-files/sensible-keys.el")
-
-;; General keybinds
-;; ===============================================================
-;; ;; what I would like here is something like:
-;; (defun just-one-space-dwim
-;;   "If there are spaces or tabs to delete then delete them,
-;; otherwise delete and newlines AND spaces and tabs"
-;;   (interactive)
-;;   (if (no-spaces-or-tabs-nearby)
-;;       (just-one-space -1)
-;;     (just-one-space)))
-;; (global-set-key (kbd "M-SPC") 'just-one-space-dwim)
-;; ;; Similarly for (kbd "M-\") kill-all-whitespace-dwim
-;; ;; instead (for now) just use M-^ : delete-indentation
-
-(global-set-key [(shift delete)] 'clipboard-kill-region)
-(global-set-key [(control insert)] 'clipboard-kill-ring-save)
-(global-set-key [(shift insert)] 'clipboard-yank)
-
-;; (kbd "M-q") to something that auto wraps, indents and arranges spaces..
 
 
 ;; File open keybinds
@@ -286,30 +322,89 @@
 (global-set-key (kbd "C-<f1>") 'oomph-open-files)
 
 
+
+(add-to-list 'load-path "~/.emacs.d/")
+
+;; Load skeletons
+(load-file "~/.emacs.d/skeletons.el")
+
+;; Load configs from other files
+(load-file "~/.emacs.d/my-files/cpp.el")
+(load-file "~/.emacs.d/my-files/colours.el")
+(load-file "~/.emacs.d/my-files/latex.el")
+(load-file "~/.emacs.d/my-files/oomph-lib.el")
+(load-file "~/.emacs.d/my-files/scheme.el")
+(load-file "~/.emacs.d/my-files/octave.el")
+(load-file "~/.emacs.d/my-files/matlab.el")
+(load-file "~/.emacs.d/my-files/org.el")
+(load-file "~/.emacs.d/my-files/my-python.el") ;; python mode is in file called python.el
+;; (load-file "~/.emacs.d/my-files/maxima.el")
+;; (load-file "~/.emacs.d/my-files/buffer-cycling.el")
+(load-file "~/.emacs.d/my-files/unicode-entry.el")
+(load-file "~/.emacs.d/my-files/haskell.el")
+
+
+;; General keybinds
+;; ===============================================================
+
+;; Needs to after other file loads so that hooks are in scope
+
+;; Major changes to keybinds
+(load-file "~/.emacs.d/my-files/sensible-keys.el")
+
+;; ;; what I would like here is something like:
+;; (defun just-one-space-dwim
+;;   "If there are spaces or tabs to delete then delete them,
+;; otherwise delete and newlines AND spaces and tabs"
+;;   (interactive)
+;;   (if (no-spaces-or-tabs-nearby)
+;;       (just-one-space -1)
+;;     (just-one-space)))
+;; (global-set-key (kbd "M-SPC") 'just-one-space-dwim)
+;; ;; Similarly for (kbd "M-\") kill-all-whitespace-dwim
+;; ;; instead (for now) just use M-^ : delete-indentation
+
+(global-set-key [(shift delete)] 'clipboard-kill-region)
+(global-set-key [(control insert)] 'clipboard-kill-ring-save)
+(global-set-key [(shift insert)] 'clipboard-yank)
+
+;; (kbd "M-q") to something that auto wraps, indents and arranges spaces..
+
+
+
 ;; Save command history between sessions
 ;; ===============================================================
+
+;; Save into a helpfully named file
+(setq savehist-file "~/.emacs.d/savehist")
+
 ;; Save other things as well
 (setq savehist-additional-variables '(kill-ring
                                       search-ring
                                       regexp-search-ring
                                       compile-command))
 
-;; Save into a helpfully named file
-(setq savehist-file "~/.emacs.d/savehist")
-
-;; Enable (must be after changing any variables).
+;; Enable save history (must be done after changing any variables).
 (savehist-mode 1)
 
 
 ;; Compile mode settings
 ;; ===============================================================
-(add-hook 'compilation-mode-hook
-          '(lambda()
-             (local-set-key (kbd "<f5>") 'recompile)
-             (local-set-key (kbd "C-`") 'next-error)
-             (local-set-key (kbd "C-¬") 'previous-error)))
+(add-hook 'compilation-mode-hook 'my-compilation-mode-keys)
+(add-hook 'compilation-shell-mode-hook 'my-compilation-mode-keys)
+(defun my-compilation-mode-keys ()
+  (local-set-key (kbd "<f5>") 'recompile)
+  (local-set-key (kbd "C-`") 'next-error)
+  (local-set-key (kbd "C-¬") 'previous-error)
+  (local-set-key (kbd "M-`") 'toggle-skip-compilation-warnings))
 
-;; Edit with emacs (integrate with chrome)
+(defun toggle-skip-compilation-warnings ()
+  (interactive)
+  (if (equal compilation-skip-threshold 1)
+      (setq compilation-skip-threshold 2)
+    (setq compilation-skip-threshold 1)))
+
+;; "Edit with emacs" (integration with chrome)
 ;; ============================================================
  (if (and (daemonp) (locate-library "edit-server"))
      (progn
@@ -328,6 +423,8 @@
     (message "String \"%s\" saved to kill ring." buffer-file-name)
     buffer-file-name))
 
+
+
 ;; Smart beginning of line
 ;; ============================================================
 (defun smart-beginning-of-line ()
@@ -343,12 +440,12 @@ If point was already at that position, move point to beginning of line."
 (global-set-key [home] 'smart-beginning-of-line)
 (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 
+
 ;; Tramp
 ;; ============================================================
 
 ;; set to use ssh
 (setq tramp-default-method "ssh")
-
 
 ;; Transparency
 ;; ============================================================
@@ -366,10 +463,9 @@ If point was already at that position, move point to beginning of line."
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> [<inactive>]))
 (add-to-list 'default-frame-alist '(alpha 90 90))
 
-(set 'edge-background-colour "grey2")
+(set 'edge-background-colour "greasy2")
 
 ;; Set all the areas around the edge to be slightly lighter
-(set-face-background 'modeline edge-background-colour)
 (set-face-background 'modeline-inactive edge-background-colour)
 (set-face-background 'fringe edge-background-colour)
 (set-face-background 'linum edge-background-colour)
@@ -381,25 +477,14 @@ If point was already at that position, move point to beginning of line."
 ;; Nice dim line number font colour
 (set-face-foreground 'linum "grey20")
 
-;; Automagically added by customise
-;; ============================================================
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(htmlize-output-type (quote font))
- '(indent-tabs-mode nil)
- '(markdown-bold-underscore nil))
+;; Set the inactive frame modeline font: Remove the background and the box
+;; around it.
+(set-face-attribute 'mode-line-inactive nil
+                    :background edge-background-colour
+                    :box nil)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line-inactive ((t (:inherit mode-line :background "grey2" :foreground "grey80" :box (:line-width -1 :color "grey2") :weight light)))))
+
+
 
 
 ;; Auto indent pasted code in programming modes
@@ -407,13 +492,10 @@ If point was already at that position, move point to beginning of line."
 (dolist (command '(yank yank-pop))
   (eval `(defadvice ,command (after indent-region activate)
            (and (not current-prefix-arg)
-                (member major-mode '(emacs-lisp-mode lisp-mode
-                                                     clojure-mode    scheme-mode
-                                                     haskell-mode    ruby-mode
-                                                     rspec-mode
-                                                     c-mode          c++-mode
-                                                     objc-mode       latex-mode
-                                                     plain-tex-mode))
+                (member major-mode '(emacs-lisp-mode lisp-mode clojure-mode
+                                     scheme-mode ruby-mode rspec-mode
+                                     c-mode c++-mode objc-mode latex-mode
+                                     plain-tex-mode))
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
@@ -421,7 +503,7 @@ If point was already at that position, move point to beginning of line."
 ;; Ctags
 ;; ============================================================
 
-(setq ctags-command "ctags -e --recurse")
+(set 'ctags-command "ctags -e --recurse")
 (defun generate-tags (input-command)
   "Generate tags file using ctags."
   (interactive (list (read-string "Ctags command: " ctags-command)))
@@ -435,3 +517,137 @@ If point was already at that position, move point to beginning of line."
   (visit-tags-table "TAGS"))
 
 (global-set-key (kbd "C-.") 'regenerate-tags)
+
+
+;; Insert comment header
+;; ============================================================
+
+;; Use double semi-colon for emacs lisp (default seems to be single).
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq comment-start ";;"
+                                                 comment-end "")))
+
+(defun insert-comment-header ()
+  "Insert a line of '=' on the following line and comment it."
+  (interactive)
+  (save-excursion
+
+    ;; Comment the current line
+    (back-to-indentation) (insert comment-start)
+    (end-of-line) (insert comment-end)
+
+    ;; Add an underline and comment it
+    (newline-and-indent)
+    (back-to-indentation) (insert comment-start)
+    (just-one-space) ; Some "comment-start"s include a space
+    (insert "============================================================")
+    (end-of-line) (insert comment-end)
+    (newline-and-indent))
+
+  ;; Position point ready to type or continue typing the header
+  (end-of-line) (just-one-space))
+
+(global-set-key (kbd "C-\\ ;") 'insert-comment-header)
+
+
+
+(defun my-recompile ()
+  "Recompile if possible, otherwise compile current buffer."
+  (interactive)
+  ;; If recompile exists do it, else compile
+  (if (fboundp 'recompile) (recompile)
+    (compile "make -k")))
+
+
+;; Set up options for editing git commit messages
+;; ============================================================
+
+;; Use org-mode for git commits
+(setq auto-mode-alist
+      (append auto-mode-alist '(("COMMIT_EDITMSG" . org-mode))))
+
+
+;; String manipulation functions
+;; ============================================================
+
+(defun un-camelcase-string (s &optional sep start)
+  "Convert CamelCase string S to lower case with word separator SEP.
+Default for SEP is a hyphen \"-\".
+
+If third argument START is non-nil, convert words after that
+index in STRING."
+  (let ((case-fold-search nil))
+    (while (string-match "[A-Z]" s (or start 1))
+      (setq s (replace-match (concat (or sep "_")
+                                             (downcase (match-string 0 s)))
+                                     t nil s)))
+    (downcase s)))
+
+(defun un-camelcase-word ()
+  (interactive)
+  (let ((camel-word (buffer-substring (point)
+                                      (save-excursion (forward-word) (point)))))
+    (kill-word 1)
+    (insert-string (un-camelcase-string camel-word))))
+
+
+;; ;; Clang based autocomplete
+;; ;; ============================================================
+;; ;; https://github.com/Golevka/emacs-clang-complete-async
+
+
+;; ;; Setup clang completion in c-modes
+;; (require 'auto-complete-clang-async)
+;; (defun ac-cc-mode-setup ()
+;;   (setq ac-clang-complete-executable "~/.emacs.d/clang-complete")
+;;   ;; (add-to-list 'ac-sources 'ac-source-clang-async)
+;;   (setq ac-sources (ac-source-clang-async))
+;;   (ac-clang-launch-completion-process))
+;; (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
+;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+
+
+;; Highlight long lines
+;; ============================================================
+(require 'whitespace)
+(setq whitespace-line-column 80) ;; limit line length
+(setq whitespace-style '(face lines-tail))
+
+(add-hook 'prog-mode-hook 'whitespace-mode)
+
+
+;; make temp buffers easily
+;; ============================================================
+
+(defun generate-buffer ()
+  (interactive)
+  (switch-to-buffer (make-temp-name "scratch")))
+
+(global-set-key (kbd "C-M-o") 'generate-buffer)
+
+
+
+;; Automagically added by customise
+;; ============================================================
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
+ '(gud-gdb-command-name "gdb -i=mi --args")
+ '(htmlize-output-type (quote font))
+ '(indent-tabs-mode nil)
+ '(markdown-bold-underscore nil)
+ '(org-hide-block-startup t)
+ '(org-startup-folded nil)
+ '(safe-local-variable-values (quote ((TeX-master . "../poster") (TeX-master . "./main_poster") (TeX-master . "../main_poster") (TeX-master . t) (TeX-master . "main") (TeX-master . "./main"))))
+ '(show-paren-mode t)
+ '(tool-bar-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

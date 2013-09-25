@@ -1,0 +1,7 @@
+(:name ido-ubiquitous-stable
+       :description "Use ido (nearly) everywhere"
+       :type github
+       :url "http://github.com/DarwinAwardWinner/ido-ubiquitous"
+       :checkout "1bd6f72559aa5be4d1d11f411860a3172a7371d6")
+
+;; Bleeding edge git versions keep breaking so use this instead

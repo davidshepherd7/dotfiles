@@ -6,15 +6,8 @@
 (defun indent-buffer ()
   "Re-indent the whole buffer"
   (interactive)
-  (delete-trailing-whitespace)
+  ;; (delete-trailing-whitespace)
   (indent-region (point-min) (point-max) nil))
-
-(defun my-recompile ()
-  "Recompile if possible, otherwise compile current buffer."
-  (interactive)
-  ;; If recompile exists do it, else compile
-  (if (fboundp 'recompile) (recompile)
-    (compile "make -k")))
 
 
 ;; Save and compile with f5

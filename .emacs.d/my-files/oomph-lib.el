@@ -4,25 +4,55 @@
 ;;=================================================================
 (c-add-style "my-oomph-c-style"
              '("gnu"
-               (c-basic-offset . 2))) ;; I don't like 1 space indents
+               (c-basic-offset . 2)  ;; I don't like 1 space indents
+               (c-offsets-alist (arglist-intro . ++))
+               ;; Function arguments starting on the next line have a smaller indent
+               ;;UnsteadyHeatProblem(
+               ;;   UnsteadyHeatEquations<2>::UnsteadyHeatSourceFctPt source_fct_pt,
+               ;;   FiniteElement::UnsteadyExactSolutionFctPt exact_solution_fct_pt,
+               ;;   TimeStepper* ts_pt);
+               ))
 
 (c-add-style "strict-oomph-c-style"
              '("gnu"
                (c-basic-offset . 1)
                (indent-tabs-mode . nil)))
 
+(defun is-oomph-code ()
+  "Try to detect if we are working on oomph-lib's core or not."
+  (interactive)
+  (and buffer-file-name
+       (string-match "oomph" buffer-file-name)
+       (not (string-match "user_drivers" buffer-file-name))))
+
+(defun is-oomph-user-driver-code ()
+  "Try to detect if we are working on oomph-lib user drivers."
+  (and buffer-file-name
+       (string-match "oomph" buffer-file-name)
+       (string-match "user_drivers" buffer-file-name)))
+
 ;; Switch to oomph-lib style indentation only if we are in a directory with
 ;; "oomph" in the path somewhere. If it'sa user drivers folder then I can
 ;; use my own indent levels.
 (defun maybe-oomph-style ()
-  (when (and buffer-file-name
-             (string-match "oomph" buffer-file-name))
-    (if (string-match "user_drivers" buffer-file-name)
-        (c-set-style "my-oomph-c-style")
-      (c-set-style "strict-oomph-c-style"))))
-    
+  "Use oomph's indentation style if needed"
+  (when (is-oomph-code)
+      (c-set-style "strict-oomph-c-style")
+    (if (is-oomph-user-driver-code)
+        (c-set-style "my-oomph-c-style"))))
 
 (add-hook 'c-mode-common-hook 'maybe-oomph-style)
+
+
+;; oomph-lib safe auto-whitespace cleanup
+;; ============================================================
+(defun whitespace-cleanup-if-not-oomph ()
+  (interactive)
+  (when (and (not (is-oomph-code))
+             (not (string= major-mode "makefile-mode")))
+    (delete-trailing-whitespace)))
+(add-hook 'before-save-hook 'whitespace-cleanup-if-not-oomph)
+
 
 ;; Batch formatting function to oomph-lib style
 ;; ============================================================
@@ -53,7 +83,7 @@
   (highlight-regexp "Timestep [0-9]+" 'hi-green)
   (highlight-regexp "Newton Step [0-9]+" 'hi-yellow)
   (highlight-regexp "Number of iterations to convergence: [0-9]+" 'hi-blue))
-  
+
 
 
 ;; Create tags files
@@ -68,7 +98,7 @@
   (shell-command
    (format "cd ~/oomph-lib/; %s -e --extra=+q --recurse %s" path-to-ctags tags-source-directories))
   )
-  
+
 
 
 ;; ;; Create tags files (all of them - for messing with const functions)
@@ -121,16 +151,16 @@
   (interactive)
   (if (buffer-file-name)
       (let* (
-	     ;; Get filename
-	     (fName (upcase (file-name-nondirectory
-			     (file-name-sans-extension buffer-file-name))))
-	     (guard-name (concat "OOMPH_" fName "_H")))
+             ;; Get filename
+             (fName (upcase (file-name-nondirectory
+                             (file-name-sans-extension buffer-file-name))))
+             (guard-name (concat "OOMPH_" fName "_H")))
 
-	;; Save current positions to come back to later
-	(save-excursion
-	  (goto-char (point-min)) (insert "#ifndef " guard-name
-					  "\n#define " guard-name "\n")
-	  (goto-char (point-max)) (insert "\n#endif\n")))
+        ;; Save current positions to come back to later
+        (save-excursion
+          (goto-char (point-min)) (insert "#ifndef " guard-name
+                                          "\n#define " guard-name "\n")
+          (goto-char (point-max)) (insert "\n#endif\n")))
     ;;else
     (message "Buffer must have a filename"))
   )
@@ -189,7 +219,7 @@ namespace oomph
          arglist
          sprintf-args
          ofstream-args
-         (end 
+         (end
           (save-excursion
             (search-forward ";")
             (point)))
@@ -235,23 +265,23 @@ namespace oomph
   (let* ((start (save-excursion (beginning-of-line) (point)))
 
          ;; ;; Find the declaration of ofstream and get its name
-         ;; (old-ofstream 
-         ;;  (buffer-substring-no-properties 
+         ;; (old-ofstream
+         ;;  (buffer-substring-no-properties
          ;;   (progn (search-backward "ofstream ") (match-end 0))
          ;;   (progn (search-forward ";") (match-beginning 0))))
 
          (old-ofstream "some_file")
 
-         (end (save-excursion (search-forward (concat old-ofstream ".close()")))) 
+         (end (save-excursion (search-forward (concat old-ofstream ".close()"))))
          )
 
     (print start)
     (print end)
 
-    ;; Convert sprintf using function from ... 
+    ;; Convert sprintf using function from ...
     (goto-char start)
     (sprintf-to-ofstream new-ofstream)
-    
+
     ;; Kill some_file.open() statement
     (search-forward (concat old-ofstream ".open("))
     (kill-line-including-newline)
@@ -286,7 +316,7 @@ namespace oomph
          (end (save-excursion (search-forward "}"))))
 
     ;; Kill old ofstream and filename declarations
-    (goto-char start)    
+    (goto-char start)
     (while (search-forward "ofstream some_file;" end t)
       (kill-line-including-newline))
 
@@ -323,7 +353,6 @@ namespace oomph
 
 (defun convert-to-scipy ()
   (interactive)
-  (delete-trailing-whitespace)
   (replace-regexp "^" "[" '() (point-min) (point-max))
   (replace-regexp "$" "]," '() (point-min) (point-max))
   (replace-regexp "[ ]+" "," '() (point-min) (point-max)))
