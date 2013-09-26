@@ -23,6 +23,10 @@ fi
 setxkbmap gb
 killall xcape
 
+
+# Force myself to press the right shift buttons
+xmodmap ~/Dropbox/linux_setup/rcfiles/keyboard_force_correct_hands.xmm
+
 # Make alt gr just normal alt:
 xmodmap -e "clear mod5"
 xmodmap -e "keycode 108 = Alt_L"
@@ -40,26 +44,37 @@ xmodmap -e 'keycode any = space'
 
 # Finally use xcape to cause our new keysym to generate a space
 # when tapped.
-./xcape -e '0x1234=space'
+xcape_str=""
+xcape_str=$xcape_str'#65=space;'
 
+# Use keycodes for xcape keys so that rebinding those buttons doesn't break
+# things, for example in keyboard_force_correct_hands.sh.
 
 # Tapping shift buttons generates ( or ).
-xcape_str=$xcape_str'Shift_L=parenleft;'
-xcape_str=$xcape_str'Shift_R=parenright;'
+xcape_str=$xcape_str'#50=parenleft;'
+xcape_str=$xcape_str'#62=parenright;'
 
-# Tapping ctrl buttons generates " and _
-xcape_str=$xcape_str'Control_L=Shift_R|quotedbl;'
-xcape_str=$xcape_str'Control_R=Shift_R|underscore;'
+# Tapping ctrl buttons generates " and _. ??ds use mode_switch key here if
+# we use keyboard_force_correct_hands.sh, otherwise need to manually swap
+# it to Shift_R!
+xcape_str=$xcape_str'#37=Mode_switch|quotedbl;'
+xcape_str=$xcape_str'#105=Shift_L|underscore;'
 
 # TODO ??ds
-# Make caps lock alt gr
-
-# Make caps lock button generate caps lock when tapped
+# Make caps lock button generate caps lock when tapped or alt gr when held
 # xcape_str=$xcape_str''
+
+
+# # Symbols bound to something else using xcape, so don't press them!
+# xmodmap -e "keysym 9 = 9 $UbKS $UBKS $UBKS"
+# xmodmap -e "keysym 0 = 0 $UBKS $UBKS $UBKS"
+# xmodmap -e "keysym minus = minus $UBKS $UBKS $UBKS"
+# xmodmap -e "keysym 2 = 2 $UBKS $UBKS $UBKS"
 
 
 # Execute all the xcape stuff we just set up:
 $HOME/code/xcape/xcape -e $xcape_str
+
 
 
 # System specific code
