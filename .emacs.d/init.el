@@ -305,22 +305,9 @@
                 '(lambda () (interactive) (find-file "~/.bashrc")))
 (global-set-key (kbd "C-<f11>")
                 '(lambda () (interactive) (find-file "~/.emacs.d/init.el")))
-(global-set-key (kbd "C-<f10>")
-                '(lambda () (interactive) (find-file "~/.emacs.d/abbrev_defs")))
-(global-set-key (kbd "C-<f9>")
-                '(lambda () (interactive) (find-file "~/.emacs.d/skeletons.el")))
 (global-set-key (kbd "C-<f8>")
                 '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
-(global-set-key (kbd "C-<f7>")
-                '(lambda () (interactive)
-                   (find-file "~/Dropbox/linux_setup/Ubuntu_install_script.sh")))
-
 (global-set-key (kbd "C-<f6>") 'ibuffer)
-(global-set-key (kbd "C-<f5>")
-                '(lambda () (interactive) (find-file "~/Dropbox/org/uni.org")))
-
-(global-set-key (kbd "C-<f1>") 'oomph-open-files)
-
 
 
 (add-to-list 'load-path "~/.emacs.d/")
@@ -624,6 +611,17 @@ index in STRING."
 
 (global-set-key (kbd "C-M-o") 'generate-buffer)
 
+
+;; Compatatilbity with xcape script
+;; ============================================================
+
+;; Breaks other uses of space...
+;; ;; Function to do nothing, the (interactive) is important to stop the whole
+;; ;; thing being nil, which is not a function.
+;; (defun do-nothing () (interactive) nil)
+
+;; ;; Bind" the new xcape space keysym to stop the undefined key spam.
+;; (global-set-key (kbd "<key-4660>") 'do-nothing)
 
 
 ;; Automagically added by customise
