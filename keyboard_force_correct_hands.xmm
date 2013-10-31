@@ -2,10 +2,10 @@
 ! button for minimum risk of rsi.
 
 
-! Buttons not really on either side, leave these alone so either shift works:
-! 6 asciicircum
-! y Y
-! b B
+! Buttons not really on either side, make either shift work:
+keysym 6 = 6 asciicircum asciicircum asciicircum
+keysym y = y Y Y Y
+keysym b = b B B B
 
 
 ! Might need to replace 0x3571 with a keysym which is not used elsewhere in
@@ -46,6 +46,7 @@ keysym 2 = 2 0x3571 quotedbl
 keysym 3 = 3 0x3571 sterling
 keysym 4 = 4 0x3571 dollar
 keysym 5 = 5 0x3571 percent
+
 
 ! rhs letters
 keysym u = u U 0x3571 U
