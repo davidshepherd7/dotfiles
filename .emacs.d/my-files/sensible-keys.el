@@ -411,3 +411,18 @@ the line break."
 
 ;; Add command (use-local-map '()) to mode hooks (before your own keybinds)
 ;; remove all keybinds from a major mode.
+
+
+;; Bash
+;; ============================================================
+
+
+(defun sensible-bash-keys ()
+  (interactive)
+
+  (define-key sh-mode-map (kbd "C-c") 'nil)
+  (define-key sh-mode-map (kbd "C-x") 'nil)
+
+  (local-set-key (kbd "<f5>") 'my-recompile))
+
+(add-hook 'sh-mode-hook 'sensible-bash-keys)
