@@ -120,6 +120,14 @@ the line break."
 (global-set-key (kbd "C-M-;") (lambda () (interactive)
                                 (function-on-block 'comment-or-uncomment-region)))
 
+
+;; eval
+(global-set-key (kbd "C-#") (lambda () (interactive) (dwim-end-of-line 'eval-region)))
+(global-set-key (kbd "M-#") (lambda () (interactive) (dwim-entire-line 'eval-region)))
+(global-set-key (kbd "C-S-#") (lambda () (interactive) (dwim-start-of-line 'eval-region)))
+(global-set-key (kbd "C-M-#") (lambda () (interactive) (function-on-block 'eval-region)))
+
+
 ;; Some standard things from e.g. chrome
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-S-s") 'write-file)
@@ -141,6 +149,12 @@ the line break."
 (global-set-key (kbd "M-l") 'forward-char)
 (global-set-key (kbd "C-l") 'forward-word)
 (global-set-key (kbd "C-M-l") 'forward-sentence)
+
+
+;; case changes
+(global-set-key (kbd "C-/") 'capitalize-word)
+(global-set-key (kbd "M-/") 'downcase-word)
+(global-set-key (kbd "C-M-/") 'upcase-word)
 
 
 ;; Even though it's a bit inconsistent use C-j/k for single lines because
@@ -169,8 +183,12 @@ the line break."
 
 ;; Now assign new keys for the things we just wrote all over
 (global-set-key (kbd "C-\\") ctl-x-map)
+(global-set-key (kbd "C-\\ C-\\") 'exchange-point-and-mark)
 (global-set-key (kbd "M-\\") 'execute-extended-command) ;; also menu key
 (global-set-key (kbd "M-'") 'capitalize-word) ;; no better ideas for this one...
+
+;; Don't have the suspend button somewhere that I can press it easily...
+(global-set-key (kbd "C-\\ C-z") nil)
 
 (global-set-key (kbd "C-e") 'end-of-line)
 (global-set-key (kbd "M-C-e") 'forward-paragraph)
@@ -193,8 +211,14 @@ the line break."
   (interactive) (previous-line) (newline-below-this-one))
 
 ;; Block indent like python mode has for everywhere
-(global-set-key (kbd "C-\\ >") 'py-shift-right)
-(global-set-key (kbd "C-\\ <") 'py-shift-left)
+(global-set-key (kbd "C-\\ C-.") 'py-shift-right)
+(global-set-key (kbd "C-\\ C-,") 'py-shift-left)
+
+
+;; Keys so I don't need to let go of C during combos
+;; ============================================================
+(global-set-key (kbd "C-\\ C-#") 'server-edit)
+(global-set-key (kbd "C-\\ C-h") 'mark-whole-buffer)
 
 
 ;; New keymap for search
@@ -269,6 +293,7 @@ the line break."
   ;; Unbind keys we use elsewhere
   (local-set-key (kbd "C-c") nil)
   (define-key flyspell-mode-map (kbd "C-c") nil)
+  (define-key flyspell-mode-map (kbd "C-;") nil)
   (local-set-key (kbd "C-x") nil)
   (local-set-key (kbd "C-j") nil)
   (local-set-key (kbd "C-y") nil)
@@ -342,15 +367,15 @@ the line break."
 
 
 ;; yas mode
-;; ============================================================
-(defun sensible-yas-mode-keys ()
-  (interactive)
 
-  ;; kill C-c
-  (define-key yas-minor-mode-map (kbd "C-c") 'nil))
+;; (defun sensible-yas-mode-keys ()
+;;   (interactive)
 
-(when (boundp 'yas-minor-mode-hook)
-  (add-hook 'yas-minor-mode-hook 'sensible-yas-mode-keys))
+;;   ;; kill C-c
+;;   (define-key yas-minor-mode-map (kbd "C-c") 'nil))
+
+;; (when (boundp 'yas-minor-mode-hook)
+;;   (add-hook 'yas-minor-mode-hook 'sensible-yas-mode-keys))
 
 
 ;; Haskell mode
@@ -365,6 +390,17 @@ the line break."
   (local-set-key (kbd "<f5>") 'my-recompile))
 
 (add-hook 'haskell-mode-hook 'sensible-haskell-keys)
+
+
+;; emacs lisp mode
+;; ============================================================
+
+(defun sensible-emacs-lisp-keys ()
+  (interactive)
+
+  (local-unset-key (kbd "C-M-x")))
+(add-hook 'emacs-lisp-mode-hook 'sensible-emacs-lisp-keys)
+
 
 
 ;; Note: we also have to mess around with some other mode's keybinds. In
