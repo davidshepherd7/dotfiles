@@ -35,13 +35,17 @@
 (defun go-to-end-of-block (&optional repeat)
   (interactive)
   ;; Go to start first to make sure we don't end up at the end of the
-  ;; *next* block (if we were in whitespace between the two).
+  ;; *next* block (if we were in whitespace between the two). Then go to
+  ;; the end of the text in this paragraph (usually whitespace delimited).
   (backward-paragraph)
   (forward-paragraph)
-  ;; Now go past all the trailing whitespace too.
+
+  ;; Now go past all the trailing whitespace too. If we hit the end of the
+  ;; buffer during this search then the end of the buffer is the end of the
+  ;; block.
   (forward-line -1)
-  (search-forward-regexp "\n\n+" nil repeat)
-  (beginning-of-line))
+  (unless (ignore-errors (search-forward-regexp "\n\n+" nil repeat))
+    (goto-char (point-max))))
 
 (defun point-at-end-of-block (&optional repeat)
   (save-excursion (go-to-end-of-block) (point)))
