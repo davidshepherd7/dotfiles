@@ -1,18 +1,26 @@
 #! /bin/bash
 
 
-# Standard keyboard layout (just in case...)
+# TODO ??ds
+# Make caps lock button generate caps lock when tapped or alt gr when held
+# xcape_str=$xcape_str''
+# or dollar maybe? &? smart depending on emacs mode?
+# bind super keys as well? Figure out how to get alt gr to bind keys?
+
+
+# Reset to standard keyboard layout (just in case...)
 setxkbmap gb
 killall xcape
 
-
-# Force myself to press the right shift buttons
+# Keyboard map to force myself to press the right shift buttons
 xmodmap ~/Dropbox/linux_setup/rcfiles/keyboard_force_correct_hands.xmm
 
 # Make alt gr just normal alt:
 xmodmap -e "clear mod5"
-xmodmap -e "keycode 108 = Alt_L"
+xmodmap -e "add mod2 = 0xfe03"
 
+
+# String ready to store out xcape commands (so that we only run it once)
 xcape_str=""
 
 
