@@ -58,10 +58,9 @@ xcape_str=$xcape_str'#62=parenright;'
 xcape_str=$xcape_str'#37=Mode_switch|quotedbl;'
 xcape_str=$xcape_str'#105=Shift_L|underscore;'
 
-# TODO ??ds
-# Make caps lock button generate caps lock when tapped or alt gr when held
-# xcape_str=$xcape_str''
-
+# Tapping alt buttons generates something
+xcape_str=$xcape_str'#64=Mode_switch|dollar;'
+# xcape_str=$xcape_str'#92=Shift_L|asciicircum;' # doesn't work :(
 
 # # Symbols bound to something else using xcape, so don't press them!
 # xmodmap -e "keysym 9 = 9 $UbKS $UBKS $UBKS"
