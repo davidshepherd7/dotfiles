@@ -24,19 +24,26 @@ xmodmap -e "add mod2 = 0xfe03"
 xcape_str=""
 
 
-# # *Space to ctrl*
-# # Map a new (currently non-existant) keysym to the spacebar's
-# # keycode and make it a control modifier.
-# xmodmap -e 'keycode 65 = 0x1234'
-# xmodmap -e 'add control = 0x1234'
+# Space to ctrl
+# ============================================================
+# Map an unused modifier's keysym to the spacebar's keycode and make it a
+# control modifier. It needs to be an existing key so that emacs won't
+# spazz out when you press it.
+spare_modifier="Hyper_L"
+xmodmap -e "keycode 65 = $spare_modifier"
+xmodmap -e "remove mod4 = $spare_modifier" # hyper_l is mod4 by default
+xmodmap -e "add Control = $spare_modifier"
 
-# # Map space to a new keycode which has no corresponding key (to
-# # keep it around for xcape to use).
-# xmodmap -e 'keycode any = space'
+# Map space to a new keycode which has no corresponding key (to
+# keep it around for xcape to use).
+xmodmap -e "keycode any = space"
 
-# # Finally use xcape to cause our new keysym to generate a space
-# # when tapped.
-# xcape_str=$xcape_str'#65=space;'
+# Finally use xcape to cause the space bar to generate a space when tapped.
+xcape_str=$xcape_str'#65=space;'
+
+
+# Generating letters by pressing modifiers (with xcape)
+# ============================================================
 
 # Use keycodes for xcape keys so that rebinding those buttons doesn't break
 # things, for example in keyboard_force_correct_hands.sh.
