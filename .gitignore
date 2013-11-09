@@ -1,5 +1,6 @@
-.xmonad/xmonad.errors
+.xmonad/xmonad.errors*
 .xmonad/xmonad-x86_64-linux*
+.xmonad/xmonad\ *
 
 # emacs junk
 .emacs.d/session*
@@ -9,9 +10,9 @@
 .emacs.d/ac-comphist*
 *.elc
 .emacs.d/tmp/
-.emacs.d/savehist
+.emacs.d/savehist*
 .emacs.d/tutorial/
-.emacs.d/smex-items
+.emacs.d/smex-items*
 .emacs.d/snippets/
 
 

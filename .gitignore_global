@@ -78,6 +78,3 @@ _region_.prv
 *.bcf
 *.run.xml
 *-blx.bib
-
-# Dropbox junk
-*conflicted\ copy*
