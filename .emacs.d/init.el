@@ -1,20 +1,5 @@
 ;; Generic emacs settings, other stuff is in individual files in ./my-files/
 
-;; TODO:
-
-;; actions on block: move to next block afterwards?
-
-;; allow grabbing text from point (like for search) in replace
-
-;; learn + bind bookmarks
-
-;; Enable comment command on empty lines
-
-;; goto last change?
-
-;; Fix stupid copy/paste mouse behvaiour
-
-;; Fix actions on block for last block in file
 
 
 ;; Package management
@@ -62,11 +47,11 @@
 (line-number-mode 1) ;; Line numbers in mode line
 (column-number-mode 1) ;; Column numbers in mode line
 (global-linum-mode t) ;; Line numbers on edge of screen
-(setq backup-directory-alist '(("." . ".~"))) ;; Keep backups in .~/
-(setq inhibit-startup-screen t) ;; No startup screen
+(set 'backup-directory-alist '(("." . ".~"))) ;; Keep backups in .~/
+(set 'inhibit-startup-screen t) ;; No startup screen
 (set-scroll-bar-mode 'right);; Scroll bar on the right
 (global-visual-line-mode 1) ;; Wrap lines at nearest word
-(setq truncate-partial-width-windows nil) ;; Make line wrapping work for
+(set 'truncate-partial-width-windows nil) ;; Make line wrapping work for
                                           ;; multiple frames
 (tool-bar-mode -1) ;; Disable toolbar
 (menu-bar-mode -1) ;; Disable menu bar
@@ -75,15 +60,15 @@
 (setq-default fill-column 75) ;; not 80 because when things are later indented
                               ;; by e.g. diff, git log we lose some columns and
                               ;; it gets messy.
-(setq default-abbrev-mode t) ;; Use abbrev mode always
-(setq tags-revert-without-query 1) ;; Autorevert if the tags table has changed
+(set 'default-abbrev-mode t) ;; Use abbrev mode always
+(set 'tags-revert-without-query 1) ;; Autorevert if the tags table has changed
 
 ;; Add a new line at end of file on save if none exists (note: doesn't play
 ;; nice with scheme).
 (setq-default require-final-newline 0)
 
 ;; Autosave all modified buffers before compile
-(setq compilation-ask-about-save nil)
+(set 'compilation-ask-about-save nil)
 
 ;; Had to remove this because oomph-lib doesn't stick to no trailing whitespace...,
 ;; Remove trailing whitespace before save
@@ -92,20 +77,20 @@
 ;; oomph-lib safe version is in oomph-lib.el
 
 ;; Shut up and just open symbolic links
-(setq vc-follow-symlinks t)
+(set 'vc-follow-symlinks t)
 
 ;; Allow some disabled commands
 (put 'narrow-to-region 'disabled nil)
 
 ;; Set the location for bookmarks
-(setq bookmark-default-file "~/.emacs.d/bookmarks")
+(set 'bookmark-default-file "~/.emacs.d/bookmarks")
 
 ;; Auto-newlines after { } etc.
 ;; (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-newline 1)))
 
 ;; Use chrome not firefox to open urls
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "google-chrome")
+(set 'browse-url-browser-function 'browse-url-generic)
+(set 'browse-url-generic-program "google-chrome")
 
 ;; Draw a line accross the screen instead of ^L for page breaks
 (global-page-break-lines-mode t)
@@ -137,16 +122,16 @@
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
  ;; Make new frames instead of new windows
-(setq pop-up-frames 'graphic-only)
+(set 'pop-up-frames 'graphic-only)
 
  ;; Disable automatic display of completions buffer because it's a giant pain to
  ;; deal with nicely
-(setq completion-auto-help nil)
+(set 'completion-auto-help nil)
 
 ;; Focus follows mouse off to prevent crazy things happening when I click on
 ;; e.g. compilation error links.
-(setq mouse-autoselect-window nil)
-(setq focus-follows-mouse nil)
+(set 'mouse-autoselect-window nil)
+(set 'focus-follows-mouse nil)
 
 ;; To automatically open a "useful" buffer in new frames xmonads binding for a
 ;; new frame is set to "emacsclient -c -n -e '(switch-to-buffer nil)'".
@@ -162,8 +147,8 @@
 ;; right).
 
 ;; gdb (gud) does some stupid things with windows, this stops some of it:
-(setq gdb-use-separate-io-buffer nil)
-(setq gdb-many-windows nil)
+(set 'gdb-use-separate-io-buffer nil)
+(set 'gdb-many-windows nil)
 
 
 ;; Improving Auto complete in minibuffer
@@ -187,13 +172,15 @@
 (add-hook 'ido-setup-hook 'my-ido-keys t)
 
 ;; Display ido results vertically, rather than horizontally
-(setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+(set 'ido-decorations '("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
+                        " [Matched]" " [Not readable]" " [Too big]"
+                        " [Confirm]"))
 
 ;; sort ido filelist by modificiation time instead of alphabetically
 (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
 (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
 ;; (defun ido-sort-mtime ()
-;;   (setq ido-temp-list
+;;   (set 'ido-temp-list
 ;;         (sort ido-temp-list
 ;;               (lambda (a b)
 ;;                 (time-less-p
@@ -207,23 +194,23 @@
 (defun ido-sort-mtime () '()) ;; actually, disable it because it's so slow
 
 ;; Enable some fuzzy matching
-(setq ido-enable-flex-matching t)
+(set 'ido-enable-flex-matching t)
 
 ;; Allow completion (and opening) of buffers that are actually closed.
-(setq ido-use-virtual-buffers t)
-(setq recentf-max-saved-items 1000) ;; increase number of buffers to rememeber
+(set 'ido-use-virtual-buffers t)
+(set 'recentf-max-saved-items 1000) ;; increase number of buffers to rememeber
 
 ;; Cycle through commands with tab if we can't complete any further.
-(setq ido-cannot-complete-command 'ido-next-match)
+(set 'ido-cannot-complete-command 'ido-next-match)
 
 ;; Use ido style completion everywhere (separate package)
 ;;(ido-ubiquitous-mode t)
 
 ;; Buffer selection even if already open elsewhere
-(setq ido-default-buffer-method 'selected-window)
+(set 'ido-default-buffer-method 'selected-window)
 
 ;; Create new buffers without prompting
-(setq ido-create-new-buffer 'always)
+(set 'ido-create-new-buffer 'always)
 
 ;; Add ignore regex for useless files?
 
@@ -239,7 +226,7 @@
 
 ;; Tell the prompt that I changed the binding for running commands
 ;; (elsewhere)
-(setq smex-prompt-string "M-\\: ")
+(set 'smex-prompt-string "M-\\: ")
 
 ;; Put its save file in .emacs.d
 (set 'smex-save-file "~/.emacs.d/smex-items")
@@ -270,9 +257,9 @@
 (ac-config-default)
 
 (global-auto-complete-mode t)
-(setq ac-ignore-case nil)
-(setq ac-use-fuzzy t)
-(setq ac-fuzzy-enable t)
+(set 'ac-ignore-case nil)
+(set 'ac-use-fuzzy t)
+(set 'ac-fuzzy-enable t)
 (ac-flyspell-workaround)
 
 ;; Show quick help (function info display in tooltip)
@@ -363,10 +350,10 @@
 ;; ===============================================================
 
 ;; Save into a helpfully named file
-(setq savehist-file "~/.emacs.d/savehist")
+(set 'savehist-file "~/.emacs.d/savehist")
 
 ;; Save other things as well
-(setq savehist-additional-variables '(kill-ring
+(set 'savehist-additional-variables '(kill-ring
                                       search-ring
                                       regexp-search-ring
                                       compile-command))
@@ -388,8 +375,8 @@
 (defun toggle-skip-compilation-warnings ()
   (interactive)
   (if (equal compilation-skip-threshold 1)
-      (setq compilation-skip-threshold 2)
-    (setq compilation-skip-threshold 1)))
+      (set 'compilation-skip-threshold 2)
+    (set 'compilation-skip-threshold 1)))
 
 ;; "Edit with emacs" (integration with chrome)
 ;; ============================================================
@@ -432,7 +419,10 @@ If point was already at that position, move point to beginning of line."
 ;; ============================================================
 
 ;; set to use ssh
-(setq tramp-default-method "ssh")
+(set 'tramp-default-method "ssh")
+
+;; store backups on my computer
+;; (set 'tramp-backup-directory-alist  ??ds
 
 ;; Transparency
 ;; ============================================================
@@ -494,7 +484,7 @@ If point was already at that position, move point to beginning of line."
 (defun generate-tags (input-command)
   "Generate tags file using ctags."
   (interactive (list (read-string "Ctags command: " ctags-command)))
-  (setq ctags-command input-command)
+  (set 'ctags-command input-command)
   (shell-command ctags-command))
 
 (defun regenerate-tags ()
@@ -549,7 +539,7 @@ If point was already at that position, move point to beginning of line."
 ;; ============================================================
 
 ;; Use org-mode for git commits
-(setq auto-mode-alist
+(set 'auto-mode-alist
       (append auto-mode-alist '(("COMMIT_EDITMSG" . org-mode))))
 
 
@@ -585,9 +575,9 @@ index in STRING."
 ;; ;; Setup clang completion in c-modes
 ;; (require 'auto-complete-clang-async)
 ;; (defun ac-cc-mode-setup ()
-;;   (setq ac-clang-complete-executable "~/.emacs.d/clang-complete")
+;;   (set 'ac-clang-complete-executable "~/.emacs.d/clang-complete")
 ;;   ;; (add-to-list 'ac-sources 'ac-source-clang-async)
-;;   (setq ac-sources (ac-source-clang-async))
+;;   (set 'ac-sources (ac-source-clang-async))
 ;;   (ac-clang-launch-completion-process))
 ;; (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
 ;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
@@ -596,8 +586,8 @@ index in STRING."
 ;; Highlight long lines
 ;; ============================================================
 (require 'whitespace)
-(setq whitespace-line-column 80) ;; limit line length
-(setq whitespace-style '(face lines-tail))
+(set 'whitespace-line-column 80) ;; limit line length
+(set 'whitespace-style '(face lines-tail))
 
 (add-hook 'prog-mode-hook 'whitespace-mode)
 
