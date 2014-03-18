@@ -12,8 +12,6 @@
 setxkbmap gb -variant colemak
 killall xcape
 
-# Keyboard map to force myself to press the right shift buttons
-xmodmap ~/Dropbox/linux_setup/rcfiles/keyboard_force_correct_hands.xmm
 
 # Make alt gr just normal alt:
 xmodmap -e "clear mod5"
@@ -55,11 +53,11 @@ xcape_str=$xcape_str'#62=parenright;'
 # Tapping ctrl buttons generates " and _. ??ds use mode_switch key here if
 # we use keyboard_force_correct_hands.sh, otherwise need to manually swap
 # it to Shift_R!
-xcape_str=$xcape_str'#37=Mode_switch|quotedbl;'
+xcape_str=$xcape_str'#37=Shift_L|quotedbl;'
 xcape_str=$xcape_str'#105=Shift_L|underscore;'
 
 # Tapping alt buttons generates something
-xcape_str=$xcape_str'#64=Mode_switch|dollar;'
+xcape_str=$xcape_str'#64=Shift_L|dollar;'
 # xcape_str=$xcape_str'#92=Shift_L|asciicircum;' # doesn't work :(
 
 # # Symbols bound to something else using xcape, so don't press them!
