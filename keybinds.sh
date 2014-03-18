@@ -14,8 +14,7 @@ killall xcape
 
 
 # Make alt gr just normal alt:
-xmodmap -e "clear mod5"
-xmodmap -e "add mod2 = 0xfe03"
+xmodmap -e "keycode 108 = Alt_L"
 
 
 # String ready to store out xcape commands (so that we only run it once)
