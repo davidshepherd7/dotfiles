@@ -39,6 +39,13 @@ xmodmap -e "keycode any = space"
 xcape_str=$xcape_str"$spare_modifier=space;"
 
 
+# pedal keys
+# ============================================================
+xmodmap -e "keycode any = XF86Tools" -e "keysym XF86Tools = $spare_modifier"
+xmodmap -e "keycode any = XF86Launch5" -e "keysym XF86Launch5 = Alt_L"
+xmodmap -e "keycode any = XF86Launch6" -e "keysym XF86Launch6 = Super_L"
+
+
 # Generating letters by pressing modifiers (with xcape)
 # ============================================================
 
