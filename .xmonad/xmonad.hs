@@ -53,6 +53,10 @@ myFish = "urxvt -e fish || gnome-terminal -e fish"
 -- can't be bothered with the || stuff...
 oomphTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib && /bin/bash'"
 
+micromagTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics && /bin/bash'"
+driverTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/driver && /bin/bash'"
+optDriverTerminal = "urxvt -e /bin/sh -c 'cd ~/optoomph/user_drivers/micromagnetics/control_scripts && /bin/bash'"
+
 -- Try various browsers until one works.
 myBrowser = "google-chrome || chromium || chromium-browser || firefox"
 
@@ -66,7 +70,7 @@ guiFolderOpen = "~/.xmonad/dmenu/dfoldermenu.sh"
 -- Try various locking mechanisms until one works.
 myLockScreen = "mate-screensaver-command -l || xflock4 || gnome-screensaver-command -l"
 
-myiPythonCommand = "bash -l -c \"ipython\""
+myiPythonCommand = "bash -l -c \"ipython3\""
 myiPython = "urxvt -e " ++ myiPythonCommand ++
             " || gnome-terminal -e " ++ myiPythonCommand
 
@@ -197,7 +201,7 @@ main = do
         , handleEventHook = myEventHook
         }
         -- Unbind some keys
-        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-."]
+        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-.", "M-,"]
         `additionalKeysP` myKeys
 
 -- Some additional keybinds, mostly inspired by chromes tab management
@@ -212,16 +216,29 @@ myKeys = [
 
     -- run things
   , ("M-t", spawn myTerminal)
-  , ("M-f", spawn myFish)
-  , ("M-e", spawn myEditor)
+  -- , ("M-f", spawn myFish)
+  , ("M-f", spawn myEditor)
   , ("M-p", spawn myLauncher)
-  , ("M-o", spawn oomphTerminal)
+  , ("M-r", spawn oomphTerminal)
+  , ("M-s", spawn micromagTerminal)
+  , ("M-d", spawn driverTerminal)
+  , ("M-a", spawn optDriverTerminal)
+
+
   , ("M-y", spawn myBrowser)
-  , ("M-i", spawn myiPython)
+  , ("M-,", spawn myiPython)
+    
+    
+    -- movement
+  , ("M-<R>", sendMessage Expand)
+  , ("M-<L>", sendMessage Shrink)
+  , ("M-e", windows W.focusDown)
+  , ("M-i", windows W.focusUp)
+
 
     -- multiple screens
-  , ("M-a", nextScreen)
-  , ("M-S-a", shiftNextScreen)
+  , ("M-x", nextScreen)
+  , ("M-S-x", shiftNextScreen)
   , ("M-z", swapNextScreen)
 
     -- Lock screen
@@ -234,10 +251,10 @@ myKeys = [
   , ("M-<Backspace>", toggleWS)
 
     -- Next/previous workspace
-  , ("M-<R>", nextWS)
-  , ("M-<L>", prevWS)
-  , ("M-S-<R>", shiftToNext)
-  , ("M-S-<L>", shiftToPrev)
+  , ("M-o", nextWS)
+  , ("M-n", prevWS)
+  , ("M-S-o", shiftToNext)
+  , ("M-S-n", shiftToPrev)
 
 
     -- Floats
