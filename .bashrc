@@ -107,8 +107,16 @@ export INPUTRC="$HOME/.inputrc"
 # Use better top with colours and stuff:
 alias top='htop'
 
+# Use hub for better github integration if we have it and it's executable.
+if [[ -x "/usr/local/bin/hub" ]]; then
+    alias git='hub'
+fi
+
 # Tail -F isn't really tail anymore...c all it rcat(refresh cat)
 alias rcat='tail -F -n 100000'
+
+# gdb with autorun and --args
+alias gdbr='gdb -ex "run" --args'
 
 # ls aliases
 alias ls='ls --color=auto'
@@ -120,9 +128,6 @@ alias l='ls -CF'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-
-# Fancy grep: with line num, with filename, exclude source control, binaries and make junk
-alias mygrep='grep -n -H --color=auto --exclude-dir=.git --exclude-dir=.svn -I --exclude-dir=*.deps --exclude=*.lo --exclude=*.la --exclude=*.lai  --exclude=Makefile --exclude=Makefile.in --exclude=TAGS'
 
 # package manager
 alias inst='sudo apt-get install'
@@ -138,13 +143,29 @@ alias gd='git diff'
 alias gdc='git diff --cached'
 alias gl1='git log -n1 -p'
 alias gc='git cherry-pick'
+alias gca='git commit --amend'
+alias gc='git commit'
+alias gsri='git stash --keep-index && git stash && git rebase --interactive HEAD~20 && git stash pop && git add -p && git commit --amend && git rebase --continue && git stash pop'
+alias gap='git add -p'
+alias gcp='git checkout -p'
+
+
+alias gss='git stash --keep-index && git stash'
+alias gsp='git stash pop'
+alias gri='git rebase --interactive HEAD~20'
+alias grc='git rebase --continue'
+alias glp='git log -p'
 
 # svn aliases
 alias sst='svn status -q'
 alias sd='svn diff'
 
 # Make aliases
-alias m='make --keep-going --silent LIBTOOLFLAGS=--silent'
+# alias m='make --keep-going --silent LIBTOOLFLAGS=--silent'
+m()
+{
+    make --keep-going --silent LIBTOOLFLAGS=--silent $@
+}
 
 # Matlab in a terminal
 alias matlab='matlab -nodesktop -nosplash'
@@ -169,17 +190,115 @@ sdu()
 du -sk ./* | sort -nr | awk 'BEGIN{ pref[1]="K"; pref[2]="M"; pref[3]="G";} { total = total + $1; x = $1; y = 1; while( x > 1024 ) { x = (x + 1023)/1024; y++; } printf("%g%s\t%s\n",int(x*10)/10,pref[y],$2); } END { y = 1; while( total > 1024 ) { total = (total + 1023)/1024; y++; } printf("Total: %g%s\n",int(total*10)/10,pref[y]); }'
 }
 
+# Find all "code" files recursively
+fcode()
+{
+    # Could probably do this with a fancy regex but this is easier
+    cat <(find "$@" -name "*.cc" ) <(find "$@" -name "*.h") \
+        <(find "$@" -name "*.cpp") <(find "$@" -name "*.c") \
+        <(find "$@" -name "*.py") <(find "$@" -name "*.sh") \
+        <(find "$@" -name "*.el")
+}
+
+
+# Fancy grep: with line num, with filename, exclude source control, binaries and make junk
+mygrep ()
+{
+    grep  -n -H -I --exclude-dir=.git --exclude-dir=.svn \
+        --exclude-dir=*.deps --exclude=*.lo --exclude=*.la --exclude=*.lai \
+        --exclude=Makefile --exclude=Makefile.in --exclude=TAGS --color=auto $@
+}
+export -f mygrep # export so that parallel can find it
+
+# grep source code files only
+gcode ()
+{
+    # -u prevents grouping of output, so that --color=auto works correctly
+    fcode | parallel -u mygrep $@
+}
+
+
+# Count lines of actual code recursively
+lccode()
+{
+    # Find code files, grep out comments/blank lines then wc lines
+    fcode | xargs grep -v "//\|^[ \t]*$\|#" | wc -l
+}
+
+qumake()
+{
+    make --silent LIBTOOLFLAGS=--silent $@
+}
+
 # oomph-lib
 OOMPH="$HOME/oomph-lib"
 OOMPHMM="$OOMPH/user_drivers/micromagnetics"
+OOMPHMMDRIVER="$OOMPHMM/control_scripts/driver"
+OPTOOMPH="$HOME/optoomph"
+OPTOOMPHMM="$OPTOOMPH/user_drivers/micromagnetics"
 
 alias quickautogen="quickautogen.sh -C $OOMPH"
-# alias quickcheck="$HOME/oomph-lib/bin/parallel_self_test.py -C \"$HOME/oomph-lib\""
-alias quickcheck="python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OOMPH"
-alias micromagcheck="make -k -s -C $OOMPHMM; make -k -s -C $OOMPHMM install; python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OOMPHMM"
+alias optquickautogen="quickautogen.sh -C $OPTOOMPH -o"
+
+alias quickcheck="python3 $OOMPH/bin/parallel_self_test.py -C $OOMPH"
+alias optquickcheck="python3 $OPTOOMPH/bin/parallel_self_test.py -C $OPTOOMPH"
+
+alias micromagcheck="qumake -k -C $OOMPHMM && qumake -k -C $OOMPHMM install \
+&&  qumake -k -C $OOMPHMM/control_scripts/driver \
+&& python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OOMPHMM"
+alias optmicromagcheck="qumake -k -C $OPTOOMPHMM && qumake -k -C $OPTOOMPHMM install \
+&&  qumake -k -C $OPTOOMPHMM/control_scripts/driver \
+&& python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OPTOOMPHMM"
+
 alias oopt="echo -e \"$OOMPH/config/configure_options/current contains:\n\n\"; cat $OOMPH/config/configure_options/current"
 
-alias mm="make -k -s LIBTOOLFLAGS=--silent -C $OOMPHMM && make -k -s LIBTOOLFLAGS=--silent -C $OOMPHMM install && make -k -s LIBTOOLFLAGS=--silent -C $OOMPHMM/control_scripts/llg_driver"
+alias mm="qumake -k LIBTOOLFLAGS=--silent -C $OOMPHMM && qumake -k LIBTOOLFLAGS=--silent -C $OOMPHMM install && qumake -k LIBTOOLFLAGS=--silent -C $OOMPHMM/control_scripts/driver"
+
+alias mdr="cd $OOMPHMM/control_scripts/driver"
+alias optmdr="cd $OPTOOMPHMM/control_scripts/driver"
+
+
+alias optmicromagcheck="qumake -k -C $OPTOOMPHMM && qumake -k -C $OPTOOMPHMM install &&  qumake -k -C $OPTOOMPHMM/control_scripts/driver && python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OPTOOMPHMM"
+
+optmm()
+{
+    m -C $OPTOOMPHMM $@ \
+        && m -C $OPTOOMPHMM install $@ \
+        && m -C $OPTOOMPHMM/control_scripts/driver $@
+}
+
+optnow()
+{
+    cd $OPTOOMPHMM/control_scripts
+}
+
+optsyncoomph()
+{
+    cd $OOMPH \
+        && git push \
+        && cd $OPTOOMPH \
+        && git fetch --all \
+        && git reset --hard origin/working \
+        && optquickautogen
+}
+
+optsync()
+{
+    cd $OOMPHMM \
+        && git push --force \
+        && cd $OPTOOMPHMM \
+        && git fetch --all \
+        && git reset --hard origin/master \
+        && optmicromagcheck
+}
+
+mccat ()
+{
+    cat $1/Validation/make_check_output
+    cat $1/Validation/validation.log
+    cat $1/Validation/run_script
+    cat $1/Validation/stdout
+}
 
 full_test()
 {
@@ -210,10 +329,13 @@ alias ec='emacsclient -n'
 alias emacs='emacsclient -c -n'
 alias e='emacsclient -c -n'
 
+alias emacstest='\emacs --debug-init --batch -u $USER'
 
 # Build thesis tex file
 alias tb='cd ~/Dropbox/phd/reports/ongoing-writeup/ && ./build.sh'
 
+# Set up pedals
+alias pedals='sudo /lib/udev/keymap -i input/event2 /lib/udev/keymaps/microdia'
 
 # cd aliases/changes
 # ============================================================
@@ -226,18 +348,26 @@ alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
 # alias rs='cd ~/Dropbox/phd/results'
 # alias sicp='cd ~/programming/sicp/exercises4'
 alias rc='cd ~/Dropbox/linux_setup/rcfiles'
+alias wb='cd ~/Dropbox/web/blog'
+alias mmm='cd ~/Dropbox/phd/posters/2013_MMM_Denver/poster'
+alias css='cd ~/Dropbox/phd/talks/2013_cs_symposium'
 
 alias sp='cd ~/programming/simpleode/'
 alias spe='cd ~/programming/simpleode/experiments'
 
+alias demon='cd ~/Dropbox/phd/demonstrations/maths_for_cs'
+
+alias illg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/llg_driver"
+alias sllg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/semi_implicit_mm_driver"
+alias oode="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/ode_driver"
+
+
+alias mmr='cd ~/Dropbox/phd/talks/RGM-21-11-2013_mmm_review'
+
 # Cd to currently used dirs
 function now ()
 {
-    cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/semi_implicit_mm_driver
-}
-function now2 ()
-{
-    cd ~/oomph-lib-2/user_drivers/micromagnetics/control_scripts/llg_driver
+    cd ~/oomph-lib/user_drivers/micromagnetics/
 }
 
 # Aliases for cds upwards
@@ -245,8 +375,12 @@ alias ....='cd ../../..'
 alias ...='cd ../..'
 alias ..='cd ../'
 
+
 # Set cd to correct small spelling mistakes
 shopt -s cdspell
+
+# Set to cd if we just put a directory, no command
+shopt -s autocd
 
 # A function to cd then ls
 function cs ()
@@ -270,9 +404,13 @@ export ALTERNATE_EDITOR=""
 export PATH="$PATH:$HOME/Dropbox/programming/helperscripts/gnuplot:$HOME/Dropbox/programming/helperscripts/oomph-lib:$HOME/Dropbox/programming/helperscripts:$HOME/Dropbox/programming/helperscripts/python"
 PATH="$PATH:$HOME/Dropbox/programming/oomph-scripts"
 PATH="$PATH:$HOME/bin"
+PATH="$PATH:$HOME/Dropbox/programming/pipe-plot"
 
 # Add oomph-lib bin to path
 export PATH="$PATH:$HOME/oomph-lib/bin"
+
+# my oomph scripts
+export PATH="$PATH:$HOME/oomph-lib/user_drivers/micromagnetics/control_scripts"
 
 # Paraview
 export PATH="$PATH:$HOME/code/paraview/bin"
@@ -280,6 +418,13 @@ export PATH="$PATH:$HOME/code/paraview/bin"
 # Matlab
 export PATH="$PATH:$HOME/code/matlab/bin:/usr/local/MATLAB/R2013a/bin"
 
+# If we have an alternative doxygen build
+if [[ -d "$HOME/code/doxygen" ]]; then
+    export PATH="$PATH:$HOME/code/doxygen/bin"
+fi
+
+# arch linux stuff
+export PATH="$PATH:$HOME/Dropbox/arch"
 
 # nsim/nmag stuff
 # ============================================================
@@ -339,7 +484,7 @@ gitbranch()
 
 # Append git branch followed by newline and $ to prompt. Note that we HAVE to
 # use single quotes for the __git_ps1 part. Stuff in \[ \] is colour commands.
-PS1="$PS1"'\[\033[1;36m\]$(gitbranch " (%s)")\[\033[0m\] \$\n '
+PS1="$PS1"'\[\033[1;36m\]$(gitbranch " (%s)")\[\033[0m\] \$\n'
 
 
 # Changes to defaults for "make"
@@ -353,9 +498,34 @@ export MAKEFLAGS="-j$NJOBS"
 # Python
 # ============================================================
 # Add my scripts to python path
-export PYTHONPATH="$HOME/programming/"
+export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscripts/python/"
+
 
 alias opython="ipython scipy"
+
+
+# oomph-lib
+# ============================================================
+export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
+export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
+
+
+pvdat ()
+{
+    filename=$1
+    shift
+    oomph-convert $filename
+    paraview ${filename%.dat}.vtu "$@"
+}
+export pvdat
+
+pv-most-recent ()
+{
+    dirname=$1
+    shift
+    maxsoln=$(find $dirname -name 'soln*.dat' | sort -V | tail -n1)
+    pvdat ${maxsoln} "$@"
+}
 
 
 # magnum.fe
@@ -365,3 +535,30 @@ if [ -d $HOME/code/dorsal_code ]; then
     source $HOME/code/dorsal_code/FEniCS/share/fenics/fenics.conf
     export PYTHONPATH=$PYTHONPATH:$HOME/code/magnum.fe/site-packages
 fi
+
+
+# arch linux stuff
+# ============================================================
+arch_scripts_dir="$HOME/Dropbox/arch"
+if [ -d $arch_scripts_dir ]; then
+    export PATH="$PATH:$arch_scripts_dir"
+fi
+
+# oommf
+# ============================================================
+export PATH="$PATH:$HOME/code/oommf"
+
+
+# Disable stupid behaviour of ctrl-s in term
+stty -ixon
+
+
+# ssh
+# ============================================================
+
+# add_public_key_to_server ()
+# {
+#     cat .ssh/id_rsa.pub | ssh $1 'cat >> .ssh/authorized_keys'
+# }
+
+# use ssh-copy-id !
