@@ -9,7 +9,7 @@
 
 
 # Reset to standard keyboard layout (just in case...)
-setxkbmap gb
+setxkbmap gb -variant colemak
 killall xcape
 
 # Keyboard map to force myself to press the right shift buttons
