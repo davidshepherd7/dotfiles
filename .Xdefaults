@@ -77,9 +77,13 @@ urxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=tru
 ! Scroll bar
 URxvt*scrollBar: false
 
-! Transparent background (with xcompmgr)
+! Transparent background
 URxvt*transparent: true
 URxvt*shading: 20
+
+! urxvt*depth: 32
+! urxvt*background: rgba:0000/0000/0200/c800
+
 
 ! Save lots of lines
 URxvt*saveLines:32767
