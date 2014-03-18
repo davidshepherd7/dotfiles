@@ -85,14 +85,15 @@ set show-all-if-ambiguous On
 # Changes to make it more like my emacs
 # ============================================================
 "\C-b": beginning-of-line
+"\C-l": end-of-line
 
-"\C-h": backward-word
-"\C-l": forward-word
-"\C-k": previous-history
-"\C-j": next-history
+"\C-n": backward-word
+"\C-o": forward-word
+#"\C-i": previous-history
+"\C-e": next-history
 
-"\eh": backward-char
-"\el": forward-char
+"\en": backward-char
+"\eo": forward-char
 
 "\C-y": backward-kill-word
 "\C-d": kill-word
@@ -101,4 +102,4 @@ set show-all-if-ambiguous On
 "\ed": delete-char
 "\ey": backward-delete-char
 
-"\C-n": accept-line
+"\C-j": accept-line
