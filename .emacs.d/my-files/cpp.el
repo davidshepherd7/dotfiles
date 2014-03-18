@@ -16,9 +16,12 @@
 (defun my-c-mode-keys ()
   (use-local-map '())
   (local-set-key (kbd "<f5>") 'my-recompile)
-  (local-set-key (kbd "C-`") 'next-error)
-  (local-set-key (kbd "C-¬") 'previous-error)
-  (local-set-key (kbd "C-\\ o") 'ff-find-other-file))
+  (local-set-key (kbd "C-\\ o") 'ff-find-other-file)
+  (local-set-key (kbd "C-\\ C-o") 'ff-find-other-file)
+
+  (local-set-key [tab] 'yas-expand)
+  (set 'yas-fallback-behavior '(apply indent-according-to-mode))
+)
 
 (defun cpp-access-function ()
   "Create set and get access functions for the selected member
@@ -40,3 +43,16 @@ access functions are BAD for class access (too much copying)."
   "Add access functions for selected member variable to kill ring."
   (interactive)
   (kill-new (cpp-access-function)))
+
+(defun auto-bracify ()
+  "Find first if/for/... expression in region and make sure it has braces"
+  (interactive)
+  (save-excursion
+    (goto-char (region-beginning))
+    (when (search-forward-regexp
+     "\\(^[ \t]*\\)\\(else if\\|if\\|else\\|for\\|while\\)[ \t]*(.*)"
+     (region-end) t)
+      (newline-and-indent)
+      (insert "{")
+      (newline-and-indent) (end-of-line) (newline-and-indent)
+      (insert "}"))))

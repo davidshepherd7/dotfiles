@@ -3,33 +3,52 @@
 
 (define-abbrev-table 'apropos-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table '())
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
 (define-abbrev-table 'c++-mode-abbrev-table
   '(
     ("cdr" "const double&" nil 3)
+    ("cdvr" "const DoubleVector&" nil 0)
     ("cir" "const int&" nil 0)
     ("cssr" "const std::string&" nil 1)
     ("cur" "const unsigned&" nil 3)
     ("cvdr" "const Vector<double>&" nil 1)
     ("cvur" "const Vector<unsigned>&" nil 0)
+    ("dvr" "DoubleVector&" nil 1)
     ("fui" "" fui-skele 1)
-    ("fuj" "" fuj-skele 1)
+    ("fuj" "" fuj-skele 3)
     ("fuk" "" fuk-skele 1)
     ("funi" "" funi-skele 3)
     ("funj" "" funj-skele 2)
     ("funk" "" funk-skele 0)
+    ("idhlib" "" ifdef-hlib-skele 0)
+    ;; ("idparanoid" "" ifdef-paranoid-skele 0)
+    ;; ("idmpi" "" ifdef-mpi-skele 0)
     ("idperr" "" idperr-skele 1)
+    ("nbr" "" nbr 2)
+    ("olerr" "" oomph-err-skele 4)
+    ("olwarn" "" oomph-warn-skele 4)
     ("sct" "" sct-skele 1)
     ("vd" "Vector<double>" nil 0)
     ("vdr" "Vector<double>&" nil 1)
     ("vu" "Vector<unsigned>" nil 0)
     ("vur" "Vector<unsigned>&" nil 0)
+    ;; ("fnode" "" oomph-fnode-skele nil 0)
+    ;; ("fnodemesh" "" oomph-fnode-mesh-skele nil 0)
+    ;; ("fele" "" oomph-fele-skele nil 0)
+    ;; ("fmesh" "" oomph-fmesh-skele nil 0)
+    ;; ("fbulkmesh" "" oomph-fbulk-mesh-skele nil 0)
+    ("olnotimp" "" oomph-not-implemented-error nil 0)
    ))
 
-(define-abbrev-table 'c-mode-abbrev-table '())
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+	("nbr" "" nbr 0)
+   ))
 
 (define-abbrev-table 'calendar-mode-abbrev-table '())
 
@@ -51,6 +70,8 @@
 
 (define-abbrev-table 'gdb-script-mode-abbrev-table '())
 
+(define-abbrev-table 'gfm-mode-abbrev-table '())
+
 (define-abbrev-table 'global-abbrev-table
   '(
     ("imre" "implicit midpoint rule" nil 1)
@@ -71,7 +92,9 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table '())
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'jython-mode-abbrev-table '())
 
@@ -102,7 +125,9 @@
     ("hil" "" markdown-hilight 0)
    ))
 
-(define-abbrev-table 'objc-mode-abbrev-table '())
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -114,7 +139,9 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table '())
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
@@ -124,9 +151,10 @@
 
 (define-abbrev-table 'python-mode-abbrev-table
   '(
-    ("pystart" "" pystart-skele 0)
     ("pyargparse" "" pyargparse-skele 0)
-    ))
+    ("pystart" "" pystart-skele 0)
+    ("opystart" "" oomph-pystart-skele 0)
+   ))
 
 (define-abbrev-table 'python2-mode-abbrev-table '())
 
@@ -171,3 +199,4 @@
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
+

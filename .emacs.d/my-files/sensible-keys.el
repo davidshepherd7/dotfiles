@@ -5,6 +5,7 @@
 
 ;; Unfortunately this will be incompatible with standard emacs keybinds...
 
+(setq colemak-mode 't)
 
 ;; unbind some standard keys
 (global-unset-key (kbd "C-y"))
@@ -84,7 +85,7 @@ the line break."
   ;; ;; then go to the next block
   ;; (forward-paragraph)
   ;; (forward-line 1)
-)
+  )
 
 
 ;; CUA keybinds (undo/cut/copy/paste)
@@ -106,8 +107,6 @@ the line break."
 ;; Paste (and cycle through pastes)
 (global-set-key (kbd "C-v") 'yank)
 (global-set-key (kbd "M-v") 'yank-pop)
-
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
 
 ;; Commenting
 (global-set-key (kbd "C-;") (lambda () (interactive)
@@ -132,40 +131,87 @@ the line break."
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-S-s") 'write-file)
 
-(global-set-key (kbd "C-w") 'kill-buffer)
+(global-set-key (kbd "C-w") 
+                (lambda () (interactive) (kill-buffer (buffer-name))))
+(global-set-key (kbd "C-S-w") 
+                (lambda () (interactive) (progn (kill-buffer (buffer-name))
+                                                (delete-frame))))
+;; Use (kill-buffer (buffer-name)) rather than (kill-this-buffer) because
+;; something is stopping (kill-this-buffer) from working!
 
-(global-set-key (kbd "C-o") 'find-file)
-(global-set-key (kbd "M-o") 'switch-to-buffer)
+;; (global-set-key (kbd "C-o") 'find-file)
+;; (global-set-key (kbd "M-o") 'switch-to-buffer)
 
 (global-set-key (kbd "C-f") 'isearch-forward)
 (global-set-key (kbd "M-f") 'isearch-forward-regexp)
 
 
 ;; Use vim/gmail/google-reader like up/down/left/right
-(global-set-key (kbd "M-h") 'backward-char)
-(global-set-key (kbd "C-h") 'backward-word)
-(global-set-key (kbd "C-M-h") 'backward-sentence)
+(if colemak-mode
 
-(global-set-key (kbd "M-l") 'forward-char)
-(global-set-key (kbd "C-l") 'forward-word)
-(global-set-key (kbd "C-M-l") 'forward-sentence)
+    (progn
+      (global-set-key (kbd "M-n") 'backward-char)
+      (global-set-key (kbd "C-n") 'backward-word)
+      (global-set-key (kbd "C-M-n") 'backward-sentence)
 
+      (global-set-key (kbd "M-o") 'forward-char)
+      (global-set-key (kbd "C-o") 'forward-word)
+      (global-set-key (kbd "C-M-o") 'forward-sentence)
+
+      (global-set-key (kbd "M-e") 'forward-paragraph)
+      (global-set-key (kbd "C-e") 'next-line)
+      (global-set-key (kbd "C-M-e") 'forward-sexp)
+
+      (global-set-key (kbd "M-i") 'backward-paragraph)
+      (global-set-key (kbd "C-i") 'previous-line)
+      (global-set-key (kbd "C-M-i") 'backward-sexp)
+
+      ;; We just stomped tab via C-i so rebind it, have to use [tab] not
+      ;; (kbd "TAB") so that we only bind tab itself and not C-i as
+      ;; well. But only in certain modes otherwise we stomp the
+      ;; autocomplete in minibuffer (there should be an easier way to do
+      ;; this..).
+      (defun set-tab () 
+        (interactive)
+        (local-set-key [tab] 'indent-for-tab-command))
+      (add-hook 'c-mode-common-hook 'set-tab)
+      (add-hook 'python-mode-hook 'set-tab)
+      (add-hook 'LaTeX-mode-hook 'set-tab)
+      (add-hook 'latex-mode-hook 'set-tab)
+      (add-hook 'lisp-mode-hook 'set-tab)
+      (add-hook 'emacs-lisp-mode-hook 'set-tab)
+      (add-hook 'shell-lisp-mode-hook 'set-tab)
+
+      (global-set-key (kbd "C-k") 'find-file)
+      (global-set-key (kbd "M-k") 'switch-to-buffer)
+      )
+
+
+  ;; else
+  (progn
+    (global-set-key (kbd "M-h") 'backward-char)
+    (global-set-key (kbd "C-h") 'backward-word)
+    (global-set-key (kbd "C-M-h") 'backward-sentence)
+
+    (global-set-key (kbd "M-l") 'forward-char)
+    (global-set-key (kbd "C-l") 'forward-word)
+    (global-set-key (kbd "C-M-l") 'forward-sentence)
+
+    ;; Even though it's a bit inconsistent use C-j/k for single lines because
+    ;; it's easier!
+    (global-set-key (kbd "M-j") 'forward-paragraph)
+    (global-set-key (kbd "C-j") 'next-line)
+    (global-set-key (kbd "C-M-j") 'forward-sexp)
+
+    (global-set-key (kbd "M-k") 'backward-paragraph)
+    (global-set-key (kbd "C-k") 'previous-line)
+    (global-set-key (kbd "C-M-k") 'backward-sexp)))
 
 ;; case changes
 (global-set-key (kbd "C-/") 'capitalize-word)
 (global-set-key (kbd "M-/") 'downcase-word)
 (global-set-key (kbd "C-M-/") 'upcase-word)
 
-
-;; Even though it's a bit inconsistent use C-j/k for single lines because
-;; it's easier!
-(global-set-key (kbd "M-j") 'forward-paragraph)
-(global-set-key (kbd "C-j") 'next-line)
-(global-set-key (kbd "C-M-j") 'forward-sexp)
-
-(global-set-key (kbd "M-k") 'backward-paragraph)
-(global-set-key (kbd "C-k") 'previous-line)
-(global-set-key (kbd "C-M-k") 'backward-sexp)
 
 
 ;; Some deletion commands
@@ -190,17 +236,17 @@ the line break."
 ;; Don't have the suspend button somewhere that I can press it easily...
 (global-set-key (kbd "C-\\ C-z") nil)
 
-(global-set-key (kbd "C-e") 'end-of-line)
-(global-set-key (kbd "M-C-e") 'forward-paragraph)
-(global-set-key (kbd "M-E") 'forward-sexp)
+(global-set-key (kbd "C-l") 'end-of-line)
+(global-set-key (kbd "M-C-l") 'forward-paragraph)
+(global-set-key (kbd "M-L") 'forward-sexp)
 
 (global-set-key (kbd "C-b") 'smart-beginning-of-line)
 (global-set-key (kbd "M-C-b") 'backward-paragraph)
 (global-set-key (kbd "M-S-b") 'backward-sexp)
 
-(global-set-key (kbd "C-n") 'newline-and-indent)
-(global-set-key (kbd "M-n") 'newline-below-this-one)
-(global-set-key (kbd "M-S-n") 'newline-above-this-one)
+(global-set-key (kbd "C-j") 'newline-and-indent)
+(global-set-key (kbd "M-j") 'newline-below-this-one)
+(global-set-key (kbd "M-S-j") 'newline-above-this-one)
 
 (defun newline-below-this-one ()
   "Open a newline underneath this line and move to it."
@@ -227,11 +273,17 @@ the line break."
 ;; Changes for consistency:
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "C-'") 'isearch-query-replace)
-(define-key isearch-mode-map (kbd "C-j") 'isearch-ring-advance)
-(define-key isearch-mode-map (kbd "C-k") 'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "C-y") 'isearch-del-char)
 (define-key isearch-mode-map (kbd "C-q") 'isearch-quote-char)
 
+(if colemak-mode
+    (progn
+      (define-key isearch-mode-map (kbd "C-e") 'isearch-ring-advance)
+      (define-key isearch-mode-map (kbd "C-i") 'isearch-ring-retreat)
+      )
+  (progn 
+    (define-key isearch-mode-map (kbd "C-j") 'isearch-ring-advance)
+    (define-key isearch-mode-map (kbd "C-k") 'isearch-ring-retreat)))
 
 ;; (define-key isearch-mode-map (kbd "C-r") 'isearch-repeat-backward)
 ;; (define-key isearch-mode-map (kbd "RET") 'isearch-exit)
@@ -254,7 +306,7 @@ the line break."
   '(lambda () (interactive) (isearch-text-grab 'forward-word)))
 (define-key isearch-mode-map (kbd "C-l")
   '(lambda () (interactive) (isearch-text-grab 'forward-char)))
-(define-key isearch-mode-map (kbd "C-e") 'isearch-yank-line)
+(define-key isearch-mode-map (kbd "C-l") 'isearch-yank-line)
 
 ;; Remove keys that overlap main keymap in weird or useless ways
 (define-key isearch-mode-map (kbd "C-h") nil)
@@ -291,20 +343,20 @@ the line break."
   (interactive)
 
   ;; Unbind keys we use elsewhere
-  (local-set-key (kbd "C-c") nil)
-  (define-key flyspell-mode-map (kbd "C-c") nil)
-  (define-key flyspell-mode-map (kbd "C-;") nil)
-  (local-set-key (kbd "C-x") nil)
+  (define-key LaTeX-mode-map (kbd "C-c") nil)
+  (define-key LaTeX-mode-map (kbd "C-x") nil)
+
+  ;; (define-key flyspell-mode-map (kbd "C-c") nil)
+  ;; (define-key flyspell-mode-map (kbd "C-;") nil)
+
   (local-set-key (kbd "C-j") nil)
   (local-set-key (kbd "C-y") nil)
 
-  (local-set-key (kbd "<f5>") 'my-recompile)
   (local-set-key (kbd "<f6>") 'tex-view)
 
   ;; Blocks
-  (local-set-key (kbd "M-]") 'latex-close-block)
-  (local-set-key (kbd "M-[") 'latex-insert-block)
-  ;; (local-set-key (kbd "") 'latex-split-block)
+  (local-set-key (kbd "M-]") 'LaTeX-close-environment)
+  (local-set-key (kbd "M-[") 'LaTeX-environment)
 
   ;; References
   (local-set-key (kbd "C-{") 'reftex-label)
@@ -313,9 +365,9 @@ the line break."
 
 
   ;; Other stuff
-  (local-set-key (kbd "M-RET") 'latex-insert-item)
+  (local-set-key (kbd "M-RET") 'LaTeX-insert-item)
   ;; (local-set-key (kbd "") 'tex-validate-buffer)
-  (define-key tex-mode-map [remap forward-sexp] 'latex-forward-sexp)
+  (define-key LaTeX-mode-map [remap forward-sexp] 'latex-forward-sexp)
   ;; (local-set-key (kbd "") 'reftex-create-tags-file)
   (local-set-key (kbd "C-#") 'reftex-toc))
 
@@ -330,8 +382,8 @@ the line break."
 ;; If reftex exists then also null the C-c keybinds there
 (when (boundp 'reftex-mode-hook)
   (add-hook 'reftex-mode-hook
-            (lambda () (interactive)
-              (define-key reftex-mode-map (kbd "C-c") nil))))
+	    (lambda () (interactive)
+	      (define-key reftex-mode-map (kbd "C-c") nil))))
 
 
 
@@ -426,3 +478,26 @@ the line break."
   (local-set-key (kbd "<f5>") 'my-recompile))
 
 (add-hook 'sh-mode-hook 'sensible-bash-keys)
+
+
+;; Expand region
+;; ============================================================
+
+(global-set-key (kbd "C-a") 'er/expand-region)
+(global-set-key (kbd "C-S-a") (lambda () (interactive) (er/expand-region -1)))
+
+
+
+;; File open keybinds
+;; ===============================================================
+(global-set-key (kbd "C-<f12>")
+                '(lambda () (interactive) (find-file "~/.bashrc")))
+(global-set-key (kbd "C-<f11>")
+                '(lambda () (interactive) (find-file "~/.emacs.d/init.el")))
+(global-set-key (kbd "C-<f10>")
+                '(lambda () (interactive) (find-file "~/.emacs.d/skeletons.el")))
+(global-set-key (kbd "C-<f9>")
+                '(lambda () (interactive) (find-file "~/.emacs.d/abbrev_defs")))
+(global-set-key (kbd "C-<f8>")
+                '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
+(global-set-key (kbd "C-<f6>") 'ibuffer)

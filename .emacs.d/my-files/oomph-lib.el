@@ -25,6 +25,18 @@
        (string-match "oomph" buffer-file-name)
        (not (string-match "user_drivers" buffer-file-name))))
 
+;; (defun is-optoomph-code ()
+;;   (interactive)
+;;   (and buffer-file-name
+;;        (string-match "optoomph" buffer-file-name)))
+
+;; (defun noticable-visuals-if-optoomph ()
+;;   (interactive)
+;;   (hl-line-mode))
+
+;; (add-hook 'c-mode-common-hook 'noticable-visuals-if-optoomph)
+;; (add-hook 'python-mode-hook 'noticable-visuals-if-optoomph)
+
 (defun is-oomph-user-driver-code ()
   "Try to detect if we are working on oomph-lib user drivers."
   (and buffer-file-name
@@ -43,12 +55,15 @@
 
 (add-hook 'c-mode-common-hook 'maybe-oomph-style)
 
+;; For now only clean my driver code... Add more to this list as needed
+(defun is-whitespace-cleanup-safe ()
+  (is-oomph-user-driver-code))
 
 ;; oomph-lib safe auto-whitespace cleanup
 ;; ============================================================
 (defun whitespace-cleanup-if-not-oomph ()
   (interactive)
-  (when (and (not (is-oomph-code))
+  (when (and (is-whitespace-cleanup-safe)
              (not (string= major-mode "makefile-mode")))
     (delete-trailing-whitespace)))
 (add-hook 'before-save-hook 'whitespace-cleanup-if-not-oomph)

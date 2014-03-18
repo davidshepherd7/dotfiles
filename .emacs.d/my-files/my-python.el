@@ -23,9 +23,9 @@
 ;; Setup jedi mode (python autocompletion)
 ;; ============================================================
 
-;; Enable it, but only for autocompletion so we don't get all the keybind
-;; junk.
-(add-hook 'python-mode-hook 'jedi:ac-setup)
+;; ;; Enable it, but only for autocompletion so we don't get all the keybind
+;; ;; junk.
+;; (add-hook 'python-mode-hook 'jedi:ac-setup)
 
 ;; Build/test/check functions
 ;; ============================================================
@@ -82,12 +82,26 @@
   (local-set-key (kbd "S-<f5>") 'python-run-file)
 
   ;; Some things copied from python mode that were actually useful:
-  (local-set-key [remap indent-for-tab-command] 'py-indent-line)
   (local-set-key [remap delete-forward-char] 'py-electric-delete)
   (local-set-key [remap delete-char] 'py-electric-delete)
   (local-set-key [remap delete-backward-char] 'py-electric-backspace)
   (local-set-key [remap newline] 'py-newline-and-indent)
-  (local-set-key [remap newline-and-indent] 'py-newline-and-indent))
+  (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
+
+  (local-set-key [tab] 'py-indent-line)
+ )
+
+(defun yas-advise-indent-function (function-symbol)
+  (eval `(defadvice ,function-symbol (around yas-try-expand-first activate)
+           ,(format
+             "Try to expand a snippet before point, then call `%s' as usual"
+             function-symbol)
+           (let ((yas-fallback-behavior nil))
+             (unless (and (called-interactively-p 'any)
+                          (yas-expand))
+               ad-do-it)))))
+
+(yas-advise-indent-function 'py-indent-line)
 
 
 ;; Function to toggle true/false
@@ -119,3 +133,25 @@
     (end-of-buffer)
     (search-backward "generate_results = ")
     (python-toggle-bool)))
+
+
+;; Auto pep8 buffer
+;; ============================================================
+
+(defun auto-pep8-buffer ()
+  "Run autopep8 on the current buffer"
+  (interactive)
+
+  ;; E701 is multiple statements on one line (colon), i.e. one line
+  ;; functions
+
+  ;; E26 is "Format block comments" - destroys commented out code so don't
+  ;; use
+
+  ;; E226 is whitespace around *, don't always want this in dense maths
+  (progn
+      (shell-command-on-region
+       (point-min)
+       (point-max)
+       "autopep8 --aggressive --ignore=E226 -ignore=E701 -"
+       nil t)))
