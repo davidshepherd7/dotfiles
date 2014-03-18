@@ -7,7 +7,7 @@ import functools as ft
 import operator as op
 import sys
 import sympy
-
+import os
 
 # Plotting
 import matplotlib.pyplot as plt
@@ -17,8 +17,15 @@ from matplotlib.pyplot import show as pltshow
 
 
 # and import some common functions into the global namespace
-from scipy.linalg import norm
+from scipy.linalg import norm, eig
 from scipy import sin, cos, tan, log, pi, sqrt, exp, mean
 from math import atan2, acos
-from sympy import Rational as sRat
+from sympy import Rational as rat
 from sympy import pretty as spretty
+
+import oomphpy
+import oomphpy.micromagnetics as mm
+import oomphpy.tests
+import oomphpy.matrices
+from oomphpy.matrices import ascii2coo
+from oomphpy.matrices import ascii2array
