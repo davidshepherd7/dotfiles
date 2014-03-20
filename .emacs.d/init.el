@@ -408,26 +408,6 @@ predicate PRED used to filter them."
 
 ;; Compile mode settings
 ;; ===============================================================
-(add-hook 'compilation-mode-hook 'my-compilation-mode-keys)
-(add-hook 'compilation-shell-mode-hook 'my-compilation-mode-keys)
-(defun my-compilation-mode-keys ()
-  (local-set-key (kbd "<f5>") 'recompile)
-  (local-set-key (kbd "<C-f5>") 'compile)
-  (local-set-key (kbd "C-`") 'next-error)
-  (local-set-key (kbd "C-¬") 'previous-error)
-  (local-set-key (kbd "M-`") 'toggle-skip-compilation-warnings))
-
-(defun toggle-skip-compilation-warnings ()
-  (interactive)
-  (if (equal compilation-skip-threshold 1)
-      (set 'compilation-skip-threshold 2)
-    (set 'compilation-skip-threshold 1)))
-
-;; scroll compilation buffer to first error
-(setq compilation-scroll-output 'first-error)
-
-;; Autosave all modified buffers before compile
-(set 'compilation-ask-about-save nil)
 
 ;; Define + active modification to compile that locally sets
 ;; shell-command-switch to "-ic".
@@ -447,6 +427,28 @@ predicate PRED used to filter them."
   ;; If recompile exists do it, else compile
   (if (fboundp 'recompile) (recompile)
     (compile "make -k")))
+
+(add-hook 'compilation-mode-hook 'my-compilation-mode-keys)
+(add-hook 'compilation-shell-mode-hook 'my-compilation-mode-keys)
+
+(defun my-compilation-mode-keys ()
+  (local-set-key (kbd "<f5>") 'my-recompile)
+  (local-set-key (kbd "<C-f5>") 'compile)
+  (local-set-key (kbd "C-`") 'next-error)
+  (local-set-key (kbd "C-¬") 'previous-error)
+  (local-set-key (kbd "M-`") 'toggle-skip-compilation-warnings))
+
+(defun toggle-skip-compilation-warnings ()
+  (interactive)
+  (if (equal compilation-skip-threshold 1)
+      (set 'compilation-skip-threshold 2)
+    (set 'compilation-skip-threshold 1)))
+
+;; scroll compilation buffer to first error
+(setq compilation-scroll-output 'first-error)
+
+;; Autosave all modified buffers before compile
+(set 'compilation-ask-about-save nil)
 
 ;; Handle colours in compile buffers
 (require 'ansi-color)
