@@ -10,8 +10,14 @@
 
 ;; ido-read for el-get?
 
+;; Use el-get's recipe struture instead of use-package?
+
 
 ;; test with compile command: \emacs --debug-init --batch -u $USER
+
+
+;; Use C-\ p as prefix
+(set 'projectile-keymap-prefix (kbd "C-\\ p"))
 
 
 ;; install + setup el-get
@@ -997,17 +1003,25 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; ============================================================
 (use-package 
   projectile
+  :pre-load
+  (progn
+    ;; Use C-\ p as prefix
+    (set 'projectile-keymap-prefix (kbd "C-\\ p")))
+
   :config
   (progn 
-    ;; Use C-\ p as prefix, broken!
-    ;; (set 'projectile-keymap-prefix (kbd "C-\\ p"))
-
-    ;; Kill C-c keys instead
+    ;; Kill C-c keys just in case
     (define-key projectile-mode-map (kbd "C-c") nil)
 
-    ;; Use projectile to open files by default
+    ;; Use projectile to open files by default, if available.
     (global-set-key (kbd "C-S-k") (key-binding (kbd "C-k")))
-    (global-set-key (kbd "C-k") 'projectile-find-file)
+
+    (defun maybe-projectile-find-file ()
+      (interactive)
+      (if (projectile-project-p)
+          (projectile-find-file)
+        (ido-find-file)))
+    (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
     ;; Use everywhere
     (projectile-global-mode)
