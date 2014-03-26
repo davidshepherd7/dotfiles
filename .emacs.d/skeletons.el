@@ -108,8 +108,8 @@
   "if("_")" > \n
   "{" > \n
   "std::string err = \"\";" > \n
-  "throw OomphLibError(err, OOMPH_EXCEPTION_LOCATION," > \n
-  "OOMPH_CURRENT_FUNCTION);" > \n
+  "throw OomphLibError(err, OOMPH_CURRENT_FUNCTION," > \n
+  "OOMPH_EXCEPTION_LOCATION);" > \n
   "}" > \n
   "#endif" > \n
   )
@@ -138,15 +138,15 @@
 (define-skeleton oomph-err-skele
   "" nil
   "std::string err = \"" _ "\";" > \n
-  "throw OomphLibError(err, OOMPH_EXCEPTION_LOCATION," > \n
-  "OOMPH_CURRENT_FUNCTION);" > \n
+  "throw OomphLibError(err, OOMPH_CURRENT_FUNCTION," > \n
+  "OOMPH_EXCEPTION_LOCATION);" > \n
   )
 
 (define-skeleton oomph-warn-skele
   "" nil
   "std::string err = \"" _ "\";" > \n
-  "OomphLibWarning(err, OOMPH_EXCEPTION_LOCATION," > \n
-  "OOMPH_CURRENT_FUNCTION);" > \n
+  "throw OomphLibWarning(err, OOMPH_CURRENT_FUNCTION," > \n
+  "OOMPH_EXCEPTION_LOCATION);" > \n
   )
 
 (define-skeleton oomph-fnode-skele
@@ -201,7 +201,7 @@
 (define-skeleton oomph-not-implemented-error
   "" nil
   "throw OomphLibError(\"Function not yet implemented\"," > \n
-  "OOMPH_EXCEPTION_LOCATION, OOMPH_CURRENT_FUNCTION);" > \n
+  "OOMPH_CURRENT_FUNCTION, OOMPH_EXCEPTION_LOCATION);" > \n
   )
 
 ;; python
