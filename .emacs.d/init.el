@@ -1065,6 +1065,16 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
                 ))
 
+    ;; c-mode uses something else on tab, which seems to get messed with by
+    ;; yasnippet, remove the extra bindings to prevent this
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                (define-key c-mode-map [tab] nil)
+                (define-key c++-mode-map [tab] nil)
+                ;; might need to add more here?
+                ))
+
+
     ;; Use everywhere
     (yas/global-mode)
 
@@ -1075,6 +1085,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
                 (local-set-key (kbd "<f5>") 'yas-tryout-snippet)
                 (local-set-key (kbd "C-c") nil)
                 ))
+
+    (global-set-key (kbd "C-t") 'yas/expand)
 
     ;; Use minibuffer for yas prompts
     (setq yas-prompt-functions '(yas-ido-prompt))

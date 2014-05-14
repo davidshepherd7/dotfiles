@@ -181,6 +181,7 @@ the line break."
       (add-hook 'lisp-mode-hook 'set-tab)
       (add-hook 'emacs-lisp-mode-hook 'set-tab)
       (add-hook 'shell-lisp-mode-hook 'set-tab)
+      (add-hook 'haskell-mode-hook 'set-tab)
 
       (global-set-key (kbd "C-k") 'find-file)
       (global-set-key (kbd "M-k") 'switch-to-buffer)
