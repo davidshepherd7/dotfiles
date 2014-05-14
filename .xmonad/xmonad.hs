@@ -43,6 +43,9 @@ import XMonad.Hooks.EwmhDesktops
 -- emacsclient frame.
 myEditor = "emacsclient -c -n -e '(switch-to-buffer nil)' || (bash -l -c \"emacs --daemon\" && emacsclient -c -n )"
 
+-- App for taking notes, use deft in emacs
+myNotes = "emacsclient -c -n -e '(new-clean-deft)'"
+
 -- Try various terminals till one works.
 myTerminal = "urxvt || xfce4-terminal || gnome-terminal"
 
@@ -223,7 +226,7 @@ myKeys = [
   , ("M-s", spawn micromagTerminal)
   , ("M-d", spawn driverTerminal)
   , ("M-a", spawn optDriverTerminal)
-
+  , ("M-m", spawn myNotes)
 
   , ("M-y", spawn myBrowser)
   , ("M-,", spawn myiPython)

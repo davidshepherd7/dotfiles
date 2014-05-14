@@ -1111,6 +1111,37 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (global-set-key (kbd "C-<f7>") 'external-shell-in-dir)
 
 
+;; deft (note taking) 
+;; ============================================================
+(use-package deft
+  :config
+  (progn 
+    (setq deft-directory "~/Dropbox/notes")
+    (setq deft-extension "md")
+    (setq deft-text-mode 'markdown-mode)
+    (setq deft-use-filename-as-title t)
+
+    ;; Kill C-c keys
+    (define-key deft-mode-map (kbd "C-c") 'nil)
+
+    ;; New binds for the useful ones
+    (define-key deft-mode-map (kbd "M-RET") 'deft-new-file)
+
+    ;; And move some other binds to fit with my config
+    (define-key deft-mode-map (kbd "C-v") 'deft-filter-yank)
+    (define-key deft-mode-map (kbd "C-y") 'deft-filter-decrement-word)
+
+    ;; Make a new deft buffer anytime we press f8 (by killing the old one).
+    (defun new-clean-deft () 
+      (interactive)
+      "Close old deft buffer and start a new one"
+      (ignore-errors (kill-buffer "*Deft*"))
+      (deft)
+      )
+    (global-set-key [f8] 'new-clean-deft)
+    )
+  )
+
 
 ;; Automagically added by customise
 ;; ============================================================
