@@ -6,7 +6,7 @@ import itertools as it
 import functools as ft
 import operator as op
 import sys
-import sympy
+# import sympy
 import os
 
 # Plotting
@@ -20,8 +20,8 @@ from matplotlib.pyplot import show as pltshow
 from scipy.linalg import norm, eig
 from scipy import sin, cos, tan, log, pi, sqrt, exp, mean
 from math import atan2, acos
-from sympy import Rational as rat
-from sympy import pretty as spretty
+# from sympy import Rational as rat
+# from sympy import pretty as spretty
 
 import oomphpy
 import oomphpy.micromagnetics as mm
