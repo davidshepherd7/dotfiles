@@ -61,7 +61,7 @@ driverTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetic
 optDriverTerminal = "urxvt -e /bin/sh -c 'cd ~/optoomph/user_drivers/micromagnetics/control_scripts && /bin/bash'"
 
 -- Try various browsers until one works.
-myBrowser = "google-chrome || chromium || chromium-browser || firefox"
+myBrowser = "firefox || google-chrome || chromium || chromium-browser"
 
 -- Run dmenu for executables with whatever other stuff I've set up.
 -- myLauncher =  "~/.xmonad/dmenu/my-dmenu-run.sh"
