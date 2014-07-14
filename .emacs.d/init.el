@@ -54,6 +54,7 @@
 (set 'inhibit-startup-screen t) ;; No startup screen
 (set-scroll-bar-mode 'right);; Scroll bar on the right
 (global-visual-line-mode 1) ;; Wrap lines at nearest word
+(global-subword-mode 1) ;; Treat CamelCase as separate words
 (set 'truncate-partial-width-windows nil) ;; Make line wrapping work for
 ;; multiple frames
 (tool-bar-mode -1) ;; Disable toolbar
@@ -74,9 +75,6 @@
 
 ;; Set the location for bookmarks
 (set 'bookmark-default-file "~/.emacs.d/bookmarks")
-
-;; Allow scrolling during incremental search
-(setq isearch-allow-scroll t)
 
 ;; save point in file
 (setq-default save-place t)
@@ -105,6 +103,26 @@
 (set 'whitespace-style '(face lines-tail))
 
 (add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; Don't create lockfiles (only safe on single user systems and in ~/ dir
+;; technically, but I don't think I'll ever be messing with admin server
+;; config files so it's probably fine). Stops emacs spamming up directories
+;; with .# files.
+(set 'create-lockfiles nil)
+
+;; Show keystrokes in progress (eg show C-\ immediately)
+(setq echo-keystrokes 0.1)
+
+;; Allow recursive minibuffers
+(setq enable-recursive-minibuffers t)
+
+;; Don't be so stingy on the memory, we have lots now. It's the distant future.
+(setq gc-cons-threshold 20000000)
+
+;; Sentences do not need double spaces to end (so when moving by sentence
+;; use "." to find ends).
+(set-default 'sentence-end-double-space nil)
+
 
 ;; Saving
 ;; ============================================================
