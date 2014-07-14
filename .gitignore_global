@@ -61,7 +61,6 @@ TAGS
 .~lock.*
 
 # Outputs/images
-*.pdf
 *.png
 *.svg
 *.ps
