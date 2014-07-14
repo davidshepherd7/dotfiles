@@ -90,7 +90,7 @@ set show-all-if-ambiguous On
 "\C-n": backward-word
 "\C-o": forward-word
 #"\C-i": previous-history
-"\C-e": next-history
+"\C-e": previous-history
 
 "\en": backward-char
 "\eo": forward-char
