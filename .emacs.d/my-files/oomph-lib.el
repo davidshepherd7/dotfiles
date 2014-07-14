@@ -100,6 +100,10 @@
   (highlight-regexp "Number of iterations to convergence: [0-9]+" 'hi-blue))
 
 
+;; Python mode for parameter sets 
+;; ============================================================
+(set 'auto-mode-alist
+     (append auto-mode-alist '(("parameter_sets/*" . python-mode))))
 
 ;; Create tags files
 ;;=================================================================
@@ -184,14 +188,6 @@
   (interactive)
   (goto-char (point-min))
   (insert "
-/*
-description of file goes here
-*/
-
-#include \"generic.h\"
-
-using namespace oomph;
-
 namespace oomph
 {
 ")

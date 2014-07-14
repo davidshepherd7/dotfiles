@@ -1,6 +1,8 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'Buffer-menu-mode-abbrev-table '())
 
+(define-abbrev-table 'TeX-output-mode-abbrev-table '())
+
 (define-abbrev-table 'apropos-mode-abbrev-table '())
 
 (define-abbrev-table 'awk-mode-abbrev-table
@@ -15,7 +17,7 @@
     ("cdvr" "const DoubleVector&" nil 0)
     ("cir" "const int&" nil 0)
     ("cssr" "const std::string&" nil 1)
-    ("cur" "const unsigned&" nil 3)
+    ("cur" "const unsigned&" nil 4)
     ("cvdr" "const Vector<double>&" nil 1)
     ("cvur" "const Vector<unsigned>&" nil 0)
     ("dvr" "DoubleVector&" nil 1)
@@ -25,9 +27,8 @@
     ("funi" "" funi-skele 3)
     ("funj" "" funj-skele 2)
     ("funk" "" funk-skele 0)
+    ("fut" "" fut-skele 2)
     ("idhlib" "" ifdef-hlib-skele 0)
-    ;; ("idparanoid" "" ifdef-paranoid-skele 0)
-    ;; ("idmpi" "" ifdef-mpi-skele 0)
     ("idperr" "" idperr-skele 1)
     ("nbr" "" nbr 2)
     ("olerr" "" oomph-err-skele 4)
@@ -37,20 +38,16 @@
     ("vdr" "Vector<double>&" nil 1)
     ("vu" "Vector<unsigned>" nil 0)
     ("vur" "Vector<unsigned>&" nil 0)
-    ;; ("fnode" "" oomph-fnode-skele nil 0)
-    ;; ("fnodemesh" "" oomph-fnode-mesh-skele nil 0)
-    ;; ("fele" "" oomph-fele-skele nil 0)
-    ;; ("fmesh" "" oomph-fmesh-skele nil 0)
-    ;; ("fbulkmesh" "" oomph-fbulk-mesh-skele nil 0)
-    ("olnotimp" "" oomph-not-implemented-error nil 0)
    ))
 
 (define-abbrev-table 'c-mode-abbrev-table
   '(
-	("nbr" "" nbr 0)
+    ("nbr" "" nbr 0)
    ))
 
 (define-abbrev-table 'calendar-mode-abbrev-table '())
+
+(define-abbrev-table 'change-log-mode-abbrev-table '())
 
 (define-abbrev-table 'comint-mode-abbrev-table '())
 
@@ -64,13 +61,27 @@
 
 (define-abbrev-table 'doctex-mode-abbrev-table '())
 
+(define-abbrev-table 'dun-mode-abbrev-table '())
+
+(define-abbrev-table 'el-get-check-mode-abbrev-table '())
+
+(define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
+
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-results-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-simple-view-mode-abbrev-table '())
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
 (define-abbrev-table 'gdb-script-mode-abbrev-table '())
 
 (define-abbrev-table 'gfm-mode-abbrev-table '())
+
+(define-abbrev-table 'git-commit-mode-abbrev-table '())
+
+(define-abbrev-table 'git-rebase-mode-abbrev-table '())
 
 (define-abbrev-table 'global-abbrev-table
   '(
@@ -96,6 +107,11 @@
   '(
    ))
 
+(define-abbrev-table 'js-mode-abbrev-table
+  '(
+    ("nbr" "" nbr 5)
+   ))
+
 (define-abbrev-table 'jython-mode-abbrev-table '())
 
 (define-abbrev-table 'latex-mode-abbrev-table
@@ -107,6 +123,28 @@
 (define-abbrev-table 'lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'literate-haskell-mode-abbrev-table '())
+
+(define-abbrev-table 'log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-branch-manager-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-cherry-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-commit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-diff-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-process-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-reflog-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-status-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-wazzup-mode-abbrev-table '())
 
 (define-abbrev-table 'makefile-automake-mode-abbrev-table '())
 
@@ -151,9 +189,9 @@
 
 (define-abbrev-table 'python-mode-abbrev-table
   '(
+    ("opystart" "" oomph-pystart-skele 0)
     ("pyargparse" "" pyargparse-skele 0)
     ("pystart" "" pystart-skele 0)
-    ("opystart" "" oomph-pystart-skele 0)
    ))
 
 (define-abbrev-table 'python2-mode-abbrev-table '())
@@ -172,6 +210,8 @@
     ("extitle" ";;EXERCISE" nil 0)
    ))
 
+(define-abbrev-table 'scss-mode-abbrev-table '())
+
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
 (define-abbrev-table 'sh-mode-abbrev-table '())
@@ -180,9 +220,13 @@
 
 (define-abbrev-table 'slitex-mode-abbrev-table '())
 
+(define-abbrev-table 'snippet-mode-abbrev-table '())
+
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
+
+(define-abbrev-table 'tetris-mode-abbrev-table '())
 
 (define-abbrev-table 'tex-mode-abbrev-table '())
 
@@ -195,6 +239,10 @@
    ))
 
 (define-abbrev-table 'tuareg-interactive-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-dir-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
 

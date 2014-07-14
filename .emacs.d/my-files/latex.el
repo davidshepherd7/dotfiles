@@ -45,3 +45,5 @@
 
 ;; use \eqref not (\ref) for equation references
 (setq reftex-label-alist '(AMSTeX))
+
+(set 'reftex-default-bibliography '("~/Documents/library.bib"))

@@ -1,20 +1,8 @@
 ;; Generic emacs settings, other stuff is in individual files in ./my-files/
 
-;; use vc-git-grep more
-
-;; smart-parens
-
-;; package up my other files?
-
-;; function to move function to .cc files
-
-;; ido-read for el-get?
-
-;; Use el-get's recipe struture instead of use-package?
-
 
 ;; test with compile command: \emacs --debug-init --batch -u $USER
-
+;; latex lookup nearest equations for ref
 
 ;; Use C-\ p as prefix
 (set 'projectile-keymap-prefix (kbd "C-\\ p"))
@@ -46,7 +34,7 @@
 
 ;; Some simple, one-line stuff
 ;; ============================================================
-(server-start) ;; Start emacs as a server
+;; (server-start) ;; Start emacs as a server
 (line-number-mode 1) ;; Line numbers in mode line
 (column-number-mode 1) ;; Column numbers in mode line
 (global-linum-mode t) ;; Line numbers on edge of screen
@@ -173,16 +161,16 @@
 
 
 ;; Use ido
-(use-package 
+(use-package
  ido
 
- :config 
- (progn 
+ :config
+ (progn
    (ido-mode t)
 
    ;; (for all buffer/file name entry)
    (ido-everywhere)
-   
+
    ;; Change some keys in ido
    (defun my-ido-keys ()
      (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
@@ -206,8 +194,12 @@
    ;; Allow completion (and opening) of buffers that are actually closed.
    (set 'ido-use-virtual-buffers t)
 
+   ;; Not sure if this works yet, supposed to add dir info for duplicate
+   ;; virtual buffers.
+   (set 'ido-handle-duplicate-virtual-buffers 4)
+
    ;; increase number of buffers to rememeber
-   (set 'recentf-max-saved-items 1000) 
+   (set 'recentf-max-saved-items 1000)
 
    ;; Cycle through commands with tab if we can't complete any further.
    (set 'ido-cannot-complete-command 'ido-next-match)
@@ -224,9 +216,9 @@
    ;; ??ds Add ignore regex for useless files
 
 
-   ;; smex: ido based completion for commands 
+   ;; smex: ido based completion for commands
    ;; ============================================================
-   
+
    ;; Change the main keybinding
    (global-set-key [remap execute-extended-command] 'smex)
 
@@ -265,7 +257,7 @@
    ;; (define-key global-map [remap find-tag] 'my-ido-find-tag)
 
 
-   ;; ido for help functions 
+   ;; ido for help functions
    ;; ============================================================
 
    ;; There's a whole bunch of code here that I don't really understand, I
@@ -373,10 +365,10 @@ predicate PRED used to filter them."
 
 ;; Undo tree
 ;;================================================================
-(use-package 
+(use-package
  undo-tree
  :config
- (progn 
+ (progn
    ;; wipe it's keybinds
    (add-to-list 'minor-mode-map-alist '('undo-tree-mode (make-sparse-keymap)))
 
@@ -591,7 +583,7 @@ index in STRING."
 
 (defun clean-whitespace-and-save ()
   (interactive)
-  (delete-trailiang-whitespace)
+  (delete-trailing-whitespace)
   (save-buffer))
 
 
@@ -599,7 +591,7 @@ index in STRING."
 (defun replace-pairs-region (p1 p2 pairs)
   "Replace multiple PAIRS of find/replace strings in region P1 P2.
 
-PAIRS should be a sequence of pairs [[findStr1 replaceStr1] [findStr2 replaceStr2] …] It can be list or vector, for the elements or the entire argument.  
+PAIRS should be a sequence of pairs [[findStr1 replaceStr1] [findStr2 replaceStr2] …] It can be list or vector, for the elements or the entire argument.
 
 The find strings are not case sensitive. If you want case sensitive, set `case-fold-search' to nil. Like this: (let ((case-fold-search nil)) (replace-pairs-region …))
 
@@ -767,7 +759,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 
 
-;; Git 
+;; Git
 ;; ============================================================
 
 ;; Use org-mode for git commits
@@ -779,7 +771,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (global-diff-hl-mode)
 
 
-;; Markdown mode 
+;; Markdown mode
 ;; ============================================================
 
 (use-package markdown-mode
@@ -796,7 +788,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
       (local-set-key (kbd "C-c") nil)
 
       ;; Compile = preview
-      (global-set-key [remap my-recompile] 'markdown-preview)
+      (local-set-key [remap compile] 'markdown-preview)
+      (local-set-key [remap my-recompile] 'markdown-preview)
 
       )
 
@@ -875,7 +868,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; If you prefer the traditional rectangle marking (i.e. don't want
 ;; straight edges), [M-p] toggles this for the current rectangle,
 ;; or you can customize cua-virtual-rectangle-edges.
- 
+
 ;; And there's more: If you want to extend or reduce the size of the
 ;; rectangle in one of the other corners of the rectangle, just use
 ;; [return] to move the cursor to the "next" corner.  Or you can use
@@ -967,7 +960,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;;     (emacs-lisp-mode . "EL ")
 ;;     (nxhtml-mode . "nx "))
 ;;   "Alist for `clean-mode-line'.
- 
+
 ;; When you add a new element to the alist, keep in mind that you
 ;; must pass the correct minor/major mode symbol and a string you
 ;; want to use in the modeline *in lieu of* the original.")
@@ -992,20 +985,20 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (use-package uniquify)
 
 ;; Pretty modeline
-(use-package 
+(use-package
  smart-mode-line
  :config
  (progn (sml/setup)
 
         ;; Shorten some directories to useful stuff
         (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
-        (add-to-list 'sml/replacer-regexp-list 
+        (add-to-list 'sml/replacer-regexp-list
                      '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
         (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
-        (add-to-list 'sml/replacer-regexp-list 
+        (add-to-list 'sml/replacer-regexp-list
                      '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
         ))
- 
+
 
 
 ;; ??ds new file?
@@ -1019,7 +1012,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 ;; Projectile
 ;; ============================================================
-(use-package 
+(use-package
   projectile
   :pre-load
   (progn
@@ -1027,7 +1020,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (set 'projectile-keymap-prefix (kbd "C-\\ p")))
 
   :config
-  (progn 
+  (progn
     ;; Kill C-c keys just in case
     (define-key projectile-mode-map (kbd "C-c") nil)
 
@@ -1050,7 +1043,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; yasnippet?
 ;; ============================================================
 
-(use-package 
+(use-package
   yasnippet
   :config
   (progn
@@ -1071,7 +1064,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
                 (define-key yas-minor-mode-map (kbd "C-c") nil)
 
                 (define-key yas-minor-mode-map (kbd "C-i") nil)
+                (define-key yas-minor-mode-map (kbd "TAB") nil)
                 (define-key yas-minor-mode-map [tab] nil)
+
 
                 (set 'yas-fallback-behavior nil)
 
@@ -1098,7 +1093,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
     ;; Keys for snippet editing mode
     (add-hook 'snippet-mode-hook
-              (lambda () 
+              (lambda ()
                 (interactive)
                 (local-set-key (kbd "<f5>") 'yas-tryout-snippet)
                 (local-set-key (kbd "C-c") nil)
@@ -1111,10 +1106,13 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     )
   )
 
-;; Irony mode (fancy c/c++ autocomplete) 
+;; Irony mode (fancy c/c++ autocomplete)
 ;; ============================================================
 (use-package irony
-  :config 
+
+  :disabled
+
+  :config
   (progn
     ;; the ac plugin will be activated in each buffer using irony-mode
     (irony-enable 'ac)             ; hit C-RET to trigger completion
@@ -1135,17 +1133,17 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 
 (defun external-shell-in-dir ()
-  "Start urxvt in the current files dir"
+  "Start urxvt in the current file's dir"
   (interactive)
   (start-process "urxvt" nil "urxvt"))
 (global-set-key (kbd "C-<f7>") 'external-shell-in-dir)
 
 
-;; deft (note taking) 
+;; deft (note taking)
 ;; ============================================================
 (use-package deft
   :config
-  (progn 
+  (progn
     (setq deft-directory "~/Dropbox/notes")
     (setq deft-extension "md")
     (setq deft-text-mode 'markdown-mode)
@@ -1162,7 +1160,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (define-key deft-mode-map (kbd "C-y") 'deft-filter-decrement-word)
 
     ;; Make a new deft buffer anytime we press f8 (by killing the old one).
-    (defun new-clean-deft () 
+    (defun new-clean-deft ()
       (interactive)
       "Close old deft buffer and start a new one"
       (ignore-errors (kill-buffer "*Deft*"))
@@ -1171,6 +1169,25 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (global-set-key [f8] 'new-clean-deft)
     )
   )
+
+;; javascript
+;; ============================================================
+
+;; Add parsing of jshint output in compilation mode
+(add-to-list 'compilation-error-regexp-alist-alist '(jshint "^\\(.*\\): line \\([0-9]+\\), col \\([0-9]+\\), " 1 2 3))
+(add-to-list 'compilation-error-regexp-alist 'jshint)
+
+;; always clean whitespace in javascript mode
+(defun remap-save-clean-whitespace ()
+  (interactive)
+  (local-set-key [remap save-buffer] 'clean-whitespace-and-save))
+(add-hook 'js-mode-hook 'remap-save-clean-whitespace)
+
+;; set up tab key
+(add-hook 'js-mode-hook 'set-tab)
+
+;; indent by 2
+(set 'js-indent-level 2)
 
 
 ;; Automagically added by customise
@@ -1203,4 +1220,3 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-

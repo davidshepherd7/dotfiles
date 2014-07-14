@@ -80,6 +80,14 @@
   "" > \n
   "}" > \n)
 
+(define-skeleton fut-skele
+  "" nil
+  "for(unsigned t=0; t<"_"; t++)" > \n
+  "{" > \n
+  "" > \n
+  "}" > \n)
+
+
 (define-skeleton funk-skele
   "" nil
   "for(unsigned k=0, nk="_"; k<nk; k++)" > \n
@@ -145,7 +153,7 @@
 (define-skeleton oomph-warn-skele
   "" nil
   "std::string err = \"" _ "\";" > \n
-  "throw OomphLibWarning(err, OOMPH_CURRENT_FUNCTION," > \n
+  "OomphLibWarning(err, OOMPH_CURRENT_FUNCTION," > \n
   "OOMPH_EXCEPTION_LOCATION);" > \n
   )
 
