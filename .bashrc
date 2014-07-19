@@ -382,8 +382,13 @@ OOMPHMMDRIVER="$OOMPHMM/control_scripts/driver"
 OPTOOMPH="$HOME/optoomph"
 OPTOOMPHMM="$OPTOOMPH/user_drivers/micromagnetics"
 
-alias quickautogen="$OOMPH/autogen.sh -d $OOMPH -r -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-debug"
-alias optquickautogen="$OPTOOMPH/quickautogen.sh -C $OPTOOMPH -r -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-optimise"
+alias oomphctags="ctags -e --extra=+q --recurse $OOMPH/src/generic $OOMPH/src/meshes $OOMPH/user_drivers"
+
+alias optctags="ctags -e --extra=+q --recurse $OPTOOMPH/src/generic $OPTOOMPH/src/meshes $OPTOOMPH/user_drivers"
+
+
+alias quickautogen="$OOMPH/autogen.sh -d $OOMPH -r -s -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-debug && oomphctags"
+alias optquickautogen="$OPTOOMPH/autogen.sh -d $OPTOOMPH -r -s -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-optimise && optctags"
 
 alias quickcheck="python3 $OOMPH/bin/parallel_self_test.py -C $OOMPH"
 alias optquickcheck="python3 $OPTOOMPH/bin/parallel_self_test.py -C $OPTOOMPH"
