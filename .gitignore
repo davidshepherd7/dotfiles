@@ -2,6 +2,12 @@
 .xmonad/xmonad-x86_64-linux*
 .xmonad/xmonad\ *
 
+
+# Other repos
+.emacs.d/frames-only-mode/
+.emacs.d/oomph-snippets/
+
+
 # emacs junk
 .emacs.d/session*
 .emacs.d/.emacs.desktop
