@@ -497,6 +497,33 @@ alias parse="parse.py"
 # Stupid netgen!! Needs to have it's dir set for it
 export NETGENDIR="/usr/share/netgen/"
 
+# Prepend a line to a file using ed
+prepend ()
+{
+    echo "0a
+$1
+.
+w" | ed "$2"
+}
+
+# Run oomph-lib micromagnetics parse over ssh and view pdfs locally
+ssh-parse ()
+{
+    # run and save on simulations machine
+    temp_sims=$(ssh david-simulations 'mktemp "ssh-parse-$USER.XXXXXXX" --tmpdir -d')
+    ssh david-simulations "parse.py $@ --ssh-mode --save-to-dir \"$temp_sims\""
+
+    # bring to local machine
+    temp_local=$(mktemp "ssh-parse-local-$USER.XXXXXXX" --tmpdir -d)
+    scp "david-simulations:$temp_sims/*" "$temp_local"
+
+    # view
+    evince "$temp_local/*"
+
+    # temp files are cleared by machines automatically (on boot in
+    # Ubuntu).
+}
+
 
 
 # Emacs
