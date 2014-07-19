@@ -95,8 +95,8 @@ set show-all-if-ambiguous On
 "\en": backward-char
 "\eo": forward-char
 
-"\C-y": backward-kill-word
-"\C-d": kill-word
+"\C-y": shell-backward-kill-word
+"\C-d": shell-kill-word
 "\ex": kill-whole-line
 
 "\ed": delete-char
