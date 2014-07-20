@@ -59,9 +59,7 @@ alias glp='git log -p'
 alias sst='svn status -q'
 alias sd='svn diff'
 
-# A make alias with completion. make completions are dynamically loaded:
-# load them so that we can apply them to our m command then copy the make
-# completion options.
+# A make alias
 m()
 {
     make --keep-going --silent LIBTOOLFLAGS=--silent $@
@@ -85,7 +83,7 @@ alias findc="find \( -name '*.cc' -o -name '*.h' -o -name '*.cpp' -o -name '*.hp
 alias pylab='ipython --pylab'
 alias nosetests="nosetests --processes="$NCORES
 
-# Edit command scripts. Autocomplete using command names available
+# Edit command scripts. ??ds fix completion?
 we()
 {
     $EDITOR $(type -p "$1")

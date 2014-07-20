@@ -1,37 +1,11 @@
 # Fix C-i in urxvt?
 # shell-word movement/deletes
+# Replace cd aliases with directory vars and cd ~ see: http://zsh.sourceforge.net/Intro/intro_5.html
 
-
-# The following lines were added by compinstall
-
-zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
-zstyle ':completion:*' match-original both
-zstyle ':completion:*' max-errors 2
-zstyle :compinstall filename '/home/david/.zshrc'
-
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
-
-# Enable stored history, and make it large, don't store repeats
-HISTSIZE=100000
-SAVEHIST=$HISTSIZE
-HISTFILE=~/.zsh_history
-setopt histignoredups
 
 # How many cores do we have? Find out from /proc/cpuinfo (using regexp matching
 # the start of info for a new processor).
 NCORES=$(grep --count '^processor[[:space:]]*:' /proc/cpuinfo)
-
-# Colour codes:
-# Black       0;30     Dark Gray     1;30
-# Blue        0;34     Light Blue    1;34
-# Green       0;32     Light Green   1;32
-# Cyan        0;36     Light Cyan    1;36
-# Red         0;31     Light Red     1;31
-# Purple      0;35     Light Purple  1;35
-# Brown       0;33     Yellow        1;33
-# Light Gray  0;37     White         1;37
 
 # In `make` set default number of jobs to run. Apparently make runs fastest
 # with one more job than there are cores.
@@ -54,6 +28,42 @@ source ${rcdir}/zsh-aliases.sh
 
 # Load oomph-lib related aliases/functions
 source ${rcdir}/zsh-oomph-aliases.sh
+
+# The following lines were added by compinstall 
+# ============================================================
+
+zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
+zstyle ':completion:*' match-original both
+zstyle ':completion:*' max-errors 2
+zstyle :compinstall filename '/home/david/.zshrc'
+
+autoload -Uz compinit
+compinit
+
+
+# History 
+# ============================================================
+
+# Enable stored history, and make it large.
+HISTSIZE=100000
+SAVEHIST=$HISTSIZE
+HISTFILE=~/.zsh_history
+
+# Don't store repeated lines
+setopt histignoredups
+
+# Immediately add lines to history file, instead of waiting till end
+setopt incappendhistory
+
+# Store additional data about the history: times/dates, runtimes
+setopt extendedhistory
+
+# View history data
+alias hist='history -f -D -E'
+
+# Remove redundant whitespace from history lines
+setopt histreduceblanks
+
 
 
 # Fancy prompt with git stuff
