@@ -42,72 +42,12 @@ export MAKEFLAGS="-j$NJOBS"
 # Stupid netgen!! Needs to have it's dir set for it
 export NETGENDIR="/usr/share/netgen/"
 
-
-# Key binds 
-# ============================================================
-
-# Don't use the flow control bindings for C-q and C-s (stop/resume output,
-# for use with ancient typewriter style outputs).
-setopt noflowcontrol
-
-# movement
-bindkey "\C-n" emacs-backward-word
-bindkey "\C-o" emacs-forward-word
-bindkey "\en" backward-char
-bindkey "\eo" forward-char
-bindkey "\C-b" beginning-of-line
-bindkey "\C-l" end-of-line
-
-# bind vi-find-next-char vi-first-non-blank ??ds
-
-# history
-bindkey "\ei" up-line-or-history
-bindkey "\ee" down-line-or-history
-bindkey "\e." insert-last-word # use numeric arguments (e.g. M-2) to get
-                                # 2nd to last etc.
+# Directory for rc files:
+rcdir="$HOME/Dropbox/linux_setup/rcfiles"
 
 
-# delete words and characters
-bindkey "\C-y" backward-kill-word
-bindkey "\C-d" kill-word
-bindkey "\ed" delete-char
-bindkey "\ey" backward-delete-char
-
-
-# # shellword movement/deletes
-# my_shell_wordchars=""
-# backward-kill-shellword ()
-# {
-#   echo "hi"
-#   local WORDCHARS="$my_shell_wordchars"
-#   zle backward-kill-word
-# }
-# zle -N backward-kill-shellword
-# bindkey "\C-\ey" backward-kill-shellword
-
-# delete lines
-bindkey "\C-x" kill-line
-bindkey "\C-X" backward-kill-line
-bindkey "\ex" kill-whole-line
-
-# paste
-bindkey "\C-v" yank
-bindkey "\ev" yank-pop
-
-# misc emacs-like things
-bindkey "\C-q" quoted-insert
-bindkey "\C-u" universal-argument
-bindkey "\et" transpose-words
-
-# misc shell things
-bindkey "\C-\"" quote-line
-bindkey "\C-j" accept-line
-bindkey "\e[11~" run-help # f1 key
-
-# change case
-bindkey "\e'" capitalize-word
-bindkey "\el" down-case-word
-bindkey "\eu" up-case-word
+# Load key binds 
+source ${rcdir}/zsh-bindings.sh
 
 
 # Fancy prompt with git stuff
