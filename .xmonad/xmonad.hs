@@ -38,27 +38,27 @@ import XMonad.Hooks.EwmhDesktops
 
 -- If possible just launch a new emacs client frame with the most recent
 -- not currently shown buffer. If not possible then probably the emacs
--- daemon is not running. So run a new emacs daemon (via bash so that it
--- inherits all the shell variables from .bashrc), then launch an
+-- daemon is not running. So run a new emacs daemon (via zsh so that it
+-- inherits all the shell variables from .zshrc), then launch an
 -- emacsclient frame.
-myEditor = "emacsclient -c -n -e '(switch-to-buffer nil)' || (bash -l -c \"emacs --daemon\" && emacsclient -c -n )"
+myEditor = "emacsclient -c -n -e '(switch-to-buffer nil)' || (zsh -l -c \"emacs --daemon\" && emacsclient -c -n )"
 
 -- App for taking notes, use deft in emacs
 myNotes = "emacsclient -c -n -e '(new-clean-deft)'"
 
 -- Try various terminals till one works.
-myTerminal = "urxvt || xfce4-terminal || gnome-terminal"
+myTerminal = "urxvt -e zsh || xfce4-terminal -e zsh || gnome-terminal -e zsh"
 
 -- Terminal running fish shell
 myFish = "urxvt -e fish || gnome-terminal -e fish"
 
 -- Terminal shortcuts, don't really use non-urxvt terminals anymore so
 -- can't be bothered with the || stuff...
-oomphTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib && /bin/bash'"
+oomphTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib && /bin/zsh'"
 
-micromagTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics && /bin/bash'"
-driverTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/driver && /bin/bash'"
-optDriverTerminal = "urxvt -e /bin/sh -c 'cd ~/optoomph/user_drivers/micromagnetics/control_scripts && /bin/bash'"
+micromagTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics && /bin/zsh'"
+driverTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/driver && /bin/zsh'"
+optDriverTerminal = "urxvt -e /bin/sh -c 'cd ~/optoomph/user_drivers/micromagnetics/control_scripts && /bin/zsh'"
 
 -- Try various browsers until one works.
 myBrowser = "firefox || google-chrome || chromium || chromium-browser"
@@ -73,7 +73,7 @@ guiFolderOpen = "~/.xmonad/dmenu/dfoldermenu.sh"
 -- Try various locking mechanisms until one works.
 myLockScreen = "mate-screensaver-command -l || xflock4 || gnome-screensaver-command -l"
 
-myiPythonCommand = "bash -l -c \"ipython3\""
+myiPythonCommand = "zsh -l -c \"ipython3\""
 myiPython = "urxvt -e " ++ myiPythonCommand ++
             " || gnome-terminal -e " ++ myiPythonCommand
 

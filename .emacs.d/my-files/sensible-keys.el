@@ -492,7 +492,7 @@ the line break."
 ;; File open keybinds
 ;; ===============================================================
 (global-set-key (kbd "C-<f12>")
-                '(lambda () (interactive) (find-file "~/.bashrc")))
+                '(lambda () (interactive) (find-file "~/.zshrc")))
 (global-set-key (kbd "C-<f11>")
                 '(lambda () (interactive) (find-file "~/.emacs.d/init.el")))
 (global-set-key (kbd "C-<f10>")
