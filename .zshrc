@@ -49,6 +49,12 @@ rcdir="$HOME/Dropbox/linux_setup/rcfiles"
 # Load key binds 
 source ${rcdir}/zsh-bindings.sh
 
+# Load aliases and simple functions
+source ${rcdir}/zsh-aliases.sh
+
+# Load oomph-lib related aliases/functions
+source ${rcdir}/zsh-oomph-aliases.sh
+
 
 # Fancy prompt with git stuff
 # ============================================================
@@ -98,93 +104,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 # Aliases 
 # ============================================================
 
-
-
-# Use better top with colours and stuff:
-alias top='htop'
-
-# Use hub for better github integration if we have it and it's executable.
-if [[ -x "/usr/local/bin/hub" ]]; then
-    alias git='hub'
-fi
-
-# Tail -F isn't really tail anymore...c all it rcat(refresh cat)
-alias rcat='tail -F -n 100000'
-
-# gdb with autorun and --args
-alias gdbr='gdb -ex "run" --args'
-
-# ls aliases
-alias ls='ls --color=auto'
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Grep
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-
-# package manager
-alias ai='sudo apt-get install'
-alias ar="sudo apt-get remove"
-alias update='sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet'
-alias pm='sudo pacmatic -S'
-
-# Open location in gnome
-alias go='nautilus .'
-
-# Git aliases
-alias gs='git status'
-alias gd='git diff'
-alias gdc='git diff --cached'
-alias gl1='git log -n1 -p'
-alias gc='git cherry-pick'
-alias gca='git commit --amend'
-alias gc='git commit'
-alias gsri='git stash --keep-index && git stash && git rebase --interactive HEAD~20 && git stash pop && git add -p && git commit --amend && git rebase --continue && git stash pop'
-alias gap='git add -p'
-alias gcp='git checkout -p'
-alias grh='git reset HEAD'
-
-
-alias gss='git stash --keep-index && git stash'
-alias gsp='git stash pop'
-alias gri='git rebase --interactive HEAD~20'
-alias grc='git rebase --continue'
-alias glp='git log -p'
-
-
-# svn aliases
-alias sst='svn status -q'
-alias sd='svn diff'
-
-# A make alias with completion. make completions are dynamically loaded:
-# load them so that we can apply them to our m command then copy the make
-# completion options.
-m()
-{
-    make --keep-going --silent LIBTOOLFLAGS=--silent $@
-}
-
-
-# Matlab in a terminal
-alias matlab='matlab -nodesktop -nosplash'
-
-# Maple in a terminal
-alias maple="~/code/maple17/bin/maple"
-
-# Move thing to trash
-alias trsh='trash-put'
-
-# Simplified find comamnds
-function fname() { find . -iname "*$@*"; }
-alias findc="find \( -name '*.cc' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' \)"
-
-# python
-alias pylab='ipython --pylab'
-alias nosetests="nosetests --processes="$NCORES
-
 # Get a sorted list of disk usage (take from http://www.commandlinefu.com/commands/view/4786/nice-disk-usage-sorted-by-size-see-description-for-full-command )
 sdu()
 {
@@ -226,50 +145,6 @@ lccode()
 }
 
 
-# Edit command scripts. Autocomplete using command names available
-we()
-{
-    $EDITOR $(type -p "$1")
-}
-
-# Build thesis tex file
-alias tb='cd ~/Dropbox/phd/reports/ongoing-writeup/ && ./build.sh'
-
-# Set up pedals
-alias pedals='sudo /lib/udev/keymap -i input/event2 /lib/udev/keymaps/microdia'
-
-# Quickly cd to useful directorys:
-alias om='cd $OOMPHMM'
-alias hs='cd ~/Dropbox/programming/helperscripts'
-alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
-# alias sr='cd ~/Dropbox/phd/talks/second_year_progression'
-# alias rs='cd ~/Dropbox/phd/results'
-# alias sicp='cd ~/programming/sicp/exercises4'
-alias rc='cd ~/Dropbox/linux_setup/rcfiles'
-alias wb='cd ~/Dropbox/web/blog'
-alias mmm='cd ~/Dropbox/phd/posters/2013_MMM_Denver/poster'
-alias css='cd ~/Dropbox/phd/talks/2013_cs_symposium'
-alias sp='cd ~/programming/simpleode/'
-alias spe='cd ~/programming/simpleode/experiments'
-alias demon='cd ~/Dropbox/phd/demonstrations/maths_for_cs'
-alias illg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/llg_driver"
-alias sllg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/semi_implicit_mm_driver"
-alias oode="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/ode_driver"
-alias mmr='cd ~/Dropbox/phd/talks/RGM-21-11-2013_mmm_review'
-
-
-# Cd to currently used dirs
-function now ()
-{
-    cd ~/oomph-lib/user_drivers/micromagnetics/
-}
-
-# Aliases for cds upwards
-alias ....='cd ../../..'
-alias ...='cd ../..'
-alias ..='cd ../'
-
-
 pipe-evince()
 {
     # Safely generate a temp file
@@ -298,25 +173,6 @@ git-pdf-diff()
     git show "HEAD:$1"  | pipe-evince
 }
 
-# Quickly cd to useful directorys:
-alias om='cd $OOMPHMM'
-alias hs='cd ~/Dropbox/programming/helperscripts'
-alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
-# alias sr='cd ~/Dropbox/phd/talks/second_year_progression'
-# alias rs='cd ~/Dropbox/phd/results'
-# alias sicp='cd ~/programming/sicp/exercises4'
-alias rc='cd ~/Dropbox/linux_setup/rcfiles'
-alias wb='cd ~/Dropbox/web/blog'
-alias mmm='cd ~/Dropbox/phd/posters/2013_MMM_Denver/poster'
-alias css='cd ~/Dropbox/phd/talks/2013_cs_symposium'
-alias sp='cd ~/programming/simpleode/'
-alias spe='cd ~/programming/simpleode/experiments'
-alias demon='cd ~/Dropbox/phd/demonstrations/maths_for_cs'
-alias illg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/llg_driver"
-alias sllg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/semi_implicit_mm_driver"
-alias oode="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/ode_driver"
-alias mmr='cd ~/Dropbox/phd/talks/RGM-21-11-2013_mmm_review'
-
 
 # Prepend a line to a file using ed
 prepend ()
@@ -330,103 +186,6 @@ w" | ed "$2"
 # oomph-lib 
 # ============================================================
 
-OOMPH="$HOME/oomph-lib"
-OOMPHMM="$OOMPH/user_drivers/micromagnetics"
-OOMPHMMDRIVER="$OOMPHMM/control_scripts/driver"
-OPTOOMPH="$HOME/optoomph"
-OPTOOMPHMM="$OPTOOMPH/user_drivers/micromagnetics"
-
-alias oomphctags="ctags -e --extra=+q --recurse $OOMPH/src/generic $OOMPH/src/meshes $OOMPH/user_drivers"
-
-alias optctags="ctags -e --extra=+q --recurse $OPTOOMPH/src/generic $OPTOOMPH/src/meshes $OPTOOMPH/user_drivers"
-
-
-alias quickautogen="$OOMPH/autogen.sh -d $OOMPH -r -s -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-debug && oomphctags"
-alias optquickautogen="$OPTOOMPH/autogen.sh -d $OPTOOMPH -r -s -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-optimise && optctags"
-
-alias quickcheck="python3 $OOMPH/bin/parallel_self_test.py -C $OOMPH"
-alias optquickcheck="python3 $OPTOOMPH/bin/parallel_self_test.py -C $OPTOOMPH"
-
-alias micromagcheck="m -C $OOMPHMM && m -C $OOMPHMM install \
-&&  m -C $OOMPHMM/control_scripts/driver \
-&& python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OOMPHMM"
-alias optmicromagcheck="m -C $OPTOOMPHMM && m -C $OPTOOMPHMM install \
-&&  m -C $OPTOOMPHMM/control_scripts/driver \
-&& python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OPTOOMPHMM"
-
-alias oopt="echo -e \"$OOMPH/config/configure_options/current contains:\n\n\"; cat $OOMPH/config/configure_options/current"
-
-alias mm="m LIBTOOLFLAGS=--silent -C $OOMPHMM && m LIBTOOLFLAGS=--silent -C $OOMPHMM install && m LIBTOOLFLAGS=--silent -C $OOMPHMM/control_scripts/driver"
-
-alias mdr="cd $OOMPHMM/control_scripts/driver"
-alias optmdr="cd $OPTOOMPHMM/control_scripts/driver"
-
-
-alias optmicromagcheck="m -C $OPTOOMPHMM && m -C $OPTOOMPHMM install &&  m -C $OPTOOMPHMM/control_scripts/driver && python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OPTOOMPHMM"
-
-optmm()
-{
-    m -C $OPTOOMPHMM $@ \
-        && m -C $OPTOOMPHMM install $@ \
-        && m -C $OPTOOMPHMM/control_scripts/driver $@
-}
-
-optnow()
-{
-    cd $OPTOOMPHMM/control_scripts
-}
-
-optsyncoomph()
-{
-    cd $OOMPH \
-        && git push --force \
-        && cd $OPTOOMPH \
-        && git fetch --all \
-        && git reset --hard origin/working \
-        && optquickautogen
-}
-
-optsync()
-{
-    cd $OOMPHMM \
-        && git push --force \
-        && optnow \
-        && git fetch --all \
-        && git reset --hard origin/master \
-        && optmicromagcheck
-}
-
-mccat ()
-{
-    cat $1/Validation/make_check_output
-    cat $1/Validation/validation.log
-    cat $1/Validation/run_script
-    cat $1/Validation/stdout
-}
-
-full_test()
-{
-    # Arguments are passed to quickautogen and used to label files
-
-    mkdir test_results
-
-    oomphfile="test_results/oomph_tests_$@"
-    oomphfile2=$(echo $oomphfile | sed 's/ /_/g')
-
-    mmfile="test_results/mm_tests_$@"
-    mmfile2=$(echo $mmfile | sed 's/ /_/g')
-
-    buildfile="test_results/build_trace_$@"
-    buildfile2=$(echo $buildfile | sed 's/ /_/g')
-
-    quickautogen $@ 2>&1 | tee $buildfile2 && \
-        quickcheck --no-colour | tee $oomphfile2 && \
-        micromagcheck | tee $mmfile2
-}
-
-# Run all tests with debug, mpi and mpi+opt settings (assuming we are
-# starting in a debug build).
-alias oomphtestall="cd ~/oomph-lib && touch test_results && mv test_results test_results.old && full_test -d && full_test -am && full_test -an"
 
 pvdat ()
 {
@@ -472,13 +231,6 @@ ssh-parse ()
 # you try to run an emacsclient
 export EDITOR="emacsclient -c -n"
 export ALTERNATE_EDITOR=""
-
-# Aliases for using emacs with a daemon, ec just starts a client, emacs starts a new window.
-alias ec='emacsclient -n'
-alias emacs='emacsclient -c -n'
-alias e='emacsclient -c -n'
-
-alias emacstest='\emacs --debug-init --batch -u $USER'
 
 
 # PATH additions
