@@ -1,0 +1,21 @@
+xkb_symbols "space_is_control" {
+  replace key <SPCE> { [ Control_L ] };
+  key <AB11> { [space, space, space, space]};
+  modifier_map Control { <SPCE> };
+};
+
+xkb_symbols "s_is_control" {
+  replace key <AC03> { [ Control_L ] };
+  key <JPCM> {
+        type= "FOUR_LEVEL_SEMIALPHABETIC", symbols[Group1]= [ s, S, ssharp, asciitilde ]};
+  modifier_map Control { <AC03> };
+};
+
+xkb_symbols "e_is_control" {
+  replace key <AC08> { [ Control_L ] };
+    key <I120> {
+        type= "FOUR_LEVEL_ALPHABETIC",
+        symbols[Group1]= [ e, E, eacute, Eacute ]
+    };
+  modifier_map Control { <AC08> };
+};

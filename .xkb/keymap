@@ -1,0 +1,11 @@
+xkb_keymap {
+	xkb_keycodes  { include "evdev+aliases(qwerty)"	};
+	xkb_types     { include "complete"	};
+	xkb_compat    { include "complete"	};
+	xkb_symbols   { include "pc+gb(colemak)+inet(evdev)+remap_space(space_is_control)+remap_space(s_is_control)+remap_space(e_is_control)"	};
+	xkb_geometry  { include "pc(pc105)"	};
+};
+
+
+# To use this run something like: xkbcomp -I$HOME/.xkb ~/.xkb/keymap $DISPLAY && killall xcape; ./xcape -e "#40=s;#65=space;#45=e"
+# To see complete keymap for modification run xkbcomp dump.xkb $DISPLAY
