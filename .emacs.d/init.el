@@ -1190,6 +1190,15 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (set 'js-indent-level 2)
 
 
+;; Shell mode 
+;; ============================================================
+
+(add-hook 'shell-mode-hook 'set-tab)
+(add-hook 'shell-mode-hook (lambda ()
+                             (set 'sh-basic-offset 2)
+                             (set 'sh-indentation 2)))
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
