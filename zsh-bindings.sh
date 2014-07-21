@@ -28,16 +28,21 @@ bindkey "\ed" delete-char
 bindkey "\ey" backward-delete-char
 
 
-# # shellword movement/deletes
-# my_shell_wordchars=""
-# backward-kill-shellword ()
-# {
-#   echo "hi"
-#   local WORDCHARS="$my_shell_wordchars"
-#   zle backward-kill-word
-# }
-# zle -N backward-kill-shellword
-# bindkey "\C-\ey" backward-kill-shellword
+# shellword movement/deletes
+autoload -U select-word-style
+
+backward-kill-bashword () {select-word-style bash; zle backward-kill-word}
+zle -N backward-kill-bashword
+bindkey "\e^y" backward-kill-bashword
+
+backward-bashword () {select-word-style bash; zle backward-word}
+zle -N backward-bashword
+bindkey "\e^n" backward-bashword
+
+forward-bashword () {select-word-style bash; zle forward-word}
+zle -N forward-bashword
+bindkey "\e^o" forward-bashword
+
 
 # delete lines
 bindkey "\C-x" kill-line
