@@ -95,7 +95,7 @@ GIT_PS1_SHOWUNTRACKEDFILES="on"
 source "/usr/lib/git-core/git-sh-prompt"
 
 # Create prompt
-PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f$(__git_ps1 " (%s)")%F{red}%?%f$%b
+PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f$(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
 '
 
 
