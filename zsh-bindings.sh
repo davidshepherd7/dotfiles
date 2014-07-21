@@ -67,3 +67,13 @@ bindkey "\e[11~" run-help # f1 key
 bindkey "\e'" capitalize-word
 bindkey "\el" down-case-word
 bindkey "\eu" up-case-word
+
+# Alt-q inserts "sudo " at the start of line
+function prepend-sudo {
+  if [[ $BUFFER != "sudo "* ]]; then
+    BUFFER="sudo $BUFFER"; CURSOR+=5
+  fi
+}
+zle -N prepend-sudo
+zle -N prepend-sudo
+bindkey "\eq" prepend-sudo
