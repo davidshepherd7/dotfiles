@@ -14,6 +14,9 @@ bindkey "\C-l" end-of-line
 
 # bind vi-find-next-char vi-first-non-blank ??ds
 
+# undo on its normal key!
+bindkey "\C-z" undo
+
 # history
 bindkey "\ei" up-line-or-history
 bindkey "\ee" down-line-or-history
