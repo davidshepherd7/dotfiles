@@ -29,7 +29,7 @@ source ${rcdir}/zsh-aliases.sh
 # Load oomph-lib related aliases/functions
 source ${rcdir}/zsh-oomph-aliases.sh
 
-# The following lines were added by compinstall 
+# Completion
 # ============================================================
 
 zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
@@ -37,8 +37,14 @@ zstyle ':completion:*' match-original both
 zstyle ':completion:*' max-errors 2
 zstyle :compinstall filename '/home/david/.zshrc'
 
+fpath=(~/.zsh/completion $fpath)
+autoload -U ~/.zsh/completion/*(:t)
+
+# Initialise
 autoload -Uz compinit
 compinit
+
+
 
 
 # History 
