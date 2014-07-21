@@ -6,6 +6,18 @@ OOMPHMMDRIVER="$OOMPHMM/control_scripts/driver"
 OPTOOMPH="$HOME/optoomph"
 OPTOOMPHMM="$OPTOOMPH/user_drivers/micromagnetics"
 
+so()
+{
+    if [[ "$(pwd)" == "$OOMPH"* ]]; then
+        cd $OOMPH $OPTOOMPH
+    elif [[ "$(pwd)" == "$OPTOOMPH"* ]]; then
+        cd $OPTOOMPH $OOMPH
+    else
+        echo "Not in an oomph dir" 1>&2
+    fi
+}
+
+
 alias oomphctags="ctags -e --extra=+q --recurse $OOMPH/src/generic $OOMPH/src/meshes $OOMPH/user_drivers"
 
 alias optctags="ctags -e --extra=+q --recurse $OPTOOMPH/src/generic $OPTOOMPH/src/meshes $OPTOOMPH/user_drivers"
