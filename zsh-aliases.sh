@@ -27,7 +27,7 @@ alias egrep='egrep --color=auto'
 
 # package manager
 alias ai='sudo apt-get install'
-alias ar="sudo apt-get remove"
+alias arm="sudo apt-get remove"
 alias update='sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet'
 alias pm='sudo pacmatic -S'
 
