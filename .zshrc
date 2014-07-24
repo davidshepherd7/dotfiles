@@ -1,5 +1,4 @@
 # Fix C-i in urxvt?
-# shell-word movement/deletes
 # Replace cd aliases with directory vars and cd ~ see: http://zsh.sourceforge.net/Intro/intro_5.html
 
 
@@ -45,6 +44,11 @@ autoload -Uz compinit
 compinit
 
 
+# General options
+# ============================================================
+
+# shut the hell up and rm *
+setopt rmstarsilent
 
 
 # History 

@@ -62,7 +62,7 @@ bindkey "\C-u" universal-argument
 bindkey "\et" transpose-words
 
 # misc shell things
-bindkey "\C-\"" quote-line
+bindkey "\C-p" quote-line
 bindkey "\C-j" accept-line
 bindkey "\e[11~" run-help # f1 key
 
