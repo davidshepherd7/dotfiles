@@ -1135,7 +1135,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (defun external-shell-in-dir ()
   "Start urxvt in the current file's dir"
   (interactive)
-  (start-process "urxvt" nil "urxvt"))
+  (start-process "urxvt" nil "urxvt" "-e" "zsh"))
 (global-set-key (kbd "C-<f7>") 'external-shell-in-dir)
 
 
