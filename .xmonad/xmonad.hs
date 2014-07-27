@@ -77,6 +77,8 @@ myiPythonCommand = "zsh -l -c \"ipython3\""
 myiPython = "urxvt -e " ++ myiPythonCommand ++
             " || gnome-terminal -e " ++ myiPythonCommand
 
+myGhci = "urxvt -e ghci"
+
 ------------------------------------------------------------------------
 -- Window rules:
 
@@ -230,6 +232,8 @@ myKeys = [
 
   , ("M-y", spawn myBrowser)
   , ("M-,", spawn myiPython)
+  , ("M-.", spawn myGhci)
+
     
     
     -- movement
