@@ -21,8 +21,8 @@ so()
 alias oomphctags="ctags -e --extra=+q --recurse $OOMPH/src/generic $OOMPH/src/meshes $OOMPH/user_drivers"
 
 
-alias quickautogen="$OOMPH/autogen.sh -d $OOMPH -s -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-debug && oomphctags"
-alias optquickautogen="$OPTOOMPH/autogen.sh -d $OPTOOMPH -s -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-optimise"
+alias quickautogen="$OOMPH/autogen.sh -s -k -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-debug && oomphctags"
+alias optquickautogen="$OPTOOMPH/autogen.sh -s -k -c ${HOME}/Dropbox/phd/oomph-lib/oomph-lib-compile-options-optimise"
 
 alias quickcheck="python3 $OOMPH/bin/parallel_self_test.py -C $OOMPH"
 alias optquickcheck="python3 $OPTOOMPH/bin/parallel_self_test.py -C $OPTOOMPH"

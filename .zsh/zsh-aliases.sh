@@ -54,6 +54,8 @@ alias gri='git rebase --interactive HEAD~20'
 alias grc='git rebase --continue'
 alias glp='git log -p'
 
+alias gitlsuntracked='git ls-files --exclude-standard -o'
+
 
 # svn aliases
 alias sst='svn status -q'
@@ -155,3 +157,12 @@ alias e='emacsclient -c -n'
 
 # test that emacs works with this config
 alias emacstest='\emacs --debug-init --batch -u $USER'
+
+pdfpages ()
+{
+    pdftk A=$1 cat A$2 output "${1:r}_pp${2}.pdf"
+}
+
+
+# New feh wallpaper
+alias wallpaper='feh --bg-scale $HOME/Dropbox/other/wallpapers -zr'

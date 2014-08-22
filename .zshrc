@@ -15,8 +15,8 @@ export MAKEFLAGS="-j$NJOBS"
 # Stupid netgen!! Needs to have it's dir set for it
 export NETGENDIR="/usr/share/netgen/"
 
-# Directory for rc files:
-rcdir="$HOME/Dropbox/linux_setup/rcfiles"
+# Directory for zsh rc files:
+rcdir="$HOME/.zsh"
 
 
 # Load key binds 
