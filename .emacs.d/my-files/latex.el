@@ -28,22 +28,67 @@
                '(biber "^WARN \- .*$"))
   (add-to-list 'compilation-error-regexp-alist 'biber))
 
-
-;; Flyspell mode on by default
-(add-hook 'latex-mode-hook 'turn-on-flyspell)
-
 ;; Use isearch over whole document by default
 (reftex-isearch-minor-mode t)
 
-;; Use a more normal end of paragraph
-(defun latex-normal-paragraph-starts ()
-  (interactive)
-  (setq paragraph-start "[      ]*$")
-  (setq paragraph-separate paragraph-start)
-)
-(add-hook 'latex-mode-hook 'latex-normal-paragraph-starts)
+;; ;; Use a more normal end of paragraph
+;; (defun latex-normal-paragraph-starts ()
+;;   (interactive)
+;;   (setq paragraph-start "[      ]*$")
+;;   (setq paragraph-separate paragraph-start)
+;; )
+;; (add-hook 'latex-mode-hook 'latex-normal-paragraph-starts)
 
 ;; use \eqref not (\ref) for equation references
 (setq reftex-label-alist '(AMSTeX))
 
 (set 'reftex-default-bibliography '("~/Documents/library.bib"))
+
+;; highlight new macros '\\\\' is double escaped \: escaped once for regex,
+;; once for emacs.
+(font-lock-add-keywords 'latex-mode
+                        '(
+                          ;; ("\\\\\[cC]ref" . 'font-lock-keyword-face)
+                          ;; ("\\\\[tT]hisref" . 'font-lock-keyword-face)
+                          ("\\\\includegraphics" . 'font-lock-keyword-face)
+                          ("\\\\newsubcommand" . 'font-lock-keyword-face)
+                          )
+                        )
+
+(eval-after-load
+    'tex
+  '(set 'font-latex-match-reference-keywords
+        '(("cref" "[{") 
+          ("Cref" "[{")
+          ("thisref" "[{")
+          ("Thisref" "[{")
+          )))
+
+(defun latex-insert-last-label (nprev)
+  "Insert clever reference to most recent (by position in buffer) label. If prefix
+arg is set go that many labels backward, if negative then go
+forward instead."
+  (interactive "p") ;; take prefix arg as input to function
+
+  ;; search for last use of \label
+  (save-excursion (re-search-backward "\\\\label\\({[^}]*}\\)" nil nil nprev))
+
+  ;; insert the match
+  (insert "\\cref" (match-string 1)))
+
+;; bind it
+(add-hook 'LaTeX-mode-hook 
+          (lambda () (local-set-key (kbd "C-/") 'latex-insert-last-label)))
+
+
+;; flyspell 
+;; ============================================================
+
+;; always use flyspell in latex
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+
+;; tell flyspell what to ignore
+(set 'flyspell-tex-command-regexp "\\(\\(begin\\|end\\)[ 	]*{\\|\\(cite[a-z*]*\\|label\\|ref\\|cref\\|Cref\\|[tT]hisref\\|eqref\\|usepackage\\|documentclass\\)[ 	]*\\(\\[[^]]*\\]\\)?{[^{}]*\\)")
+
+;; clear flyspell bindings
+(set 'flyspell-mode-map (make-sparse-keymap))
