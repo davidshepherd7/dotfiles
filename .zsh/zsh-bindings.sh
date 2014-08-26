@@ -133,7 +133,7 @@ bindkey "\ed" delete-char
 bindkey "\ey" backward-delete-char
 
 bindkey "\e^y" backward-kill-bashword
-bindkey "\e^y" kill-bashword
+bindkey "\e^d" kill-bashword
 
 
 # delete lines
