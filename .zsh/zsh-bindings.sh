@@ -45,6 +45,8 @@ yank-xclip ()
 }
 zle -N yank-xclip
 
+# These are buggy, not using it now :(
+
 backward-kill-word-xclip ()
 {
     zle backward-kill-word
@@ -124,24 +126,25 @@ bindkey "\e." insert-last-word # use numeric arguments (e.g. M-2) to get
 
 
 # delete words and characters
-bindkey "\C-y" backward-kill-word-xclip
-bindkey "\C-d" kill-word-xclip
+bindkey "\C-y" backward-kill-word
+bindkey "\C-d" kill-word
 
 bindkey "\ed" delete-char
 bindkey "\ey" backward-delete-char
 
-bindkey "\e^y" backward-kill-bashword-xclip
-bindkey "\e^y" kill-bashword-xclip
+bindkey "\e^y" backward-kill-bashword
+bindkey "\e^y" kill-bashword
 
 
 # delete lines
-bindkey "\C-x" kill-line-xclip
-bindkey "\C-X" backward-kill-line-xclip
-bindkey "\ex" kill-whole-line-xclip
+bindkey "\C-x" kill-line
+# bindkey "\C-X" backward-kill-line # doesn't work, overwrites \C-x
+bindkey "\ex" kill-whole-line
 
 # paste
-bindkey "\C-v" yank-xclip
+bindkey "\C-v" yank
 bindkey "\ev" yank-pop
+bindkey "\ec" send-kill-to-xclip
 
 # misc emacs-like things
 bindkey "\C-q" quoted-insert
