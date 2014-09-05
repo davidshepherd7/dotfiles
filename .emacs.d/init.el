@@ -1199,6 +1199,24 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
                              (set 'sh-indentation 2)))
 
 
+;; Ace jump mode 
+;; ============================================================
+
+(use-package ace-jump-mode
+  :config
+  (progn
+    (set 'ace-jump-mode-case-fold t)
+    
+    ;; favour home row keys
+    (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
+      (set 'ace-jump-mode-move-keys 
+           (nconc first-list
+                  (-difference (loop for i from ?a to ?z collect i) first-list)
+                  (loop for i from ?A to ?Z collect i))))
+    (set 'ace-jump-mode-scope 'window)
+    (global-set-key (kbd "C-p") 'ace-jump-mode)))
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
