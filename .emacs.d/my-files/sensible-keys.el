@@ -21,35 +21,29 @@
 ;; C-? : on region or to start of line
 ;; M-? : on region or all of line
 ;; M-S-? : on block (blankline seperated, incl. trailing newlines)
-;; C-M-? : on function (or equvalent)
+;; C-M-? : on function (or equvalent) -- disabled, use M-h to select block
 
-
-(defun go-to-beginning-of-block (&optional repeat)
+(defun skip-to-next-blank-line ()
   (interactive)
-  (backward-paragraph)
-  (next-line 1)
-  (beginning-of-line))
+  (let ((inhibit-changing-match-data t))
+    (skip-syntax-forward " >")
+    (unless (search-forward-regexp "^\\s *$" nil t)
+      (goto-char (point-max)))))
+
+(defun skip-to-previous-blank-line ()
+  (interactive)
+  (let ((inhibit-changing-match-data t))
+    (skip-syntax-backward " >")
+    (unless (search-backward-regexp "^\\s *$" nil t)
+      (goto-char (point-min)))))
 
 (defun point-at-beginning-of-block (&optional repeat)
-  (save-excursion (go-to-beginning-of-block) (point)))
-
-(defun go-to-end-of-block (&optional repeat)
-  (interactive)
-  ;; Go to start first to make sure we don't end up at the end of the
-  ;; *next* block (if we were in whitespace between the two). Then go to
-  ;; the end of the text in this paragraph (usually whitespace delimited).
-  (backward-paragraph)
-  (forward-paragraph)
-
-  ;; Now go past all the trailing whitespace too. If we hit the end of the
-  ;; buffer during this search then the end of the buffer is the end of the
-  ;; block.
-  (forward-line -1)
-  (unless (ignore-errors (search-forward-regexp "\n\n+" nil repeat))
-    (goto-char (point-max))))
+  (save-excursion (skip-to-next-blank-line)
+                  (point)))
 
 (defun point-at-end-of-block (&optional repeat)
-  (save-excursion (go-to-end-of-block) (point)))
+  (save-excursion (skip-to-previous-blank-line)
+                  (point)))
 
 (defun point-at-beginning-of-next-line ()
   (save-excursion (end-of-line) (forward-line)
@@ -96,13 +90,13 @@ the line break."
 (global-set-key (kbd "C-x") (lambda () (interactive) (dwim-end-of-line 'kill-region)))
 (global-set-key (kbd "M-x") (lambda () (interactive) (dwim-entire-line 'kill-region)))
 (global-set-key (kbd "C-S-x") (lambda () (interactive) (dwim-start-of-line 'kill-region)))
-(global-set-key (kbd "C-M-x") (lambda () (interactive) (function-on-block 'kill-region)))
+;; (global-set-key (kbd "C-M-x") (lambda () (interactive) (function-on-block 'kill-region)))
 
 ;; Copy
 (global-set-key (kbd "C-c") (lambda () (interactive) (dwim-end-of-line 'kill-ring-save)))
 (global-set-key (kbd "M-c") (lambda () (interactive) (dwim-entire-line 'kill-ring-save)))
 (global-set-key (kbd "C-S-c") (lambda () (interactive) (dwim-start-of-line 'kill-ring-save)))
-(global-set-key (kbd "C-M-c") (lambda () (interactive) (function-on-block 'kill-ring-save)))
+;; (global-set-key (kbd "C-M-c") (lambda () (interactive) (function-on-block 'kill-ring-save)))
 
 ;; Paste (and cycle through pastes)
 (global-set-key (kbd "C-v") 'yank)
@@ -116,15 +110,15 @@ the line break."
 ;; Doesn't do anything useful...
 ;; (global-set-key (kbd "C-:") (lambda () (interactive)
 ;; (dwim-start-of-line 'comment-or-uncomment-region)))
-(global-set-key (kbd "C-M-;") (lambda () (interactive)
-                                (function-on-block 'comment-or-uncomment-region)))
+;; (global-set-key (kbd "C-M-;") (lambda () (interactive)
+                                ;; (function-on-block 'comment-or-uncomment-region)))
 
 
 ;; eval
 (global-set-key (kbd "C-#") (lambda () (interactive) (dwim-end-of-line 'eval-region)))
 (global-set-key (kbd "M-#") (lambda () (interactive) (dwim-entire-line 'eval-region)))
 (global-set-key (kbd "C-S-#") (lambda () (interactive) (dwim-start-of-line 'eval-region)))
-(global-set-key (kbd "C-M-#") (lambda () (interactive) (function-on-block 'eval-region)))
+;; (global-set-key (kbd "C-M-#") (lambda () (interactive) (function-on-block 'eval-region)))
 
 
 ;; Some standard things from e.g. chrome
@@ -158,11 +152,11 @@ the line break."
       (global-set-key (kbd "C-o") 'forward-word)
       (global-set-key (kbd "C-M-o") 'forward-sentence)
 
-      (global-set-key (kbd "M-e") 'forward-paragraph)
+      (global-set-key (kbd "M-e") 'skip-to-next-blank-line)
       (global-set-key (kbd "C-e") 'next-line)
       (global-set-key (kbd "C-M-e") 'forward-sexp)
 
-      (global-set-key (kbd "M-i") 'backward-paragraph)
+      (global-set-key (kbd "M-i") 'skip-to-previous-blank-line)
       (global-set-key (kbd "C-i") 'previous-line)
       (global-set-key (kbd "C-M-i") 'backward-sexp)
 
