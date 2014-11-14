@@ -30,7 +30,7 @@
 ;; Build/test/check functions
 ;; ============================================================
 
-(setq nose-command "nosetests -d --all-modules --processes=8")
+(setq nose-command "nosetests3 -d --all-modules --processes=8")
 
 (defun nose (input-command)
   "Run nosetests."

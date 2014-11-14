@@ -1,4 +1,4 @@
-;; Generic emacs settings, other stuff is in individual files in ./my-files/
+;; Generic emacs settings, other stuff is in individual files in ./lisp/
 
 
 ;; test with compile command: \emacs --debug-init --batch -u $USER
@@ -382,28 +382,31 @@ predicate PRED used to filter them."
 ;; Load my other config files
 ;; ============================================================
 
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
 ;; Load skeletons
 (load-file "~/.emacs.d/skeletons.el")
 
 ;; Load configs from other files
-(load-file "~/.emacs.d/my-files/cpp.el")
-(load-file "~/.emacs.d/my-files/colours.el")
-(load-file "~/.emacs.d/my-files/latex.el")
-(load-file "~/.emacs.d/my-files/oomph-lib.el")
-(load-file "~/.emacs.d/my-files/scheme.el")
-(load-file "~/.emacs.d/my-files/octave.el")
-(load-file "~/.emacs.d/my-files/matlab.el")
-(load-file "~/.emacs.d/my-files/org.el")
-(load-file "~/.emacs.d/my-files/my-python.el") ;; python-mode is in file called python.el
-(load-file "~/.emacs.d/my-files/unicode-entry.el")
-(load-file "~/.emacs.d/my-files/haskell.el")
+(load-file "~/.emacs.d/lisp/cpp.el")
+(load-file "~/.emacs.d/lisp/colours.el")
+(load-file "~/.emacs.d/lisp/latex.el")
+(load-file "~/.emacs.d/lisp/oomph-lib.el")
+(load-file "~/.emacs.d/lisp/scheme.el")
+(load-file "~/.emacs.d/lisp/octave.el")
+(load-file "~/.emacs.d/lisp/my-matlab.el")
+(load-file "~/.emacs.d/lisp/org.el")
+(load-file "~/.emacs.d/lisp/my-python.el") ;; python-mode is in file called python.el
+(load-file "~/.emacs.d/lisp/unicode-entry.el")
+(load-file "~/.emacs.d/lisp/haskell.el")
+(load-file "~/.emacs.d/lisp/elisp.el")
+(load-file "~/.emacs.d/lisp/java.el")
+
 
 
 ;; Major changes to keybinds
 ;; Needs to after other file loads so that hooks are in scope
-(load-file "~/.emacs.d/my-files/sensible-keys.el")
+(load-file "~/.emacs.d/lisp/sensible-keys.el")
 
 
 ;; Save command history between sessions

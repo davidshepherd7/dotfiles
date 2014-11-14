@@ -10,6 +10,8 @@
 ;; unbind some standard keys
 (global-unset-key (kbd "C-y"))
 (global-unset-key (kbd "M-y"))
+(global-unset-key (kbd "C-h"))
+(global-unset-key (kbd "C-o"))
 
 (global-unset-key (kbd "C-M-h"))
 (global-unset-key (kbd "C-M-j"))
@@ -158,13 +160,13 @@ the line break."
       (global-set-key (kbd "C-n") 'backward-word)
       (global-set-key (kbd "C-M-n") 'backward-sentence)
 
-      (global-set-key (kbd "M-o") 'forward-char)
-      (global-set-key (kbd "C-o") 'forward-word)
-      (global-set-key (kbd "C-M-o") 'forward-sentence)
+      (global-set-key (kbd "M-e") 'forward-char)
+      (global-set-key (kbd "C-e") 'forward-word)
+      (global-set-key (kbd "C-M-e") 'forward-sentence)
 
-      (global-set-key (kbd "M-e") 'skip-to-next-blank-line)
-      (global-set-key (kbd "C-e") 'next-line)
-      (global-set-key (kbd "C-M-e") 'forward-sexp)
+      (global-set-key (kbd "M-h") 'skip-to-next-blank-line)
+      (global-set-key (kbd "C-h") 'next-line)
+      (global-set-key (kbd "C-M-h") 'forward-sexp)
 
       (global-set-key (kbd "M-i") 'skip-to-previous-blank-line)
       (global-set-key (kbd "C-i") 'previous-line)
@@ -186,6 +188,10 @@ the line break."
       (add-hook 'emacs-lisp-mode-hook 'set-tab)
       (add-hook 'shell-lisp-mode-hook 'set-tab)
       (add-hook 'haskell-mode-hook 'set-tab)
+      (add-hook 'java-mode-hook 'set-tab)
+      (add-hook 'org-mode-hook 'set-tab)
+
+
 
       (global-set-key (kbd "C-k") 'find-file)
       (global-set-key (kbd "M-k") 'switch-to-buffer)
@@ -213,7 +219,7 @@ the line break."
     (global-set-key (kbd "C-M-k") 'backward-sexp)))
 
 
-;; case changes
+;; case changes 
 ;; ============================================================
 
 ;; dwim functions:
@@ -308,8 +314,8 @@ the line break."
 
 (if colemak-mode
     (progn
-      (define-key isearch-mode-map (kbd "C-e") 'isearch-ring-advance)
-      (define-key isearch-mode-map (kbd "C-i") 'isearch-ring-retreat)
+      (define-key isearch-mode-map (kbd "C-n") 'isearch-ring-advance)
+      (define-key isearch-mode-map (kbd "C-e") 'isearch-ring-retreat)
       )
   (progn 
     (define-key isearch-mode-map (kbd "C-j") 'isearch-ring-advance)
@@ -326,7 +332,7 @@ the line break."
 (define-key isearch-mode-map (kbd "M-v") 'isearch-yank-pop)
 
 ;; Get to edit the search string properly
-(define-key isearch-mode-map (kbd "M-e") 'isearch-edit-string)
+(define-key isearch-mode-map (kbd "M-n") 'isearch-edit-string)
 
 ;; Grab text from the main buffer
 (defun isearch-text-grab (movement-function)
@@ -510,8 +516,10 @@ the line break."
 (add-hook 'sh-mode-hook 'sensible-bash-keys)
 
 
-;; Expand region
+;; Mark various regions
 ;; ============================================================
+
+(global-set-key (kbd "C-o") 'mark-paragraph)
 
 (global-set-key (kbd "C-a") 'er/expand-region)
 (global-set-key (kbd "C-S-a") (lambda () (interactive) (er/expand-region -1)))
@@ -531,3 +539,22 @@ the line break."
 (global-set-key (kbd "C-<f8>")
                 '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
 (global-set-key (kbd "C-<f6>") 'ibuffer)
+
+
+;; ido 
+;; ============================================================
+
+;; (let ((my-new-map (make-sparse-keymap)))
+
+;;   ;; (define-key my-new-map (kbd "RET") 'ido-complete)
+;;   (set 'ido-common-completion-map my-new-map)
+
+;;   ;; clear all the extra keymaps
+;;   (set 'ido-completion-map (make-sparse-keymap))
+;;   (set 'ido-buffer-completion-map (make-sparse-keymap))
+;;   (set 'ido-file-completion-map (make-sparse-keymap))
+;;   (set 'ido-file-dir-completion-map (make-sparse-keymap))
+;;   (set 'ido-file-dir-completion-map (make-sparse-keymap)))
+
+(require 'cc-mode)
+(define-key c-mode-base-map (kbd "C-c") '())
