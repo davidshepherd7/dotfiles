@@ -65,7 +65,7 @@ TAGS
 *.ps
 *.dvi
 
-# Latex/bibtex temp files
+# Latex/bibtex/biber/latexmk temp files
 *.aux
 *.log
 *.out
@@ -76,3 +76,11 @@ _region_.prv
 *.bcf
 *.run.xml
 *-blx.bib
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.spl
+
+# Java
+workbench.xmi

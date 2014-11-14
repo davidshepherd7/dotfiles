@@ -87,3 +87,4 @@ zsh
 latexmk
 texlive-full
 parallel
+octave

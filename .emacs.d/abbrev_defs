@@ -5,9 +5,7 @@
 
 (define-abbrev-table 'apropos-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -89,6 +87,7 @@
     ("lle" "Landau-Lifshitz equation" nil 0)
     ("llge" "Landau-Lifshitz-Gilbert equation" nil 1)
     ("mca" "magnetocrystalline anisotropy" nil 1)
+    ("odee" "ordinary differential equation" nil 2)
    ))
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
@@ -103,8 +102,9 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
+(define-abbrev-table 'java-mode-abbrev-table 
   '(
+    ("nbr" "" nbr 0)
    ))
 
 (define-abbrev-table 'js-mode-abbrev-table
@@ -163,9 +163,7 @@
     ("hil" "" markdown-hilight 0)
    ))
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -177,15 +175,17 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
+
+(define-abbrev-table 'py-auto-completion-mode-abbrev-table '())
+
+(define-abbrev-table 'py-shell-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-abbrev-table
   '(
@@ -216,7 +216,10 @@
 
 (define-abbrev-table 'sh-mode-abbrev-table '())
 
-(define-abbrev-table 'shell-mode-abbrev-table '())
+(define-abbrev-table 'shell-mode-abbrev-table 
+  '(
+    ("nbr" "" nbr 0)
+   ))
 
 (define-abbrev-table 'slitex-mode-abbrev-table '())
 
