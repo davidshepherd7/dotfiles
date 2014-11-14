@@ -25,16 +25,32 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+# tar
+alias untar='tar -xzf'
+
 # package manager
-alias ai='sudo apt-get install'
+# ============================================================
+
+alias ai='sudo apt-get install -yq'
 alias arm="sudo apt-get remove"
-alias update='sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet'
+alias acs="apt-cache search"
+
+install_packages ()
+{
+    package_list="$HOME/Dropbox/linux_setup/rcfiles/package_list"
+    cat $package_list | xargs sudo apt-get install -y -q
+}
+
+alias update='sudo apt-get update && install_packages && sudo apt-get upgrade --assume-yes --quiet'
 alias pm='sudo pacmatic -S'
 
 # Open location in gnome
 alias go='nautilus .'
 
+
 # Git aliases
+# ============================================================
+
 alias gs='git status'
 alias gd='git diff'
 alias gdc='git diff --cached'
@@ -100,7 +116,7 @@ alias pedals='sudo /lib/udev/keymap -i input/event2 /lib/udev/keymaps/microdia'
 # Quickly cd to useful directorys:
 alias om='cd $OOMPHMM'
 alias hs='cd ~/Dropbox/programming/helperscripts'
-alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
+alias wr='cd ~/Dropbox/phd/reports/2014_aimr_paper'
 # alias sr='cd ~/Dropbox/phd/talks/second_year_progression'
 # alias rs='cd ~/Dropbox/phd/results'
 # alias sicp='cd ~/programming/sicp/exercises4'
@@ -129,25 +145,6 @@ alias ...='cd ../..'
 alias ..='cd ../'
 
 
-# Quickly cd to useful directorys:
-alias om='cd $OOMPHMM'
-alias hs='cd ~/Dropbox/programming/helperscripts'
-alias wr='cd ~/Dropbox/phd/reports/ongoing-writeup'
-# alias sr='cd ~/Dropbox/phd/talks/second_year_progression'
-# alias rs='cd ~/Dropbox/phd/results'
-# alias sicp='cd ~/programming/sicp/exercises4'
-alias rc='cd ~/Dropbox/linux_setup/rcfiles'
-alias wb='cd ~/Dropbox/web/blog'
-alias mmm='cd ~/Dropbox/phd/posters/2013_MMM_Denver/poster'
-alias css='cd ~/Dropbox/phd/talks/2013_cs_symposium'
-alias sp='cd ~/programming/simpleode/'
-alias spe='cd ~/programming/simpleode/experiments'
-alias demon='cd ~/Dropbox/phd/demonstrations/maths_for_cs'
-alias illg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/llg_driver"
-alias sllg="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/semi_implicit_mm_driver"
-alias oode="cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/ode_driver"
-alias mmr='cd ~/Dropbox/phd/talks/RGM-21-11-2013_mmm_review'
-
 
 
 # Aliases for using emacs with a daemon, ec just starts a client, emacs starts a new window.
@@ -166,3 +163,16 @@ pdfpages ()
 
 # New feh wallpaper
 alias wallpaper='feh --bg-scale $HOME/Dropbox/other/wallpapers -zr'
+
+
+alias whitespaceclean="sed -i 's/[ \t]*$//'"
+
+# Password generator
+alias genpassword='apg -a 1 -m 12 -M SNCL -k'
+
+
+# Volume controls
+# ============================================================
+
+alias vol='amixer -D pulse sset Master'
+# Use eg. 50% to set to 50% of max, 5%+ or 5%- to increase/decrease

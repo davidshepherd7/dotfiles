@@ -1,0 +1,4 @@
+(:name fancy-narrow
+       :description "narrow-to-region with more eye-candy"
+       :type github
+       :url "https://github.com/Bruce-Connor/fancy-narrow")

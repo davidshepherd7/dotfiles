@@ -60,6 +60,8 @@ micromagTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnet
 driverTerminal = "urxvt -e /bin/sh -c 'cd ~/oomph-lib/user_drivers/micromagnetics/control_scripts/driver && /bin/zsh'"
 optDriverTerminal = "urxvt -e /bin/sh -c 'cd ~/optoomph/user_drivers/micromagnetics/control_scripts && /bin/zsh'"
 
+cwsTerminal = "urxvt -e /bin/sh -c 'cd ~/workflows/cloudworkflowsimulator && /bin/zsh'"
+
 -- Try various browsers until one works.
 myBrowser = "firefox || google-chrome || chromium || chromium-browser"
 
@@ -101,6 +103,9 @@ myManageHook =
   , className =? "Paraview" --> doShift "pv"
   , className =? "Mendeleydesktop" --> doShift "mly"
   , className =? "Tk" --> doFloat
+  , className =? "Octave"          --> doFloat
+  , className =? "Gnuplot"          --> doFloat
+
   -- , className =? "Tk" --> doShift "plots"
   , isFullscreen --> doFullFloat
   ]
@@ -123,7 +128,8 @@ myManageHook =
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 
-myLayout = avoidStruts(tiled ||| Mirror matlabsucks ||| noBorders Full)
+myLayout = avoidStruts(tiled ||| -- Mirror matlabsucks |||
+                       noBorders Full)
   where
     -- Default tiling algorithm: partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
@@ -225,7 +231,7 @@ myKeys = [
   , ("M-f", spawn myEditor)
   , ("M-p", spawn myLauncher)
   , ("M-r", spawn oomphTerminal)
-  , ("M-s", spawn micromagTerminal)
+  , ("M-s", spawn cwsTerminal)
   , ("M-d", spawn driverTerminal)
   , ("M-a", spawn optDriverTerminal)
   , ("M-m", spawn myNotes)

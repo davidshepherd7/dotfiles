@@ -27,6 +27,8 @@ alias optquickautogen="$OPTOOMPH/autogen.sh -s -k -c ${HOME}/Dropbox/phd/oomph-l
 alias quickcheck="python3 $OOMPH/bin/parallel_self_test.py -C $OOMPH"
 alias optquickcheck="python3 $OPTOOMPH/bin/parallel_self_test.py -C $OPTOOMPH"
 
+alias buildcheck="make check -C $OOMPH/demo_drivers/poisson/one_d_poisson"
+
 alias micromagcheck="m -C $OOMPHMM && m -C $OOMPHMM install \
 &&  m -C $OOMPHMM/control_scripts/driver \
 && python3 $HOME/oomph-lib/bin/parallel_self_test.py -C $OOMPHMM"

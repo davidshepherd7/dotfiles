@@ -36,6 +36,12 @@ zstyle ':completion:*' match-original both
 zstyle ':completion:*' max-errors 2
 zstyle :compinstall filename '/home/david/.zshrc'
 
+# completion for kill and killall
+zstyle ':completion:*:processes-names' command 'ps -e -o comm='
+zstyle ':completion:*:processes' command 'ps -au$USER'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;32'
+
+# Add custom completions
 fpath=(~/.zsh/completion $fpath)
 autoload -U ~/.zsh/completion/*(:t)
 
@@ -102,6 +108,24 @@ source "/usr/lib/git-core/git-sh-prompt"
 PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f$(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
 '
 
+# Function to export functions to bash (for use with xargs or parallel)
+# ============================================================
+
+# From http://stackoverflow.com/questions/22738425/export-function-from-zsh-to-bash-for-use-in-gnu-parallel
+function exportf ()
+{
+    export $1="$(whence -f $1 | sed -e "s/$1 //")"
+    # any variable starting with () is a function in bash. sed strips the
+    # leading function name from the function definition given by whence.
+}
+
+# For testing:
+# function exportf2 ()
+# {
+#     export $1="$(whence -f $1 | sed -e "s/$1 //")"
+#     bash -c "echo from bash; type $1; echo end bash"
+# }
+
 
 # Colour in man pages
 # ============================================================
@@ -127,10 +151,10 @@ du -sk $1 | sort -nr | awk 'BEGIN{ pref[1]="K"; pref[2]="M"; pref[3]="G";} { tot
 fcode()
 {
     # Could probably do this with a fancy regex but this is easier
-    cat <(find '$@' -name '*.cc' ) <(find '$@' -name '*.h') \
-        <(find '$@' -name '*.cpp') <(find '$@' -name '*.c') \
-        <(find '$@' -name '*.py') <(find '$@' -name '*.sh') \
-        <(find '$@' -name '*.el')
+    cat <(find "$@" -name '*.cc' ) <(find "$@" -name '*.h') \
+        <(find "$@" -name '*.cpp') <(find "$@" -name '*.c') \
+        <(find "$@" -name '*.py') <(find "$@" -name '*.sh') \
+        <(find "$@" -name '*.el') <(find "$@" -name '*.tex')
 }
 
 
@@ -141,12 +165,19 @@ mygrep ()
         --exclude-dir='*.deps' --exclude='*.lo' --exclude='*.la' --exclude='*.lai' \
         --exclude=Makefile --exclude=Makefile.in --exclude=TAGS --color=auto $@
 }
+export mygrep
+exportf mygrep
 
 # grep source code files only
 gcode ()
 {
     # -u prevents grouping of output, so that --color=auto works correctly
-    fcode | parallel -u mygrep $@
+    fcode | parallel -u grep -n -H -I --color=auto $@ {}
+}
+
+scode ()
+{
+    fcode | xargs sed $@
 }
 
 
@@ -277,8 +308,8 @@ export PATH="$PATH:$HOME/Dropbox/arch"
 
 # Other micromagnetics packages:
 # Add nsim to PATH
-if [[ -d $HOME/code/nmag* ]]; then
-    export PATH="$PATH:$HOME/code/nmag-0.2.1/bin"
+if test "-e $HOME/code/nmag*"; then
+    export PATH="$PATH:$HOME/code/nmag-0.2.1/nsim/bin"
 fi
 
 # add magnum.fe to path if we have it
@@ -299,3 +330,10 @@ export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscript
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
+export PYTHONPATH="$PYTHONPATH:/mnt/moredata"
+
+
+# Java
+# ============================================================
+
+export ANT_ARGS='-emacs -logger org.apache.tools.ant.listener.AnsiColorLogger'

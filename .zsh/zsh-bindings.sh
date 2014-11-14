@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+# Add binding for insert && and go to start?
+
 # Don't use the flow control bindings for C-q and C-s (stop/resume output,
 # for use with ancient typewriter style outputs).
 setopt noflowcontrol
@@ -100,15 +102,19 @@ zle -N kill-whole-line-xclip
 # Bindings 
 # ============================================================
 
+forward="e"
+back="n"
+up="i"
+down="h"
 
 # movement
-bindkey "\C-n" emacs-backward-word
-bindkey "\C-o" emacs-forward-word
-bindkey "\e^n" backward-bashword
-bindkey "\e^o" forward-bashword
+bindkey "\C-${back}" emacs-backward-word
+bindkey "\C-${forward}" emacs-forward-word
+bindkey "\e^${back}" backward-bashword
+bindkey "\e^${forward}" forward-bashword
 
-bindkey "\en" backward-char
-bindkey "\eo" forward-char
+bindkey "\e${back}" backward-char
+bindkey "\e${forward}" forward-char
 
 bindkey "\C-b" beginning-of-line
 bindkey "\C-l" end-of-line
@@ -119,8 +125,8 @@ bindkey "\C-l" end-of-line
 bindkey "\C-z" undo
 
 # history
-bindkey "\ei" up-line-or-history
-bindkey "\ee" down-line-or-history
+bindkey "\e${up}" up-line-or-history
+bindkey "\e${down}" down-line-or-history
 bindkey "\e." insert-last-word # use numeric arguments (e.g. M-2) to get
                                 # 2nd to last etc.
 
