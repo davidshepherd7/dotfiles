@@ -15,6 +15,16 @@
 (global-unset-key (kbd "C-M-j"))
 (global-unset-key (kbd "C-M-k"))
 (global-unset-key (kbd "C-M-l"))
+(global-unset-key (kbd "C-M-o"))
+
+
+;; Unbind old case change keys
+(global-unset-key (kbd "M-'"))
+(global-unset-key (kbd "M-l"))
+(global-unset-key (kbd "M-u"))
+
+
+
 
 ;; For operations on regions:
 ;; C-? : on region or to end of line
@@ -202,10 +212,35 @@ the line break."
     (global-set-key (kbd "C-k") 'previous-line)
     (global-set-key (kbd "C-M-k") 'backward-sexp)))
 
+
 ;; case changes
-(global-set-key (kbd "C-/") 'capitalize-word)
-(global-set-key (kbd "M-/") 'downcase-word)
-(global-set-key (kbd "C-M-/") 'upcase-word)
+;; ============================================================
+
+;; dwim functions:
+(defun dwim-word (x function region-function)
+  (if (region-active-p)
+      (funcall region-function (region-beginning) (region-end))
+    (funcall function x)))
+
+(defun capitalize-word-dwim(x)
+  (interactive "P")
+  (let ((y (if (equal current-prefix-arg nil) 1 x)))
+    (dwim-word y 'capitalize-word 'capitalize-region)))
+
+(defun downcase-word-dwim(x)
+  (interactive "P")
+  (let ((y (if (equal current-prefix-arg nil) 1 x)))
+  (dwim-word y 'downcase-word 'downcase-region)))
+
+(defun upcase-word-dwim(x)
+  (interactive "P")
+  (let ((y (if (equal current-prefix-arg nil) 1 x)))
+    (dwim-word y 'upcase-word 'upcase-region)))
+
+;; Bind to /
+(global-set-key (kbd "C-/") 'capitalize-word-dwim)
+(global-set-key (kbd "M-/") 'downcase-word-dwim)
+(global-set-key (kbd "C-M-/") 'upcase-word-dwim)
 
 
 
