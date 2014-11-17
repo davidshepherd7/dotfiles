@@ -27,7 +27,6 @@
 
 
 
-
 ;; For operations on regions:
 ;; C-? : on region or to end of line
 ;; C-? : on region or to start of line
@@ -126,12 +125,9 @@ the line break."
                                 ;; (function-on-block 'comment-or-uncomment-region)))
 
 
-;; eval
-(global-set-key (kbd "C-#") (lambda () (interactive) (dwim-end-of-line 'eval-region)))
-(global-set-key (kbd "M-#") (lambda () (interactive) (dwim-entire-line 'eval-region)))
-(global-set-key (kbd "C-S-#") (lambda () (interactive) (dwim-start-of-line 'eval-region)))
-;; (global-set-key (kbd "C-M-#") (lambda () (interactive) (function-on-block 'eval-region)))
 
+;; eval
+(global-set-key (kbd "C-#") 'eval-region)
 
 ;; Some standard things from e.g. chrome
 (global-set-key (kbd "C-s") 'save-buffer)
@@ -180,20 +176,11 @@ the line break."
       (defun set-tab () 
         (interactive)
         (local-set-key [tab] 'indent-for-tab-command))
-      (add-hook 'c-mode-common-hook 'set-tab)
-      (add-hook 'python-mode-hook 'set-tab)
-      (add-hook 'LaTeX-mode-hook 'set-tab)
-      (add-hook 'latex-mode-hook 'set-tab)
-      (add-hook 'lisp-mode-hook 'set-tab)
-      (add-hook 'emacs-lisp-mode-hook 'set-tab)
-      (add-hook 'shell-lisp-mode-hook 'set-tab)
-      (add-hook 'haskell-mode-hook 'set-tab)
-      (add-hook 'java-mode-hook 'set-tab)
-      (add-hook 'org-mode-hook 'set-tab)
 
+      (add-hook 'prog-mode-hook 'set-tab)
+      (add-hook 'nxml-mode-hook 'set-tab)
 
-
-      (global-set-key (kbd "C-k") 'find-file)
+      (global-set-key (kbd "C-S-k") 'find-file)
       (global-set-key (kbd "M-k") 'switch-to-buffer)
       )
 
@@ -267,7 +254,6 @@ the line break."
 (global-set-key (kbd "C-\\") ctl-x-map)
 (global-set-key (kbd "C-\\ C-\\") 'exchange-point-and-mark)
 (global-set-key (kbd "M-\\") 'execute-extended-command) ;; also menu key
-(global-set-key (kbd "M-'") 'capitalize-word) ;; no better ideas for this one...
 
 ;; Don't have the suspend button somewhere that I can press it easily...
 (global-set-key (kbd "C-\\ C-z") nil)

@@ -10,8 +10,6 @@
   (indent-region (point-min) (point-max) nil))
 
 
-;; Save and compile with f5
-(add-hook 'c-mode-common-hook 'my-c-mode-keys)
 
 (defun my-c-mode-keys ()
   (use-local-map '())
@@ -19,9 +17,11 @@
   (local-set-key (kbd "C-\\ o") 'ff-find-other-file)
   (local-set-key (kbd "C-\\ C-o") 'ff-find-other-file)
 
-  (local-set-key [tab] 'yas-expand)
-  (set 'yas-fallback-behavior '(apply indent-according-to-mode))
+  ;; (local-set-key [tab] 'yas-expand)
+  ;; (set 'yas-fallback-behavior '(apply indent-according-to-mode))
 )
+(add-hook 'c++-mode-hook 'my-c-mode-keys)
+
 
 (defun cpp-access-function ()
   "Create set and get access functions for the selected member

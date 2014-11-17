@@ -961,8 +961,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (define-key projectile-mode-map (kbd "C-c") nil)
 
     ;; Use projectile to open files by default, if available.
-    (global-set-key (kbd "C-S-k") (key-binding (kbd "C-k")))
-
     (defun maybe-projectile-find-file ()
       (interactive)
       (if (projectile-project-p)

@@ -22,6 +22,11 @@
   (local-set-key (kbd "M-.") 'eclim-java-find-declaration)
   
   (local-set-key (kbd "C-c") '())
+
+  ;; ;; Fix tab bindings (messed up by yas and/or binding C-i
+  ;; (local-set-key (kbd "TAB") '())
+  ;; (set-tab)
+
   )
 (add-hook 'java-mode-hook 'java-keys)
 

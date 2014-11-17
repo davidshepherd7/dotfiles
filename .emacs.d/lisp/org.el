@@ -7,7 +7,9 @@
   "Clear lots of org mode keys that mess with my keybinds"
   (interactive)
   (local-set-key (kbd "C-c") 'nil)
-  (local-set-key (kbd "C-y") 'nil))
+  (local-set-key (kbd "C-y") 'nil)
+  (local-set-key (kbd "C-t") 'org-todo))
+
 (add-hook 'org-mode-hook 'org-keys)
 
 ;; Pretty indents
