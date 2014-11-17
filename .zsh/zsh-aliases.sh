@@ -28,6 +28,16 @@ alias egrep='egrep --color=auto'
 # tar
 alias untar='tar -xzf'
 
+# pdf viewer, disconnect from shell entirely and write stdout/stderr to a
+# temp file (temp files are cleaned on reboot).
+v ()
+{
+    viewer="evince"
+    tempfile=$(mktemp viewer-$USER.XXXXXXX --tmpdir)
+    setsid "$viewer" $@ >"$tempfile" 2>&1 </dev/null &
+}
+compdef v=evince
+
 # package manager
 # ============================================================
 
