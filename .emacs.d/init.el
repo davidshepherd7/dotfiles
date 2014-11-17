@@ -46,6 +46,13 @@
 (load-library "bind-key")
 (load-library "use-package")
 
+;; this has to go before other stuff for some stupid reasons...
+(set 'edebug-inhibit-emacs-lisp-mode-bindings 't)
+(use-package aggressive-indent
+  :config
+  (progn (global-aggressive-indent-mode)
+         (define-key aggressive-indent-mode-map (kbd "C-c") nil)))
+
 ;; Some simple, one-line stuff
 ;; ============================================================
 ;; (server-start) ;; Start emacs as a server
@@ -1144,6 +1151,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
                   (loop for i from ?A to ?Z collect i))))
     (set 'ace-jump-mode-scope 'window)
     (global-set-key (kbd "C-p") 'ace-jump-mode)))
+
+
 
 
 ;; Automagically added by customise
