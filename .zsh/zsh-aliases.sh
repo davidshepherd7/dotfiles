@@ -47,7 +47,13 @@ t ()
 
 # ??ds emacs with pipe in support
 
+
 # ??ds better diff
+gdiff()
+{
+    git diff --color=always --no-index $@ | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less -R
+}
+compdef gdiff=diff
 
 # ??ds ssh with auto ssh-add
 
@@ -74,6 +80,8 @@ alias go='nautilus .'
 
 # Git aliases
 # ============================================================
+
+alias g='git'
 
 alias gs='git status'
 alias gd='git diff'
