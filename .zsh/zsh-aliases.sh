@@ -38,6 +38,20 @@ v ()
 }
 compdef v=evince
 
+
+# New terminal in this folder
+t ()
+{
+    urxvt &
+}
+
+# ??ds emacs with pipe in support
+
+# ??ds better diff
+
+# ??ds ssh with auto ssh-add
+
+
 # package manager
 # ============================================================
 

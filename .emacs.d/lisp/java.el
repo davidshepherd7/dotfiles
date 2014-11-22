@@ -10,7 +10,7 @@
 (set 'eclimd-wait-for-process nil)
 
 ;; don't think we can change this now :(
-(set 'eclimd-workspace-dir "~/workspace")
+(set 'eclimd-workspace-dir "~/.eclipse-workspace")
 
 
 
@@ -19,7 +19,7 @@
 
 (defun java-keys ()
   (interactive)
-  (local-set-key (kbd "M-.") 'eclim-java-find-declaration)
+  ;; (local-set-key (kbd "M-.") 'eclim-java-find-declaration)
   
   (local-set-key (kbd "C-c") '())
 
@@ -33,6 +33,7 @@
 ;; Run eclimd automatically when we open a java buffer (if not running
 ;; already).
 (add-hook 'java-mode-hook 
-          (lambda () (if (not (eclimd--running-p))
-                         (start-eclimd eclimd-workspace-dir))))
+          (lambda () (unless (eclimd--running-p)
+                       (start-eclimd eclimd-workspace-dir)
+                       (define-key java-mode-map (kbd "C-c") nil))))
 

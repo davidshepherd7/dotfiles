@@ -15,7 +15,13 @@
 
 ;; ;; Bind isearch-symbol-at-point
 
+;; Fix some keys in electric indent mode
 
+
+
+;; ;; Other stuff to do
+
+;; Use package instead of el-get
 
 
 ;; Use C-\ p as prefix
@@ -46,12 +52,15 @@
 (load-library "bind-key")
 (load-library "use-package")
 
-;; this has to go before other stuff for some stupid reasons...
-(set 'edebug-inhibit-emacs-lisp-mode-bindings 't)
+
 (use-package aggressive-indent
   :config
   (progn (global-aggressive-indent-mode)
-         (define-key aggressive-indent-mode-map (kbd "C-c") nil)))
+         (define-key aggressive-indent-mode-map (kbd "C-c") nil)
+
+         (add-hook 'c-mode-common-hook
+                   (lambda () (define-key c-mode-map (kbd "C-d") nil)))
+         ))
 
 ;; Some simple, one-line stuff
 ;; ============================================================
@@ -131,6 +140,10 @@
 ;; Sentences do not need double spaces to end (so when moving by sentence
 ;; use "." to find ends).
 (set-default 'sentence-end-double-space nil)
+
+
+;; Always revert buffer to file
+(global-auto-revert-mode)
 
 
 ;; Saving
@@ -1151,6 +1164,21 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (global-set-key (kbd "C-p") 'ace-jump-mode)))
 
 
+;; Ack support
+(require 'ack-and-a-half)
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+
+;; Better help commands
+;; ============================================================
+
+;; Show source code for things
+(define-key 'help-command (kbd "F") 'find-function)
+(define-key 'help-command (kbd "K") 'find-function-on-key)
+(define-key 'help-command (kbd "V") 'find-variable)
 
 
 ;; Automagically added by customise

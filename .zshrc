@@ -12,6 +12,11 @@ NJOBS=$(($NCORES + 1))
 export MAKEFLAGS="-j$NJOBS"
 
 
+# Smart ssh which runs ssh-add when needed, doesn't work with git though :(
+ssh-add -l >/dev/null || \
+    alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
+
+
 # Stupid netgen!! Needs to have it's dir set for it
 export NETGENDIR="/usr/share/netgen/"
 
@@ -334,7 +339,7 @@ export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscript
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
-export PYTHONPATH="$PYTHONPATH:/mnt/moredata"
+export PYTHONPATH="$PYTHONPATH:$HOME/workflows/cloudworkflowsimulator/scripts/"
 
 
 # Java

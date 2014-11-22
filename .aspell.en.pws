@@ -1,4 +1,4 @@
-personal_ws-1.1 en 159 
+personal_ws-1.1 en 159
 prepended
 ILU
 dimensionalisation
@@ -18,6 +18,7 @@ discretisation
 GMRES
 magnetostatics
 Hypre
+cli
 linearise
 d'Aquino
 femme
@@ -34,10 +35,12 @@ preconditioner
 Seidel
 Raphson
 integrand
+dir
 Neumann
 discretise
 Lindholm
 multistep
+DVFS
 multi
 Skyrmions
 azimuthal
@@ -62,6 +65,7 @@ nmag
 isoparametric
 linearised
 macrospin
+ok
 posteriori
 Bottauscio
 CLJP
@@ -100,6 +104,8 @@ Jacobians
 FMM
 Schur
 PDE
+VM
+workflow
 iteratively
 nonuniformities
 Picard
@@ -108,8 +114,10 @@ micromagnetic
 IMR's
 TODO
 symplectic
+Ilia's
 Cayley
 PDEs
+VMs
 Sternberg
 undamped
 Heil
@@ -137,6 +145,7 @@ Dormand
 preconditioners
 Suess
 GPU
+args
 nanometers
 bem
 eigenvectors
@@ -149,6 +158,7 @@ precomputing
 discretised
 precalculated
 AMG
+refactoring
 micromagnetics
 Vassilios
 adaptivity

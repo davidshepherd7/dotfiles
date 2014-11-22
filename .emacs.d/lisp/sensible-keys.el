@@ -179,6 +179,8 @@ the line break."
 
       (add-hook 'prog-mode-hook 'set-tab)
       (add-hook 'nxml-mode-hook 'set-tab)
+      (add-hook 'org-mode-hook 'set-tab)
+
 
       (global-set-key (kbd "C-S-k") 'find-file)
       (global-set-key (kbd "M-k") 'switch-to-buffer)
@@ -248,7 +250,6 @@ the line break."
 
 ;; Just because it's handy
 (global-set-key (kbd "C-'") 'query-replace)
-
 
 ;; Now assign new keys for the things we just wrote all over
 (global-set-key (kbd "C-\\") ctl-x-map)

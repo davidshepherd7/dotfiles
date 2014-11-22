@@ -10,7 +10,6 @@ build-essential
 python3
 paraview
 evince
-chromium-browser
 suckless-tools
 ipython
 python3-scipy
@@ -24,13 +23,11 @@ gimp
 libappindicator1
 paraview
 evince
-chromium-browser
 suckless-tools
 ipython
 python3-scipy
 python3-numpy
 python3-matplotlib
-steam
 gnome-panel
 feh
 trash-cli
@@ -50,8 +47,6 @@ gfortran
 ipython3
 ccache
 exuberant-ctags
-liblapack-dev
-libblas-dev
 openmpi-bin
 libopenmpi-dev
 libnetcdf-dev
@@ -61,7 +56,6 @@ valgrind
 kcachegrind
 nautilus-open-terminal
 evtest
-haskell-mode
 git-svn
 cmake-curses-gui
 ubuntu-restricted-extras
