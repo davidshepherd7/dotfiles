@@ -139,7 +139,7 @@ m()
 {
     make --keep-going --silent LIBTOOLFLAGS=--silent $@
 }
-
+compdef m=make
 
 # Matlab in a terminal
 alias matlab='matlab -nodesktop -nosplash'
