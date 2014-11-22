@@ -228,3 +228,6 @@ source ${rcdir}/zsh-aliases.sh
 
 # Load oomph-lib related aliases/functions
 source ${rcdir}/zsh-oomph-aliases.sh
+
+# e function
+source ${rcdir}/emacs-read-stdin/emacs-read-stdin.sh

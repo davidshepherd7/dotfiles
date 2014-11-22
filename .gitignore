@@ -6,7 +6,7 @@
 # Other repos
 .emacs.d/frames-only-mode/
 .emacs.d/oomph-snippets/
-
+.zsh/emacs-read-stdin/
 
 # emacs junk
 .emacs.d/session*
