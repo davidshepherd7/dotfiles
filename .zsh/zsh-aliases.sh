@@ -196,7 +196,133 @@ alias genpassword='apg -a 1 -m 12 -M SNCL -k'
 
 
 # Volume controls
-# ============================================================
-
 alias vol='amixer -D pulse sset Master'
 # Use eg. 50% to set to 50% of max, 5%+ or 5%- to increase/decrease
+
+
+# Get a sorted list of disk usage (take from http://www.commandlinefu.com/commands/view/4786/nice-disk-usage-sorted-by-size-see-description-for-full-command )
+sdu()
+{
+    du -sk $1 | sort -nr | awk 'BEGIN{ pref[1]="K"; pref[2]="M"; pref[3]="G";} { total = total + $1; x = $1; y = 1; while( x > 1024 ) { x = (x + 1023)/1024; y++; } printf("%g%s\t%s\n",int(x*10)/10,pref[y],$2); } END { y = 1; while( total > 1024 ) { total = (total + 1023)/1024; y++; } printf("Total: %g%s\n",int(total*10)/10,pref[y]); }'
+}
+
+# Find all "code" files recursively
+fcode()
+{
+    # Could probably do this with a fancy regex but this is easier
+    cat <(find "$@" -name '*.cc' ) <(find "$@" -name '*.h') \
+        <(find "$@" -name '*.cpp') <(find "$@" -name '*.c') \
+        <(find "$@" -name '*.py') <(find "$@" -name '*.sh') \
+        <(find "$@" -name '*.el') <(find "$@" -name '*.tex')
+}
+
+
+# Fancy grep: with line num, with filename, exclude source control, binaries and make junk
+mygrep ()
+{
+    grep  -n -H -I --exclude-dir=.git --exclude-dir=.svn \
+        --exclude-dir='*.deps' --exclude='*.lo' --exclude='*.la' --exclude='*.lai' \
+        --exclude=Makefile --exclude=Makefile.in --exclude=TAGS --color=auto $@
+}
+export mygrep
+exportf mygrep
+
+# grep source code files only
+gcode ()
+{
+    # -u prevents grouping of output, so that --color=auto works correctly
+    fcode | parallel -u grep -n -H -I --color=auto $@ {}
+}
+
+scode ()
+{
+    fcode | xargs sed $@
+}
+
+
+# Count lines of actual code recursively
+lccode()
+{
+    # Find code files, grep out comments/blank lines then wc lines
+    fcode | xargs grep -v "//\|^[ \t]*$\|#" | wc -l
+}
+
+
+pipe-evince()
+{
+    # Safely generate a temp file
+    TMPFILE=$(mktemp evince-$USER.XXXXXXX --tmpdir)
+
+    # Read from stdin into tempfile
+    cat <&0 > $TMPFILE
+
+    # Open in evince
+    evince "$TMPFILE"
+
+    # Kill temp file (or comment to let the OS kill it on reboot)
+    # bash -c "sleep 2; rm '$TMPFILE'" & 
+}
+
+
+pdfman()
+{
+    man -t "$@" | ps2pdf - - | pipe-evince
+}
+
+# git diff of pdfs
+git-pdf-diff()
+{
+    cat "$1" | pipe-evince &
+    git show "HEAD:$1"  | pipe-evince
+}
+
+
+# Prepend a line to a file using ed
+prepend ()
+{
+    echo "0a
+$1
+.
+w" | ed "$2"
+}
+
+# oomph-lib 
+# ============================================================
+
+
+pvdat ()
+{
+    filename=$1
+    shift
+    oomph-convert $filename
+    paraview ${filename%.dat}.vtu "$@"
+}
+export pvdat
+
+pv-most-recent ()
+{
+    dirname=$1
+    shift
+    maxsoln=$(find $dirname -name 'soln*.dat' | sort -V | tail -n1)
+    pvdat ${maxsoln} "$@"
+}
+
+alias parse="parse.py"
+
+# Run oomph-lib micromagnetics parse over ssh and view pdfs locally
+ssh-parse ()
+{
+    # run and save on simulations machine
+    temp_sims=$(ssh david-simulations 'mktemp "ssh-parse-$USER.XXXXXXX" --tmpdir -d')
+    ssh david-simulations "parse.py $@ --ssh-mode --save-to-dir \"$temp_sims\""
+
+    # bring to local machine
+    temp_local=$(mktemp "ssh-parse-local-$USER.XXXXXXX" --tmpdir -d)
+    scp "david-simulations:$temp_sims/*" "$temp_local"
+
+    # view
+    evince "$temp_local/*"
+
+    # temp files are cleared by machines automatically (on boot in
+    # Ubuntu).
+}
