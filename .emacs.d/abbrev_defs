@@ -104,10 +104,10 @@
 
 (define-abbrev-table 'java-mode-abbrev-table 
   '(
-    ("nbr" "" nbr 0)
-   ))
+  ("nbr" "" nbr-no-initial-newline 0)
+  ))
 
-(define-abbrev-table 'js-mode-abbrev-table
+  (define-abbrev-table 'js-mode-abbrev-table
   '(
     ("nbr" "" nbr 5)
    ))
