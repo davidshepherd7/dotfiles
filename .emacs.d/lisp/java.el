@@ -1,21 +1,21 @@
 
-(require 'eclim)
-(global-eclim-mode)
+;; (require 'eclim)
+;; (global-eclim-mode)
 
 
-(require 'eclimd)
+;; (require 'eclimd)
 
-(set 'eclim-eclipse-dirs '("~/code/eclipse"))
-(set 'eclim-executable "~/code/eclipse/eclim")
-(set 'eclimd-wait-for-process nil)
+;; (set 'eclim-eclipse-dirs '("~/code/eclipse"))
+;; (set 'eclim-executable "~/code/eclipse/eclim")
+;; (set 'eclimd-wait-for-process nil)
 
-;; don't think we can change this now :(
-(set 'eclimd-workspace-dir "~/.eclipse-workspace")
+;; ;; don't think we can change this now :(
+;; (set 'eclimd-workspace-dir "~/.eclipse-workspace")
 
 
 
-(require 'ac-emacs-eclim-source)
-(ac-emacs-eclim-config)
+;; (require 'ac-emacs-eclim-source)
+;; (ac-emacs-eclim-config)
 
 (defun java-keys ()
   (interactive)
@@ -30,10 +30,10 @@
   )
 (add-hook 'java-mode-hook 'java-keys)
 
-;; Run eclimd automatically when we open a java buffer (if not running
-;; already).
-(add-hook 'java-mode-hook 
-          (lambda () (unless (eclimd--running-p)
-                       (start-eclimd eclimd-workspace-dir)
-                       (define-key java-mode-map (kbd "C-c") nil))))
+;; ;; Run eclimd automatically when we open a java buffer (if not running
+;; ;; already).
+;; (add-hook 'java-mode-hook
+;;           (lambda () (unless (eclimd--running-p)
+;;                        (start-eclimd eclimd-workspace-dir)
+;;                        (define-key java-mode-map (kbd "C-c") nil))))
 
