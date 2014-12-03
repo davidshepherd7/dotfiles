@@ -1,27 +1,8 @@
 ;; Generic emacs settings, other stuff is in individual files in ./lisp/
 
-
 ;; test with compile command: \emacs --debug-init --batch -u $USER
-;; latex lookup nearest equations for ref
 
-
-
-;; When you update to emacs 24.4:
-
-;; ;; Use cycle-spacing instead of just one space
-;; (global-set-key (kbd "M-SPC") cycle-spacing)
-
-;; ;; Disable cua mode and bind rectangle-mark-mode instead
-
-;; ;; Bind isearch-symbol-at-point
-
-;; Fix some keys in electric indent mode
-
-
-
-;; ;; Other stuff to do
-
-;; Use package instead of el-get
+;; Use package instead of el-get?
 
 
 ;; Use C-\ p as prefix

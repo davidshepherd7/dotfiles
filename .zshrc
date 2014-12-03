@@ -202,6 +202,13 @@ if [[ -d $HOME/code/oommf* ]]; then
 fi
 
 
+# Add emacs if it's there
+emacsdir="$HOME/code/emacs"
+if [[ -d $emacsdir ]]; then
+    export PATH="$emacsdir/src:$emacsdir/lib-src:$PATH"
+fi
+
+
 # python's path as well:
 export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscripts/python/"
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"

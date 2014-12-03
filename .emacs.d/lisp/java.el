@@ -71,6 +71,8 @@
 
   (local-set-key (kbd "C-c") '())
   (local-set-key (kbd "C-\\ o") #'java-toggle-test-file)
+  (local-set-key (kbd "C-d") 'nil)
+
 
   ;; ;; Fix tab bindings (messed up by yas and/or binding C-i
   ;; (local-set-key (kbd "TAB") '())
