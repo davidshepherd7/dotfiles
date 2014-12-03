@@ -86,3 +86,14 @@
 ;;                        (start-eclimd eclimd-workspace-dir)
 ;;                        (define-key java-mode-map (kbd "C-c") nil))))
 
+
+(defun maybe-set-cws-style ()
+  "Detect if we are editing cws code and set the style if so."
+  (interactive)
+  (when (equal (projectile-project-name) "cloudworkflowsimulator")
+    (c-set-style "java")
+    (c-set-offset 'statement-cont '++)
+    (c-set-offset 'arglist-cont-nonempty '++)
+    (c-set-offset 'func-decl-cont '++)
+    (c-set-offset 'arglist-intro '++)))
+(add-hook 'java-mode-hook 'maybe-set-cws-style)
