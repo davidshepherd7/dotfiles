@@ -41,8 +41,8 @@ xmodmap -e "add Control = $spare_modifier"
 
 # pedal keys
 # ============================================================
-# xmodmap -e "keycode any = XF86Tools" -e "keysym XF86Tools = $spare_modifier"
-xmodmap -e "keycode any = XF86Launch5" -e "keysym XF86Launch5 = $spare_modifier"
+xmodmap -e "keycode any = XF86Tools" -e "keysym XF86Tools = $spare_modifier"
+xmodmap -e "keycode any = XF86Launch5" -e "keysym XF86Launch5 = Alt_L"
 xmodmap -e "keycode any = XF86Launch6" -e "keysym XF86Launch6 = Super_L"
 
 
