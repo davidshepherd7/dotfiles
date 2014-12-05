@@ -9,6 +9,22 @@
 (set 'projectile-keymap-prefix (kbd "C-\\ p"))
 
 
+(defvar emacs244?
+  (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+  "Are we using emacs 24.4 or newer?")
+
+
+
+;; Set up "package" package manager
+;; ============================================================
+
+(require 'package)
+(package-initialize)
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
+
+
+
 ;; install + setup el-get
 ;; ============================================================
 
@@ -27,6 +43,10 @@
 
 (el-get 'sync)
 
+
+;; Other things that need to go first for some reason
+;; ============================================================
+
 ;; Load the use-package lib which adds a nice macro for keeping package
 ;; config all wrapped up together
 (require 'ert) ; Need this for now...
@@ -42,6 +62,7 @@
          (add-hook 'c-mode-common-hook
                    (lambda () (define-key c-mode-map (kbd "C-d") nil)))
          ))
+
 
 ;; Some simple, one-line stuff
 ;; ============================================================
@@ -1130,19 +1151,19 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; Ace jump mode 
 ;; ============================================================
 
-(use-package ace-jump-mode
-  :config
-  (progn
-    (set 'ace-jump-mode-case-fold t)
-    
-    ;; favour home row keys
-    (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
-      (set 'ace-jump-mode-move-keys 
-           (nconc first-list
-                  (-difference (loop for i from ?a to ?z collect i) first-list)
-                  (loop for i from ?A to ?Z collect i))))
-    (set 'ace-jump-mode-scope 'window)
-    (global-set-key (kbd "C-p") 'ace-jump-mode)))
+(require 'ace-jump-mode)
+(progn
+  (set 'ace-jump-mode-case-fold t)
+
+  ;; favour home row keys
+  (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
+    (set 'ace-jump-mode-move-keys
+	 (nconc first-list
+		(-difference (loop for i from ?a to ?z collect i) first-list)
+		(loop for i from ?A to ?Z collect i))))
+
+  (set 'ace-jump-mode-scope 'window)
+  (global-set-key (kbd "C-p") 'ace-jump-mode))
 
 
 ;; Ack support
