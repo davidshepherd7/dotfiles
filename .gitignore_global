@@ -45,13 +45,14 @@ depcomp
 TAGS
 .#*
 projectile.cache
+.projectile
 
 # Packages #
 *.7z
 *.dmg
 *.gz
 *.iso
-*.jar
+# *.jar
 *.rar
 *.tar
 *.zip
