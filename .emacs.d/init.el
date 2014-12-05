@@ -569,27 +569,32 @@ If point was already at that position, move point to beginning of line."
 ;; ;; Similarly for (kbd "M-\") kill-all-whitespace-dwim
 ;; ;; instead (for now) just use M-^ : delete-indentation
 
+(require 's)
 
 (defun insert-comment-header ()
   "Insert a line of '=' on the following line and comment it."
   (interactive)
   (save-excursion
 
-    ;; Comment the current line
-    (if (not (comment-only-p (point-at-bol) (point-at-eol)))
-        (comment-region (point-at-bol) (point-at-eol)))
-
+    ;; Comment the current line if necessary (not a comment, or empty)
+    (when (or (not (comment-only-p (point-at-bol) (point-at-eol)))
+              (string-match-p "^[ ]*$" (thing-at-point 'line)))
+      (indent-for-tab-command)
+      (back-to-indentation)
+      (insert comment-start) (just-one-space)
+      (end-of-line) (insert comment-end))
 
     ;; Add an underline and comment it
+    (end-of-line)
     (newline-and-indent)
     (back-to-indentation) (insert comment-start)
     (just-one-space) ; Some "comment-start"s include a space
-    (insert "============================================================")
+    (insert (s-repeat 60 "="))
     (end-of-line) (insert comment-end)
     (newline-and-indent))
 
   ;; Position point ready to type or continue typing the header
-  (end-of-line) (just-one-space))
+  (end-of-line))
 
 
 (defun un-camelcase-string (s &optional sep start)
@@ -741,7 +746,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 ;; Set default transparencies:
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> [<inactive>]))
-(add-to-list 'default-frame-alist '(alpha 90 90))
+(add-to-list 'default-frame-alist '(alpha 85 85))
 
 (set 'edge-background-colour "greasy2")
 
@@ -998,7 +1003,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
   (progn
 
     ;; Load my oomph-lib snippets
-    (add-to-list 'yas-snippet-dirs "~/.emacs.d/oomph-snippets")
+    (add-to-list 'yas-snippet-dirs "~/.emacs.d/oomph-snippets" t)
 
     ;; kill C-c keys
     (add-hook 'yas-minor-mode-hook
@@ -1046,6 +1051,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
                 (interactive)
                 (local-set-key (kbd "<f5>") 'yas-tryout-snippet)
                 (local-set-key (kbd "C-c") nil)
+                (local-set-key (kbd "<f6>") 'yas-load-snippet-buffer)
                 ))
 
     (global-set-key (kbd "C-t") 'yas/expand)

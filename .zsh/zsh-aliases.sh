@@ -95,6 +95,7 @@ alias grh='git reset HEAD'
 
 
 alias gss='git stash --keep-index && git stash'
+alias gsk='git stash --keep-index'
 alias gsp='git stash pop'
 alias gri='git rebase --interactive HEAD~20'
 alias grc='git rebase --continue'

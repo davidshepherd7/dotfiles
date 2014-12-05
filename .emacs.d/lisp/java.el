@@ -92,7 +92,8 @@
 (defun maybe-set-cws-style ()
   "Detect if we are editing cws code and set the style if so."
   (interactive)
-  (when (equal (projectile-project-name) "cloudworkflowsimulator")
+  (when (or (equal (projectile-project-name) "cloudworkflowsimulator")
+            (equal (projectile-project-name) "driver"))
     (c-set-style "java")
     (c-set-offset 'statement-cont '++)
     (c-set-offset 'arglist-cont-nonempty '++)

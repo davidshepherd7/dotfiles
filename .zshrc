@@ -203,9 +203,9 @@ fi
 
 
 # Add emacs if it's there
-emacsdir="$HOME/code/emacs"
+emacsdir="$HOME/code/emacs/mybin"
 if [[ -d $emacsdir ]]; then
-    export PATH="$emacsdir/src:$emacsdir/lib-src:$PATH"
+    export PATH="$emacsdir:$PATH"
 fi
 
 
