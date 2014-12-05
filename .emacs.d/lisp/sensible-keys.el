@@ -297,7 +297,6 @@ the line break."
 
 ;; Utilities
 (global-set-key (kbd "<f7>") 'projectile-vc)
-(global-set-key (kbd "<f8>") 'projectile-ack)
 
 
 ;; New keymap for search

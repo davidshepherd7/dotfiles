@@ -1112,16 +1112,13 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (define-key deft-mode-map (kbd "C-v") 'deft-filter-yank)
     (define-key deft-mode-map (kbd "C-y") 'deft-filter-decrement-word)
 
-    ;; Make a new deft buffer anytime we press f8 (by killing the old one).
+    ;; Make a new deft buffer (by killing the old one). Called from xmonad.
     (defun new-clean-deft ()
       (interactive)
       "Close old deft buffer and start a new one"
       (ignore-errors (kill-buffer "*Deft*"))
       (deft)
-      )
-    (global-set-key [f8] 'new-clean-deft)
-    )
-  )
+      )))
 
 ;; javascript
 ;; ============================================================
@@ -1171,11 +1168,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 
 ;; Ack support
-(require 'ack-and-a-half)
-(defalias 'ack 'ack-and-a-half)
-(defalias 'ack-same 'ack-and-a-half-same)
-(defalias 'ack-find-file 'ack-and-a-half-find-file)
-(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+(require 'ack)
+(global-set-key (kbd "<f8>") 'projectile-ack)
+
 
 
 ;; Better help commands
