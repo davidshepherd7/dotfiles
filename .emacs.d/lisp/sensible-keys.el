@@ -283,7 +283,7 @@ the line break."
 (global-set-key (kbd "C-\\ C-.") 'py-shift-right)
 (global-set-key (kbd "C-\\ C-,") 'py-shift-left)
 
-(when (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+(when emacs244?
   (global-set-key (kbd "C-<return>") #'rectangle-mark-mode)
   (global-set-key (kbd "M-SPC") #'cycle-spacing)
   (global-set-key (kbd "C-S-f") #'isearch-forward-symbol-at-point))

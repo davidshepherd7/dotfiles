@@ -5,10 +5,12 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-;; Turn "lambda " into a lambda symbol
-(require 'lambda-mode)
-(add-hook 'python-mode-hook 'lambda-mode 1)
-(setq lambda-regex "lambda ")
+;; ;; Turn "lambda " into a lambda symbol
+;; (require 'lambda-mode)
+;; (add-hook 'python-mode-hook 'lambda-mode 1)
+;; (setq lambda-regex "lambda ")
+
+(when emacs244? (add-hook 'python-mode-hook 'lambda-mode 1))
 
 ;; Turn off the stupid _ as part of word thing
 (modify-syntax-entry ?_ "_" python-mode-syntax-table)
