@@ -937,8 +937,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; ;; (set 'minor-mode-alist '())
 ;; (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 
-;; Use better unique names for buffers
-(use-package uniquify)
 
 ;; Pretty modeline
 (use-package
@@ -1211,7 +1209,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
  '(safe-local-variable-values (quote ((TeX-master . "../poster") (TeX-master . "./main_poster") (TeX-master . "../main_poster") (TeX-master . t) (TeX-master . "main") (TeX-master . "./main"))))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(yas-wrap-around-region t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
