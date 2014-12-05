@@ -41,10 +41,14 @@
                            (s-replace "src/" "test/" bf-dir)
                            (s-replace "source/" "test/" bf-dir))))
 
-         (paths-to-try (-table-flat #'s-concat dirs-to-try files-to-try)))
+         (paths-to-try (-table-flat #'s-concat dirs-to-try files-to-try))
+
+         (path (-first #'file-exists-p paths-to-try)))
+
+    (when (not path) (throw 'no-file-found "No candidate paths found"))
 
     ;; Open the first file that exists
-    (find-file (car (-filter #'file-exists-p paths-to-try)))))
+    (find-file path)))
 
 (defun java-switch-from-test ()
   (let* ((bf-dir (file-name-directory (buffer-file-name)))
@@ -59,10 +63,14 @@
                            (s-replace "test/" "src/" bf-dir)
                            (s-replace "test/" "source/" bf-dir))))
 
-         (paths-to-try (-table-flat #'s-concat dirs-to-try files-to-try)))
+         (paths-to-try (-table-flat #'s-concat dirs-to-try files-to-try))
+
+         (path (-first #'file-exists-p paths-to-try)))
+
+    (when (not path) (throw 'no-file-found "No candidate paths found"))
 
     ;; Open the first file that exists
-    (find-file (car (-filter #'file-exists-p paths-to-try)))))
+    (find-file path)))
 
 
 (defun java-keys ()
