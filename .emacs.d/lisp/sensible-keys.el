@@ -250,6 +250,7 @@ the line break."
 
 ;; Just because it's handy
 (global-set-key (kbd "C-'") 'query-replace)
+(global-set-key (kbd "M-'") 'query-replace-regexp)
 
 ;; Now assign new keys for the things we just wrote all over
 (global-set-key (kbd "C-\\") ctl-x-map)
@@ -290,9 +291,13 @@ the line break."
 
 
 ;; Keys so I don't need to let go of C during combos
-;; ============================================================
 (global-set-key (kbd "C-\\ C-#") 'server-edit)
 (global-set-key (kbd "C-\\ C-h") 'mark-whole-buffer)
+
+
+;; Utilities
+(global-set-key (kbd "<f7>") 'projectile-vc)
+(global-set-key (kbd "<f8>") 'projectile-ack)
 
 
 ;; New keymap for search
