@@ -795,36 +795,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 		  (indent-region (region-beginning) (region-end) nil))))))
 
 
-;; Ctags
-;; ============================================================
-
-(set 'ctags-command "ctags -e --recurse")
-(defun generate-tags (input-command)
-  "Generate tags file using ctags."
-  (interactive (list (read-string "Ctags command: " ctags-command)))
-  (set 'ctags-command input-command)
-  (shell-command ctags-command))
-
-(defun regenerate-tags ()
-  (interactive)
-  "Generate tags file using ctags with previous command."
-  (shell-command ctags-command)
-  (visit-tags-table "TAGS"))
-
-(global-set-key (kbd "C-.") 'regenerate-tags)
-
-;; Don't do this: it takes far too long to run on oomph-lib
-;; ;; Wrap find-tag with code that runs regenerate-tags if tag is not found.
-;; (defadvice find-tag (around find-tag activate)
-;;   "Rerun etags and reload tags if tag not found and redo find-tag.
-;;    If buffer is modified, ask about save before running etags."
-;;   (condition-case err
-;;       ad-do-it
-;;     (error (regenerate-tags)
-;;            ad-do-it)))
-
-
-
 ;; Git
 ;; ============================================================
 
