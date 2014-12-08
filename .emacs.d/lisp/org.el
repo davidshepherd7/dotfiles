@@ -9,7 +9,8 @@
   (local-set-key (kbd "C-c") 'nil)
   (local-set-key (kbd "C-y") 'nil)
   (local-set-key (kbd "C-e") 'nil)
-  (local-set-key (kbd "C-t") 'org-todo))
+  (local-set-key (kbd "C-t") 'org-todo)
+  (local-set-key (kbd "C-.") 'org-time-stamp-inactive))
 
 (add-hook 'org-mode-hook 'org-keys)
 
