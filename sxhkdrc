@@ -1,0 +1,17 @@
+super + t
+    urxvt
+
+super + y
+    firefox
+
+super + f
+    emacsclient -c -n -e '(switch-to-buffer nil)'
+
+super + m
+    emacsclient -c -n -e '(new-clean-deft)'
+
+super + p
+    dmenu_run
+
+super + equal
+    gnome-screensaver-command -l
