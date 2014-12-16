@@ -82,3 +82,8 @@ latexmk
 texlive-full
 parallel
 octave
+astyle
+keychain
+gtkpod
+ack-grep
+p7zip-full

@@ -25,8 +25,8 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-# tar
-alias untar='tar -xzf'
+# archives
+alias ex='7z x' # 7zip can extract pretty much anything
 
 # pdf viewer, disconnect from shell entirely and write stdout/stderr to a
 # temp file (temp files are cleaned on reboot).
