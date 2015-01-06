@@ -40,7 +40,7 @@ compinit
 setopt rmstarsilent
 
 
-# History 
+# History
 # ============================================================
 
 # Enable stored history, and make it large.
@@ -139,7 +139,7 @@ export ALTERNATE_EDITOR=""
 
 
 # Make
-# ============================================================ 
+# ============================================================
 
 # How many cores do we have? Find out from /proc/cpuinfo (using regexp matching
 # the start of info for a new processor).
@@ -208,6 +208,9 @@ if [[ -d $emacsdir ]]; then
     export PATH="$emacsdir:$PATH"
 fi
 
+# Add general binaries
+export PATH="$PATH:$HOME/code/bin"
+
 
 # python's path as well:
 export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscripts/python/"
@@ -225,9 +228,9 @@ export ANT_ARGS='-emacs -logger org.apache.tools.ant.listener.AnsiColorLogger'
 
 
 # Imports
-# ============================================================ 
+# ============================================================
 
-# Load key binds 
+# Load key binds
 source ${rcdir}/zsh-bindings.sh
 
 # Load aliases and simple functions

@@ -1,4 +1,4 @@
-personal_ws-1.1 en 159
+personal_ws-1.1 en 182 
 prepended
 ILU
 dimensionalisation
@@ -18,9 +18,11 @@ discretisation
 GMRES
 magnetostatics
 Hypre
+MATLAB
 cli
 linearise
 d'Aquino
+LTEs
 femme
 rescaling
 EP
@@ -31,6 +33,7 @@ piecewise
 eBDF
 nano
 scalable
+IVP
 preconditioner
 Seidel
 Raphson
@@ -39,8 +42,8 @@ dir
 Neumann
 discretise
 Lindholm
-multistep
 DVFS
+multistep
 multi
 Skyrmions
 azimuthal
@@ -64,22 +67,26 @@ optimisations
 nmag
 isoparametric
 linearised
-macrospin
+SymPy
 ok
+macrospin
 posteriori
 Bottauscio
 CLJP
 MRAM
+Sani
 Navier
 FFT
 eigenvector
 integrators
 pointwise
 integrable
+Gresho
 SIMR
 atomistic
 RK
 magnetostatic
+CVODE
 LTE
 precomputed
 nanometre
@@ -118,6 +125,7 @@ Ilia's
 Cayley
 PDEs
 VMs
+computable
 Sternberg
 undamped
 Heil
@@ -127,12 +135,16 @@ Skyrmion
 macrospins
 intra
 dimensionalised
+heuristical
 dimensionality
 Torre
 nanoparticle
+IVPs
 Heun's
+Iserles
 BDF
 Kutta
+Henrici
 precession
 magnetocrystalline
 OOMMF
@@ -150,6 +162,7 @@ nanometers
 bem
 eigenvectors
 Wolfarth
+spatio
 hms
 discretising
 anisotropic

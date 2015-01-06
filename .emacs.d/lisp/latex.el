@@ -64,7 +64,7 @@
 (eval-after-load
     'tex
   '(set 'font-latex-match-reference-keywords
-        '(("cref" "[{") 
+        '(("cref" "[{")
           ("Cref" "[{")
           ("thisref" "[{")
           ("Thisref" "[{")
@@ -83,11 +83,21 @@ forward instead."
   (insert (match-string 1)))
 
 ;; bind it
-(add-hook 'LaTeX-mode-hook 
-          (lambda () (local-set-key (kbd "C-/") 'latex-insert-last-label)))
+(add-hook 'LaTeX-mode-hook
+          (lambda () (local-set-key (kbd "C-.") 'latex-insert-last-label)))
+
+;; disable aggressive indent mode
+(when (boundp 'aggressive-indent-mode)
+  (add-hook 'LaTeX-mode-hook (lambda () (aggressive-indent-mode 0))))
 
 
-;; flyspell 
+;; bind tab
+(add-hook 'LaTeX-mode-hook 'set-tab)
+
+
+
+
+;; flyspell
 ;; ============================================================
 
 ;; always use flyspell in latex

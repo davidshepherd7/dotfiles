@@ -3,11 +3,6 @@
 # Use better top with colours and stuff:
 alias top='htop'
 
-# Use hub for better github integration if we have it and it's executable.
-if [[ -x "/usr/local/bin/hub" ]]; then
-    alias git='hub'
-fi
-
 # Tail -F isn't really tail anymore...c all it rcat(refresh cat)
 alias rcat='tail -F -n 100000'
 
@@ -69,7 +64,7 @@ install_packages ()
     cat $package_list | xargs sudo apt-get install -y -q
 }
 
-alias update='sudo apt-get update && install_packages && sudo apt-get upgrade --assume-yes --quiet'
+alias update='sudo apt-get update && install_packages && sudo apt-get upgrade --assume-yes --quiet && install_packages'
 alias pm='sudo pacmatic -S'
 
 # Open location in gnome
@@ -78,6 +73,10 @@ alias go='nautilus .'
 
 # Git aliases
 # ============================================================
+
+
+# Use hub for better github integration
+alias git='hub'
 
 alias g='git'
 
@@ -92,7 +91,7 @@ alias gsri='git stash --keep-index && git stash && git rebase --interactive HEAD
 alias gap='git add -p'
 alias gcp='git checkout -p'
 alias grh='git reset HEAD'
-
+alias gau='git add -u :/'
 
 alias gss='git stash --keep-index && git stash'
 alias gsk='git stash --keep-index'
@@ -261,7 +260,7 @@ pipe-evince()
     evince "$TMPFILE"
 
     # Kill temp file (or comment to let the OS kill it on reboot)
-    # bash -c "sleep 2; rm '$TMPFILE'" & 
+    # bash -c "sleep 2; rm '$TMPFILE'" &
 }
 
 
@@ -287,7 +286,7 @@ $1
 w" | ed "$2"
 }
 
-# oomph-lib 
+# oomph-lib
 # ============================================================
 
 

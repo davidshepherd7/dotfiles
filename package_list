@@ -80,10 +80,12 @@ android-tools-fastboot
 zsh
 latexmk
 texlive-full
-parallel
+moreutils
 octave
 astyle
 keychain
 gtkpod
 ack-grep
 p7zip-full
+curl
+errno

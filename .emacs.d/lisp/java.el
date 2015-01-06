@@ -45,7 +45,7 @@
 
          (path (-first #'file-exists-p paths-to-try)))
 
-    (when (not path) (throw 'no-file-found "No candidate paths found"))
+    (when (not path) (throw 'no-test-file-found "No candidate paths found"))
 
     ;; Open the first file that exists
     (find-file path)))
@@ -67,7 +67,7 @@
 
          (path (-first #'file-exists-p paths-to-try)))
 
-    (when (not path) (throw 'no-file-found "No candidate paths found"))
+    (when (not path) (throw 'no-class-file-found "No candidate paths found"))
 
     ;; Open the first file that exists
     (find-file path)))
@@ -108,3 +108,28 @@
     (c-set-offset 'func-decl-cont '++)
     (c-set-offset 'arglist-intro '++)))
 (add-hook 'java-mode-hook 'maybe-set-cws-style)
+
+(defun java-package-name ()
+  (let* ((root-regex "src/\\|source/\\|test/")
+         (path-from-src (-last-item
+                         (s-split root-regex (file-name-directory (buffer-file-name))))))
+    (s-replace "/" "." (s-chop-suffix "/" path-from-src))))
+
+(defun java-insert-package-name ()
+  (interactive)
+  (insert (java-package-name)))
+
+(defun java-insert-import-util ()
+  (insert "import java.util.List;
+  import java.util.ArrayList;
+  import java.util.Map;
+  import java.util.HashMap;
+  import java.util.TreeMap;
+  import java.util.Set;
+  import java.util.HashSet;
+  import java.util.SortedSet;
+  import java.util.Collection;
+  import static java.util.Arrays.asList;
+  import static java.util.Collections.sort;
+  import static java.util.Collections.reverse;
+  import static java.util.Collections.unmodifiableCollection;"))
