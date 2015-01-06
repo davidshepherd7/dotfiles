@@ -1028,8 +1028,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 
 ;; Ace jump mode
-;; ============================================================
-
 (use-package ace-jump-mode
   :ensure t
   :config
@@ -1050,7 +1048,12 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; Ack support
 (use-package ack
   :ensure t
-  :config (global-set-key (kbd "<f8>") 'projectile-ack))
+  :bind ("<f8>" . projectile-ack))
+
+
+(use-package expand-region
+  :ensure t
+  :bind ("C-a" . er/expand-region))
 
 
 
