@@ -62,7 +62,8 @@
 
          (add-hook 'c-mode-common-hook
                    (lambda () (define-key c-mode-map (kbd "C-d") nil)))
-         ))
+         )
+  :ensure t)
 
 
 ;; Some simple, one-line stuff
