@@ -158,12 +158,6 @@
 ;; ;; auto-save in-place
 ;; (setq auto-save-visited-file-name t)
 
-;; Had to remove this because oomph-lib doesn't stick to no trailing whitespace...,
-;; Remove trailing whitespace before save
-;;(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(remove-hook 'before-save-hook 'delete-trailing-whitespace)
-;; oomph-lib safe version is in oomph-lib.el
-
 ;; Add a new line at end of file on save if none exists (note: doesn't play
 ;; nice with scheme).
 (setq-default require-final-newline 0)
@@ -1121,7 +1115,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (set 'js-indent-level 2)
 
 
-;; Shell mode 
+;; Shell mode
 ;; ============================================================
 
 (add-hook 'shell-mode-hook 'set-tab)
@@ -1130,7 +1124,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
                              (set 'sh-indentation 2)))
 
 
-;; Ace jump mode 
+;; Ace jump mode
 ;; ============================================================
 
 (require 'ace-jump-mode)
@@ -1163,6 +1157,32 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (define-key 'help-command (kbd "V") 'find-variable)
 
 
+;; Clean up whitespace
+;; ============================================================
+
+;; has to go near the end because we need some project/language specific
+;; functions.
+
+(defun preserve-trailing-whitespace-p ()
+  (interactive)
+  (or
+   ;; makefile mode doesn't play well with this
+   (string= major-mode "makefile-mode")
+
+   ;; oomph-lib doesn't stick to no trailing whitespace :(
+   (is-oomph-code)
+
+   ;; Don't do it in non-programming modes (just to be safe)
+   (not (derived-mode-p 'prog-mode))))
+
+
+(defun maybe-delete-trailing-whitespace ()
+  (when (not (preserve-trailing-whitespace-p))
+    (delete-trailing-whitespace)))
+
+(add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
@@ -1172,7 +1192,36 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cc-other-file-alist (quote (("\\.cc\\'" (".hh" ".h")) ("\\.hh\\'" (".cc" ".C")) ("\\.c\\'" (".h")) ("\\.h\\'" (".cc" ".c" ".C" ".CC" ".cxx" ".cpp")) ("\\.C\\'" (".H" ".hh" ".h")) ("\\.H\\'" (".C" ".CC")) ("\\.CC\\'" (".HH" ".H" ".hh" ".h")) ("\\.HH\\'" (".CC")) ("\\.c\\+\\+\\'" (".h++" ".hh" ".h")) ("\\.h\\+\\+\\'" (".c++")) ("\\.cpp\\'" (".hpp" ".hh" ".h")) ("\\.hpp\\'" (".cpp")) ("\\.cxx\\'" (".hxx" ".hh" ".h")) ("\\.hxx\\'" (".cxx")))))
+ '(cc-other-file-alist
+   (quote
+    (("\\.cc\\'"
+      (".hh" ".h"))
+     ("\\.hh\\'"
+      (".cc" ".C"))
+     ("\\.c\\'"
+      (".h"))
+     ("\\.h\\'"
+      (".cc" ".c" ".C" ".CC" ".cxx" ".cpp"))
+     ("\\.C\\'"
+      (".H" ".hh" ".h"))
+     ("\\.H\\'"
+      (".C" ".CC"))
+     ("\\.CC\\'"
+      (".HH" ".H" ".hh" ".h"))
+     ("\\.HH\\'"
+      (".CC"))
+     ("\\.c\\+\\+\\'"
+      (".h++" ".hh" ".h"))
+     ("\\.h\\+\\+\\'"
+      (".c++"))
+     ("\\.cpp\\'"
+      (".hpp" ".hh" ".h"))
+     ("\\.hpp\\'"
+      (".cpp"))
+     ("\\.cxx\\'"
+      (".hxx" ".hh" ".h"))
+     ("\\.hxx\\'"
+      (".cxx")))))
  '(column-number-mode t)
  '(ff-ignore-include t)
  '(gud-gdb-command-name "gdb -i=mi --args")
@@ -1182,7 +1231,14 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
  '(markdown-bold-underscore nil)
  '(org-hide-block-startup t)
  '(org-startup-folded nil)
- '(safe-local-variable-values (quote ((TeX-master . "../poster") (TeX-master . "./main_poster") (TeX-master . "../main_poster") (TeX-master . t) (TeX-master . "main") (TeX-master . "./main"))))
+ '(safe-local-variable-values
+   (quote
+    ((TeX-master . "../poster")
+     (TeX-master . "./main_poster")
+     (TeX-master . "../main_poster")
+     (TeX-master . t)
+     (TeX-master . "main")
+     (TeX-master . "./main"))))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(yas-wrap-around-region t))
