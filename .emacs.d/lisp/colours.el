@@ -25,6 +25,8 @@
      )))
 (provide 'DarkStrongColours)
 
-(require 'color-theme)
-(color-theme-initialize)
-(DarkStrongColours)
+(use-package color-theme
+  :ensure t
+  :config (progn
+            (color-theme-initialize)
+            (DarkStrongColours)))

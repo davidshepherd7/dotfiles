@@ -2,11 +2,11 @@
 
 ;; test with compile command: \emacs --debug-init --batch -u $USER
 
-;; Use package instead of el-get?
-
 
 ;; Use C-\ p as prefix
 (set 'projectile-keymap-prefix (kbd "C-\\ p"))
+(global-set-key (kbd "C-\\") ctl-x-map)
+
 
 
 (defvar emacs244?
@@ -23,26 +23,6 @@
              '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
-
-
-
-;; install + setup el-get
-;; ============================================================
-
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-;; Install el-get if we don't have it
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
-
-(add-to-list 'el-get-recipe-path "~/.emacs.d/my-recipes")
-
-(el-get 'sync)
 
 
 ;; Other things that need to go first for some reason
@@ -109,7 +89,9 @@
 (set 'browse-url-generic-program "firefox")
 
 ;; Draw a line accross the screen instead of ^L for page breaks
-(global-page-break-lines-mode t)
+(use-package page-break-lines
+  :ensure t
+  :config (global-page-break-lines-mode t))
 
 ;; Show messages on startup, not the stupid scratch buffer
 (switch-to-buffer "*Messages*")
@@ -214,7 +196,9 @@
     (ido-everywhere)
 
     ;; and for some other places
-    (ido-ubiquitous-mode)
+    (use-package ido-ubiquitous
+      :ensure t
+      :config (ido-ubiquitous-mode))
 
     ;; Change some keys in ido
     (defun my-ido-keys ()
@@ -259,29 +243,6 @@
     (set 'ido-create-new-buffer 'always)
 
     ;; ??ds Add ignore regex for useless files
-
-
-    ;; smex: ido based completion for commands
-    ;; ============================================================
-
-    ;; Change the main keybinding
-    (global-set-key [remap execute-extended-command] 'smex)
-
-    ;; Another key: only list commands relevant to this major mode.
-    (global-set-key (kbd "M-|") 'smex-major-mode-commands)
-
-    ;; Tell the prompt that I changed the binding for running commands
-    ;; (elsewhere)
-    (set 'smex-prompt-string "M-\\: ")
-
-    ;; Put its save file in .emacs.d
-    (set 'smex-save-file "~/.emacs.d/smex-items")
-
-    ;; Change some keys in smex itself
-    (defun smex-prepare-ido-bindings ()
-      (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
-      (define-key ido-completion-map (kbd "M-.") 'smex-find-function))
-
 
     ;; ;; ido for tags
     ;; ;; ============================================================
@@ -361,51 +322,71 @@ predicate PRED used to filter them."
 
     (global-set-key (kbd "<f1> f") 'ido-describe-function)
     (global-set-key (kbd "<f1> v") 'ido-describe-variable)
+    ))
 
+;; Even better fuzzy search for ido
+(use-package flx-ido
+  :ensure t
+  :config (progn (flx-ido-mode 1)
+		 (setq ido-use-faces nil)))
 
+;; smex: ido based completion for commands
+(use-package smex
+  :ensure t
+  :config (progn ;; Change the main keybinding
+	    (global-set-key [remap execute-extended-command] 'smex)
 
-    ;; Even better fuzzy search for ido
-    ;; ============================================================
-    (use-package flx-ido
-      :ensure t
-      :config (progn (flx-ido-mode 1)
-                     (setq ido-use-faces nil)))
+	    ;; Another key: only list commands relevant to this major mode.
+	    (global-set-key (kbd "M-|") 'smex-major-mode-commands)
 
-    )
-  )
+	    ;; Tell the prompt that I changed the binding for running commands
+	    ;; (elsewhere)
+	    (set 'smex-prompt-string "M-\\: ")
 
+	    ;; Put its save file in .emacs.d
+	    (set 'smex-save-file "~/.emacs.d/smex-items")
+
+	    ;; Change some keys in smex itself
+	    (defun smex-prepare-ido-bindings ()
+	      (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
+	      (define-key ido-completion-map (kbd "M-.") 'smex-find-function))))
 
 
 ;; Auto complete
 ;;================================================================
-(require 'auto-complete-config)
-(require 'fuzzy)
-(require 'pos-tip)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(use-package fuzzy :ensure t)
+(use-package pos-tip :ensure t)
+(use-package auto-complete
+  :ensure t
+  :config (progn (require 'auto-complete-config)
+                 (require 'fuzzy)
+                 (require 'pos-tip)
+                 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
-;; Options from
-(ac-config-default)
+                 ;; Options from
+                 (ac-config-default)
 
-(global-auto-complete-mode t)
-(set 'ac-ignore-case nil)
-(set 'ac-use-fuzzy t)
-(set 'ac-fuzzy-enable t)
-(ac-flyspell-workaround)
+                 (global-auto-complete-mode t)
+                 (set 'ac-ignore-case nil)
+                 (set 'ac-use-fuzzy t)
+                 (set 'ac-fuzzy-enable t)
+                 (ac-flyspell-workaround)
 
-;; Show quick help (function info display in tooltip)
-;; (set 'ac-use-quick-help t)
-(set 'ac-delay 0.5) ;; show completions quickly
+                 ;; Show quick help (function info display in tooltip)
+                 ;; (set 'ac-use-quick-help t)
+                 (set 'ac-delay 0.5) ;; show completions quickly
 
-;; help is too annoying, press f1 to get it
-;; ;; (set 'ac-show-menu-immediately-on-auto-complete 1)
-;; (set 'ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
-;;                                        ;; completions
+                 ;; help is too annoying, press f1 to get it
+                 ;; ;; (set 'ac-show-menu-immediately-on-auto-complete 1)
+                 ;; (set 'ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
+                 ;;                                        ;; completions
 
-;; let me search even while autocomplete is up!
-(define-key ac-complete-mode-map (kbd "C-s") nil)
+                 ;; let me search even while autocomplete is up!
+                 (define-key ac-complete-mode-map (kbd "C-s") nil)
 
-;; Use f1 to show help in a buffer! Handy :) Don't even need to bind
-;; anything!
+                 ;; Use f1 to show help in a buffer! Handy :) Don't even need to bind
+                 ;; anything!
+                 ))
 
 
 ;; Undo tree
@@ -415,7 +396,7 @@ predicate PRED used to filter them."
   :config
   (progn
     ;; wipe it's keybinds
-    (add-to-list 'minor-mode-map-alist '('undo-tree-mode (make-sparse-keymap)))
+    ;;(add-to-list 'minor-mode-map-alist (list 'undo-tree-mode (make-sparse-keymap "undo-tree")))
 
     ;; Use it everywhere
     (global-undo-tree-mode))
@@ -434,18 +415,18 @@ predicate PRED used to filter them."
 
 ;; Load configs from other files
 (load-file "~/.emacs.d/lisp/cpp.el")
-(load-file "~/.emacs.d/lisp/colours.el")
+;;(load-file "~/.emacs.d/lisp/colours.el")
 (load-file "~/.emacs.d/lisp/latex.el")
 (load-file "~/.emacs.d/lisp/oomph-lib.el")
 (load-file "~/.emacs.d/lisp/scheme.el")
 (load-file "~/.emacs.d/lisp/octave.el")
-(load-file "~/.emacs.d/lisp/my-matlab.el")
+;; (load-file "~/.emacs.d/lisp/my-matlab.el")
 (load-file "~/.emacs.d/lisp/org.el")
-(load-file "~/.emacs.d/lisp/my-python.el") ;; python-mode is in file called python.el
-(load-file "~/.emacs.d/lisp/unicode-entry.el")
-(load-file "~/.emacs.d/lisp/haskell.el")
-(load-file "~/.emacs.d/lisp/elisp.el")
-(load-file "~/.emacs.d/lisp/java.el")
+;;(load-file "~/.emacs.d/lisp/my-python.el") ;; python-mode is in file called python.el
+;; (load-file "~/.emacs.d/lisp/unicode-entry.el")
+;; (load-file "~/.emacs.d/lisp/haskell.el")
+;; (load-file "~/.emacs.d/lisp/elisp.el")
+;; (load-file "~/.emacs.d/lisp/java.el")
 
 
 
@@ -797,13 +778,18 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; Git
 ;; ============================================================
 
+(use-package magit
+  :ensure t)
+
 ;; Use org-mode for git commits
 (set 'auto-mode-alist
      (append auto-mode-alist '(("COMMIT_EDITMSG" . markdown-mode))))
 
 ;; Show changes vs VC in sidebar
-(set 'diff-hl-command-prefix (kbd "C-\\ v"))
-(global-diff-hl-mode)
+(use-package diff-hl
+  :ensure t
+  :pre-load (set 'diff-hl-command-prefix (kbd "C-\\ v"))
+  :config (global-diff-hl-mode))
 
 
 ;; Markdown mode
@@ -815,8 +801,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
   (progn
     ;; run markdown-mode on files ending in .md
     (set 'auto-mode-alist
-         (append auto-mode-alist '((".md" . markdown-mode)
-                                   (".markdown" . markdown-mode))))
+	 (append auto-mode-alist '((".md" . markdown-mode)
+				   (".markdown" . markdown-mode))))
     (defun markdown-mode-keys ()
       (interactive)
 
@@ -844,24 +830,20 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; Breadcrumbs
 ;; ============================================================
 
-(use-package breadcrumb
-  :ensure t
-  :config
-  (progn
+;; built in, don't need to use-package
 
-    ;; Bind some keys
-    (global-set-key (kbd "M-b") 'bc-set)
-    (global-set-key (kbd "M-B") 'bc-clear)
-    (global-set-key [(meta up)] 'bc-previous)
-    (global-set-key [(meta down)] 'bc-next)
-    (global-set-key [(meta left)] 'bc-local-previous)
-    (global-set-key [(meta right)] 'bc-local-next)
+;; ;; Bind some keys
+;; (global-set-key (kbd "M-b") 'bc-set)
+;; (global-set-key (kbd "M-B") 'bc-clear)
+;; (global-set-key [(meta up)] 'bc-previous)
+;; (global-set-key [(meta down)] 'bc-next)
+;; (global-set-key [(meta left)] 'bc-local-previous)
+;; (global-set-key [(meta right)] 'bc-local-next)
 
-    ;; Auto bookmark before isearch
-    (add-hook 'isearch-mode-hook 'bc-set)
+;; ;; Auto bookmark before isearch
+;; (add-hook 'isearch-mode-hook 'bc-set)
 
-    ;; Already auto bookmark before tag search and query replace
-    ))
+;; Already auto bookmark before tag search and query replace
 
 
 
@@ -871,9 +853,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (use-package list-register
   :ensure t
   :config (progn
-            (global-set-key (kbd "C-\\ r v") 'list-register)
-            (global-set-key (kbd "C-\\ r s") 'copy-to-register)
-            (global-set-key (kbd "C-\\ r i") 'insert-register)))
+	    (global-set-key (kbd "C-\\ r v") 'list-register)
+	    (global-set-key (kbd "C-\\ r s") 'copy-to-register)
+	    (global-set-key (kbd "C-\\ r i") 'insert-register)))
 
 
 ;; Mode line
@@ -924,27 +906,29 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (use-package smart-mode-line
   :ensure t
   :config
-  (progn (sml/setup)
+  (progn
+    (setq sml/no-confirm-load-theme t)
 
-         ;; Shorten some directories to useful stuff
-         (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
-         (add-to-list 'sml/replacer-regexp-list
-                      '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
-         (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
-         (add-to-list 'sml/replacer-regexp-list
-                      '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
-         ))
+    (sml/setup)
+
+    ;; Shorten some directories to useful stuff
+    (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
+    (add-to-list 'sml/replacer-regexp-list
+                 '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
+    (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
+    (add-to-list 'sml/replacer-regexp-list
+                 '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
+    ))
 
 
 
 ;; ??ds new file?
 ;; Use double semi-colon for emacs lisp (default seems to be single).
 (add-hook 'emacs-lisp-mode-hook (lambda () (setq comment-start ";;"
-                                            comment-end "")))
+					    comment-end "")))
 
 
 
-(global-set-key (kbd "C-\\") ctl-x-map)
 
 ;; Projectile
 ;; ============================================================
@@ -964,8 +948,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (defun maybe-projectile-find-file ()
       (interactive)
       (if (projectile-project-p)
-          (projectile-find-file)
-        (ido-find-file)))
+	  (projectile-find-file)
+	(ido-find-file)))
     (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
     ;; Use everywhere
@@ -987,39 +971,39 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
     ;; kill C-c keys
     (add-hook 'yas-minor-mode-hook
-              (lambda ()
-                ;; (local-unset-key (kbd "C-c")
-                ;; (message "Trying to unset")
-                ;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
-                (define-key yas-minor-mode-map (kbd "C-c & C-s") nil)
-                (define-key yas-minor-mode-map (kbd "C-c & C-n") nil)
-                (define-key yas-minor-mode-map (kbd "C-c & C-v") nil)
-                (define-key yas-minor-mode-map (kbd "C-c &") nil)
-                (define-key yas-minor-mode-map (kbd "C-c") nil)
+	      (lambda ()
+		;; (local-unset-key (kbd "C-c")
+		;; (message "Trying to unset")
+		;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
+		(define-key yas-minor-mode-map (kbd "C-c & C-s") nil)
+		(define-key yas-minor-mode-map (kbd "C-c & C-n") nil)
+		(define-key yas-minor-mode-map (kbd "C-c & C-v") nil)
+		(define-key yas-minor-mode-map (kbd "C-c &") nil)
+		(define-key yas-minor-mode-map (kbd "C-c") nil)
 
-                (define-key yas-minor-mode-map (kbd "C-i") nil)
-                (define-key yas-minor-mode-map (kbd "TAB") nil)
-                (define-key yas-minor-mode-map [tab] nil)
+		(define-key yas-minor-mode-map (kbd "C-i") nil)
+		(define-key yas-minor-mode-map (kbd "TAB") nil)
+		(define-key yas-minor-mode-map [tab] nil)
 
 
-                (set 'yas-fallback-behavior nil)
+		(set 'yas-fallback-behavior nil)
 
-                ;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
+		;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
 
-                ;; For some reason these don't work
-                ;; (local-unset-key (kbd "C-c & C-s"))
-                ;; (local-set-key (kbd "C-c & C-s") nil)
+		;; For some reason these don't work
+		;; (local-unset-key (kbd "C-c & C-s"))
+		;; (local-set-key (kbd "C-c & C-s") nil)
 
-                ))
+		))
 
     ;; c-mode uses something else on tab, which seems to get messed with by
     ;; yasnippet, remove the extra bindings to prevent this
     (add-hook 'c-mode-common-hook
-              (lambda ()
-                (define-key c-mode-map [tab] nil)
-                (define-key c++-mode-map [tab] nil)
-                ;; might need to add more here?
-                ))
+	      (lambda ()
+		(define-key c-mode-map [tab] nil)
+		(define-key c++-mode-map [tab] nil)
+		;; might need to add more here?
+		))
 
 
     ;; Use everywhere
@@ -1027,12 +1011,12 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
     ;; Keys for snippet editing mode
     (add-hook 'snippet-mode-hook
-              (lambda ()
-                (interactive)
-                (local-set-key (kbd "<f5>") 'yas-tryout-snippet)
-                (local-set-key (kbd "C-c") nil)
-                (local-set-key (kbd "<f6>") 'yas-load-snippet-buffer)
-                ))
+	      (lambda ()
+		(interactive)
+		(local-set-key (kbd "<f5>") 'yas-tryout-snippet)
+		(local-set-key (kbd "C-c") nil)
+		(local-set-key (kbd "<f6>") 'yas-load-snippet-buffer)
+		))
 
     (global-set-key (kbd "C-t") 'yas/expand)
 
@@ -1057,7 +1041,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (defun irony-mode-if-safe ()
       (interactive)
       (when (member major-mode irony-known-modes)
-        (irony-mode 1)))
+	(irony-mode 1)))
     (add-hook 'c++-mode-hook 'irony-mode-if-safe)
     (add-hook 'c-mode-hook 'irony-mode-if-safe)
 
@@ -1128,8 +1112,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 (add-hook 'shell-mode-hook 'set-tab)
 (add-hook 'shell-mode-hook (lambda ()
-                             (set 'sh-basic-offset 2)
-                             (set 'sh-indentation 2)))
+			     (set 'sh-basic-offset 2)
+			     (set 'sh-indentation 2)))
 
 
 ;; Ace jump mode
@@ -1144,9 +1128,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     ;; favour home row keys
     (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
       (set 'ace-jump-mode-move-keys
-           (nconc first-list
-                  (-difference (loop for i from ?a to ?z collect i) first-list)
-                  (loop for i from ?A to ?Z collect i))))
+	   (nconc first-list
+		  (-difference (loop for i from ?a to ?z collect i) first-list)
+		  (loop for i from ?A to ?Z collect i))))
 
     (set 'ace-jump-mode-scope 'window)
     (global-set-key (kbd "C-p") 'ace-jump-mode)))
@@ -1234,6 +1218,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
      ("\\.hxx\\'"
       (".cxx")))))
  '(column-number-mode t)
+ '(custom-safe-themes
+   (quote
+    ("756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
  '(ff-ignore-include t)
  '(gud-gdb-command-name "gdb -i=mi --args")
  '(htmlize-output-type (quote font))
