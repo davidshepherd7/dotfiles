@@ -820,47 +820,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; Mode line
 ;; ============================================================
 
-;; (defvar mode-line-cleaner-alist
-;;   `((auto-complete-mode . "")
-;;     (yas/minor-mode . "")
-;;     (paredit-mode . "")
-;;     (eldoc-mode . "")
-;;     (abbrev-mode . "")
-;;     (page-break-lines-mode . "")
-;;     (visual-line-mode . "")
-;;     (global-visual-line-mode . "")
-;;     (whitespace-mode "")
-;;     (undo-tree-mode "")
-
-;;     ;; Major modes
-;;     (lisp-interaction-mode . "λ ")
-;;     (hi-lock-mode . "")
-;;     (python-mode . "Py ")
-;;     (emacs-lisp-mode . "EL ")
-;;     (nxhtml-mode . "nx "))
-;;   "Alist for `clean-mode-line'.
-
-;; When you add a new element to the alist, keep in mind that you
-;; must pass the correct minor/major mode symbol and a string you
-;; want to use in the modeline *in lieu of* the original.")
-
-
-;; (defun clean-mode-line ()
-;;   (interactive)
-;;   (loop for cleaner in mode-line-cleaner-alist
-;;         do (let* ((mode (car cleaner))
-;;                   (mode-str (cdr cleaner))
-;;                   (old-mode-str (cdr (assq mode minor-mode-alist))))
-;;              (when old-mode-str
-;;                (setcar old-mode-str mode-str))
-;;              ;; major mode
-;;              (when (eq mode major-mode)
-;;                (setq mode-name mode-str)))))
-
-;; ;; (set 'minor-mode-alist '())
-;; (add-hook 'after-change-major-mode-hook 'clean-mode-line)
-
-
 ;; Pretty modeline
 (use-package smart-mode-line
   :ensure t
@@ -880,15 +839,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (add-to-list 'sml/replacer-regexp-list
                  '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
     ))
-
-
-
-;; ??ds new file?
-;; Use double semi-colon for emacs lisp (default seems to be single).
-(add-hook 'emacs-lisp-mode-hook (lambda () (setq comment-start ";;"
-					    comment-end "")))
-
-
 
 
 ;; Projectile
