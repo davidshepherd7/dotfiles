@@ -281,8 +281,8 @@ the line break."
   (interactive) (previous-line) (newline-below-this-one))
 
 ;; Block indent like python mode has for everywhere
-(global-set-key (kbd "C-\\ C-.") 'py-shift-right)
-(global-set-key (kbd "C-\\ C-,") 'py-shift-left)
+(global-set-key (kbd "C-\\ C-.") #'indent-rigidly-right-to-tab-stop)
+(global-set-key (kbd "C-\\ C-,") #'indent-rigidly-left-to-tab-stop)
 
 (when emacs244?
   (global-set-key (kbd "C-<return>") #'rectangle-mark-mode)

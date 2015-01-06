@@ -1,7 +1,8 @@
 
 
 ;; Automatically use python mode from "python-mode.el"
-(require 'python-mode)
+(require 'python)
+
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
@@ -11,16 +12,6 @@
 ;; (setq lambda-regex "lambda ")
 
 (when emacs244? (add-hook 'python-mode-hook 'lambda-mode 1))
-
-;; Turn off the stupid _ as part of word thing
-(modify-syntax-entry ?_ "_" python-mode-syntax-table)
-
-;; Don't split when we run some code (doesn't work well with frames).
-(py-split-windows-on-execute-off)
-
-;; Turn off outline minor mode (never use it an it messes up keybinds).
-(setq py-outline-minor-mode-p nil)
-
 
 ;; Setup jedi mode (python autocompletion)
 ;; ============================================================
@@ -83,15 +74,15 @@
   (local-set-key (kbd "<f5>") 'recompile)
   (local-set-key (kbd "S-<f5>") 'python-run-file)
 
-  ;; Some things copied from python mode that were actually useful:
-  (local-set-key [remap delete-forward-char] 'py-electric-delete)
-  (local-set-key [remap delete-char] 'py-electric-delete)
-  (local-set-key [remap delete-backward-char] 'py-electric-backspace)
-  (local-set-key [remap newline] 'py-newline-and-indent)
-  (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
+  ;; ;; Some things copied from python mode that were actually useful:
+  ;; (local-set-key [remap delete-forward-char] 'py-electric-delete)
+  ;; (local-set-key [remap delete-char] 'py-electric-delete)
+  ;; (local-set-key [remap delete-backward-char] 'py-electric-backspace)
+  ;; (local-set-key [remap newline] 'py-newline-and-indent)
+  ;; (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
 
-  (local-set-key [tab] 'py-indent-line)
- )
+  ;; (local-set-key [tab] 'py-indent-line)
+  )
 
 (defun yas-advise-indent-function (function-symbol)
   (eval `(defadvice ,function-symbol (around yas-try-expand-first activate)
@@ -103,7 +94,7 @@
                           (yas-expand))
                ad-do-it)))))
 
-(yas-advise-indent-function 'py-indent-line)
+;; (yas-advise-indent-function 'py-indent-line)
 
 
 ;; Function to toggle true/false
