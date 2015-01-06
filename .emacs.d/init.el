@@ -54,7 +54,7 @@
 (global-linum-mode t) ;; Line numbers on edge of screen
 (set 'backup-directory-alist '(("." . ".~"))) ;; Keep backups in .~/
 (set 'inhibit-startup-screen t) ;; No startup screen
-(set-scroll-bar-mode 'right);; Scroll bar on the right
+(scroll-bar-mode -1);; No scroll bar
 (global-visual-line-mode 1) ;; Wrap lines at nearest word
 (global-subword-mode 1) ;; Treat CamelCase as separate words
 (set 'truncate-partial-width-windows nil) ;; Make line wrapping work for
@@ -415,7 +415,6 @@ predicate PRED used to filter them."
 
 ;; Load configs from other files
 (load-file "~/.emacs.d/lisp/cpp.el")
-;;(load-file "~/.emacs.d/lisp/colours.el")
 (load-file "~/.emacs.d/lisp/latex.el")
 (load-file "~/.emacs.d/lisp/oomph-lib.el")
 (load-file "~/.emacs.d/lisp/scheme.el")
@@ -722,46 +721,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; (set 'tramp-backup-directory-alist  ??ds
 
 
-;; Transparency
-;; ============================================================
-
-;; Set transparency of emacs
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha value))
-
-;; No scroll bar is much prettier, lets see if we can live without it
-(scroll-bar-mode -1)
-
-;; Set default transparencies:
-;;(set-frame-parameter (selected-frame) 'alpha '(<active> [<inactive>]))
-(add-to-list 'default-frame-alist '(alpha 85 85))
-
-(set 'edge-background-colour "greasy2")
-
-;; Set all the areas around the edge to be slightly lighter
-(set-face-background 'modeline-inactive edge-background-colour)
-(set-face-background 'fringe edge-background-colour)
-(set-face-background 'linum edge-background-colour)
-(set-face-background 'menu edge-background-colour)
-
-;; To get rid of the box around inactive modeline I used custom to set it
-;; to the same colour... hacky :(
-
-;; Nice dim line number font colour
-(set-face-foreground 'linum "grey20")
-
-;; Set the inactive frame modeline font: Remove the background and the box
-;; around it.
-(set-face-attribute 'mode-line-inactive nil
-		    :background edge-background-colour
-		    :box nil)
-
-
-
-
-
 ;; Auto indent pasted code in programming modes
 ;; ============================================================
 (dolist (command '(yank yank-pop))
@@ -910,6 +869,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (setq sml/no-confirm-load-theme t)
 
     (sml/setup)
+
+    (sml/apply-theme 'dark)
 
     ;; Shorten some directories to useful stuff
     (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
@@ -1177,6 +1138,11 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 (add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
 
+;; Pretty colours
+;; ============================================================
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(load-theme 'shepherd t)
+
 
 ;; Automagically added by customise
 ;; ============================================================
@@ -1218,9 +1184,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
      ("\\.hxx\\'"
       (".cxx")))))
  '(column-number-mode t)
- '(custom-safe-themes
-   (quote
-    ("756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" default)))
  '(ff-ignore-include t)
  '(gud-gdb-command-name "gdb -i=mi --args")
  '(htmlize-output-type (quote font))
