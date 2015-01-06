@@ -419,7 +419,7 @@ predicate PRED used to filter them."
 (load-file "~/.emacs.d/lisp/oomph-lib.el")
 (load-file "~/.emacs.d/lisp/scheme.el")
 (load-file "~/.emacs.d/lisp/octave.el")
-;; (load-file "~/.emacs.d/lisp/my-matlab.el")
+(load-file "~/.emacs.d/lisp/my-matlab.el")
 (load-file "~/.emacs.d/lisp/org.el")
 ;;(load-file "~/.emacs.d/lisp/my-python.el") ;; python-mode is in file called python.el
 ;; (load-file "~/.emacs.d/lisp/unicode-entry.el")
