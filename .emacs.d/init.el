@@ -212,6 +212,9 @@
    ;; (for all buffer/file name entry)
    (ido-everywhere)
 
+   ;; and for some other places
+   (ido-ubiquitous-mode)
+
    ;; Change some keys in ido
    (defun my-ido-keys ()
      (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
