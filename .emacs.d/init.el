@@ -203,176 +203,176 @@
 
 
 ;; Use ido
-(use-package
- ido
+(use-package ido
+  :ensure t
 
- :config
- (progn
-   (ido-mode t)
+  :config
+  (progn
+    (ido-mode t)
 
-   ;; (for all buffer/file name entry)
-   (ido-everywhere)
+    ;; (for all buffer/file name entry)
+    (ido-everywhere)
 
-   ;; and for some other places
-   (ido-ubiquitous-mode)
+    ;; and for some other places
+    (ido-ubiquitous-mode)
 
-   ;; Change some keys in ido
-   (defun my-ido-keys ()
-     (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
-     (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
-     (define-key ido-completion-map (kbd "C-n") 'ido-select-text)
-     (define-key ido-completion-map " " '())
-     (define-key ido-completion-map (kbd "S-TAB") 'ido-prev-match)
-     ;; Not sure why shift-tab = <backtab> but it works...
-     (define-key ido-completion-map (kbd "<backtab>") 'ido-prev-match))
+    ;; Change some keys in ido
+    (defun my-ido-keys ()
+      (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
+      (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
+      (define-key ido-completion-map (kbd "C-n") 'ido-select-text)
+      (define-key ido-completion-map " " '())
+      (define-key ido-completion-map (kbd "S-TAB") 'ido-prev-match)
+      ;; Not sure why shift-tab = <backtab> but it works...
+      (define-key ido-completion-map (kbd "<backtab>") 'ido-prev-match))
 
-   (add-hook 'ido-setup-hook 'my-ido-keys t)
+    (add-hook 'ido-setup-hook 'my-ido-keys t)
 
-   ;; Display ido results vertically, rather than horizontally
-   (set 'ido-decorations '("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
-                           " [Matched]" " [Not readable]" " [Too big]"
-                           " [Confirm]"))
+    ;; Display ido results vertically, rather than horizontally
+    (set 'ido-decorations '("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
+                            " [Matched]" " [Not readable]" " [Too big]"
+                            " [Confirm]"))
 
-   ;; Enable some fuzzy matching
-   (set 'ido-enable-flex-matching t)
+    ;; Enable some fuzzy matching
+    (set 'ido-enable-flex-matching t)
 
-   ;; Allow completion (and opening) of buffers that are actually closed.
-   (set 'ido-use-virtual-buffers t)
+    ;; Allow completion (and opening) of buffers that are actually closed.
+    (set 'ido-use-virtual-buffers t)
 
-   ;; Not sure if this works yet, supposed to add dir info for duplicate
-   ;; virtual buffers.
-   (set 'ido-handle-duplicate-virtual-buffers 4)
+    ;; Not sure if this works yet, supposed to add dir info for duplicate
+    ;; virtual buffers.
+    (set 'ido-handle-duplicate-virtual-buffers 4)
 
-   ;; increase number of buffers to rememeber
-   (set 'recentf-max-saved-items 1000)
+    ;; increase number of buffers to rememeber
+    (set 'recentf-max-saved-items 1000)
 
-   ;; Cycle through commands with tab if we can't complete any further.
-   (set 'ido-cannot-complete-command 'ido-next-match)
+    ;; Cycle through commands with tab if we can't complete any further.
+    (set 'ido-cannot-complete-command 'ido-next-match)
 
-   ;; Use ido style completion everywhere (separate package)
-   ;;(ido-ubiquitous-mode t)
+    ;; Use ido style completion everywhere (separate package)
+    ;;(ido-ubiquitous-mode t)
 
-   ;; Buffer selection even if already open elsewhere
-   (set 'ido-default-buffer-method 'selected-window)
+    ;; Buffer selection even if already open elsewhere
+    (set 'ido-default-buffer-method 'selected-window)
 
-   ;; Create new buffers without prompting
-   (set 'ido-create-new-buffer 'always)
+    ;; Create new buffers without prompting
+    (set 'ido-create-new-buffer 'always)
 
-   ;; ??ds Add ignore regex for useless files
-
-
-   ;; smex: ido based completion for commands
-   ;; ============================================================
-
-   ;; Change the main keybinding
-   (global-set-key [remap execute-extended-command] 'smex)
-
-   ;; Another key: only list commands relevant to this major mode.
-   (global-set-key (kbd "M-|") 'smex-major-mode-commands)
-
-   ;; Tell the prompt that I changed the binding for running commands
-   ;; (elsewhere)
-   (set 'smex-prompt-string "M-\\: ")
-
-   ;; Put its save file in .emacs.d
-   (set 'smex-save-file "~/.emacs.d/smex-items")
-
-   ;; Change some keys in smex itself
-   (defun smex-prepare-ido-bindings ()
-     (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
-     (define-key ido-completion-map (kbd "M-.") 'smex-find-function))
+    ;; ??ds Add ignore regex for useless files
 
 
-   ;; ;; ido for tags
-   ;; ;; ============================================================
-   ;; (defun my-ido-find-tag ()
-   ;;   "Find a tag using ido"
-   ;;   (interactive)
-   ;;   (tags-completion-table)
-   ;;   (let (tag-names)
-   ;;     (mapc (lambda (x)
-   ;;             (unless (integerp x)
-   ;;               (push (prin1-to-string x t) tag-names)))
-   ;;           tags-completion-table)
-   ;;     (find-tag (ido-completing-read "Tag: " tag-names))))
+    ;; smex: ido based completion for commands
+    ;; ============================================================
 
-   ;; ;; From
-   ;; ;; http://stackoverflow.com/questions/476887/can-i-get-ido-mode-style-completion-for-searching-tags-in-emacs
+    ;; Change the main keybinding
+    (global-set-key [remap execute-extended-command] 'smex)
 
-   ;; (define-key global-map [remap find-tag] 'my-ido-find-tag)
+    ;; Another key: only list commands relevant to this major mode.
+    (global-set-key (kbd "M-|") 'smex-major-mode-commands)
 
+    ;; Tell the prompt that I changed the binding for running commands
+    ;; (elsewhere)
+    (set 'smex-prompt-string "M-\\: ")
 
-   ;; ido for help functions
-   ;; ============================================================
+    ;; Put its save file in .emacs.d
+    (set 'smex-save-file "~/.emacs.d/smex-items")
 
-   ;; There's a whole bunch of code here that I don't really understand, I
-   ;; took it from
-   ;; https://github.com/tlh/emacs-config/blob/master/tlh-ido.el
+    ;; Change some keys in smex itself
+    (defun smex-prepare-ido-bindings ()
+      (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
+      (define-key ido-completion-map (kbd "M-.") 'smex-find-function))
 
 
-   (defmacro aif (test then &rest else)
-     `(let ((it ,test))
-        (if it ,then ,@else)))
+    ;; ;; ido for tags
+    ;; ;; ============================================================
+    ;; (defun my-ido-find-tag ()
+    ;;   "Find a tag using ido"
+    ;;   (interactive)
+    ;;   (tags-completion-table)
+    ;;   (let (tag-names)
+    ;;     (mapc (lambda (x)
+    ;;             (unless (integerp x)
+    ;;               (push (prin1-to-string x t) tag-names)))
+    ;;           tags-completion-table)
+    ;;     (find-tag (ido-completing-read "Tag: " tag-names))))
 
-   (defmacro cif (&rest args)
-     "Condish `if'"
-     (cond ((null args) nil)
-           ((null (cdr args)) `,(car args))
-           (t `(if ,(car args)
-                   ,(cadr args)
-                 (cif ,@(cddr args))))))
+    ;; ;; From
+    ;; ;; http://stackoverflow.com/questions/476887/can-i-get-ido-mode-style-completion-for-searching-tags-in-emacs
 
-   (defmacro aand (&rest args)
-     (cif (null args)        t
-          (null (cdr args))  (car args)
-          `(aif ,(car args)  (aand ,@(cdr args)))))
+    ;; (define-key global-map [remap find-tag] 'my-ido-find-tag)
 
-   (defun ido-cache (pred &optional recalc)
-     "Create a cache of symbols from `obarray' named after the
+
+    ;; ido for help functions
+    ;; ============================================================
+
+    ;; There's a whole bunch of code here that I don't really understand, I
+    ;; took it from
+    ;; https://github.com/tlh/emacs-config/blob/master/tlh-ido.el
+
+
+    (defmacro aif (test then &rest else)
+      `(let ((it ,test))
+         (if it ,then ,@else)))
+
+    (defmacro cif (&rest args)
+      "Condish `if'"
+      (cond ((null args) nil)
+            ((null (cdr args)) `,(car args))
+            (t `(if ,(car args)
+                    ,(cadr args)
+                  (cif ,@(cddr args))))))
+
+    (defmacro aand (&rest args)
+      (cif (null args)        t
+           (null (cdr args))  (car args)
+           `(aif ,(car args)  (aand ,@(cdr args)))))
+
+    (defun ido-cache (pred &optional recalc)
+      "Create a cache of symbols from `obarray' named after the
 predicate PRED used to filter them."
-     (let ((cache (intern (concat "ido-cache-" (symbol-name pred)))))
-       (when (or recalc (not (boundp cache)))
-         (set cache nil)
-         (mapatoms (lambda (s)
-                     (when (funcall pred s)
-                       (push (symbol-name s) (symbol-value cache))))))
-       (symbol-value cache)))
+      (let ((cache (intern (concat "ido-cache-" (symbol-name pred)))))
+        (when (or recalc (not (boundp cache)))
+          (set cache nil)
+          (mapatoms (lambda (s)
+                      (when (funcall pred s)
+                        (push (symbol-name s) (symbol-value cache))))))
+        (symbol-value cache)))
 
-   (defun ido-describe-function (&optional at-point)
-     "ido replacement for `describe-function'."
-     (interactive "P")
-     (describe-function
-      (intern
-       (ido-completing-read
-        "Describe function: "
-        (ido-cache 'functionp) nil nil
-        (aand at-point (function-called-at-point)
-             (symbol-name it))))))
+    (defun ido-describe-function (&optional at-point)
+      "ido replacement for `describe-function'."
+      (interactive "P")
+      (describe-function
+       (intern
+        (ido-completing-read
+         "Describe function: "
+         (ido-cache 'functionp) nil nil
+         (aand at-point (function-called-at-point)
+               (symbol-name it))))))
 
-   (defun ido-describe-variable (&optional at-point)
-     "ido replacement for `describe-variable'."
-     (interactive "P")
-     (describe-variable
-      (intern
-       (ido-completing-read
-        "Describe variable: "
-        (ido-cache 'boundp) nil nil
-        (aand at-point (thing-at-point 'symbol) (format "%s" it))))))
+    (defun ido-describe-variable (&optional at-point)
+      "ido replacement for `describe-variable'."
+      (interactive "P")
+      (describe-variable
+       (intern
+        (ido-completing-read
+         "Describe variable: "
+         (ido-cache 'boundp) nil nil
+         (aand at-point (thing-at-point 'symbol) (format "%s" it))))))
 
-   (global-set-key (kbd "<f1> f") 'ido-describe-function)
-   (global-set-key (kbd "<f1> v") 'ido-describe-variable)
-
-
-
-   ;; Even better fuzzy search for ido
-   ;; ============================================================
-   (use-package flx-ido
-     :config (progn (flx-ido-mode 1)
-                    (setq ido-use-faces nil)))
+    (global-set-key (kbd "<f1> f") 'ido-describe-function)
+    (global-set-key (kbd "<f1> v") 'ido-describe-variable)
 
 
-   )
- )
+
+    ;; Even better fuzzy search for ido
+    ;; ============================================================
+    (use-package flx-ido
+      :ensure t
+      :config (progn (flx-ido-mode 1)
+                     (setq ido-use-faces nil)))
+
+    )
+  )
 
 
 
@@ -410,17 +410,17 @@ predicate PRED used to filter them."
 
 ;; Undo tree
 ;;================================================================
-(use-package
- undo-tree
- :config
- (progn
-   ;; wipe it's keybinds
-   (add-to-list 'minor-mode-map-alist '('undo-tree-mode (make-sparse-keymap)))
+(use-package undo-tree
+  :ensure t
+  :config
+  (progn
+    ;; wipe it's keybinds
+    (add-to-list 'minor-mode-map-alist '('undo-tree-mode (make-sparse-keymap)))
 
-   ;; Use it everywhere
-   (global-undo-tree-mode))
+    ;; Use it everywhere
+    (global-undo-tree-mode))
 
- )
+  )
 
 
 
@@ -810,6 +810,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; ============================================================
 
 (use-package markdown-mode
+  :ensure t
   :config
   (progn
     ;; run markdown-mode on files ending in .md
@@ -836,41 +837,43 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; ============================================================
 
 (use-package goto-last-change
-             :config
-             (progn
-               (global-set-key (kbd "C-\\ C-x") 'goto-last-change)))
+  :ensure t
+  :config (global-set-key (kbd "C-\\ C-x") 'goto-last-change))
 
 
 ;; Breadcrumbs
 ;; ============================================================
 
 (use-package breadcrumb
-             :config
-             (progn
+  :ensure t
+  :config
+  (progn
 
-               ;; Bind some keys
-               (global-set-key (kbd "M-b") 'bc-set)
-               (global-set-key (kbd "M-B") 'bc-clear)
-               (global-set-key [(meta up)] 'bc-previous)
-               (global-set-key [(meta down)] 'bc-next)
-               (global-set-key [(meta left)] 'bc-local-previous)
-               (global-set-key [(meta right)] 'bc-local-next)
+    ;; Bind some keys
+    (global-set-key (kbd "M-b") 'bc-set)
+    (global-set-key (kbd "M-B") 'bc-clear)
+    (global-set-key [(meta up)] 'bc-previous)
+    (global-set-key [(meta down)] 'bc-next)
+    (global-set-key [(meta left)] 'bc-local-previous)
+    (global-set-key [(meta right)] 'bc-local-next)
 
-               ;; Auto bookmark before isearch
-               (add-hook 'isearch-mode-hook 'bc-set)
+    ;; Auto bookmark before isearch
+    (add-hook 'isearch-mode-hook 'bc-set)
 
-               ;; Already auto bookmark before tag search and query replace
-               ))
+    ;; Already auto bookmark before tag search and query replace
+    ))
 
 
 
 ;; Registers
 ;; ============================================================
 
-(use-package list-register)
-(global-set-key (kbd "C-\\ r v") 'list-register)
-(global-set-key (kbd "C-\\ r s") 'copy-to-register)
-(global-set-key (kbd "C-\\ r i") 'insert-register)
+(use-package list-register
+  :ensure t
+  :config (progn
+            (global-set-key (kbd "C-\\ r v") 'list-register)
+            (global-set-key (kbd "C-\\ r s") 'copy-to-register)
+            (global-set-key (kbd "C-\\ r i") 'insert-register)))
 
 
 ;; Mode line
@@ -918,26 +921,26 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 
 ;; Pretty modeline
-(use-package
- smart-mode-line
- :config
- (progn (sml/setup)
+(use-package smart-mode-line
+  :ensure t
+  :config
+  (progn (sml/setup)
 
-        ;; Shorten some directories to useful stuff
-        (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
-        (add-to-list 'sml/replacer-regexp-list
-                     '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
-        (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
-        (add-to-list 'sml/replacer-regexp-list
-                     '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
-        ))
+         ;; Shorten some directories to useful stuff
+         (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
+         (add-to-list 'sml/replacer-regexp-list
+                      '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
+         (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
+         (add-to-list 'sml/replacer-regexp-list
+                      '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
+         ))
 
 
 
 ;; ??ds new file?
 ;; Use double semi-colon for emacs lisp (default seems to be single).
 (add-hook 'emacs-lisp-mode-hook (lambda () (setq comment-start ";;"
-						 comment-end "")))
+                                            comment-end "")))
 
 
 
@@ -945,8 +948,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 ;; Projectile
 ;; ============================================================
-(use-package
-  projectile
+(use-package projectile
+  :ensure t
   :pre-load
   (progn
     ;; Use C-\ p as prefix
@@ -974,8 +977,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; yasnippet?
 ;; ============================================================
 
-(use-package
-  yasnippet
+(use-package yasnippet
+  :ensure t
   :config
   (progn
 
@@ -1074,6 +1077,7 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; deft (note taking)
 ;; ============================================================
 (use-package deft
+  :ensure t
   :config
   (progn
     (setq deft-directory "~/Dropbox/notes")
@@ -1131,24 +1135,27 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 ;; Ace jump mode
 ;; ============================================================
 
-(require 'ace-jump-mode)
-(progn
-  (set 'ace-jump-mode-case-fold t)
+(use-package ace-jump-mode
+  :ensure t
+  :config
+  (progn
+    (set 'ace-jump-mode-case-fold t)
 
-  ;; favour home row keys
-  (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
-    (set 'ace-jump-mode-move-keys
-	 (nconc first-list
-		(-difference (loop for i from ?a to ?z collect i) first-list)
-		(loop for i from ?A to ?Z collect i))))
+    ;; favour home row keys
+    (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
+      (set 'ace-jump-mode-move-keys
+           (nconc first-list
+                  (-difference (loop for i from ?a to ?z collect i) first-list)
+                  (loop for i from ?A to ?Z collect i))))
 
-  (set 'ace-jump-mode-scope 'window)
-  (global-set-key (kbd "C-p") 'ace-jump-mode))
+    (set 'ace-jump-mode-scope 'window)
+    (global-set-key (kbd "C-p") 'ace-jump-mode)))
 
 
 ;; Ack support
-(require 'ack)
-(global-set-key (kbd "<f8>") 'projectile-ack)
+(use-package ack
+  :ensure t
+  :config (global-set-key (kbd "<f8>") 'projectile-ack))
 
 
 
