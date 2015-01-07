@@ -33,7 +33,7 @@
 
  ;; ---------------- Code Highlighting ---------------
  `(font-lock-builtin-face ((t (:foreground "#007bff"))))
- `(font-lock-constant-face ((t (:foreground "#AEE239"))))
+ `(font-lock-constant-face ((t (:foreground "firebrick"))))
  `(font-lock-comment-face ((t (:foreground "#858585"))))
  `(font-lock-function-name-face ((t (:foreground "#ffe400"))))
  `(font-lock-keyword-face ((t (:foreground "#00f5b6"))))
