@@ -393,14 +393,21 @@ predicate PRED used to filter them."
 ;;================================================================
 (use-package undo-tree
   :ensure t
+  :bind (("C-z" . undo-tree-undo)
+         ("C-S-z" . undo-tree-redo))
   :config
-  (progn
-    ;; wipe it's keybinds
-    ;;(add-to-list 'minor-mode-map-alist (list 'undo-tree-mode (make-sparse-keymap "undo-tree")))
+  (progn (global-undo-tree-mode)
 
-    ;; Use it everywhere
-    (global-undo-tree-mode))
+         ;; clean out the undo-tree keymap entry in the keymap list
+         (let ((item (assoc 'undo-tree-mode minor-mode-map-alist)))
+           (setf (cdr item) (make-sparse-keymap)))
 
+         ;; For consistency make the keymap itself empty as well
+         (setf undo-tree-map (make-sparse-keymap))
+         )
+
+
+  :demand
   )
 
 

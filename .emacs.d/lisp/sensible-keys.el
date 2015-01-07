@@ -93,10 +93,6 @@ the line break."
   )
 
 
-;; CUA keybinds (undo/cut/copy/paste)
-(global-set-key (kbd "C-z") 'undo-tree-undo)
-(global-set-key (kbd "C-S-z") 'undo-tree-redo)
-
 ;; Cut
 (global-set-key (kbd "C-x") (lambda () (interactive) (dwim-end-of-line 'kill-region)))
 (global-set-key (kbd "M-x") (lambda () (interactive) (dwim-entire-line 'kill-region)))
