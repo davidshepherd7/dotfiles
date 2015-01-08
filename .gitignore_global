@@ -42,10 +42,16 @@ depcomp
 # backups/emacs files #
 *~
 \#*\#
-TAGS
 .#*
 projectile.cache
 .projectile
+
+# Tag files
+TAGS
+GPATH
+GRTAGS
+GSYMS
+GTAGS
 
 # Packages #
 *.7z

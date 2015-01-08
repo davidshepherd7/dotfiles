@@ -1063,6 +1063,12 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
   :ensure t
   :bind ("C-a" . er/expand-region))
 
+(use-package ggtags
+  :ensure t
+  :config (progn
+            (add-hook 'prog-mode-hook #'ggtags-mode)
+            (define-key ggtags-mode-map (kbd "C-c") nil)
+            (set 'ggtags-mode-line-project-name nil)))
 
 
 ;; Better help commands
