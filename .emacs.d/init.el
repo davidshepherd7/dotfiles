@@ -1111,6 +1111,24 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (load-theme 'shepherd t)
 
 
+
+;; Automatic fill paragraph
+;; ============================================================
+
+(defun fill-then-insert-space ()
+  (interactive)
+  (fill-paragraph)
+  (insert " "))
+
+(defun insert-space ()
+  (interactive)
+  (insert " "))
+
+(global-set-key (kbd "SPC") #'fill-then-insert-space)
+(global-set-key (kbd "M-SPC") #'insert-space)
+
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
