@@ -241,6 +241,3 @@ source ${rcdir}/zsh-oomph-aliases.sh
 
 # e function
 source ${rcdir}/emacs-read-stdin/emacs-read-stdin.sh
-
-source ${rcdir}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ${rcdir}/highlighting-config.sh
