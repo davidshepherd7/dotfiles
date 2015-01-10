@@ -133,3 +133,7 @@
   import static java.util.Collections.sort;
   import static java.util.Collections.reverse;
   import static java.util.Collections.unmodifiableCollection;"))
+
+
+(use-package javadoc-lookup
+  :ensure t)
