@@ -111,10 +111,11 @@ bindkey "\C-p" quote-line
 bindkey "\C-j" accept-line
 bindkey "\e[11~" run-help # f1 key
 
-# change case
-bindkey "\e'" capitalize-word
-bindkey "\el" down-case-word
-bindkey "\eu" up-case-word
+# Change case. Theses are C-/ and C-M-/ but there's something odd going on with
+# binding anything containing C-/.
+bindkey  capitalize-word
+bindkey  up-case-word
+bindkey "\e/" down-case-word
 
 # Alt-q inserts "sudo " at the start of line
 function prepend-sudo {
@@ -124,4 +125,3 @@ function prepend-sudo {
 }
 zle -N prepend-sudo
 bindkey "\eq" prepend-sudo
-
