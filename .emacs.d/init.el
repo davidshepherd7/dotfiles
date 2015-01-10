@@ -1109,25 +1109,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
 
-
-
-;; Automatic fill paragraph
-;; ============================================================
-
-;; messes up python, emacs lisp, bash and should be disabled in minibuffer
-
-(defun fill-then-insert-space ()
-  (interactive)
-  (fill-paragraph)
-  (insert " "))
-
-(defun insert-space ()
-  (interactive)
-  (insert " "))
-
-(global-set-key (kbd "SPC") #'fill-then-insert-space)
-(global-set-key (kbd "M-SPC") #'insert-space)
-
+(load-file "~/.emacs.d/aggressive-autofill-mode/aggressive-autofill-mode.el")
+(use-package aggressive-autofill-mode
+  :config (aaf-setup-recommended-hooks))
 
 
 ;; Automagically added by customise
