@@ -3,7 +3,17 @@
 set -o errexit
 set -o nounset
 
+usage="Print number of files contained in sub-directories (counts
+recursively).
+
+    usage:    file_count.h [dir]"
+
+
 if [ "$#" -gt 0 ]; then
+    if [ "$1" == "-h" ]; then
+        echo "$usage"
+        exit 1
+    fi
     dir="$1"
 else
     dir="."
