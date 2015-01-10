@@ -9,8 +9,7 @@
 
 
 
-(defvar emacs244?
-  (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+(defvar emacs244? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
   "Are we using emacs 24.4 or newer?")
 
 
@@ -1114,6 +1113,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 ;; Automatic fill paragraph
 ;; ============================================================
+
+;; messes up python, emacs lisp, bash and should be disabled in minibuffer
 
 (defun fill-then-insert-space ()
   (interactive)

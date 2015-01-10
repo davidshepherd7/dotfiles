@@ -129,9 +129,9 @@ the line break."
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-S-s") 'write-file)
 
-(global-set-key (kbd "C-w") 
+(global-set-key (kbd "C-w")
                 (lambda () (interactive) (kill-buffer (buffer-name))))
-(global-set-key (kbd "C-S-w") 
+(global-set-key (kbd "C-S-w")
                 (lambda () (interactive) (progn (kill-buffer (buffer-name))
                                                 (delete-frame))))
 ;; Use (kill-buffer (buffer-name)) rather than (kill-this-buffer) because
@@ -169,7 +169,7 @@ the line break."
       ;; well. But only in certain modes otherwise we stomp the
       ;; autocomplete in minibuffer (there should be an easier way to do
       ;; this..).
-      (defun set-tab () 
+      (defun set-tab ()
         (interactive)
         (local-set-key [tab] 'indent-for-tab-command))
 
@@ -204,7 +204,7 @@ the line break."
     (global-set-key (kbd "C-M-k") 'backward-sexp)))
 
 
-;; case changes 
+;; case changes
 ;; ============================================================
 
 ;; dwim functions:
@@ -309,7 +309,7 @@ the line break."
       (define-key isearch-mode-map (kbd "C-n") 'isearch-ring-advance)
       (define-key isearch-mode-map (kbd "C-e") 'isearch-ring-retreat)
       )
-  (progn 
+  (progn
     (define-key isearch-mode-map (kbd "C-j") 'isearch-ring-advance)
     (define-key isearch-mode-map (kbd "C-k") 'isearch-ring-retreat)))
 
@@ -486,7 +486,6 @@ the line break."
 ;; Note: we also have to mess around with some other mode's keybinds. In
 ;; particular:
 
-;; Kill all keybinds in undo-tree (commented out the undo-tree-map).
 ;; Kill all keybinds in yas (not done yet).
 
 ;; Add command (use-local-map '()) to mode hooks (before your own keybinds)
@@ -533,7 +532,7 @@ the line break."
 (global-set-key (kbd "C-<f6>") 'ibuffer)
 
 
-;; ido 
+;; ido
 ;; ============================================================
 
 ;; (let ((my-new-map (make-sparse-keymap)))

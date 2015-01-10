@@ -1,4 +1,5 @@
-(autoload 'octave-mode "octave-mod" nil t)
+(autoload 'octave-mode "octave" nil t)
+;; broken?
 
 ;; use octave for .m files
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
