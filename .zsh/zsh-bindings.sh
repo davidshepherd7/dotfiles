@@ -47,59 +47,8 @@ yank-xclip ()
 }
 zle -N yank-xclip
 
-# These are buggy, not using it now :(
 
-backward-kill-word-xclip ()
-{
-    zle backward-kill-word
-    send-kill-to-xclip
-}
-zle -N backward-kill-word-xclip
-
-kill-word-xclip ()
-{
-    zle kill-word
-    send-kill-to-xclip
-}
-zle -N kill-word-xclip
-
-backward-kill-bashword-xclip ()
-{
-    backward-kill-bashword
-    send-kill-to-xclip
-}
-zle -N backward-kill-bashword-xclip
-
-kill-bashword-xclip ()
-{
-    kill-bashword
-    send-kill-to-xclip
-}
-zle -N kill-bashword-xclip
-
-kill-line-xclip ()
-{
-    zle kill-line
-    send-kill-to-xclip
-}
-zle -N kill-line-xclip
-
-backward-kill-line-xclip ()
-{
-    zle backward-kill-line
-    send-kill-to-xclip
-}
-zle -N backward-kill-line-xclip
-
-kill-whole-line-xclip ()
-{
-    zle kill-whole-line
-    send-kill-to-xclip
-}
-zle -N kill-whole-line-xclip
-
-
-# Bindings 
+# Bindings
 # ============================================================
 
 forward="e"
