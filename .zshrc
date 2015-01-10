@@ -158,6 +158,7 @@ export PATH="$PATH:$HOME/Dropbox/programming/helperscripts/gnuplot:$HOME/Dropbox
 PATH="$PATH:$HOME/Dropbox/programming/oomph-scripts"
 PATH="$PATH:$HOME/bin"
 PATH="$PATH:$HOME/Dropbox/programming/pipe-plot"
+export PATH="$PATH:$HOME/Dropbox/linux_setup/rcfiles/bin"
 
 # Add oomph-lib bin to path
 export PATH="$PATH:$HOME/oomph-lib/bin"
