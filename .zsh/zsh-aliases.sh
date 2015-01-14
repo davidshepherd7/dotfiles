@@ -286,6 +286,22 @@ $1
 w" | ed "$2"
 }
 
+take-a-break ()
+{
+    if [ $# -lt 1 ]; then
+        length="60"
+    elif [ $# -gt 1]; then
+        echo "usage mtimer [time to wait in minutes]"
+    else
+        length="$1"
+    fi
+
+    echo "Take a break in $length minutes at $(date --date="+$length minutes" +%T)."
+
+    sleep "${length}m"
+    gnome-screensaver-command -l
+}
+
 # oomph-lib
 # ============================================================
 
