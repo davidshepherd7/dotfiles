@@ -887,6 +887,10 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     ;; Load my oomph-lib snippets
     (add-to-list 'yas-snippet-dirs "~/.emacs.d/oomph-snippets" t)
 
+    ;; and my other snippets
+    (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets" t)
+
+
     ;; kill C-c keys
     (add-hook 'yas-minor-mode-hook
 	      (lambda ()
