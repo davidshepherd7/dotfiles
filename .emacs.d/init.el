@@ -1113,7 +1113,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 (load-file "~/.emacs.d/aggressive-autofill-mode/aggressive-autofill-mode.el")
 (use-package aggressive-autofill-mode
-  :config (aaf-setup-recommended-hooks))
+  :config (progn
+            (aaf-setup-recommended-hooks)
+            (add-hook 'sh-mode-hook (lambda () (aggressive-autofill-mode -1)))))
 
 
 ;; Automagically added by customise
