@@ -16,10 +16,6 @@ killall xcape
 # Make alt gr just normal alt:
 xmodmap -e "keycode 108 = Alt_L"
 
-# Make insert be caps lock
-xmodmap -e "keycode 118 = Caps_Lock"
-
-
 # String ready to store out xcape commands (so that we only run it once)
 xcape_str=""
 
