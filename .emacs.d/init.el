@@ -1071,6 +1071,8 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
 
 ;; Better help commands
+            (define-key ggtags-mode-map (kbd "M-<") nil)
+            (define-key ggtags-mode-map (kbd "M->") nil)
 ;; ============================================================
 
 ;; Show source code for things
