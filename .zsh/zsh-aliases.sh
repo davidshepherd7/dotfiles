@@ -33,6 +33,8 @@ v ()
 }
 compdef v=evince
 
+# some default options for feh
+alias feh="feh -B black --scale-down -d"
 
 # New terminal in this folder
 t ()
