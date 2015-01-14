@@ -80,7 +80,6 @@ android-tools-fastboot
 zsh
 latexmk
 texlive-full
-moreutils
 octave
 astyle
 keychain
@@ -90,3 +89,4 @@ p7zip-full
 curl
 errno
 global
+parallel
