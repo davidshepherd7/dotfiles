@@ -293,6 +293,8 @@ the line break."
 
 ;; Utilities
 (global-set-key (kbd "<f7>") 'projectile-vc)
+(global-set-key (kbd "M-<f7>") 'magit-status)
+
 
 
 ;; New keymap for search
