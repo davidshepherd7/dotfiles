@@ -20,6 +20,8 @@
 (require 's)
 (require 'dash)
 
+;; This needs some refactoring...
+
 (defun java-toggle-test-file ()
   "Try to locate the file containing tests for this file (or vice versa)."
   (interactive)
@@ -27,47 +29,52 @@
       (java-switch-from-test)
     (java-switch-to-test)))
 
+(defun java-create-test-file ()
+  "?"
+  (interactive)
+  (find-file (car (catch 'no-test-file-found (java-switch-to-test)))))
+
 (defun java-switch-to-test ()
-  (let* ((bf-dir (file-name-directory (buffer-file-name)))
-         (bf-ext (s-concat "." (file-name-extension (buffer-file-name))))
-         (bf-fnm (file-name-base (buffer-file-name)))
+  (let* ((file-dir (file-name-directory (buffer-file-name)))
+         (file-ext (s-concat "." (file-name-extension (buffer-file-name))))
+         (file-name (file-name-base (buffer-file-name)))
 
          (files-to-try
-          (list (s-concat bf-fnm "Test" bf-ext)
-                (s-concat "Test" bf-fnm bf-ext)))
+          (list (s-concat file-name "Test" file-ext)
+                (s-concat "Test" file-name file-ext)))
 
          (dirs-to-try
-          (-distinct (list bf-dir
-                           (s-replace "src/" "test/" bf-dir)
-                           (s-replace "source/" "test/" bf-dir))))
+          (-distinct (list (s-replace "src/" "test/" file-dir)
+                           file-dir
+                           (s-replace "source/" "test/" file-dir))))
 
          (paths-to-try (-table-flat #'s-concat dirs-to-try files-to-try))
 
          (path (-first #'file-exists-p paths-to-try)))
 
-    (when (not path) (throw 'no-test-file-found "No candidate paths found"))
+    (when (not path) (throw 'no-test-file-found paths-to-try))
 
     ;; Open the first file that exists
     (find-file path)))
 
 (defun java-switch-from-test ()
-  (let* ((bf-dir (file-name-directory (buffer-file-name)))
-         (bf-ext (s-concat "." (file-name-extension (buffer-file-name))))
-         (bf-fnm (file-name-base (buffer-file-name)))
+  (let* ((file-dir (file-name-directory (buffer-file-name)))
+         (file-ext (s-concat "." (file-name-extension (buffer-file-name))))
+         (file-name (file-name-base (buffer-file-name)))
 
          (files-to-try
-          (list (s-replace "Test" "" (s-concat bf-fnm bf-ext))))
+          (list (s-replace "Test" "" (s-concat file-name file-ext))))
 
          (dirs-to-try
-          (-distinct (list bf-dir
-                           (s-replace "test/" "src/" bf-dir)
-                           (s-replace "test/" "source/" bf-dir))))
+          (-distinct (list file-dir
+                           (s-replace "test/" "src/" file-dir)
+                           (s-replace "test/" "source/" file-dir))))
 
          (paths-to-try (-table-flat #'s-concat dirs-to-try files-to-try))
 
          (path (-first #'file-exists-p paths-to-try)))
 
-    (when (not path) (throw 'no-class-file-found "No candidate paths found"))
+    (when (not path) (throw 'no-class-file-found paths-to-try))
 
     ;; Open the first file that exists
     (find-file path)))
