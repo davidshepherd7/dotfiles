@@ -295,6 +295,18 @@ the line break."
 (global-set-key (kbd "<f7>") 'projectile-vc)
 (global-set-key (kbd "M-<f7>") 'magit-status)
 
+;; paging
+(defun window-half-height () (max 1 (/ (1- (window-height (selected-window))) 2)))
+(defun scroll-down-half-screen ()
+  (interactive)
+  (scroll-down-command (window-half-height)))
+(defun scroll-up-half-screen ()
+  (interactive)
+  (scroll-up-command (window-half-height)))
+
+(global-set-key (kbd "C-<home>") #'recenter-top-bottom)
+(global-set-key (kbd "C-<prior>") #'scroll-down-half-screen)
+(global-set-key (kbd "C-<next>") #'scroll-up-half-screen)
 
 
 ;; New keymap for search
