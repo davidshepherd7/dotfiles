@@ -210,7 +210,7 @@ if [[ -d $emacsdir ]]; then
 fi
 
 # Add general binaries
-export PATH="$PATH:$HOME/code/bin"
+export PATH="$HOME/code/bin:$PATH"
 
 
 # python's path as well:
