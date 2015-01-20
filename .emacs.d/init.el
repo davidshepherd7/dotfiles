@@ -35,6 +35,12 @@
 (load-library "use-package")
 
 
+(defun starting-comment-p ()
+  "Are we starting to insert a c/java mode comment?"
+  (interactive)
+  (and (derived-mode-p 'cpp-mode 'java-mode 'c-mode)
+       (looking-back "/")))
+
 (use-package aggressive-indent
   :config
   (progn (global-aggressive-indent-mode)
@@ -42,7 +48,13 @@
 
          (add-hook 'c-mode-common-hook
                    (lambda () (define-key c-mode-map (kbd "C-d") nil)))
-         )
+
+         ;; Don't indent when entering comment start character (only for
+         ;; c/c++/java at the moment). The extra () is because
+         ;; aggressive-indent-dont-indent-if is a list of *expressions* not
+         ;; functions.
+         (add-to-list 'aggressive-indent-dont-indent-if '(starting-comment-p)))
+
   :ensure t)
 
 
