@@ -53,6 +53,7 @@
 .emacs.d/yasnippet/simple-snippets.el
 .emacs.d/yasnippet/yasnippet.el
 
+.cask
 
 
 .emacs.d/el-get/

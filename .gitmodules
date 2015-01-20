@@ -2,5 +2,5 @@
 	path = .zsh/zsh-syntax-highlighting
 	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule ".emacs.d/aggressive-autofill-mode"]
-	path = .emacs.d/aggressive-autofill-mode
+	path = .emacs.d/aggressive-fill-paragraph
 	url = git@github.com:davidshepherd7/aggressive-autofill-mode.git

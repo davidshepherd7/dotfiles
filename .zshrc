@@ -212,6 +212,11 @@ fi
 # Add general binaries
 export PATH="$HOME/code/bin:$PATH"
 
+# cask (for emacs)
+caskdir="$HOME/.cask/bin"
+if [[ -d $caskdir ]]; then
+    export PATH="$PATH:$caskdir"
+fi
 
 # python's path as well:
 export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscripts/python/"
