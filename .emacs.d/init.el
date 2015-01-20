@@ -25,6 +25,20 @@
 (package-initialize)
 
 
+;; Some packages I want to play with, so store version controlled copies
+;; outsid of package.el's control. Recursively add the relevant dirs to the
+;; load path.
+(let ((base "~/.emacs.d/vc-packages"))
+  (add-to-list 'load-path base)
+  (dolist (f (directory-files base))
+    (let ((name (concat base "/" f)))
+      (when (and (file-directory-p name)
+                 (not (equal f ".."))
+                 (not (equal f ".")))
+        (add-to-list 'load-path name)))))
+
+
+
 ;; Other things that need to go first for some reason
 ;; ============================================================
 
