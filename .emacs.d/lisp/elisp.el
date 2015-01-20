@@ -4,4 +4,4 @@
 
 ;; Use double semi-colon for emacs lisp (default seems to be single).
 (add-hook 'emacs-lisp-mode-hook (lambda () (setq comment-start ";;"
-                                                 comment-end "")))
+                                            comment-end "")))

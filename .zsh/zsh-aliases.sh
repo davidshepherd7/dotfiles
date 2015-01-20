@@ -215,7 +215,8 @@ fcode()
     cat <(find "$@" -name '*.cc' ) <(find "$@" -name '*.h') \
         <(find "$@" -name '*.cpp') <(find "$@" -name '*.c') \
         <(find "$@" -name '*.py') <(find "$@" -name '*.sh') \
-        <(find "$@" -name '*.el') <(find "$@" -name '*.tex')
+        <(find "$@" -name '*.el') <(find "$@" -name '*.tex') \
+        <(find "$@" -name '*.java') <(find "$@" -name '*.rb')
 }
 
 

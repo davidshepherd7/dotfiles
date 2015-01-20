@@ -3,6 +3,9 @@
 set -o errexit
 set -o nounset
 
+# Warning: seems to nuke some other settings, so do this before setting up
+# other things.
+
 
 if pgrep firefox > /dev/null; then
     echo "Close firefox first!"
