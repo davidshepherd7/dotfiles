@@ -82,7 +82,7 @@ alias git='hub'
 
 alias g='git'
 
-alias gs='git status'
+alias gs='git status -s -b'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gl1='git log -n1 -p'
