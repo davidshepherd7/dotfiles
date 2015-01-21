@@ -14,7 +14,7 @@
 
 
 
-;; Set up "package" package manager
+;; Set up "package" package manager etc.
 ;; ============================================================
 
 (require 'package)
@@ -37,18 +37,16 @@
                  (not (equal f ".")))
         (add-to-list 'load-path name)))))
 
-(use-package paradox :ensure t)
-(use-package package-utils :ensure t)
-
-
-;; Other things that need to go first for some reason
-;; ============================================================
 
 ;; Load the use-package lib which adds a nice macro for keeping package
 ;; config all wrapped up together
 (require 'ert) ; Need this for now...
 (load-library "bind-key")
 (load-library "use-package")
+
+;; add some packages for improving package.el
+(use-package package-utils :ensure t)
+(use-package paradox :ensure t)
 
 
 (defun starting-comment-p ()
