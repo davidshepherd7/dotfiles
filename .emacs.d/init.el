@@ -37,6 +37,8 @@
                  (not (equal f ".")))
         (add-to-list 'load-path name)))))
 
+(use-package paradox :ensure t)
+(use-package package-utils :ensure t)
 
 
 ;; Other things that need to go first for some reason
