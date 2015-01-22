@@ -26,8 +26,8 @@
 
 
 ;; Some packages I want to play with, so store version controlled copies
-;; outsid of package.el's control. Recursively add the relevant dirs to the
-;; load path.
+;; outside of package.el's control. Recursively add the relevant dirs to
+;; the load path.
 (let ((base "~/.emacs.d/vc-packages"))
   (add-to-list 'load-path base)
   (dolist (f (directory-files base))
@@ -1142,11 +1142,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
 
-(load-file "~/.emacs.d/aggressive-fill-paragraph/aggressive-fill-paragraph.el")
 (use-package aggressive-fill-paragraph
-  :config (progn
-            (aaf-setup-recommended-hooks)
-            (add-hook 'sh-mode-hook (lambda () (aggressive-fill-paragraph -1)))))
+  :config (afp-setup-recommended-hooks)
+  :ensure t)
 
 
 ;; Automagically added by customise

@@ -99,7 +99,7 @@ gitbranch()
 
 # Append git branch followed by newline and $ to prompt. Note that we HAVE to
 # use single quotes for the __git_ps1 part. Stuff in \[ \] is colour commands.
-PS1="$PS1"'\[\033[1;36m\]$(gitbranch " (%s)")\[\033[0m\] \$\n'
+PS1="[bash] $PS1"'\[\033[1;36m\]$(gitbranch " (%s)")\[\033[0m\] \$\n'
 
 
 
