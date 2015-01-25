@@ -135,7 +135,7 @@ ssh-add -l >/dev/null || \
 # For some reason this runs an emacs daemon if emacs is not already running and
 # you try to run an emacsclient
 export EDITOR="emacsclient -c -n"
-export ALTERNATE_EDITOR=""
+export ALTERNATE_EDITOR=''
 
 
 # Make
@@ -203,11 +203,11 @@ if [[ -d $HOME/code/oommf* ]]; then
 fi
 
 
-# Add emacs if it's there
-emacsdir="$HOME/code/emacs/mybin"
-if [[ -d $emacsdir ]]; then
-    export PATH="$emacsdir:$PATH"
-fi
+# # Add emacs if it's there
+# emacsdir="$HOME/code/emacs/mybin"
+# if [[ -d $emacsdir ]]; then
+#     export PATH="$emacsdir:$PATH"
+# fi
 
 # Add general binaries
 export PATH="$HOME/code/bin:$PATH"
