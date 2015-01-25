@@ -21,7 +21,9 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # archives
-alias ex='7z x' # 7zip can extract pretty much anything
+alias ex='atool -x -e' # atool can extract pretty much anything, 7zip can
+                       # almost do this but screws up permissions and takes
+                       # two runs to extract tar.gz.
 
 # pdf viewer, disconnect from shell entirely and write stdout/stderr to a
 # temp file (temp files are cleaned on reboot).
