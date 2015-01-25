@@ -11,7 +11,13 @@
 ;; (add-hook 'python-mode-hook 'lambda-mode 1)
 ;; (setq lambda-regex "lambda ")
 
-(when emacs244? (add-hook 'python-mode-hook 'lambda-mode 1))
+(defun prettify-lambda ()
+  (add-to-list 'prettify-symbols-alist '("lambda" . 955)))
+
+(when emacs244?
+  (add-hook 'python-mode-hook 'prettify-symbols-mode)
+  (add-hook 'python-mode-hook 'prettify-lambda)
+  )
 
 ;; Setup jedi mode (python autocompletion)
 ;; ============================================================
