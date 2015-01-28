@@ -898,7 +898,10 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
     ;; Use everywhere
     (projectile-global-mode)
-    ))
+
+    (set 'projectile-use-git-grep t)
+    )
+  :bind ("<f8>" . projectile-grep))
 
 
 
@@ -1080,12 +1083,6 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
     (set 'ace-jump-mode-scope 'window)
     (global-set-key (kbd "C-p") 'ace-jump-mode)))
-
-
-;; Ack support
-(use-package ack
-  :ensure t
-  :bind ("<f8>" . projectile-ack))
 
 
 (use-package expand-region
