@@ -222,15 +222,16 @@ fcode()
 }
 
 
-# Fancy grep: with line num, with filename, exclude source control, binaries and make junk
-mygrep ()
+# Fancy grep: with line num, with filename, exclude source control, binaries and makefile junk
+s ()
 {
     grep  -n -H -I --exclude-dir=.git --exclude-dir=.svn \
         --exclude-dir='*.deps' --exclude='*.lo' --exclude='*.la' --exclude='*.lai' \
-        --exclude=Makefile --exclude=Makefile.in --exclude=TAGS --color=auto $@
+        --exclude=Makefile --exclude=Makefile.in --exclude=TAGS \
+        --color=auto $@
 }
-export mygrep
-exportf mygrep
+export s
+exportf s
 
 # grep source code files only
 gcode ()
