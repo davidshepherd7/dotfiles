@@ -222,13 +222,14 @@ fcode()
 }
 
 
-# Fancy grep: with line num, with filename, exclude source control, binaries and makefile junk
-s ()
+# Fancy recursive grep: with line num, filename, ignore files ignored by
+# git.
+s()
 {
-    grep  -n -H -I --exclude-dir=.git --exclude-dir=.svn \
-        --exclude-dir='*.deps' --exclude='*.lo' --exclude='*.la' --exclude='*.lai' \
-        --exclude=Makefile --exclude=Makefile.in --exclude=TAGS \
-        --color=auto $@
+    if ! git rev-parse > /dev/null 2>&1; then
+        additional_opt="--no-index --exclude-standard"
+    fi
+    git grep --color=auto -n -H -I $(echo "$additional_opt") -E $@
 }
 export s
 exportf s
