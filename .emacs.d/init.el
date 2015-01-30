@@ -973,6 +973,48 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
 
     ;; Use minibuffer for yas prompts
     (setq yas-prompt-functions '(yas-ido-prompt))
+
+
+    ;; Faster snippet creation:
+
+    (defun ds/yas-snippet-dir ()
+      "Get the correct snippet dir for this buffer's mode
+
+Wrapper function to handle all yasnippets weirdness."
+      (yas--make-directory-maybe (first (yas--guess-snippet-directories))))
+
+    (defun ds/read-with-default-word-at-point (prompt)
+      ;; All this crap is needed to use the word at point as the default value.
+      (list (read-string (format "%s (default %s): " prompt (thing-at-point 'word))
+                         nil nil (thing-at-point 'word))))
+
+    (defun ds/new-yasnippet (snippet-name)
+      "Quickly create a new snippet.
+
+   In the right dir; with filename and snippet name already set
+   up; with minimal prompts."
+      (interactive (ds/read-with-default-word-at-point "snippet name"))
+
+      (let ((dir (ds/yas-snippet-dir)))
+
+        ;; Save before expanding the snippet so that we can get the buffer name
+        ;; from inside the snippet.
+        (yas-new-snippet t)
+        (write-file (s-concat dir "/" snippet-name) t)
+        (yas-expand-snippet yas-new-snippet-default)))
+
+    (global-set-key (kbd "C-s-T") 'ds/new-yasnippet)
+
+
+
+    ;; Don't add a binding by default in new snippets
+    (set 'yas-new-snippet-default "\
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: `(file-name-nondirectory buffer-file-name)`
+# --
+$0")
+
+
     )
   )
 
