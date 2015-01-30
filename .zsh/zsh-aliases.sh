@@ -106,6 +106,13 @@ alias glp='git log -p'
 
 alias gitlsuntracked='git ls-files --exclude-standard -o'
 
+git-ignore-rest () {
+    touch .gitignore
+    git add .gitignore
+    git ls-files --exclude-standard -o >> .gitignore
+    git add .gitignore
+}
+
 
 # svn aliases
 alias sst='svn status -q'
