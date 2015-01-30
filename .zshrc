@@ -73,19 +73,23 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# Allow for functions in the prompt.
-setopt PROMPT_SUBST
+if git --version > /dev/null; then
+    # Allow for functions in the prompt.
+    setopt PROMPT_SUBST
 
-# # Set the prompt (notice the space between use name and location, for
-# # easy cut+paste). Mostly from Ubuntu defaults..
-# PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]: \[\033[01;34m\]\w\[\033[00m\]'
+    # # Set the prompt (notice the space between use name and location, for
+    # # easy cut+paste). Mostly from Ubuntu defaults..
+    # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]: \[\033[01;34m\]\w\[\033[00m\]'
 
-# In git line in prompt: show symbols for non-clean state, untracked files
-GIT_PS1_SHOWDIRTYSTATE=1
-GIT_PS1_SHOWUNTRACKEDFILES="on"
+    # In git line in prompt: show symbols for non-clean state, untracked files
+    GIT_PS1_SHOWDIRTYSTATE=1
+    GIT_PS1_SHOWUNTRACKEDFILES="on"
 
-# Add git prompt function to path:
-source "/usr/lib/git-core/git-sh-prompt"
+    # Add git prompt function to path:
+    source "/usr/lib/git-core/git-sh-prompt"
+else
+    function __git_ps1 () {}
+fi
 
 # Create prompt
 PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f$(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
