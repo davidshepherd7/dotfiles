@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: java output variable
+# key: vout
+# --
+System.out.println("$1 : " + $1.toString());

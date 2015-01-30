@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: err
+# --
+if($1) {
+    throw new RuntimeException("$2");
+}
+$0

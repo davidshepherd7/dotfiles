@@ -1,0 +1,4 @@
+# name: java create list
+# key: nlist
+# --
+List<$1> $2 = new ArrayList<$1>();

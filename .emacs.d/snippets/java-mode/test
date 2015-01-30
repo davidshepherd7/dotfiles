@@ -1,0 +1,7 @@
+# key: test
+# name: test
+# --
+@Test
+public void test$1() {
+       $0
+}

@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: java interface
+# key: iface
+# --
+/**
+ * ??ds
+ *
+ * @author David Shepherd
+ */
+public interface `(file-name-base (buffer-file-name))` ${2:implements $3} {
+    `yas-selected-text`$0
+}

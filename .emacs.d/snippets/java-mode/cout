@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: cout
+# key: cout
+# --
+System.out.println("${1:##hi##}");

@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: start
+# key: start
+# --
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+

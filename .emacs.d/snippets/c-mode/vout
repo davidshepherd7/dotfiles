@@ -1,0 +1,3 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# --
+printf("$1: $2\n", $1);$0

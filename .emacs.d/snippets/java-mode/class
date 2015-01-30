@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: java class
+# key: class
+# --
+package `(java-package-name)`;
+
+`(java-insert-import-util)`
+
+/**
+ * ??ds
+ *
+ * @author David Shepherd
+ */
+public class `(file-name-base (buffer-file-name))` ${2:extends $3} ${4:implements $5} {
+
+    public `(file-name-base (buffer-file-name))` () {
+
+    }
+
+    `yas-selected-text`$0
+}

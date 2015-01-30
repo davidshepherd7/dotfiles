@@ -15,11 +15,11 @@
 .emacs.d/.org-id-locations
 .emacs.d/ac-comphist*
 *.elc
+.yas-compiled-snippets.el
 .emacs.d/tmp/
 .emacs.d/savehist*
 .emacs.d/tutorial/
 .emacs.d/smex-items*
-.emacs.d/snippets/
 .emacs.d/eshell/
 .emacs.d/projectile-bookmarks.eld
 

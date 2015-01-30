@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: delete and null a pointer
+# key: safedelete
+# --
+delete $1; $1 = 0;
+$0

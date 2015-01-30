@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: f
+# key: f
+# --
+(defun $1 ($2)
+   ${3:(interactive)}
+   $0)

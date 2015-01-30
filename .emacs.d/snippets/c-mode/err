@@ -1,0 +1,3 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# --
+fprintf(stderr, "$1\n"$2);$0

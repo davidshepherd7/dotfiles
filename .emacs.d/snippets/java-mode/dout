@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: java output double
+# key: dout
+# --
+System.out.printf("$1 : %f\n", $1); 

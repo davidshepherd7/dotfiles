@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: const unsigned
+# key: cu
+# --
+const unsigned $0

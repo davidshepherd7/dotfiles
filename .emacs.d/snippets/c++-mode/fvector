@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: loop over entries of a vector
+# key: fvector
+# --
+${1:const unsigned ni = $2.size();}
+for(unsigned i=0; i<ni; i++)
+{
+  ${2:v}[i] = $0;
+}

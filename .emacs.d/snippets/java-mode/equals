@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: java equals method
+# key: equals
+# --
+@Override
+public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+
+    if (!(other instanceof ${1:`(file-name-base (buffer-file-name))`})) return false;
+    $1 other$1 = ($1) other;
+    
+    return this.$2.equals(other.$2) && 
+        $0;
+    }

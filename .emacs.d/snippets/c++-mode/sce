@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sce
+# key: sce
+# --
+std::cerr << $1 << std::endl;

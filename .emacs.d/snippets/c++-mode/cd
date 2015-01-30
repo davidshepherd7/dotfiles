@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: const double
+# key: cd
+# --
+const double $0

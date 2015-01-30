@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: function
+# key: fun
+# --
+
+/**
+ * ??ds
+ */
+${2:public} ${3:void} $1() {
+    $0
+}
