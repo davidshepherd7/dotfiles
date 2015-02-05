@@ -57,17 +57,23 @@
 
 (use-package aggressive-indent
   :config
-  (progn (global-aggressive-indent-mode)
-         (define-key aggressive-indent-mode-map (kbd "C-c") nil)
+  (progn
 
-         (add-hook 'c-mode-common-hook
-                   (lambda () (define-key c-mode-map (kbd "C-d") nil)))
+    ;; Enable in modes where it's safe
+    (mapcar (lambda (hook) (add-hook hook #'aggressive-indent-mode))
+            (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
+                  'java-mode-hook 'sh-mode-hook))
 
-         ;; Don't indent when entering comment start character (only for
-         ;; c/c++/java at the moment). The extra () is because
-         ;; aggressive-indent-dont-indent-if is a list of *expressions* not
-         ;; functions.
-         (add-to-list 'aggressive-indent-dont-indent-if '(starting-comment-p)))
+    (define-key aggressive-indent-mode-map (kbd "C-c") nil)
+
+    (add-hook 'c-mode-common-hook
+              (lambda () (define-key c-mode-map (kbd "C-d") nil)))
+
+    ;; Don't indent when entering comment start character (only for
+    ;; c/c++/java at the moment). The extra () is because
+    ;; aggressive-indent-dont-indent-if is a list of *expressions* not
+    ;; functions.
+    (add-to-list 'aggressive-indent-dont-indent-if '(starting-comment-p)))
 
   :ensure t)
 
@@ -1182,7 +1188,15 @@ $0")
 (load-theme 'shepherd t)
 
 (use-package aggressive-fill-paragraph
-  :config (afp-setup-recommended-hooks)
+  :config (progn
+
+            ;; Enable in modes where it works nicely
+            (mapcar (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
+                    (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
+                          'java-mode-hook
+                          'sh-mode-hook
+                          'python-mode-hook))
+            )
   :ensure t)
 
 
