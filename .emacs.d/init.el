@@ -447,24 +447,24 @@ predicate PRED used to filter them."
 (load-file "~/.emacs.d/skeletons.el")
 
 ;; Load configs from other files
-(load-file "~/.emacs.d/lisp/cpp.el")
-(load-file "~/.emacs.d/lisp/latex.el")
-(load-file "~/.emacs.d/lisp/oomph-lib.el")
-(load-file "~/.emacs.d/lisp/scheme.el")
-(load-file "~/.emacs.d/lisp/octave.el")
-(load-file "~/.emacs.d/lisp/my-matlab.el")
-(load-file "~/.emacs.d/lisp/my-org.el")
-(load-file "~/.emacs.d/lisp/my-python.el") ;; python-mode is in file called python.el
-(load-file "~/.emacs.d/lisp/unicode-entry.el")
-(load-file "~/.emacs.d/lisp/haskell.el")
-(load-file "~/.emacs.d/lisp/elisp.el")
-(load-file "~/.emacs.d/lisp/java.el")
+(load-file "~/.emacs.d/lisp/ds-cpp.el")
+(load-file "~/.emacs.d/lisp/ds-latex.el")
+(load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
+(load-file "~/.emacs.d/lisp/ds-scheme.el")
+(load-file "~/.emacs.d/lisp/ds-octave.el")
+(load-file "~/.emacs.d/lisp/ds-matlab.el")
+(load-file "~/.emacs.d/lisp/ds-org.el")
+(load-file "~/.emacs.d/lisp/ds-python.el")
+(load-file "~/.emacs.d/lisp/ds-unicode-entry.el")
+(load-file "~/.emacs.d/lisp/ds-haskell.el")
+(load-file "~/.emacs.d/lisp/ds-elisp.el")
+(load-file "~/.emacs.d/lisp/ds-java.el")
 
 
 
 ;; Major changes to keybinds
 ;; Needs to after other file loads so that hooks are in scope
-(load-file "~/.emacs.d/lisp/sensible-keys.el")
+(load-file "~/.emacs.d/lisp/ds-sensible-keys.el")
 
 
 ;; Save command history between sessions
