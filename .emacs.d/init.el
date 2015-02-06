@@ -999,7 +999,7 @@ Wrapper function to handle all yasnippets weirdness."
 
    In the right dir; with filename and snippet name already set
    up; with minimal prompts."
-      (interactive (ds/read-with-default-word-at-point "snippet name"))
+      (interactive (list (thing-at-point 'word)))
 
       (let ((dir (ds/yas-snippet-dir)))
 
@@ -1009,9 +1009,7 @@ Wrapper function to handle all yasnippets weirdness."
         (write-file (s-concat dir "/" snippet-name) t)
         (yas-expand-snippet yas-new-snippet-default)))
 
-    (global-set-key (kbd "C-s-T") 'ds/new-yasnippet)
-
-
+    (global-set-key (kbd "C-S-T") 'ds/new-yasnippet)
 
     ;; Don't add a binding by default in new snippets
     (set 'yas-new-snippet-default "\
