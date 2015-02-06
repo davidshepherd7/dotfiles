@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: parray
+# --
+fprintf(${2:stderr}, "[");
+for(int i=0; i<$1; i++) { fprintf($2, " %i", ${3:array}[i]); }
+fprintf($2, "]\n");
+$0

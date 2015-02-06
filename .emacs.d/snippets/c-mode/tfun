@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: tfun
+# --
+void* $1(void* void_args) {
+  $2 args = ($2) void_args;
+  
+
+  return 0;
+}
