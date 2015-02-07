@@ -101,7 +101,7 @@ the line break."
 
 ;; Copy
 (global-set-key (kbd "C-c") (lambda () (interactive) (dwim-end-of-line 'kill-ring-save)))
-(global-set-key (kbd "M-c") (lambda () (interactive) (dwim-entire-line 'kill-ring-save) (next-line)))
+(global-set-key (kbd "M-c") (lambda () (interactive) (dwim-entire-line 'kill-ring-save)))
 (global-set-key (kbd "C-S-c") (lambda () (interactive) (dwim-start-of-line 'kill-ring-save)))
 ;; (global-set-key (kbd "C-M-c") (lambda () (interactive) (function-on-block 'kill-ring-save)))
 
@@ -113,8 +113,7 @@ the line break."
 (global-set-key (kbd "C-;") (lambda () (interactive)
                               (dwim-end-of-line 'comment-or-uncomment-region)))
 (global-set-key (kbd "M-;") (lambda () (interactive)
-                              (dwim-entire-line 'comment-or-uncomment-region)
-                              (next-line)))
+                              (dwim-entire-line 'comment-or-uncomment-region)))
 ;; Doesn't do anything useful...
 ;; (global-set-key (kbd "C-:") (lambda () (interactive)
 ;; (dwim-start-of-line 'comment-or-uncomment-region)))
