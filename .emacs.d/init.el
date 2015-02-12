@@ -906,8 +906,9 @@ When called in lisp program, fromType and toType is a string of a bracket pair. 
     (projectile-global-mode)
 
     (set 'projectile-use-git-grep t)
-    )
-  :bind ("<f8>" . projectile-grep))
+
+    (global-set-key (kbd "<f8>") #'projectile-grep)
+    ))
 
 
 
