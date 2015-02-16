@@ -1191,10 +1191,13 @@ $0")
 
             ;; Enable in modes where it works nicely
             (mapcar (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
-                    (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
+                    (list 'c-mode-hook
+                          'c++-mode-hook
+                          'emacs-lisp-mode-hook
                           'java-mode-hook
                           'sh-mode-hook
-                          'python-mode-hook))
+                          'python-mode-hook
+                          'org-mode-hook))
             )
   :ensure t)
 
