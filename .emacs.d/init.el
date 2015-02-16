@@ -1182,7 +1182,6 @@ $0")
 (add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
 
 ;; Pretty colours
-;; ============================================================
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
 
@@ -1198,6 +1197,19 @@ $0")
                           'sh-mode-hook
                           'python-mode-hook
                           'org-mode-hook))
+            )
+  :ensure t)
+
+
+;; For some stupid reason ess doesn't define this autoload, or this
+;; file association!
+(autoload 'R-mode "ess-site.el" "ESS" t)
+(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+
+(use-package ess
+  :config (progn
+            (define-key ess-mode-map (kbd "C-c") nil)
+            (define-key ess-roxy-mode-map (kbd "C-c") nil)
             )
   :ensure t)
 
