@@ -304,7 +304,7 @@ take-a-break ()
 {
     if [ $# -lt 1 ]; then
         length="60"
-    elif [ $# -gt 1]; then
+    elif [ $# -gt 1 ]; then
         echo "usage mtimer [time to wait in minutes]"
     else
         length="$1"
