@@ -1172,7 +1172,8 @@ $0")
    (is-oomph-code)
 
    ;; Don't do it in non-programming modes (just to be safe)
-   (not (derived-mode-p 'prog-mode))))
+   (not (or (derived-mode-p 'prog-mode)
+	    (eq major-mode 'ess-mode)))))
 
 
 (defun maybe-delete-trailing-whitespace ()
