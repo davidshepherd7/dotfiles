@@ -1,0 +1,26 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: start
+# --
+#! /usr/bin/env python
+
+# Some python 3 compatability. With these imports most scripts should work
+# in both python 2.7 and python 3.x.
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
+
+import sys
+
+
+def main():
+    """$0
+    """
+    
+    # Return success
+    return 0
+
+# If this script is run from a shell then run main() and return the result.
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,17 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: start
+# --
+#! /usr/bin/env python3
+
+import sys
+
+def main():
+    """$0
+    """
+    
+    # Return success
+    return 0
+
+# If this script is run from a shell then run main() and return the result.
+if __name__ == "__main__":
+    sys.exit(main())

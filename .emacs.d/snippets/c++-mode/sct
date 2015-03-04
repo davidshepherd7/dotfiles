@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# key: sct
+# --
+std::cout << $1 << std::endl;

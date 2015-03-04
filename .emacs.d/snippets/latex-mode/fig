@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: fig
+# --
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{{{${1:images/placeholder}}}}
+  \caption{$0}
+  \label{${2:"waiting for reftex-label call..."$(unless yas/modified-p (reftex-label nil 'dont-insert))}}
+\end{figure}
