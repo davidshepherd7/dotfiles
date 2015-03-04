@@ -20,6 +20,10 @@
 (global-unset-key (kbd "C-M-o"))
 
 
+;; kill emacs on a key is dangerous
+(global-unset-key (kbd "C-\\ C-c"))
+
+
 ;; Unbind old case change keys
 (global-unset-key (kbd "M-'"))
 (global-unset-key (kbd "M-l"))
@@ -545,21 +549,6 @@ the line break."
                 '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
 (global-set-key (kbd "C-<f6>") 'ibuffer)
 
-
-;; ido
-;; ============================================================
-
-;; (let ((my-new-map (make-sparse-keymap)))
-
-;;   ;; (define-key my-new-map (kbd "RET") 'ido-complete)
-;;   (set 'ido-common-completion-map my-new-map)
-
-;;   ;; clear all the extra keymaps
-;;   (set 'ido-completion-map (make-sparse-keymap))
-;;   (set 'ido-buffer-completion-map (make-sparse-keymap))
-;;   (set 'ido-file-completion-map (make-sparse-keymap))
-;;   (set 'ido-file-dir-completion-map (make-sparse-keymap))
-;;   (set 'ido-file-dir-completion-map (make-sparse-keymap)))
 
 (require 'cc-mode)
 (define-key c-mode-base-map (kbd "C-c") '())
