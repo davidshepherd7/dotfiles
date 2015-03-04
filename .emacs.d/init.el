@@ -1210,7 +1210,10 @@ $0")
 (use-package ess
   :config (progn
             (define-key ess-mode-map (kbd "C-c") nil)
-            (define-key ess-roxy-mode-map (kbd "C-c") nil)
+	    (define-key ess-mode-map (kbd "C-x") nil)
+            (define-key ess-mode-map (kbd "_") #'self-insert-command)
+	    (add-hook 'ess-roxy-mode-hook
+		      (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
             )
   :ensure t)
 
