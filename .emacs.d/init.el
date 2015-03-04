@@ -1215,6 +1215,10 @@ $0")
   :ensure t)
 
 
+(use-package discover
+  :config (global-discover-mode)
+  :ensure t)
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
