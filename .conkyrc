@@ -4,14 +4,14 @@ xftfont HandelGotD:size=11
 xftalpha 1.0
 double_buffer yes
 own_window_argb_visual true
-own_window_argb_value 200
+own_window_argb_value 150
 
 
 # Positioning and panel config
 own_window yes
 own_window_type panel
 disable_auto_reload yes # autoreload + panel + xmonad doesn't work well..
-minimum_size 500 15
+minimum_size 1440 15
 alignment tl
 gap_x 0
 gap_y 0
@@ -24,11 +24,15 @@ update_interval 0.2
 
 TEXT
  (${desktop}, ${desktop_name}) \
- ${cpugraph 15, 60 -t} \
- ${memgraph 15, 60} \
- swapgraph \
- ${upspeedgraph eth0 15, 60} \
+                               \
+ ${color blue} ${cpugraph cpu0 15, 60} \
+ ${color green} ${memgraph 15, 60} \
+ ${color yellow} ${upspeedgraph eth0 15, 60} \
  ${downspeedgraph eth0 15,60} \
+ ${color } \
+                               \
+ ${execi 6 dropbox status | sed -n 1p} \
+ ${battery} \
  ${time %H:%M  %D} \
  ${offset 5000} # position a space character way off to the right so that
                 # the bar covers the screen
