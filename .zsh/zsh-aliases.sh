@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 # Use better top with colours and stuff:
-alias top='htop'
+alias top='htop || top'
 
 # Tail -F isn't really tail anymore...c all it rcat(refresh cat)
 alias rcat='tail -F -n 100000'
