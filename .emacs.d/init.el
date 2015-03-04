@@ -530,6 +530,8 @@ predicate PRED used to filter them."
 ;; scroll compilation buffer to first error
 (setq compilation-scroll-output 'first-error)
 
+(set 'compilation-always-kill t)
+
 ;; Autosave all modified buffers before compile
 (set 'compilation-ask-about-save nil)
 
