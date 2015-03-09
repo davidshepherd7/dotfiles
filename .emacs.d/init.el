@@ -224,7 +224,11 @@
 (helm-mode 1)
 
 (global-set-key (kbd "C-S-v") #'helm-show-kill-ring)
-(global-set-key (kbd "M-k") #'helm-mini)
+
+;; Use helm-buffers-list over helm-mini because with this setting it uses
+;; "virtual buffers" (allows you to switch to buffers that you closed).
+(setq ido-use-virtual-buffers t)
+(global-set-key (kbd "M-k") #'helm-buffers-list)
 
 
 
