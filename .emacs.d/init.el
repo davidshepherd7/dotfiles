@@ -959,9 +959,10 @@ $0")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
 
+(add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
+(load-library "aggressive-fill-paragraph")
 (use-package aggressive-fill-paragraph
   :config (progn
-
             ;; Enable in modes where it works nicely
             (mapcar (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
                     (list 'c-mode-hook
@@ -971,8 +972,7 @@ $0")
                           'sh-mode-hook
                           'python-mode-hook
                           'org-mode-hook))
-            )
-  :ensure t)
+            ))
 
 
 ;; For some stupid reason ess doesn't define this autoload, or this

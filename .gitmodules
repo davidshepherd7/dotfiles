@@ -4,3 +4,6 @@
 [submodule ".emacs.d/aggressive-autofill-mode"]
 	path = .emacs.d/aggressive-fill-paragraph
 	url = git@github.com:davidshepherd7/aggressive-autofill-mode.git
+[submodule ".emacs.d/aggressive-fill-paragraph-mode"]
+	path = .emacs.d/aggressive-fill-paragraph-mode
+	url = git://github.com/davidshepherd7/aggressive-fill-paragraph-mode.git
