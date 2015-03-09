@@ -32,7 +32,7 @@ TEXT
  ${color } \
                                \
  Dropbox: ${execi 6 dropbox status | sed -n 1p} \
- apt-get: ${execi 3600 apt-get upgrade --dry-run -q | tail -n1 | awk '{print $1}'} \
+ apt-get: ${execi 60 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'} \
  ${battery} \
  ${time %H:%M  %D} \
  ${offset 5000} # position a space character way off to the right so that
