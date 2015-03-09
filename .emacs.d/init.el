@@ -227,6 +227,7 @@
 (global-set-key (kbd "M-k") #'helm-mini)
 
 
+
 ;; Auto complete
 ;;================================================================
 (use-package fuzzy :ensure t)
@@ -885,6 +886,15 @@ $0")
 (add-hook 'shell-mode-hook (lambda ()
 			     (set 'sh-basic-offset 2)
 			     (set 'sh-indentation 2)))
+
+
+;; C mode
+;; ============================================================
+
+(define-key c-mode-map (kbd "C-c") nil)
+(add-hook 'c-mode-hook #'set-tab)
+
+
 
 
 ;; Ace jump mode
