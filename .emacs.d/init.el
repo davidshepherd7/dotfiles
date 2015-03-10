@@ -1013,6 +1013,18 @@ $0")
   :config (global-discover-mode)
   :ensure t)
 
+(use-package electric-spacing
+  :config (progn
+            ;; Enable in some modes
+            (mapcar (lambda (hook) (add-hook hook #'electric-spacing-mode))
+                    '(python-mode-hook
+                      ess-mode-hook
+                      c-mode-hook
+                      c++-mode-hook
+                      java-mode-hook)))
+  :ensure t)
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
