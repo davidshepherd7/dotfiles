@@ -140,8 +140,7 @@ myStartupHook = do
 ------------------------------------------------------------------------
 -- Workspaces
 
-myWorkspaces = ["1","2","3","plots",
-                "pv","mly"]
+myWorkspaces = ["1", "2", "3", "4", "5", "6"]
 
 ------------------------------------------------------------------------
 -- Now run xmonad with these settings and some others given here
