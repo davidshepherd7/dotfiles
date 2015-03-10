@@ -1015,6 +1015,8 @@ $0")
   :config (global-discover-mode)
   :ensure t)
 
+(add-to-list 'load-path "~/.emacs.d/electric-spacing")
+(load-library "electric-spacing")
 (use-package electric-spacing
   :config (progn
             ;; Enable in some modes
@@ -1024,7 +1026,7 @@ $0")
                       c-mode-hook
                       c++-mode-hook
                       java-mode-hook)))
-  :ensure t)
+  )
 
 
 ;; Automagically added by customise
