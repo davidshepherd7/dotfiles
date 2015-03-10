@@ -1001,6 +1001,10 @@ $0")
             (define-key ess-mode-map (kbd "_") #'self-insert-command)
 	    (add-hook 'ess-roxy-mode-hook
 		      (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
+
+            (add-hook 'ess-mode-hook
+                      (lambda() (ess-set-style 'C++ 'quiet)
+                        (set 'ess-arg-function-offset t)))
             )
   :ensure t)
 
