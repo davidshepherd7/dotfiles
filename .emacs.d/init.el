@@ -230,6 +230,8 @@
 (setq ido-use-virtual-buffers t)
 (global-set-key (kbd "M-k") #'helm-buffers-list)
 
+(global-set-key (kbd "C-S-k") #'helm-find-files)
+
 
 
 ;; Auto complete
