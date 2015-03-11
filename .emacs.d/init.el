@@ -237,8 +237,10 @@
 ;; Use helm-buffers-list over helm-mini because with this setting it uses
 ;; "virtual buffers" (allows you to switch to buffers that you closed).
 (setq ido-use-virtual-buffers t)
-(global-set-key (kbd "M-k") #'helm-buffers-list)
+;; increase number of buffers to rememeber
+(set 'recentf-max-saved-items 1000)
 
+(global-set-key (kbd "M-k") #'helm-buffers-list)
 (global-set-key (kbd "C-S-k") #'helm-find-files)
 
 
