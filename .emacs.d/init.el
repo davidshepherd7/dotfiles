@@ -987,7 +987,8 @@ $0")
                           'java-mode-hook
                           'sh-mode-hook
                           'python-mode-hook
-                          'org-mode-hook))
+                          'org-mode-hook
+                          'ess-mode-hook))
             ))
 
 
