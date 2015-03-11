@@ -163,6 +163,15 @@
 ;; Always revert buffer to file
 (global-auto-revert-mode)
 
+;; Automatically add newlines after certain characters (e.g. '{')
+(electric-layout-mode)
+
+;; Make the rules for electric layout local to buffers (so that different
+;; modes don't interfere)
+(make-variable-buffer-local 'electric-layout-rules)
+
+;; Automatically add closing character where appropriate
+(electric-pair-mode)
 
 ;; Saving
 ;; ============================================================
@@ -1008,6 +1017,13 @@ $0")
             (add-hook 'ess-mode-hook
                       (lambda() (ess-set-style 'C++ 'quiet)
                         (set 'ess-arg-function-offset t)))
+
+            ;; auto newline after '{'
+            (add-hook 'ess-mode-hook
+                      (lambda()
+                        (add-to-list 'electric-layout-rules '( ?\{ .  after))
+                        (add-to-list 'electric-layout-rules '( ?\} .  before))
+                        ))
             )
   :ensure t)
 
