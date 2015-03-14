@@ -353,24 +353,54 @@
 ;; Compile mode settings
 ;; ===============================================================
 
-;; Define + active modification to compile that locally sets
-;; shell-command-switch to "-ic".
+;; Modification to compile/recompile that locally sets shell-command-switch
+;; to "-ic", in order to make sure that the path, aliases and functions are
+;; all set correctly.
 (defadvice compile (around use-bashrc activate)
   "Load .bashrc in any calls to bash (e.g. so we can use aliases)"
   (let ((shell-command-switch "-ic"))
     ad-do-it))
-
 (defadvice recompile (around use-bashrc activate)
   "Load .bashrc in any calls to bash (e.g. so we can use aliases)"
   (let ((shell-command-switch "-ic"))
     ad-do-it))
+
+(defun buffer-has-hashbang ()
+  (save-excursion (goto-char (point-min))
+                  (looking-at-p "#!")))
+
+(defun compile-default-command ()
+  (interactive)
+  (cond
+   ;; Files with hashbang should be run
+   ((and (buffer-has-hashbang)
+         (buffer-file-name))
+    (concat "./" (file-name-nondirectory (buffer-file-name))))
+
+   ;; emacs lisp should be tested by running a new emacs instance in batch
+   ;; mode
+   ((derived-mode-p 'emacs-lisp-mode)
+    "\\emacs --debug-init --batch -u $USER")
+
+   ;; make is probably a good default for anything else
+   (t "make")))
+
+(defun compile-with-default ()
+  (interactive)
+  ;; Run compile with a specially chosen default command
+  (set 'backup-compile-command compile-command)
+  (set 'compile-command (compile-default-command))
+  (condition-case nil (call-interactively #'compile)
+    ;; If we quit then revert compile command (so that it isn't in the
+    ;; history).
+    (quit (set 'compile-command backup-compile-command))))
 
 (defun my-recompile ()
   "Recompile if possible, otherwise compile current buffer."
   (interactive)
   ;; If recompile exists do it, else compile
   (if (fboundp 'recompile) (recompile)
-    (compile "make -k")))
+    (call-interactively #'compile)))
 
 (add-hook 'compilation-mode-hook 'my-compilation-mode-keys)
 (add-hook 'compilation-shell-mode-hook 'my-compilation-mode-keys)
@@ -406,7 +436,7 @@
 
 
 (global-set-key (kbd "<f5>") 'my-recompile)
-(global-set-key (kbd "C-<f5>") 'compile)
+(global-set-key (kbd "C-<f5>") 'compile-with-default)
 
 (global-set-key (kbd "C-`") 'next-error)
 (global-set-key (kbd "C-¬") 'previous-error)
