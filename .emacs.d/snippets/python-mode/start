@@ -4,10 +4,27 @@
 #! /usr/bin/env python3
 
 import sys
+import argparse
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description=main.__doc__,
+
+    # Don't mess up my formating in the help message
+    formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    parser.add_argument('--hello', default=None,
+                        help = '')
+
+    args = parser.parse_args()
+    return args
+
 
 def main():
     """$0
     """
+
+    # Parse cli arguments
+    args = parse_arguments()
     
     # Return success
     return 0
