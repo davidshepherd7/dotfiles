@@ -243,6 +243,9 @@
 (global-set-key (kbd "M-k") #'helm-buffers-list)
 (global-set-key (kbd "C-S-k") #'helm-find-files)
 
+;; Use better colour for highlighting the current line
+(set-face-attribute 'helm-selection nil :background "grey20")
+
 
 
 ;; Auto complete
