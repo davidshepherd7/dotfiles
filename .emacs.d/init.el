@@ -1042,7 +1042,12 @@ $0")
   :config (progn
             (define-key ess-mode-map (kbd "C-c") nil)
 	    (define-key ess-mode-map (kbd "C-x") nil)
-            (define-key ess-mode-map (kbd "_") #'self-insert-command)
+
+            ;; ess-mode tries to do some stupid stuff with '_' and ',',
+            ;; disable this.
+            (define-key ess-mode-map (kbd "_") nil)
+            (define-key ess-mode-map (kbd ",") nil)
+
 	    (add-hook 'ess-roxy-mode-hook
 		      (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
 
