@@ -246,6 +246,12 @@
 ;; Use better colour for highlighting the current line
 (set-face-attribute 'helm-selection nil :background "grey20")
 
+(use-package helm-swoop
+  :config (progn
+            (global-set-key (kbd "C-f") #'helm-swoop)
+            (define-key helm-swoop-edit-map (kbd "C-s") #'helm-swoop--edit-complete))
+  :ensure t)
+
 
 
 ;; Auto complete

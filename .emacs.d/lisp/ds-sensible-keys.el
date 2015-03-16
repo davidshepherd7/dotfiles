@@ -144,9 +144,6 @@ the line break."
 ;; (global-set-key (kbd "C-o") 'find-file)
 ;; (global-set-key (kbd "M-o") 'switch-to-buffer)
 
-(global-set-key (kbd "C-f") 'isearch-forward)
-(global-set-key (kbd "M-f") 'isearch-forward-regexp)
-
 
 ;; Use vim/gmail/google-reader like up/down/left/right
 (if colemak-mode
