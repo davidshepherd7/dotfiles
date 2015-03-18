@@ -27,13 +27,12 @@ TEXT
                                \
  ${color blue} ${cpugraph cpu0 15, 60} \
  ${color green} ${memgraph 15, 60} \
- ${color yellow} ${upspeedgraph eth0 15, 60} \
- ${downspeedgraph eth0 15,60} \
  ${color } \
                                \
  Dropbox: ${execi 6 dropbox status | sed -n 1p} \
  apt-get: ${execi 60 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'} \
  ${battery} \
+                               \
  ${time %H:%M  %d/%m/%Y} \
  ${offset 5000} # position a space character way off to the right so that
                 # the bar covers the screen
