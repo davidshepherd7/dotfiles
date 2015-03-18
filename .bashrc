@@ -219,8 +219,8 @@ m()
 {
     make --keep-going --silent LIBTOOLFLAGS=--silent $@
 }
-_completion_loader make 
-$(complete -p make) m 
+_completion_loader make
+$(complete -p make) m
 
 
 # Matlab in a terminal
@@ -354,7 +354,7 @@ pipe-evince()
     evince "$TMPFILE"
 
     # Kill temp file (or comment to let the OS kill it on reboot)
-    # bash -c "sleep 2; rm '$TMPFILE'" & 
+    # bash -c "sleep 2; rm '$TMPFILE'" &
 }
 
 
@@ -373,7 +373,7 @@ git-pdf-diff()
 
 
 
-# oomph-lib 
+# oomph-lib
 # ============================================================
 
 OOMPH="$HOME/oomph-lib"
@@ -598,4 +598,3 @@ export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscript
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
-
