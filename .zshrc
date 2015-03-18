@@ -217,6 +217,11 @@ fi
 # Add general binaries
 export PATH="$HOME/code/bin:$PATH"
 
+
+# classifier scripts
+export PATH="$PATH:$HOME/Dropbox/jobs/awe/r-classifier/bin/"
+
+
 # cask (for emacs)
 caskdir="$HOME/.cask/bin"
 if [[ -d $caskdir ]]; then

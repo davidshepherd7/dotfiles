@@ -570,6 +570,9 @@ fi
 # arch linux stuff
 export PATH="$PATH:$HOME/Dropbox/arch"
 
+export PATH="$PATH:$HOME/Dropbox/bin"
+
+
 
 # Other micromagnetics packages:
 # Add nsim to PATH
