@@ -359,3 +359,12 @@ ssh-parse ()
     # temp files are cleared by machines automatically (on boot in
     # Ubuntu).
 }
+
+# Repeatedly run an experiment
+run() {
+    number=$1
+    shift
+    for i in `seq $number`; do
+        $@
+    done
+}
