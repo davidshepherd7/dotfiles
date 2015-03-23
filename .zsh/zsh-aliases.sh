@@ -44,6 +44,9 @@ t ()
     urxvt &
 }
 
+# xargs with default for -I
+alias xa="xargs -I %"
+
 # ??ds emacs with pipe in support
 
 
