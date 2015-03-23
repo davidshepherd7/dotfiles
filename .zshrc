@@ -234,6 +234,8 @@ export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
 export PYTHONPATH="$PYTHONPATH:$HOME/workflows/cloudworkflowsimulator/scripts/"
+export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/education"
+
 
 
 
