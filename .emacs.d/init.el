@@ -248,7 +248,7 @@
 
 (use-package helm-swoop
   :config (progn
-            (global-set-key (kbd "C-f") #'helm-swoop)
+            (global-set-key (kbd "M-F") #'helm-swoop)
             (define-key helm-swoop-edit-map (kbd "C-s") #'helm-swoop--edit-complete))
   :ensure t)
 

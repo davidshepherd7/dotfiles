@@ -309,6 +309,8 @@ the line break."
 ;; New keymap for search
 ;; ============================================================
 
+(global-set-key (kbd "C-f") #'isearch-forward)
+
 ;; Changes for consistency:
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "C-'") 'isearch-query-replace)
