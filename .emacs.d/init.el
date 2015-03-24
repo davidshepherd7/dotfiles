@@ -173,6 +173,17 @@
 ;; Automatically add closing character where appropriate
 (electric-pair-mode)
 
+;; show number of matches when searching
+(use-package anzu
+  :ensure t
+  :config (global-anzu-mode))
+
+;; Save point location in files even between sessions
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file (expand-file-name ".places" user-emacs-directory))
+
+
 ;; Saving
 ;; ============================================================
 
