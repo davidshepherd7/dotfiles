@@ -87,7 +87,7 @@
   ;; (local-set-key [remap newline] 'py-newline-and-indent)
   ;; (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
 
-  ;; (local-set-key [tab] 'py-indent-line)
+  (local-set-key [tab] 'indent-for-tab-command)
   )
 
 (defun yas-advise-indent-function (function-symbol)
