@@ -75,6 +75,7 @@ tinyproxy
 android-tools-adb
 android-tools-fastboot
 zsh
+zsh-doc
 latexmk
 texlive-full
 octave
@@ -88,3 +89,4 @@ global
 parallel
 rar
 conky
+pyflakes
