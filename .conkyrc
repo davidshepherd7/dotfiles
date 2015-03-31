@@ -23,7 +23,7 @@ update_interval 0.2
 
 
 TEXT
- (${desktop}, ${desktop_name}) \
+ (${desktop}/${desktop_number}) \
                                \
  ${color blue} ${cpugraph cpu0 15, 60} \
  ${color green} ${memgraph 15, 60} \
