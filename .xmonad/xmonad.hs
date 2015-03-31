@@ -179,7 +179,8 @@ myKeys = [
   -- movement
   , ("M-<R>", sendMessage Expand)
   , ("M-<L>", sendMessage Shrink)
-  , ("M-e", windows W.focusUp)
+  , ("M-h", windows W.focusUp)
+  , ("M-i", windows W.focusUp)
 
 
   -- multiple screens
@@ -194,7 +195,7 @@ myKeys = [
   , ("M-<Backspace>", toggleWS)
 
   -- Next/previous workspace
-  , ("M-i", nextWS)
+  , ("M-e", nextWS)
   , ("M-n", prevWS)
   , ("M-S-i", shiftToNext)
   , ("M-S-n", shiftToPrev)
