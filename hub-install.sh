@@ -5,9 +5,9 @@ set -o nounset
 
 cd ~/Downloads
 
-7z x "hub*.gz.tar"
-7z x "hub*.gz"
+atool --extract hub-linux*tar.gz
 
-cp Downloads/hub_*_linux_amd64/hub ~/code/bin
+mkdir -p ~/code/bin
+cp ~/Downloads/hub-linux*/hub ~/code/bin/
 
 chmod +x ~/code/bin/hub
