@@ -1,1 +1,1 @@
-*.pdf diff=pdfdiff
+*.pdf diff=diffpdf
