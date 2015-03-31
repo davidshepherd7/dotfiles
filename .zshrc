@@ -39,6 +39,8 @@ compinit
 # shut the hell up and rm *
 setopt rmstarsilent
 
+# Keep a stack of directories
+setopt autopushd
 
 # History
 # ============================================================
