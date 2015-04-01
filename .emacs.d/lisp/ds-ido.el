@@ -60,6 +60,9 @@
     ;; Create new buffers without prompting
     (set 'ido-create-new-buffer 'always)
 
+    (set 'ido-ignore-buffers '("optimised-oomph-lib" "\\` "))
+
+
     ;; ??ds Add ignore regex for useless files
 
     ;; ;; ido for tags
@@ -173,17 +176,19 @@ predicate PRED used to filter them."
 ;; keybinds
 ;; ============================================================
 
-(let ((my-new-map (make-sparse-keymap)))
+;; I don't know why I had this...
 
-  ;; (define-key my-new-map (kbd "RET") 'ido-complete)
-  (set 'ido-common-completion-map my-new-map)
+;;(let ((my-new-map (make-sparse-keymap)))
+;;
+;;  ;; (define-key my-new-map (kbd "RET") 'ido-complete)
+;;  (set 'ido-common-completion-map my-new-map)
 
-  ;; clear all the extra keymaps
-  (set 'ido-completion-map (make-sparse-keymap))
-  (set 'ido-buffer-completion-map (make-sparse-keymap))
-  (set 'ido-file-completion-map (make-sparse-keymap))
-  (set 'ido-file-dir-completion-map (make-sparse-keymap))
-  (set 'ido-file-dir-completion-map (make-sparse-keymap)))
+;;  ;; clear all the extra keymaps
+;;  (set 'ido-completion-map (make-sparse-keymap))
+;;  (set 'ido-buffer-completion-map (make-sparse-keymap))
+;;  (set 'ido-file-completion-map (make-sparse-keymap))
+;;  (set 'ido-file-dir-completion-map (make-sparse-keymap))
+;;  (set 'ido-file-dir-completion-map (make-sparse-keymap)))
 
 
 (global-set-key (kbd "C-S-k") 'find-file)
