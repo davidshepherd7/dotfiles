@@ -231,6 +231,8 @@
 ;; Middle click pastes at point not at click position (like in term)
 (set 'mouse-yank-at-point 1)
 
+;; Add things copy pasted from other programs to the kill
+(set 'save-interprogram-paste-before-kill t)
 
 
 ;; Auto complete
