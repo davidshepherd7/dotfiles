@@ -318,7 +318,7 @@
 
 ;; Helm or ido...
 (load-file "~/.emacs.d/lisp/ds-ido.el")
-;; (load-file "~/.emacs.d/lisp/ds-helm.el")
+(load-file "~/.emacs.d/lisp/ds-helm.el")
 
 
 ;; Major changes to keybinds
