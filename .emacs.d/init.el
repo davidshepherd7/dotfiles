@@ -1084,6 +1084,13 @@ $0")
                         (add-to-list 'electric-layout-rules '( ?\{ .  after))
                         (add-to-list 'electric-layout-rules '( ?\} .  before))
                         ))
+
+            ;; Use rtags to make the tags file
+            (add-hook 'ess-mode-hook
+                      (lambda()
+                        (make-local-variable 'projectile-tags-command)
+                        (set 'projectile-tags-command
+                             "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
             )
   :ensure t)
 
