@@ -62,7 +62,7 @@
     ;; Enable in modes where it's safe
     (mapcar (lambda (hook) (add-hook hook #'aggressive-indent-mode))
             (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
-                  'java-mode-hook 'sh-mode-hook))
+                  'java-mode-hook 'sh-mode-hook 'ess-mode-hook))
 
     (define-key aggressive-indent-mode-map (kbd "C-c") nil)
 
