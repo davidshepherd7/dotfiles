@@ -1106,6 +1106,64 @@ $0")
   )
 
 
+(use-package hydra
+  :ensure t)
+
+;; A more readable blue
+(set-face-attribute 'hydra-face-blue nil :foreground "RoyalBlue1")
+
+(define-key help-map (kbd "n") #'man)
+
+(defhydra hydra-help (:exit t)
+  ;; Better to exit after any command because otherwise helm gets in a
+  ;; mess, set hint to nil: written out manually.
+
+  "
+  Describe        ^^Keys                    ^^Search                    ^^Documentation
+  ---------------------------------------------------------------------------------------
+  _f_unction        _k_eybinding              _a_propros                  _i_nfo
+  _p_ackage         _w_here-is                _d_oc strings               _n_: man
+  _m_ode            _b_: show all bindings    _s_: info by symbol
+  _v_ariable
+
+  "
+  ;; Boring help commands...
+  ("e" view-echo-area-messages "messages")
+  ("l" view-lossage "lossage")
+  ("C" describe-coding-system "coding-system")
+  ("I" describe-input-method "input-method")
+
+
+  ;; Documentation
+  ("i" info nil)
+  ("n" man nil)
+
+  ;; Keybinds
+  ("b" describe-bindings nil)
+  ("c" describe-key-briefly nil)
+  ("k" describe-key nil)
+  ("w" where-is nil)
+
+  ;; Search
+  ("a" apropos-command nil)
+  ("d" apropos-documentation nil)
+  ("s" info-lookup-symbol nil)
+
+  ;; Describe
+  ("f" describe-function nil)
+  ("p" describe-package nil)
+  ("m" describe-mode nil)
+  ("v" describe-variable nil)
+  ("y" describe-syntax nil)
+
+  ;; quit
+  ("q" help-quit "quit"))
+(global-set-key (kbd "<f1>") #'hydra-help/body)
+(global-set-key (kbd "C-<f1>") help-map)
+
+
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
