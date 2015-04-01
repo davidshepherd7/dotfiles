@@ -232,38 +232,6 @@
 (set 'mouse-yank-at-point 1)
 
 
-(set 'helm-command-prefix-key "C-\\ c")
-
-(use-package helm :ensure t :demand)
-(use-package helm-projectile :ensure t)
-
-
-(require 'helm)
-(require 'helm-config)
-
-(helm-mode 1)
-
-(global-set-key (kbd "C-S-v") #'helm-show-kill-ring)
-
-;; Use helm-buffers-list over helm-mini because with this setting it uses
-;; "virtual buffers" (allows you to switch to buffers that you closed).
-(setq ido-use-virtual-buffers t)
-;; increase number of buffers to rememeber
-(set 'recentf-max-saved-items 1000)
-
-(global-set-key (kbd "M-k") #'helm-buffers-list)
-(global-set-key (kbd "C-S-k") #'helm-find-files)
-
-;; Use better colour for highlighting the current line
-(set-face-attribute 'helm-selection nil :background "grey20")
-
-(use-package helm-swoop
-  :config (progn
-            (global-set-key (kbd "M-F") #'helm-swoop)
-            (define-key helm-swoop-edit-map (kbd "C-s") #'helm-swoop--edit-complete))
-  :ensure t)
-
-
 
 ;; Auto complete
 ;;================================================================
@@ -347,6 +315,10 @@
 (load-file "~/.emacs.d/lisp/ds-elisp.el")
 (load-file "~/.emacs.d/lisp/ds-java.el")
 
+
+;; Helm or ido...
+(load-file "~/.emacs.d/lisp/ds-ido.el")
+;; (load-file "~/.emacs.d/lisp/ds-helm.el")
 
 
 ;; Major changes to keybinds
@@ -742,7 +714,7 @@ index in STRING."
     (defun maybe-projectile-find-file ()
       (interactive)
       (if (projectile-project-p)
-	  (helm-projectile)
+	  (projectile-find-file)
 	(call-interactively #'find-file)))
     (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
