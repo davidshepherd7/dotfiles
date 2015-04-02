@@ -274,8 +274,16 @@ the line break."
   (interactive) (previous-line) (newline-below-this-one))
 
 ;; Block indent like python mode has for everywhere
-(global-set-key (kbd "C-\\ C-.") #'indent-rigidly-right-to-tab-stop)
-(global-set-key (kbd "C-\\ C-,") #'indent-rigidly-left-to-tab-stop)
+(defun beginning-of-line-char (char)
+  (save-excursion (goto-char char)
+                  (point-at-bol)))
+(defun indent-region-rigidly (distance)
+  (indent-rigidly (beginning-of-line-char (region-beginning))
+                  (beginning-of-line-char (region-end))
+                  distance))
+
+(global-set-key (kbd "C-\\ C-.") (lambda () (interactive) (indent-region-rigidly 4)))
+(global-set-key (kbd "C-\\ C-,") (lambda () (interactive) (indent-region-rigidly -4)))
 
 (when emacs244?
   (global-set-key (kbd "C-<return>") #'rectangle-mark-mode)
