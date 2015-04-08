@@ -197,7 +197,7 @@ myKeys = [
   -- Next/previous workspace
   , ("M-e", nextWS)
   , ("M-n", prevWS)
-  , ("M-S-i", shiftToNext)
+  , ("M-S-e", shiftToNext)
   , ("M-S-n", shiftToPrev)
 
 
