@@ -1203,3 +1203,10 @@ $0")
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(yas-wrap-around-region t))
+
+
+;; When using the "wrong" emacs version colour the modeline red, after
+;; everything else to override any customisations.
+(when (not (and (= emacs-major-version 24) (= emacs-minor-version 4)))
+  (set-face-attribute 'mode-line nil
+                      :background "dark red"))
