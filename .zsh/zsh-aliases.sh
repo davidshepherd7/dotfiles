@@ -379,18 +379,22 @@ run() {
 # Completion generation
 # ============================================================
 
+gen_comp_dir="$HOME/.zsh/completion/generated"
+
 # Generate a completion file for a python script which uses argparse
 generate_completion ()
 {
-    "$1" --help | genzshcomp > "$HOME/.zsh/completion/_$(basename $1)"
+    "$1" --help | genzshcomp > "${gen_comp_dir}/_$(basename $1)"
 }
 
 # Generate completions for all my python scripts
-generate_all_completions ()
+regenerate_all_completions ()
 {
-    # oomph-lib
-    generate_completion "$OOMPHMM/control_scripts/parse.py"
-    generate_completion "$OOMPHMM/control_scripts/parameter-sweep.py"
+    touch "${gen_comp_dir}/.temp"
+    rm "${gen_comp_dir}/"*
+    # # oomph-lib
+    # generate_completion "$OOMPHMM/control_scripts/parse.py"
+    # generate_completion "$OOMPHMM/control_scripts/parameter-sweep.py"
 
     # R classifier
     generate_completion "split.py"
@@ -399,5 +403,5 @@ generate_all_completions ()
     generate_completion "accuracy.py"
 
     # splot
-    generate_completion "splot.py"
+    generate_completion "splot"
 }
