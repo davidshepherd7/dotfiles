@@ -26,6 +26,10 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;32'
 
 # Add custom completions
 fpath=(~/.zsh/completion $fpath)
+
+# Add generated python completions
+fpath=(~/.zsh/completion/generated $fpath)
+
 autoload -U ~/.zsh/completion/*(:t)
 
 # Initialise

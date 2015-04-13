@@ -66,3 +66,8 @@
 .emacs.d/bookmarks
 .emacs.d/desktops/
 .emacs.d/tramp
+/.emacs.d/ido.last
+
+
+# Generated files
+.zsh/completion/generated/*
