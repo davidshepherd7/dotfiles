@@ -71,7 +71,13 @@ install_packages ()
     cat $package_list | xargs sudo apt-get install -y -q
 }
 
-alias update='sudo apt-get update && install_packages && sudo apt-get upgrade --assume-yes --quiet && install_packages'
+install_pip_packages ()
+{
+    package_list="$HOME/Dropbox/linux_setup/rcfiles/pip_package_list"
+    cat $package_list | xargs sudo pip3 install --upgrade
+}
+
+alias update='sudo apt-get update && install_packages && sudo apt-get upgrade --assume-yes --quiet && install_packages && install_pip_packages'
 alias pm='sudo pacmatic -S'
 
 # Open location in gnome
