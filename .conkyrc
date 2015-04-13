@@ -27,6 +27,8 @@ TEXT
                                \
  ${color blue} ${cpugraph cpu0 15, 60} \
  ${color green} ${memgraph 15, 60} \
+ ${color yellow} ${diskiograph_read 15, 60} \
+ ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
  Dropbox: ${execi 6 dropbox status | sed -n 1p} \
