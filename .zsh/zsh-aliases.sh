@@ -384,12 +384,16 @@ gen_comp_dir="$HOME/.zsh/completion/generated"
 # Generate a completion file for a python script which uses argparse
 generate_completion ()
 {
+    set -o nounset
+    echo "generating completion for $1"
     "$1" --help | genzshcomp > "${gen_comp_dir}/_$(basename $1)"
 }
 
 # Generate completions for all my python scripts
 regenerate_all_completions ()
 {
+    set -o nounset
+
     touch "${gen_comp_dir}/.temp"
     rm "${gen_comp_dir}/"*
     # # oomph-lib
