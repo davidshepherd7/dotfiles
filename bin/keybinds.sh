@@ -73,4 +73,4 @@ xcape_str=$xcape_str'#64=Shift_L|dollar;'
 
 
 # Execute all the xcape stuff we just set up:
-$HOME/code/xcape/xcape -e $xcape_str
+xcape -e $xcape_str
