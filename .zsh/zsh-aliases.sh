@@ -151,6 +151,30 @@ alias findc="find \( -name '*.cc' -o -name '*.h' -o -name '*.cpp' -o -name '*.hp
 alias pylab='ipython --pylab'
 alias nosetests="nosetests --processes="$NCORES
 
+alias pyprofile='python3 -m cProfile -o pyprofile.temp'
+pyprofilestats()
+{
+    if [ $# -ge 1 ]; then
+        nstats="$1"
+    else
+        nstats="10"
+    fi
+
+    if [ $# -ge 2 ]; then
+        sort="$2"
+    else
+        sort="cumtime"
+    fi
+
+    if [ $# -ge 3 ]; then
+        filename="$3"
+    else
+        filename="pyprofile.temp"
+    fi
+
+    python3 -c "import pstats; p=pstats.Stats('$filename'); p.strip_dirs().sort_stats('$sort').print_stats($nstats)"
+}
+
 # Edit command scripts. ??ds fix completion?
 we()
 {
