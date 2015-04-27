@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: pab
+# --
+parser.add_argument('--${1:foo}', ${2:'-${1:$(substring yas-text 0 1)}',} action = "store_true",
+                    help="$0")

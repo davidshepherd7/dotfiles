@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: paa
+# --
+parser.add_argument('--${1:foo}', ${2:'-${1:$(substring yas-text 0 1)}',} ${3:type = ${4:int},} ${5:default = ${6},}
+                    help="$0")
