@@ -1,4 +1,5 @@
 
+import math
 import itertools as it
 import functools as ft
 import operator as op
@@ -21,6 +22,7 @@ import sympy
 from sympy import Rational as rat
 from sympy import pretty as spretty
 
+import pandas as pd
 import scipy as sp
 import numpy as np
 
