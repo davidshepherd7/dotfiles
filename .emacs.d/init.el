@@ -726,6 +726,8 @@ index in STRING."
     (set 'projectile-use-git-grep t)
 
     (global-set-key (kbd "<f8>") #'projectile-grep)
+
+    (set 'projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
     ))
 
 
@@ -963,16 +965,18 @@ $0")
   :ensure t
   :bind ("C-a" . er/expand-region))
 
-(use-package ggtags
-  :ensure t
-  :config (progn
-            (add-hook 'prog-mode-hook #'ggtags-mode)
-            (define-key ggtags-mode-map (kbd "C-c") nil)
-            (set 'ggtags-mode-line-project-name nil)
+;; (use-package ggtags
+;;   :disabled
+;;   :ensure t
+;;   :config (progn
+;;             (add-hook 'prog-mode-hook #'ggtags-mode)
+;;             (define-key ggtags-mode-map (kbd "C-c") nil)
+;;             (define-key ggtags-mode-map (kbd "M-.") #'ggtags-find-tag-dwim)
+;;             (set 'ggtags-mode-line-project-name nil)
 
 
-            (define-key ggtags-mode-map (kbd "M-<") nil)
-            (define-key ggtags-mode-map (kbd "M->") nil)))
+;;             (define-key ggtags-mode-map (kbd "M-<") nil)
+;;             (define-key ggtags-mode-map (kbd "M->") nil)))
 
 ;; Better help commands
 ;; ============================================================

@@ -105,18 +105,18 @@
 (set 'auto-mode-alist
      (append auto-mode-alist '(("parameter_sets/*" . python-mode))))
 
-;; Create tags files
-;;=================================================================
-(setq path-to-ctags "/usr/bin/ctags")
-;; source directorys to use go here:
-;;(setq tags-source-directories "src/generic src/meshes user_drivers/micromagnetics")
-(setq tags-source-directories "src/")
-(defun create-oomph-tags ()
-  (interactive)
-  "Create tags file."
-  (shell-command
-   (format "cd ~/oomph-lib/; %s -e --extra=+q --recurse %s" path-to-ctags tags-source-directories))
-  )
+;; ;; Create tags files
+;; ;;=================================================================
+;; (setq path-to-ctags "/usr/bin/ctags")
+;; ;; source directorys to use go here:
+;; ;;(setq tags-source-directories "src/generic src/meshes user_drivers/micromagnetics")
+;; (setq tags-source-directories "src/")
+;; (defun create-oomph-tags ()
+;;   (interactive)
+;;   "Create tags file."
+;;   (shell-command
+;;    (format "cd ~/oomph-lib/; %s -e --extra=+q --recurse %s" path-to-ctags tags-source-directories))
+;;   )
 
 
 
