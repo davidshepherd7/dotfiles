@@ -1,5 +1,5 @@
 
-(when emacs244?
+(when ds/emacs-up-to-date?
   (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode))
 
 ;; Use double semi-colon for emacs lisp (default seems to be single).

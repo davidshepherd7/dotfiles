@@ -285,7 +285,7 @@ the line break."
 (global-set-key (kbd "C-\\ C-.") (lambda () (interactive) (indent-region-rigidly 4)))
 (global-set-key (kbd "C-\\ C-,") (lambda () (interactive) (indent-region-rigidly -4)))
 
-(when emacs244?
+(when ds/emacs-up-to-date?
   (global-set-key (kbd "C-<return>") #'rectangle-mark-mode)
   (global-set-key (kbd "M-SPC") #'cycle-spacing)
   (global-set-key (kbd "C-S-f") #'isearch-forward-symbol-at-point))

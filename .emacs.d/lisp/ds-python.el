@@ -14,7 +14,7 @@
 (defun prettify-lambda ()
   (add-to-list 'prettify-symbols-alist '("lambda" . 955)))
 
-(when emacs244?
+(when ds/emacs-up-to-date?
   (add-hook 'python-mode-hook 'prettify-symbols-mode)
   (add-hook 'python-mode-hook 'prettify-lambda)
   )

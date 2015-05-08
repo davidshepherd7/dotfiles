@@ -9,8 +9,8 @@
 
 
 
-(defvar emacs244? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
-  "Are we using emacs 24.4 or newer?")
+(defvar ds/emacs-up-to-date? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+  "Are we using my prefered emacs version or newer?")
 
 
 
@@ -1207,6 +1207,6 @@ $0")
 
 ;; When using the "wrong" emacs version colour the modeline red, after
 ;; everything else to override any customisations.
-(when (not (and (= emacs-major-version 24) (= emacs-minor-version 4)))
+(when (not ds/emacs-up-to-date?)
   (set-face-attribute 'mode-line nil
                       :background "dark red"))
