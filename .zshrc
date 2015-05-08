@@ -238,13 +238,21 @@ export PATH="$HOME/code/bin:$PATH"
 
 
 # classifier scripts
-export PATH="$PATH:$HOME/Dropbox/jobs/awe/r-classifier/bin/"
+export PATH="$PATH:$HOME/Dropbox/jobs/awe/r-classifier/bin"
 
 
 # cask (for emacs)
 caskdir="$HOME/.cask/bin"
 if [[ -d $caskdir ]]; then
     export PATH="$PATH:$caskdir"
+fi
+
+# homebrew
+brewdir="$HOME/code/linuxbrew/bin"
+if [[ -d "$brewdir" ]]; then
+    export PATH="$brewdir:$PATH"
+else
+    echo "homebrew is not installed"
 fi
 
 # python's path as well:
