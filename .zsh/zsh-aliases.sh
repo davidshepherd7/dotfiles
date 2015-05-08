@@ -45,7 +45,7 @@ t ()
 }
 
 # xargs with default for -I
-alias xa="xargs -I %"
+alias x="xargs -I %"
 
 # ??ds emacs with pipe in support
 
@@ -62,7 +62,7 @@ compdef gdiff=diff
 # ============================================================
 
 alias ai='sudo apt-get install -yq'
-alias arm="sudo apt-get remove"
+alias arm="sudo apt-get remove -yq"
 alias acs="apt-cache search"
 
 install_packages ()
@@ -443,6 +443,7 @@ regenerate_all_completions ()
     generate_completion "run-classifier.py"
     generate_completion "parameter-sweep.py"
     generate_completion "accuracy.py"
+    generate_completion "process-data.py"
 
     # splot
     generate_completion "splot"

@@ -83,6 +83,12 @@ alias hist='history -f -D -E'
 setopt histreduceblanks
 
 
+# Fancy move command
+# ============================================================
+
+autoload -U zmv
+alias mmv='noglob zmv -W'
+
 
 # Fancy prompt with git stuff
 # ============================================================
