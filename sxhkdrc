@@ -10,6 +10,9 @@ super + f
 super + m
     emacsclient -c -n -e '(new-clean-deft)'
 
+super + a
+    firefox -new-window 'mail.google.com'
+
 super + p
     dmenu_run
 
