@@ -61,14 +61,19 @@
                           )
                         )
 
+;; For some reason lots of things aren't bound at startup, so put them in
+;; this thingy.
 (eval-after-load
     'tex
-  '(set 'font-latex-match-reference-keywords
-        '(("cref" "[{")
-          ("Cref" "[{")
-          ("thisref" "[{")
-          ("Thisref" "[{")
-          )))
+  '(progn (set 'font-latex-match-reference-keywords
+               '(("cref" "[{")
+                 ("Cref" "[{")
+                 ("thisref" "[{")
+                 ("Thisref" "[{")
+                 ))
+
+          (define-key TeX-mode-map [f6] #'evince-tex-main)
+          (define-key LaTeX-mode-map [f6] #'evince-tex-main)))
 
 (defun latex-insert-last-label (nprev)
   "Insert clever reference to most recent (by position in buffer) label. If prefix
@@ -95,6 +100,9 @@ forward instead."
 (add-hook 'LaTeX-mode-hook 'set-tab)
 
 
+(defun evince-tex-main ()
+  (interactive)
+  (start-process "view-latex-pdf" nil "evince" (s-concat (file-name-sans-extension (tex-main-file)) ".pdf")))
 
 
 ;; flyspell
