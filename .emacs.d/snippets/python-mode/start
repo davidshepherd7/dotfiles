@@ -6,7 +6,7 @@
 import sys
 import argparse
 
-def parse_arguments():
+def parse_arguments(argv):
     parser = argparse.ArgumentParser(description=main.__doc__,
 
     # Don't mess up my formating in the help message
@@ -15,20 +15,20 @@ def parse_arguments():
     parser.add_argument('--hello', default=None,
                         help = '')
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     return args
 
 
-def main():
+def main(argv):
     """$0
     """
 
     # Parse cli arguments
-    args = parse_arguments()
+    args = parse_arguments(argv)
     
     # Return success
     return 0
 
 # If this script is run from a shell then run main() and return the result.
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
