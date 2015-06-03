@@ -386,56 +386,6 @@ the line break."
 (setq gud-key-prefix "")
 
 
-;; Auctex and reftex
-;; ============================================================
-(defun sensible-latex-keys ()
-  (interactive)
-
-  ;; Unbind keys we use elsewhere
-  (define-key LaTeX-mode-map (kbd "C-c") nil)
-  (define-key LaTeX-mode-map (kbd "C-x") nil)
-
-  ;; (define-key flyspell-mode-map (kbd "C-c") nil)
-  ;; (define-key flyspell-mode-map (kbd "C-;") nil)
-
-  (local-set-key (kbd "C-j") nil)
-  (local-set-key (kbd "C-y") nil)
-
-  (local-set-key (kbd "<f6>") 'TeX-view)
-
-  ;; Blocks
-  (local-set-key (kbd "M-]") 'LaTeX-close-environment)
-  (local-set-key (kbd "M-[") 'LaTeX-environment)
-
-  ;; References
-  (local-set-key (kbd "C-{") 'reftex-label)
-  (local-set-key (kbd "C-}") 'reftex-reference)
-  (local-set-key (kbd "C-]") 'reftex-citation)
-
-
-  ;; Other stuff
-  (local-set-key (kbd "M-RET") 'LaTeX-insert-item)
-  ;; (local-set-key (kbd "") 'tex-validate-buffer)
-  (define-key LaTeX-mode-map [remap forward-sexp] 'latex-forward-sexp)
-  ;; (local-set-key (kbd "") 'reftex-create-tags-file)
-  (local-set-key (kbd "C-#") 'reftex-toc))
-
-;; Only add the keybind if the mode exists
-(when (boundp 'latex-mode-hook)
-  (add-hook 'latex-mode-hook 'sensible-latex-keys 't))
-
-(when (boundp 'LaTeX-mode-hook)
-  (add-hook 'LaTeX-mode-hook 'sensible-latex-keys 't))
-
-
-;; If reftex exists then also null the C-c keybinds there
-(when (boundp 'reftex-mode-hook)
-  (add-hook 'reftex-mode-hook
-	    (lambda () (interactive)
-	      (define-key reftex-mode-map (kbd "C-c") nil))))
-
-
-
 ;; Org mode
 ;; ============================================================
 
