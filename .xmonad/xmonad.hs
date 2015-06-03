@@ -50,8 +50,8 @@ import XMonad.Hooks.EwmhDesktops
 
 myManageHook =
   composeAll
-  [ className =? "Gimp"           --> doFloat
-  , resource  =? "desktop_window" --> doIgnore
+  [
+    resource  =? "desktop_window" --> doIgnore
   , className =? "Paraview" --> doShift "pv"
   , className =? "Mendeleydesktop" --> doShift "mly"
   , className =? "Tk" --> doFloat
