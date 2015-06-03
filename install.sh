@@ -25,3 +25,5 @@ mkdir -p ~/.config/sxhkd
 stow sxhkd -t $HOME
 
 stow readline -t $HOME
+
+stow gdb -t $HOME
