@@ -1108,7 +1108,7 @@ $0")
   ---------------------------------------------------------------------------------------
   _f_unction        _k_eybinding              _a_propros                  _i_nfo
   _p_ackage         _w_here-is                _d_oc strings               _n_: man
-  _m_ode            _b_: show all bindings    _s_: info by symbol
+  _m_ode            _b_: show all bindings    _s_: info by symbol         _h_elm-dash
   _v_ariable
 
   "
@@ -1121,7 +1121,8 @@ $0")
 
   ;; Documentation
   ("i" info nil)
-  ("n" man nil)
+  ("n" helm-man-woman nil)
+  ("h" helm-dash)
 
   ;; Keybinds
   ("b" describe-bindings nil)
@@ -1147,6 +1148,48 @@ $0")
 (global-set-key (kbd "C-<f1>") help-map)
 
 
+;; (setq helm-dash-common-docsets '("Python 3"))
+
+(add-to-list 'load-path "~/code/helm-dash")
+(use-package helm-dash
+  :config
+  (progn
+
+    ;; base docsets
+    (set 'ds/docsets '("Bash" "Emacs Lisp" "Markdown"
+                       "Python 3" "SciPy" "NumPy"
+                       "C" "C++"
+                       "Haskell" "R"))
+
+    ;; user contrib docsets
+    (set 'ds/contrib-docsets '("SymPy" "scikit-learn"))
+    ;; matplotlib seems to be broken
+
+    ;; I generated the toolz docset myself
+
+    (set 'python-docsets '("Python 3"
+                           "NumPy" "SciPy" "SymPy"
+                           "scikit-learn"
+                           "toolz"
+                           ))
+
+    ;; Add: dash.el pytoolz scikit-learn
+
+    (defun ds/installed-docsets ()
+      (-map (lambda (x) (s-replace " " "_" x)) (helm-dash-installed-docsets)))
+
+    (defun install-docsets ()
+      (interactive)
+      (let ((required (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) ds/docsets)))
+        (-map #'helm-dash-install-docset required)))
+
+    (add-hook 'python-mode-hook (lambda () (setq-local helm-dash-docsets python-docsets)))
+    (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local helm-dash-docsets '("Emacs Lisp"))))
+
+    )
+
+  ;; :ensure nil
+  )
 
 
 ;; Automagically added by customise
