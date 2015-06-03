@@ -387,7 +387,7 @@
     "\\emacs --debug-init --batch -u $USER")
 
    ((derived-mode-p 'tex-mode)
-    (concat "latexmk -pdf" " " (file-name-nondirectory (buffer-file-name))))
+    (concat "latexmk -C && latexmk -pdf" " " (file-name-nondirectory (buffer-file-name))))
 
    ;; make is probably a good default for anything else
    (t "make")))
