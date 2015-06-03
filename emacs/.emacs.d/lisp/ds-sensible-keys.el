@@ -401,7 +401,7 @@ the line break."
   (local-set-key (kbd "C-j") nil)
   (local-set-key (kbd "C-y") nil)
 
-  (local-set-key (kbd "<f6>") 'tex-view)
+  (local-set-key (kbd "<f6>") 'TeX-view)
 
   ;; Blocks
   (local-set-key (kbd "M-]") 'LaTeX-close-environment)

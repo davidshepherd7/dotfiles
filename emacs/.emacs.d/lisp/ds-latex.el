@@ -70,10 +70,7 @@
                  ("Cref" "[{")
                  ("thisref" "[{")
                  ("Thisref" "[{")
-                 ))
-
-          (define-key TeX-mode-map [f6] #'evince-tex-main)
-          (define-key LaTeX-mode-map [f6] #'evince-tex-main)))
+                 ))))
 
 (defun latex-insert-last-label (nprev)
   "Insert clever reference to most recent (by position in buffer) label. If prefix
@@ -87,17 +84,9 @@ forward instead."
   ;; insert the match
   (insert (match-string 1)))
 
-
-(defun ds/evince-tex-main ()
-  "View current tex-main's pdf in evince"
-  (interactive)
-  (start-process "view-latex-pdf" nil "evince"
-                 (s-concat (file-name-sans-extension (tex-main-file)) ".pdf")))
-
 ;; keybinds
 (add-hook 'LaTeX-mode-hook
-          (lambda () (local-set-key (kbd "C-.") 'latex-insert-last-label)
-            (local-set-key [f6] #'ds/evince-tex-main)
+          (lambda () (local-set-key (kbd "C-,") 'latex-insert-last-label)
             (set-tab)) t)
 
 ;; disable aggressive indent mode
