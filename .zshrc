@@ -183,18 +183,9 @@ export MAKEFLAGS="-j$NJOBS"
 # PATH additions
 # ============================================================
 # Add my scripts to PATH
-export PATH="$PATH:$HOME/Dropbox/programming/helperscripts/gnuplot:$HOME/Dropbox/programming/helperscripts/oomph-lib:$HOME/Dropbox/programming/helperscripts:$HOME/Dropbox/programming/helperscripts/python"
-PATH="$PATH:$HOME/Dropbox/programming/oomph-scripts"
 PATH="$PATH:$HOME/bin"
-PATH="$PATH:$HOME/Dropbox/programming/pipe-plot"
 export PATH="$PATH:$HOME/Dropbox/linux_setup/rcfiles/bin"
 export PATH="$PATH:$HOME/Dropbox/bin"
-
-# Add oomph-lib bin to path
-export PATH="$PATH:$HOME/oomph-lib/bin"
-
-# my oomph scripts
-export PATH="$PATH:$HOME/oomph-lib/user_drivers/micromagnetics/control_scripts"
 
 # Paraview
 export PATH="$PATH:$HOME/code/paraview/bin"
@@ -261,15 +252,24 @@ else
     echo "homebrew is not installed"
 fi
 
-# python's path as well:
+# Ruby gems
+gemdir="$HOME/.gem/ruby/2.1.0/bin"
+export PATH="$PATH:$gemdir"
+
+# Python
+# ============================================================
+
+# python's paths
 export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscripts/python/"
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
-export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
-export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
 export PYTHONPATH="$PYTHONPATH:$HOME/workflows/cloudworkflowsimulator/scripts/"
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/education"
 
+# virtualenv
+export WORKON_HOME=~/envs
+mkdir -p "$WORKON_HOME"
 
+source "$rcdir/virtualenvwrapper.sh"
 
 
 # Java
