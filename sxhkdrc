@@ -1,10 +1,10 @@
 super + t
     urxvt
 
-super + {y,r}
+super + r
     firefox
 
-super + {f,s}
+super + s
     emacsclient -c -n -e '(switch-to-buffer nil)'
 
 super + m

@@ -821,14 +821,18 @@ Wrapper function to handle all yasnippets weirdness."
    In the right dir; with filename and snippet name already set
    up; with minimal prompts."
       (interactive (list (thing-at-point 'word)))
+      (let ((snippet-file-name (s-concat (ds/yas-snippet-dir) "/" snippet-name)))
 
-      (let ((dir (ds/yas-snippet-dir)))
+        (if (file-exists-p (s-concat (ds/yas-snippet-dir) "/" snippet-name))
+            (find-file snippet-file-name)
 
-        ;; Save before expanding the snippet so that we can get the buffer name
-        ;; from inside the snippet.
-        (yas-new-snippet t)
-        (write-file (s-concat dir "/" snippet-name) t)
-        (yas-expand-snippet yas-new-snippet-default)))
+          ;; Else create it
+
+          ;; Save before expanding the snippet so that we can get the buffer name
+          ;; from inside the snippet.
+          (yas-new-snippet t)
+          (write-file snippet-file-name t)
+          (yas-expand-snippet yas-new-snippet-default))))
 
     (global-set-key (kbd "C-S-T") 'ds/new-yasnippet)
 
