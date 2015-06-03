@@ -1,0 +1,11 @@
+[user]
+	email = davidshepherd7@gmail.com
+	name = David Shepherd
+
+[core]
+	editor = emacsclient -c
+
+
+[difftool]
+	prompt = false
+

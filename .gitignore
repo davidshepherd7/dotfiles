@@ -1,7 +1,4 @@
 .cask
 
-# Contains private details/data
-.gitconfig
-
 # Generated files
 zsh/.zsh/completion/generated/*
