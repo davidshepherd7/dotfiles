@@ -1,3 +1,15 @@
 [submodule "zsh/.zsh/emacs-read-stdin"]
 	path = zsh/.zsh/emacs-read-stdin
 	url = git@github.com:davidshepherd7/emacs-read-stdin.git
+[submodule ".emacs.d/-f"]
+	path = .emacs.d/-f
+	url = git@github.com:davidshepherd7/aggressive-fill-paragraph-mode.git
+[submodule ".emacs.d/aggressive-fill-paragraph-mode"]
+	path = .emacs.d/aggressive-fill-paragraph-mode
+	url = git@github.com:davidshepherd7/aggressive-fill-paragraph-mode.git
+[submodule ".emacs.d/frames-only-mode"]
+	path = .emacs.d/frames-only-mode
+	url = git@github.com:davidshepherd7/frames-only-mode.git
+[submodule ".emacs.d/electric-spacing"]
+	path = .emacs.d/electric-spacing
+	url = git@github.com:davidshepherd7/electric-spacing.git
