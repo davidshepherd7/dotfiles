@@ -20,3 +20,6 @@ stow git -t $HOME
 mkdir -p ~/.ipython/profile_default/
 mkdir -p ~/.ipython/profile_default/startup
 stow ipython -t $HOME
+
+mkdir -p ~/.config/sxhkd
+stow sxhkd -t $HOME
