@@ -5,3 +5,4 @@ set -o nounset
 
 stow zsh -t $HOME
 stow emacs -t $HOME
+stow X -t $HOME
