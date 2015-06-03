@@ -4,69 +4,69 @@
 
 
 # Other repos
-.emacs.d/frames-only-mode/
-.emacs.d/oomph-snippets/
+emacs/.emacs.d/frames-only-mode/
+emacs/.emacs.d/oomph-snippets/
 .zsh/emacs-read-stdin/
 
 # emacs junk
-.emacs.d/session*
-.emacs.d/.emacs.desktop
-.emacs.d/.emacs.desktop.lock
-.emacs.d/.org-id-locations
-.emacs.d/ac-comphist*
+emacs/.emacs.d/session*
+emacs/.emacs.d/.emacs.desktop
+emacs/.emacs.d/.emacs.desktop.lock
+emacs/.emacs.d/.org-id-locations
+emacs/.emacs.d/ac-comphist*
 *.elc
 .yas-compiled-snippets.el
-.emacs.d/tmp/
-.emacs.d/savehist*
-.emacs.d/tutorial/
-.emacs.d/smex-items*
-.emacs.d/eshell/
-.emacs.d/projectile-bookmarks.eld
-.emacs.d/.places
-.emacs.d/recentf
+emacs/.emacs.d/tmp/
+emacs/.emacs.d/savehist*
+emacs/.emacs.d/tutorial/
+emacs/.emacs.d/smex-items*
+emacs/.emacs.d/eshell/
+emacs/.emacs.d/projectile-bookmarks.eld
+emacs/.emacs.d/.places
+emacs/.emacs.d/recentf
 
 
 # libs
-.emacs.d/edit-server.el
-.emacs.d/fuzzy.el
-.emacs.d/lambda-mode.el
-.emacs.d/ac-math.el
-.emacs.d/auto-complete-clang.el
-.emacs.d/auto-complete-clang-async.el
-.emacs.d/auto-complete-config.el
-.emacs.d/auto-complete.el
-.emacs.d/edit-server.el
-.emacs.d/elpa/
-.emacs.d/fuzzy.el
-.emacs.d/icicles/
-.emacs.d/lambda-mode.el
-.emacs.d/math++.el
-.emacs.d/math.el
-.emacs.d/mathematica.el
-.emacs.d/org-export-generic.el
-.emacs.d/popup.el
-.emacs.d/python-mode/
-.emacs.d/semanticdb/
-.emacs.d/undo-tree/
-.emacs.d/url/
-.emacs.d/whizzytex.old/
-.emacs.d/yasnippet/dropdown-list.el
-.emacs.d/yasnippet/simple-snippets.el
-.emacs.d/yasnippet/yasnippet.el
+emacs/.emacs.d/edit-server.el
+emacs/.emacs.d/fuzzy.el
+emacs/.emacs.d/lambda-mode.el
+emacs/.emacs.d/ac-math.el
+emacs/.emacs.d/auto-complete-clang.el
+emacs/.emacs.d/auto-complete-clang-async.el
+emacs/.emacs.d/auto-complete-config.el
+emacs/.emacs.d/auto-complete.el
+emacs/.emacs.d/edit-server.el
+emacs/.emacs.d/elpa/
+emacs/.emacs.d/fuzzy.el
+emacs/.emacs.d/icicles/
+emacs/.emacs.d/lambda-mode.el
+emacs/.emacs.d/math++.el
+emacs/.emacs.d/math.el
+emacs/.emacs.d/mathematica.el
+emacs/.emacs.d/org-export-generic.el
+emacs/.emacs.d/popup.el
+emacs/.emacs.d/python-mode/
+emacs/.emacs.d/semanticdb/
+emacs/.emacs.d/undo-tree/
+emacs/.emacs.d/url/
+emacs/.emacs.d/whizzytex.old/
+emacs/.emacs.d/yasnippet/dropdown-list.el
+emacs/.emacs.d/yasnippet/simple-snippets.el
+emacs/.emacs.d/yasnippet/yasnippet.el
 
 .cask
 
 
-.emacs.d/el-get/
+emacs/.emacs.d/el-get/
 
 
 
 # Contains private details/data
 .gitconfig
-.emacs.d/bookmarks
-.emacs.d/desktops/
-.emacs.d/tramp
-/.emacs.d/ido.last
+emacs/.emacs.d/bookmarks
+emacs/.emacs.d/desktops/
+emacs/.emacs.d/tramp
+/emacs/.emacs.d/ido.last
 
 
 # Generated files
