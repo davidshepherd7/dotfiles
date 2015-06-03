@@ -15,6 +15,8 @@ stow xmonad -t $HOME
 
 stow conky -t $HOME
 
+stow git -t $HOME
+
 mkdir -p ~/.ipython/profile_default/
 mkdir -p ~/.ipython/profile_default/startup
 stow ipython -t $HOME
