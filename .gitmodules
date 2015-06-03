@@ -1,9 +1,3 @@
-[submodule ".emacs.d/aggressive-autofill-mode"]
-	path = .emacs.d/aggressive-fill-paragraph
-	url = git@github.com:davidshepherd7/aggressive-autofill-mode.git
-[submodule ".emacs.d/aggressive-fill-paragraph-mode"]
-	path = .emacs.d/aggressive-fill-paragraph-mode
-	url = git://github.com/davidshepherd7/aggressive-fill-paragraph-mode.git
-[submodule ".emacs.d/electric-spacing"]
-	path = .emacs.d/electric-spacing
-	url = git@github.com:davidshepherd7/electric-spacing.git
+[submodule "zsh/.zsh/emacs-read-stdin"]
+	path = zsh/.zsh/emacs-read-stdin
+	url = git@github.com:davidshepherd7/emacs-read-stdin.git
