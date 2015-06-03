@@ -22,6 +22,8 @@
 
 ;; use-package s and dash
 
+;; C-x from discover mode
+
 ;; Set up "package" package manager etc.
 ;; ============================================================
 

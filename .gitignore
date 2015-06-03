@@ -1,68 +1,7 @@
-# Other repos
-emacs/.emacs.d/frames-only-mode/
-emacs/.emacs.d/oomph-snippets/
-.zsh/emacs-read-stdin/
-
-# emacs junk
-emacs/.emacs.d/session*
-emacs/.emacs.d/.emacs.desktop
-emacs/.emacs.d/.emacs.desktop.lock
-emacs/.emacs.d/.org-id-locations
-emacs/.emacs.d/ac-comphist*
-*.elc
-.yas-compiled-snippets.el
-emacs/.emacs.d/tmp/
-emacs/.emacs.d/savehist*
-emacs/.emacs.d/tutorial/
-emacs/.emacs.d/smex-items*
-emacs/.emacs.d/eshell/
-emacs/.emacs.d/projectile-bookmarks.eld
-emacs/.emacs.d/.places
-emacs/.emacs.d/recentf
-
-
-# libs
-emacs/.emacs.d/edit-server.el
-emacs/.emacs.d/fuzzy.el
-emacs/.emacs.d/lambda-mode.el
-emacs/.emacs.d/ac-math.el
-emacs/.emacs.d/auto-complete-clang.el
-emacs/.emacs.d/auto-complete-clang-async.el
-emacs/.emacs.d/auto-complete-config.el
-emacs/.emacs.d/auto-complete.el
-emacs/.emacs.d/edit-server.el
-emacs/.emacs.d/elpa/
-emacs/.emacs.d/fuzzy.el
-emacs/.emacs.d/icicles/
-emacs/.emacs.d/lambda-mode.el
-emacs/.emacs.d/math++.el
-emacs/.emacs.d/math.el
-emacs/.emacs.d/mathematica.el
-emacs/.emacs.d/org-export-generic.el
-emacs/.emacs.d/popup.el
-emacs/.emacs.d/python-mode/
-emacs/.emacs.d/semanticdb/
-emacs/.emacs.d/undo-tree/
-emacs/.emacs.d/url/
-emacs/.emacs.d/whizzytex.old/
-emacs/.emacs.d/yasnippet/dropdown-list.el
-emacs/.emacs.d/yasnippet/simple-snippets.el
-emacs/.emacs.d/yasnippet/yasnippet.el
-
 .cask
-
-
-emacs/.emacs.d/el-get/
-
-
 
 # Contains private details/data
 .gitconfig
-emacs/.emacs.d/bookmarks
-emacs/.emacs.d/desktops/
-emacs/.emacs.d/tramp
-/emacs/.emacs.d/ido.last
-
 
 # Generated files
 zsh/.zsh/completion/generated/*
