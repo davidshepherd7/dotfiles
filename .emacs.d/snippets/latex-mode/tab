@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: tab
+# --
+\begin{table}
+  \centering
+  \input{${1:images/placeholder.tex}}
+  \caption{$0}
+  \label{${2:tab:${1:$(file-name-base yas-text)}}}
+\end{table}
