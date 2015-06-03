@@ -8,3 +8,5 @@ stow emacs -t $HOME
 stow X -t $HOME
 
 stow conky -t $HOME
+
+stow ipython -t $HOME
