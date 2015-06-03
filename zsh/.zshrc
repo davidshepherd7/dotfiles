@@ -265,12 +265,6 @@ export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/workflows/cloudworkflowsimulator/scripts/"
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/education"
 
-# virtualenv
-export WORKON_HOME=~/envs
-mkdir -p "$WORKON_HOME"
-
-source "$rcdir/virtualenvwrapper.sh"
-
 
 # Java
 # ============================================================

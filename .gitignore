@@ -70,4 +70,4 @@
 
 
 # Generated files
-.zsh/completion/generated/*
+zsh/.zsh/completion/generated/*
