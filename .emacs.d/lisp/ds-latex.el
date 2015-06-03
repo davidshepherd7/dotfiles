@@ -82,7 +82,7 @@ forward instead."
   (interactive "p") ;; take prefix arg as input to function
 
   ;; search for last use of \label
-  (save-excursion (re-search-backward "\\\\label\\({[^}]*}\\)" nil nil nprev))
+  (save-excursion (re-search-backward "\\\\label{\\([^}]*\\)}" nil nil nprev))
 
   ;; insert the match
   (insert (match-string 1)))
