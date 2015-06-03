@@ -12,7 +12,15 @@
 (defvar ds/emacs-up-to-date? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
   "Are we using my prefered emacs version or newer?")
 
+;; TODO:
 
+;; Use new use-package syntax https://github.com/jwiegley/use-package
+
+;; Bootstrap use-package
+
+;; Read magit notes
+
+;; use-package s and dash
 
 ;; Set up "package" package manager etc.
 ;; ============================================================
