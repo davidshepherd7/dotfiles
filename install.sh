@@ -27,3 +27,5 @@ stow sxhkd -t $HOME
 stow readline -t $HOME
 
 stow gdb -t $HOME
+
+stow bash -t $HOME
