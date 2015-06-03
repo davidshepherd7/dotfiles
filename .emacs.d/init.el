@@ -876,7 +876,7 @@ $0")
 (defun external-shell-in-dir ()
   "Start urxvt in the current file's dir"
   (interactive)
-  (start-process "urxvt" nil "urxvt" "-e" "zsh"))
+  (start-process "urxvt" nil "urxvt"))
 (global-set-key (kbd "C-<f7>") 'external-shell-in-dir)
 
 
