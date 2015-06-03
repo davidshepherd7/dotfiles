@@ -604,7 +604,7 @@ index in STRING."
 ;; Show changes vs VC in sidebar
 (use-package diff-hl
   :ensure t
-  :pre-load (set 'diff-hl-command-prefix (kbd "C-\\ v"))
+  :init (set 'diff-hl-command-prefix (kbd "C-\\ v"))
   :config (global-diff-hl-mode))
 
 
@@ -702,7 +702,7 @@ index in STRING."
 ;; ============================================================
 (use-package projectile
   :ensure t
-  :pre-load
+  :init
   (progn
     ;; Use C-\ p as prefix
     (set 'projectile-keymap-prefix (kbd "C-\\ p")))
