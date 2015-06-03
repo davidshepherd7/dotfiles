@@ -6,6 +6,11 @@ OOMPHMMDRIVER="$OOMPHMM/control_scripts/driver"
 OPTOOMPH="$HOME/optoomph"
 OPTOOMPHMM="$OPTOOMPH/user_drivers/micromagnetics"
 
+
+export PATH="$PATH:$OPTOOMPH/bin"
+export PYTHONPATH="$PYTHONPATH:$OPTOOMPH/bin/"
+export PYTHONPATH="$PYTHONPATH:$OPTOOMPH/user_drivers/micromagnetics/etc/"
+
 so()
 {
     if [[ "$(pwd)" == "$OOMPH"* ]]; then

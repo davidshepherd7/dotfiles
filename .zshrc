@@ -288,8 +288,9 @@ source ${rcdir}/zsh-bindings.sh
 # Load aliases and simple functions
 source ${rcdir}/zsh-aliases.sh
 
-# Load oomph-lib related aliases/functions
+# Load work specific aliases/functions
 source ${rcdir}/zsh-oomph-aliases.sh
+source ${rcdir}/zsh-classifier-aliases.sh
 
 # e function
 source ${rcdir}/emacs-read-stdin/emacs-read-stdin.sh
