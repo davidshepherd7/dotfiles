@@ -34,3 +34,14 @@ import cytoolz as tlz
 # import oomphpy.matrices
 # from oomphpy.matrices import ascii2coo
 # from oomphpy.matrices import ascii2array
+
+# Give me lists!
+
+def lmap(*args):
+    return list(map(*args))
+
+def lfilter(*args):
+    return list(filter(*args))
+
+# Always show plots immediately
+plt.ion()
