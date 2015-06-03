@@ -87,22 +87,23 @@ forward instead."
   ;; insert the match
   (insert (match-string 1)))
 
-;; bind it
+
+(defun ds/evince-tex-main ()
+  "View current tex-main's pdf in evince"
+  (interactive)
+  (start-process "view-latex-pdf" nil "evince"
+                 (s-concat (file-name-sans-extension (tex-main-file)) ".pdf")))
+
+;; keybinds
 (add-hook 'LaTeX-mode-hook
-          (lambda () (local-set-key (kbd "C-.") 'latex-insert-last-label)))
+          (lambda () (local-set-key (kbd "C-.") 'latex-insert-last-label)
+            (local-set-key [f6] #'ds/evince-tex-main)
+            (set-tab)) t)
 
 ;; disable aggressive indent mode
 (when (boundp 'aggressive-indent-mode)
   (add-hook 'LaTeX-mode-hook (lambda () (aggressive-indent-mode 0))))
 
-
-;; bind tab
-(add-hook 'LaTeX-mode-hook 'set-tab)
-
-
-(defun evince-tex-main ()
-  (interactive)
-  (start-process "view-latex-pdf" nil "evince" (s-concat (file-name-sans-extension (tex-main-file)) ".pdf")))
 
 
 ;; flyspell
