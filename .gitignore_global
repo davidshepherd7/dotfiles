@@ -16,7 +16,6 @@
 *.pyc
 
 # build files
-Makefile
 Makefile.in
 .deps/
 config.guess
