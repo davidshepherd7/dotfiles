@@ -2,6 +2,7 @@ vim
 rxvt-unicode
 xmonad
 triangle-bin
+tetgen
 build-essential
 python3
 paraview
@@ -82,3 +83,5 @@ rar
 conky
 pyflakes
 xbacklight
+tmux
+pandoc
