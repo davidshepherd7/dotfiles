@@ -4,7 +4,7 @@
 
 [core]
 	editor = emacsclient -c
-
+	excludesfile = /home/david/.gitignore_global
 
 [difftool]
 	prompt = false
