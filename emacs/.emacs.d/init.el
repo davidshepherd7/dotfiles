@@ -14,11 +14,7 @@
 
 ;; TODO:
 
-;; Use new use-package syntax https://github.com/jwiegley/use-package
-
 ;; Bootstrap use-package
-
-;; Read magit notes
 
 ;; use-package s and dash
 
@@ -603,9 +599,11 @@ index in STRING."
 ;; ============================================================
 
 (use-package magit
+  :init
+  (setq magit-last-seen-setup-instructions "1.4.0")
   :ensure t)
 
-;; Use org-mode for git commits
+;; Use markdown mode for git commits (github displays it nicely)
 (set 'auto-mode-alist
      (append auto-mode-alist '(("COMMIT_EDITMSG" . markdown-mode))))
 
