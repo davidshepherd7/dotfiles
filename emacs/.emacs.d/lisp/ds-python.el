@@ -19,12 +19,15 @@
   (add-hook 'python-mode-hook 'prettify-lambda)
   )
 
-;; Setup jedi mode (python autocompletion)
-;; ============================================================
+;; Autocompletion
+(use-package anaconda-mode
+  :ensure t
+  :config
+  (add-hook 'python-mode-hook #'anaconda-mode)
+  )
+(use-package company-anaconda
+  :ensure t)
 
-;; ;; Enable it, but only for autocompletion so we don't get all the keybind
-;; ;; junk.
-;; (add-hook 'python-mode-hook 'jedi:ac-setup)
 
 ;; Build/test/check functions
 ;; ============================================================
