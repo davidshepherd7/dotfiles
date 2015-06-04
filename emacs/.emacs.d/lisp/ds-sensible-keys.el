@@ -505,3 +505,10 @@ the line break."
 
 (require 'cc-mode)
 (define-key c-mode-base-map (kbd "C-c") '())
+
+
+;; Help mode
+;; ============================================================
+
+(define-key help-mode-map (kbd "<M-left>") #'help-go-back)
+(define-key help-mode-map (kbd "<M-right>") #'help-go-forward)
