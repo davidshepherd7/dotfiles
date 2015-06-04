@@ -242,9 +242,10 @@
 
 ;; Auto complete
 ;;================================================================
-(use-package fuzzy :ensure t)
-(use-package pos-tip :ensure t)
+(use-package fuzzy :ensure t :disabled)
+(use-package pos-tip :ensure t :disabled)
 (use-package auto-complete
+  :disabled
   :ensure t
   :config
   (require 'auto-complete-config)
@@ -277,6 +278,11 @@
   ;; anything!
   )
 
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode)
+  )
 
 ;; Undo tree
 ;;================================================================
