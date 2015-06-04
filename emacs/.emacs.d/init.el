@@ -1094,18 +1094,18 @@ $0")
 
 
 (use-package hydra
-  :ensure t)
+  :ensure t
+  :config
+  ;; A more readable blue
+  (set-face-attribute 'hydra-face-blue nil :foreground "RoyalBlue1")
 
-;; A more readable blue
-(set-face-attribute 'hydra-face-blue nil :foreground "RoyalBlue1")
+  (define-key help-map (kbd "n") #'man)
 
-(define-key help-map (kbd "n") #'man)
+  (defhydra hydra-help (:exit t)
+    ;; Better to exit after any command because otherwise helm gets in a
+    ;; mess, set hint to nil: written out manually.
 
-(defhydra hydra-help (:exit t)
-  ;; Better to exit after any command because otherwise helm gets in a
-  ;; mess, set hint to nil: written out manually.
-
-  "
+    "
   Describe        ^^Keys                    ^^Search                    ^^Documentation
   ---------------------------------------------------------------------------------------
   _f_unction        _k_eybinding              _a_propros                  _i_nfo
@@ -1114,40 +1114,41 @@ $0")
   _v_ariable
 
   "
-  ;; Boring help commands...
-  ("e" view-echo-area-messages "messages")
-  ("l" view-lossage "lossage")
-  ("C" describe-coding-system "coding-system")
-  ("I" describe-input-method "input-method")
+    ;; Boring help commands...
+    ("e" view-echo-area-messages "messages")
+    ("l" view-lossage "lossage")
+    ("C" describe-coding-system "coding-system")
+    ("I" describe-input-method "input-method")
 
 
-  ;; Documentation
-  ("i" info nil)
-  ("n" helm-man-woman nil)
-  ("h" helm-dash)
+    ;; Documentation
+    ("i" info nil)
+    ("n" helm-man-woman nil)
+    ("h" helm-dash)
 
-  ;; Keybinds
-  ("b" describe-bindings nil)
-  ("c" describe-key-briefly nil)
-  ("k" describe-key nil)
-  ("w" where-is nil)
+    ;; Keybinds
+    ("b" describe-bindings nil)
+    ("c" describe-key-briefly nil)
+    ("k" describe-key nil)
+    ("w" where-is nil)
 
-  ;; Search
-  ("a" apropos-command nil)
-  ("d" apropos-documentation nil)
-  ("s" info-lookup-symbol nil)
+    ;; Search
+    ("a" apropos-command nil)
+    ("d" apropos-documentation nil)
+    ("s" info-lookup-symbol nil)
 
-  ;; Describe
-  ("f" describe-function nil)
-  ("p" describe-package nil)
-  ("m" describe-mode nil)
-  ("v" describe-variable nil)
-  ("y" describe-syntax nil)
+    ;; Describe
+    ("f" describe-function nil)
+    ("p" describe-package nil)
+    ("m" describe-mode nil)
+    ("v" describe-variable nil)
+    ("y" describe-syntax nil)
 
-  ;; quit
-  ("q" help-quit "quit"))
-(global-set-key (kbd "<f1>") #'hydra-help/body)
-(global-set-key (kbd "C-<f1>") help-map)
+    ;; quit
+    ("q" help-quit "quit"))
+  (global-set-key (kbd "<f1>") #'hydra-help/body)
+  (global-set-key (kbd "C-<f1>") help-map)
+  )
 
 
 ;; (setq helm-dash-common-docsets '("Python 3"))
