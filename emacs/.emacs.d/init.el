@@ -282,6 +282,7 @@
   :ensure t
   :config
   (global-company-mode)
+  (global-set-key (kbd "<C-tab>") #'company-complete)
   )
 
 ;; Undo tree
