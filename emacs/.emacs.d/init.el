@@ -66,26 +66,25 @@
        (looking-back "/")))
 
 (use-package aggressive-indent
+  :ensure t
   :config
-  (progn
+  ;; Enable in modes where it's safe
+  (mapcar (lambda (hook) (add-hook hook #'aggressive-indent-mode))
+          (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
+                'java-mode-hook 'sh-mode-hook 'ess-mode-hook))
 
-    ;; Enable in modes where it's safe
-    (mapcar (lambda (hook) (add-hook hook #'aggressive-indent-mode))
-            (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
-                  'java-mode-hook 'sh-mode-hook 'ess-mode-hook))
+  (define-key aggressive-indent-mode-map (kbd "C-c") nil)
 
-    (define-key aggressive-indent-mode-map (kbd "C-c") nil)
+  (add-hook 'c-mode-common-hook
+            (lambda () (define-key c-mode-map (kbd "C-d") nil)))
 
-    (add-hook 'c-mode-common-hook
-              (lambda () (define-key c-mode-map (kbd "C-d") nil)))
+  ;; Don't indent when entering comment start character (only for
+  ;; c/c++/java at the moment). The extra () is because
+  ;; aggressive-indent-dont-indent-if is a list of *expressions* not
+  ;; functions.
+  (add-to-list 'aggressive-indent-dont-indent-if '(starting-comment-p))
 
-    ;; Don't indent when entering comment start character (only for
-    ;; c/c++/java at the moment). The extra () is because
-    ;; aggressive-indent-dont-indent-if is a list of *expressions* not
-    ;; functions.
-    (add-to-list 'aggressive-indent-dont-indent-if '(starting-comment-p)))
-
-  :ensure t)
+  )
 
 
 ;; Some simple, one-line stuff
@@ -251,56 +250,55 @@
 (use-package pos-tip :ensure t)
 (use-package auto-complete
   :ensure t
-  :config (progn (require 'auto-complete-config)
-                 (require 'fuzzy)
-                 (require 'pos-tip)
-                 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+  :config
+  (require 'auto-complete-config)
+  (require 'fuzzy)
+  (require 'pos-tip)
+  (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
-                 ;; Options from
-                 (ac-config-default)
+  ;; Options from
+  (ac-config-default)
 
-                 (global-auto-complete-mode t)
-                 (set 'ac-ignore-case nil)
-                 (set 'ac-use-fuzzy t)
-                 (set 'ac-fuzzy-enable t)
-                 (ac-flyspell-workaround)
+  (global-auto-complete-mode t)
+  (set 'ac-ignore-case nil)
+  (set 'ac-use-fuzzy t)
+  (set 'ac-fuzzy-enable t)
+  (ac-flyspell-workaround)
 
-                 ;; Show quick help (function info display in tooltip)
-                 ;; (set 'ac-use-quick-help t)
-                 (set 'ac-delay 0.5) ;; show completions quickly
+  ;; Show quick help (function info display in tooltip)
+  ;; (set 'ac-use-quick-help t)
+  (set 'ac-delay 0.5) ;; show completions quickly
 
-                 ;; help is too annoying, press f1 to get it
-                 ;; ;; (set 'ac-show-menu-immediately-on-auto-complete 1)
-                 ;; (set 'ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
-                 ;;                                        ;; completions
+  ;; help is too annoying, press f1 to get it
+  ;; ;; (set 'ac-show-menu-immediately-on-auto-complete 1)
+  ;; (set 'ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
+  ;;                                        ;; completions
 
-                 ;; let me search even while autocomplete is up!
-                 (define-key ac-complete-mode-map (kbd "C-s") nil)
+  ;; let me search even while autocomplete is up!
+  (define-key ac-complete-mode-map (kbd "C-s") nil)
 
-                 ;; Use f1 to show help in a buffer! Handy :) Don't even need to bind
-                 ;; anything!
-                 ))
+  ;; Use f1 to show help in a buffer! Handy :) Don't even need to bind
+  ;; anything!
+  )
 
 
 ;; Undo tree
 ;;================================================================
 (use-package undo-tree
   :ensure t
+  :demand
   :bind (("C-z" . undo-tree-undo)
          ("C-S-z" . undo-tree-redo))
   :config
-  (progn (global-undo-tree-mode)
+  (global-undo-tree-mode)
 
-         ;; clean out the undo-tree keymap entry in the keymap list
-         (let ((item (assoc 'undo-tree-mode minor-mode-map-alist)))
-           (setf (cdr item) (make-sparse-keymap)))
+  ;; clean out the undo-tree keymap entry in the keymap list
+  (let ((item (assoc 'undo-tree-mode minor-mode-map-alist)))
+    (setf (cdr item) (make-sparse-keymap)))
 
-         ;; For consistency make the keymap itself empty as well
-         (setf undo-tree-map (make-sparse-keymap))
-         )
+  ;; For consistency make the keymap itself empty as well
+  (setf undo-tree-map (make-sparse-keymap))
 
-
-  :demand
   )
 
 
@@ -624,25 +622,24 @@ index in STRING."
 (use-package markdown-mode
   :ensure t
   :config
-  (progn
-    ;; run markdown-mode on files ending in .md
-    (set 'auto-mode-alist
-	 (append auto-mode-alist '((".md" . markdown-mode)
-				   (".markdown" . markdown-mode))))
-    (defun markdown-mode-keys ()
-      (interactive)
+  ;; run markdown-mode on files ending in .md
+  (set 'auto-mode-alist
+       (append auto-mode-alist '((".md" . markdown-mode)
+                                 (".markdown" . markdown-mode))))
+  (defun markdown-mode-keys ()
+    (interactive)
 
-      ;; get rid of C-c binds
-      (local-set-key (kbd "C-c") nil)
+    ;; get rid of C-c binds
+    (local-set-key (kbd "C-c") nil)
 
-      ;; Compile = preview
-      (local-set-key [remap compile] 'markdown-preview)
-      (local-set-key [remap my-recompile] 'markdown-preview)
+    ;; Compile = preview
+    (local-set-key [remap compile] 'markdown-preview)
+    (local-set-key [remap my-recompile] 'markdown-preview)
 
-      )
+    )
 
 
-    (add-hook 'markdown-mode-hook 'markdown-mode-keys))
+  (add-hook 'markdown-mode-hook 'markdown-mode-keys)
   )
 
 ;; Bind goto last change
@@ -678,10 +675,10 @@ index in STRING."
 
 (use-package list-register
   :ensure t
-  :config (progn
-	    (global-set-key (kbd "C-\\ r v") 'list-register)
-	    (global-set-key (kbd "C-\\ r s") 'copy-to-register)
-	    (global-set-key (kbd "C-\\ r i") 'insert-register)))
+  :config
+  (global-set-key (kbd "C-\\ r v") 'list-register)
+  (global-set-key (kbd "C-\\ r s") 'copy-to-register)
+  (global-set-key (kbd "C-\\ r i") 'insert-register))
 
 
 ;; Mode line
@@ -691,21 +688,20 @@ index in STRING."
 (use-package smart-mode-line
   :ensure t
   :config
-  (progn
-    (setq sml/no-confirm-load-theme t)
+  (setq sml/no-confirm-load-theme t)
 
-    (sml/setup)
+  (sml/setup)
 
-    (sml/apply-theme 'dark)
+  (sml/apply-theme 'dark)
 
-    ;; Shorten some directories to useful stuff
-    (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
-    (add-to-list 'sml/replacer-regexp-list
-                 '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
-    (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
-    (add-to-list 'sml/replacer-regexp-list
-                 '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
-    ))
+  ;; Shorten some directories to useful stuff
+  (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
+  (add-to-list 'sml/replacer-regexp-list
+               '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
+  (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
+  (add-to-list 'sml/replacer-regexp-list
+               '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
+  )
 
 
 ;; Projectile
@@ -713,32 +709,30 @@ index in STRING."
 (use-package projectile
   :ensure t
   :init
-  (progn
-    ;; Use C-\ p as prefix
-    (set 'projectile-keymap-prefix (kbd "C-\\ p")))
+  ;; Use C-\ p as prefix
+  (set 'projectile-keymap-prefix (kbd "C-\\ p"))
 
   :config
-  (progn
-    ;; Kill C-c keys just in case
-    (define-key projectile-mode-map (kbd "C-c") nil)
+  ;; Kill C-c keys just in case
+  (define-key projectile-mode-map (kbd "C-c") nil)
 
-    ;; Use projectile to open files by default, if available.
-    (defun maybe-projectile-find-file ()
-      (interactive)
-      (if (projectile-project-p)
-	  (projectile-find-file)
-	(call-interactively #'find-file)))
-    (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
+  ;; Use projectile to open files by default, if available.
+  (defun maybe-projectile-find-file ()
+    (interactive)
+    (if (projectile-project-p)
+        (projectile-find-file)
+      (call-interactively #'find-file)))
+  (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
-    ;; Use everywhere
-    (projectile-global-mode)
+  ;; Use everywhere
+  (projectile-global-mode)
 
-    (set 'projectile-use-git-grep t)
+  (set 'projectile-use-git-grep t)
 
-    (global-set-key (kbd "<f8>") #'projectile-grep)
+  (global-set-key (kbd "<f8>") #'projectile-grep)
 
-    (set 'projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
-    ))
+  (set 'projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
+  )
 
 
 
@@ -748,113 +742,110 @@ index in STRING."
 (use-package yasnippet
   :ensure t
   :config
-  (progn
 
-    ;; Load my oomph-lib snippets
-    (add-to-list 'yas-snippet-dirs "~/.emacs.d/oomph-snippets" t)
+  ;; Load my oomph-lib snippets
+  (add-to-list 'yas-snippet-dirs "~/.emacs.d/oomph-snippets" t)
 
-    ;; and my other snippets
-    (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets" t)
-
-
-    ;; kill C-c keys
-    (add-hook 'yas-minor-mode-hook
-	      (lambda ()
-		;; (local-unset-key (kbd "C-c")
-		;; (message "Trying to unset")
-		;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
-		(define-key yas-minor-mode-map (kbd "C-c & C-s") nil)
-		(define-key yas-minor-mode-map (kbd "C-c & C-n") nil)
-		(define-key yas-minor-mode-map (kbd "C-c & C-v") nil)
-		(define-key yas-minor-mode-map (kbd "C-c &") nil)
-		(define-key yas-minor-mode-map (kbd "C-c") nil)
-
-		(define-key yas-minor-mode-map (kbd "C-i") nil)
-		(define-key yas-minor-mode-map (kbd "TAB") nil)
-		(define-key yas-minor-mode-map [tab] nil)
+  ;; and my other snippets
+  (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets" t)
 
 
-		(set 'yas-fallback-behavior nil)
+  ;; kill C-c keys
+  (add-hook 'yas-minor-mode-hook
+            (lambda ()
+              ;; (local-unset-key (kbd "C-c")
+              ;; (message "Trying to unset")
+              ;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
+              (define-key yas-minor-mode-map (kbd "C-c & C-s") nil)
+              (define-key yas-minor-mode-map (kbd "C-c & C-n") nil)
+              (define-key yas-minor-mode-map (kbd "C-c & C-v") nil)
+              (define-key yas-minor-mode-map (kbd "C-c &") nil)
+              (define-key yas-minor-mode-map (kbd "C-c") nil)
 
-		;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
-
-		;; For some reason these don't work
-		;; (local-unset-key (kbd "C-c & C-s"))
-		;; (local-set-key (kbd "C-c & C-s") nil)
-
-		))
-
-    ;; c-mode uses something else on tab, which seems to get messed with by
-    ;; yasnippet, remove the extra bindings to prevent this
-    (add-hook 'c-mode-common-hook
-	      (lambda ()
-		(define-key c-mode-map [tab] nil)
-		(define-key c++-mode-map [tab] nil)
-		;; might need to add more here?
-		))
+              (define-key yas-minor-mode-map (kbd "C-i") nil)
+              (define-key yas-minor-mode-map (kbd "TAB") nil)
+              (define-key yas-minor-mode-map [tab] nil)
 
 
-    ;; Use everywhere
-    (yas/global-mode)
+              (set 'yas-fallback-behavior nil)
 
-    ;; Keys for snippet editing mode
-    (add-hook 'snippet-mode-hook
-	      (lambda ()
-		(interactive)
-		(local-set-key (kbd "<f5>") 'yas-tryout-snippet)
-		(local-set-key (kbd "C-c") nil)
-		(local-set-key (kbd "<f6>") 'yas-load-snippet-buffer)
-		))
+              ;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
 
-    (global-set-key (kbd "C-t") 'yas/expand)
+              ;; For some reason these don't work
+              ;; (local-unset-key (kbd "C-c & C-s"))
+              ;; (local-set-key (kbd "C-c & C-s") nil)
 
-    ;; Use minibuffer for yas prompts
-    (setq yas-prompt-functions '(yas-ido-prompt))
+              ))
+
+  ;; c-mode uses something else on tab, which seems to get messed with by
+  ;; yasnippet, remove the extra bindings to prevent this
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (define-key c-mode-map [tab] nil)
+              (define-key c++-mode-map [tab] nil)
+              ;; might need to add more here?
+              ))
 
 
-    ;; Faster snippet creation:
+  ;; Use everywhere
+  (yas/global-mode)
 
-    (defun ds/yas-snippet-dir ()
-      "Get the correct snippet dir for this buffer's mode
+  ;; Keys for snippet editing mode
+  (add-hook 'snippet-mode-hook
+            (lambda ()
+              (interactive)
+              (local-set-key (kbd "<f5>") 'yas-tryout-snippet)
+              (local-set-key (kbd "C-c") nil)
+              (local-set-key (kbd "<f6>") 'yas-load-snippet-buffer)
+              ))
+
+  (global-set-key (kbd "C-t") 'yas/expand)
+
+  ;; Use minibuffer for yas prompts
+  (setq yas-prompt-functions '(yas-ido-prompt))
+
+
+  ;; Faster snippet creation:
+
+  (defun ds/yas-snippet-dir ()
+    "Get the correct snippet dir for this buffer's mode
 
 Wrapper function to handle all yasnippets weirdness."
-      (yas--make-directory-maybe (first (yas--guess-snippet-directories))))
+    (yas--make-directory-maybe (first (yas--guess-snippet-directories))))
 
-    (defun ds/read-with-default-word-at-point (prompt)
-      ;; All this crap is needed to use the word at point as the default value.
-      (list (read-string (format "%s (default %s): " prompt (thing-at-point 'word))
-                         nil nil (thing-at-point 'word))))
+  (defun ds/read-with-default-word-at-point (prompt)
+    ;; All this crap is needed to use the word at point as the default value.
+    (list (read-string (format "%s (default %s): " prompt (thing-at-point 'word))
+                       nil nil (thing-at-point 'word))))
 
-    (defun ds/new-yasnippet (snippet-name)
-      "Quickly create a new snippet.
+  (defun ds/new-yasnippet (snippet-name)
+    "Quickly create a new snippet.
 
    In the right dir; with filename and snippet name already set
    up; with minimal prompts."
-      (interactive (list (thing-at-point 'word)))
-      (let ((snippet-file-name (s-concat (ds/yas-snippet-dir) "/" snippet-name)))
+    (interactive (list (thing-at-point 'word)))
+    (let ((snippet-file-name (s-concat (ds/yas-snippet-dir) "/" snippet-name)))
 
-        (if (file-exists-p (s-concat (ds/yas-snippet-dir) "/" snippet-name))
-            (find-file snippet-file-name)
+      (if (file-exists-p (s-concat (ds/yas-snippet-dir) "/" snippet-name))
+          (find-file snippet-file-name)
 
-          ;; Else create it
+        ;; Else create it
 
-          ;; Save before expanding the snippet so that we can get the buffer name
-          ;; from inside the snippet.
-          (yas-new-snippet t)
-          (write-file snippet-file-name t)
-          (yas-expand-snippet yas-new-snippet-default))))
+        ;; Save before expanding the snippet so that we can get the buffer name
+        ;; from inside the snippet.
+        (yas-new-snippet t)
+        (write-file snippet-file-name t)
+        (yas-expand-snippet yas-new-snippet-default))))
 
-    (global-set-key (kbd "C-S-T") 'ds/new-yasnippet)
+  (global-set-key (kbd "C-S-T") 'ds/new-yasnippet)
 
-    ;; Don't add a binding by default in new snippets
-    (set 'yas-new-snippet-default "\
+  ;; Don't add a binding by default in new snippets
+  (set 'yas-new-snippet-default "\
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: `(file-name-nondirectory buffer-file-name)`
 # --
 $0")
 
-
-    )
   )
 
 ;; Irony mode (fancy c/c++ autocomplete)
@@ -864,23 +855,22 @@ $0")
   :disabled
 
   :config
-  (progn
-    ;; the ac plugin will be activated in each buffer using irony-mode
-    (irony-enable 'ac)             ; hit C-RET to trigger completion
+  ;; the ac plugin will be activated in each buffer using irony-mode
+  (irony-enable 'ac)             ; hit C-RET to trigger completion
 
-    ;; avoid enabling irony-mode in other modes that inherit from c-mode,
-    ;; e.g: php-mode
-    (defun irony-mode-if-safe ()
-      (interactive)
-      (when (member major-mode irony-known-modes)
-	(irony-mode 1)))
-    (add-hook 'c++-mode-hook 'irony-mode-if-safe)
-    (add-hook 'c-mode-hook 'irony-mode-if-safe)
+  ;; avoid enabling irony-mode in other modes that inherit from c-mode,
+  ;; e.g: php-mode
+  (defun irony-mode-if-safe ()
+    (interactive)
+    (when (member major-mode irony-known-modes)
+      (irony-mode 1)))
+  (add-hook 'c++-mode-hook 'irony-mode-if-safe)
+  (add-hook 'c-mode-hook 'irony-mode-if-safe)
 
-    ;; Kill C-c keys
-    (define-key irony-mode-map (kbd "C-c") nil)
+  ;; Kill C-c keys
+  (define-key irony-mode-map (kbd "C-c") nil)
 
-    ))
+  )
 
 
 (defun external-shell-in-dir ()
@@ -895,29 +885,28 @@ $0")
 (use-package deft
   :ensure t
   :config
-  (progn
-    (setq deft-directory "~/Dropbox/notes")
-    (setq deft-extension "md")
-    (setq deft-text-mode 'markdown-mode)
-    (setq deft-use-filename-as-title t)
+  (setq deft-directory "~/Dropbox/notes")
+  (setq deft-extension "md")
+  (setq deft-text-mode 'markdown-mode)
+  (setq deft-use-filename-as-title t)
 
-    ;; Kill C-c keys
-    (define-key deft-mode-map (kbd "C-c") 'nil)
+  ;; Kill C-c keys
+  (define-key deft-mode-map (kbd "C-c") 'nil)
 
-    ;; New binds for the useful ones
-    (define-key deft-mode-map (kbd "M-RET") 'deft-new-file)
+  ;; New binds for the useful ones
+  (define-key deft-mode-map (kbd "M-RET") 'deft-new-file)
 
-    ;; And move some other binds to fit with my config
-    (define-key deft-mode-map (kbd "C-v") 'deft-filter-yank)
-    (define-key deft-mode-map (kbd "C-y") 'deft-filter-decrement-word)
+  ;; And move some other binds to fit with my config
+  (define-key deft-mode-map (kbd "C-v") 'deft-filter-yank)
+  (define-key deft-mode-map (kbd "C-y") 'deft-filter-decrement-word)
 
-    ;; Make a new deft buffer (by killing the old one). Called from xmonad.
-    (defun new-clean-deft ()
-      (interactive)
-      "Close old deft buffer and start a new one"
-      (ignore-errors (kill-buffer "*Deft*"))
-      (deft)
-      )))
+  ;; Make a new deft buffer (by killing the old one). Called from xmonad.
+  (defun new-clean-deft ()
+    (interactive)
+    "Close old deft buffer and start a new one"
+    (ignore-errors (kill-buffer "*Deft*"))
+    (deft)
+    ))
 
 ;; javascript
 ;; ============================================================
@@ -961,18 +950,17 @@ $0")
 (use-package ace-jump-mode
   :ensure t
   :config
-  (progn
-    (set 'ace-jump-mode-case-fold t)
+  (set 'ace-jump-mode-case-fold t)
 
-    ;; favour home row keys
-    (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
-      (set 'ace-jump-mode-move-keys
-	   (nconc first-list
-		  (-difference (loop for i from ?a to ?z collect i) first-list)
-		  (loop for i from ?A to ?Z collect i))))
+  ;; favour home row keys
+  (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
+    (set 'ace-jump-mode-move-keys
+         (nconc first-list
+                (-difference (loop for i from ?a to ?z collect i) first-list)
+                (loop for i from ?A to ?Z collect i))))
 
-    (set 'ace-jump-mode-scope 'window)
-    (global-set-key (kbd "C-p") 'ace-jump-mode)))
+  (set 'ace-jump-mode-scope 'window)
+  (global-set-key (kbd "C-p") 'ace-jump-mode))
 
 
 (use-package expand-region
@@ -982,15 +970,15 @@ $0")
 ;; (use-package ggtags
 ;;   :disabled
 ;;   :ensure t
-;;   :config (progn
-;;             (add-hook 'prog-mode-hook #'ggtags-mode)
-;;             (define-key ggtags-mode-map (kbd "C-c") nil)
-;;             (define-key ggtags-mode-map (kbd "M-.") #'ggtags-find-tag-dwim)
-;;             (set 'ggtags-mode-line-project-name nil)
+;;   :config
+;;   (add-hook 'prog-mode-hook #'ggtags-mode)
+;;   (define-key ggtags-mode-map (kbd "C-c") nil)
+;;   (define-key ggtags-mode-map (kbd "M-.") #'ggtags-find-tag-dwim)
+;;   (set 'ggtags-mode-line-project-name nil)
 
 
-;;             (define-key ggtags-mode-map (kbd "M-<") nil)
-;;             (define-key ggtags-mode-map (kbd "M->") nil)))
+;;   (define-key ggtags-mode-map (kbd "M-<") nil)
+;;   (define-key ggtags-mode-map (kbd "M->") nil))
 
 ;; Better help commands
 ;; ============================================================
@@ -1034,18 +1022,18 @@ $0")
 (add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
 (load-library "aggressive-fill-paragraph")
 (use-package aggressive-fill-paragraph
-  :config (progn
-            ;; Enable in modes where it works nicely
-            (mapcar (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
-                    (list 'c-mode-hook
-                          'c++-mode-hook
-                          'emacs-lisp-mode-hook
-                          'java-mode-hook
-                          'sh-mode-hook
-                          'python-mode-hook
-                          'org-mode-hook
-                          'ess-mode-hook))
-            ))
+  :config
+  ;; Enable in modes where it works nicely
+  (mapcar (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
+          (list 'c-mode-hook
+                'c++-mode-hook
+                'emacs-lisp-mode-hook
+                'java-mode-hook
+                'sh-mode-hook
+                'python-mode-hook
+                'org-mode-hook
+                'ess-mode-hook))
+  )
 
 
 ;; For some stupid reason ess doesn't define this autoload, or this
@@ -1054,37 +1042,37 @@ $0")
 (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
 (use-package ess
-  :config (progn
-            (define-key ess-mode-map (kbd "C-c") nil)
-	    (define-key ess-mode-map (kbd "C-x") nil)
+  :ensure t
+  :config
+  (define-key ess-mode-map (kbd "C-c") nil)
+  (define-key ess-mode-map (kbd "C-x") nil)
 
-            ;; ess-mode tries to do some stupid stuff with '_' and ',',
-            ;; disable this.
-            (define-key ess-mode-map (kbd "_") nil)
-            (define-key ess-mode-map (kbd ",") nil)
+  ;; ess-mode tries to do some stupid stuff with '_' and ',',
+  ;; disable this.
+  (define-key ess-mode-map (kbd "_") nil)
+  (define-key ess-mode-map (kbd ",") nil)
 
-	    (add-hook 'ess-roxy-mode-hook
-		      (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
+  (add-hook 'ess-roxy-mode-hook
+            (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
 
-            (add-hook 'ess-mode-hook
-                      (lambda() (ess-set-style 'C++ 'quiet)
-                        (set 'ess-arg-function-offset t)))
+  (add-hook 'ess-mode-hook
+            (lambda() (ess-set-style 'C++ 'quiet)
+              (set 'ess-arg-function-offset t)))
 
-            ;; auto newline after '{'
-            (add-hook 'ess-mode-hook
-                      (lambda()
-                        (add-to-list 'electric-layout-rules '( ?\{ .  after))
-                        (add-to-list 'electric-layout-rules '( ?\} .  before))
-                        ))
+  ;; auto newline after '{'
+  (add-hook 'ess-mode-hook
+            (lambda()
+              (add-to-list 'electric-layout-rules '( ?\{ .  after))
+              (add-to-list 'electric-layout-rules '( ?\} .  before))
+              ))
 
-            ;; Use rtags to make the tags file
-            (add-hook 'ess-mode-hook
-                      (lambda()
-                        (make-local-variable 'projectile-tags-command)
-                        (set 'projectile-tags-command
-                             "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
-            )
-  :ensure t)
+  ;; Use rtags to make the tags file
+  (add-hook 'ess-mode-hook
+            (lambda()
+              (make-local-variable 'projectile-tags-command)
+              (set 'projectile-tags-command
+                   "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
+  )
 
 
 (use-package discover
@@ -1094,14 +1082,14 @@ $0")
 (add-to-list 'load-path "~/.emacs.d/electric-spacing")
 (load-library "electric-spacing")
 (use-package electric-spacing
-  :config (progn
-            ;; Enable in some modes
-            (mapcar (lambda (hook) (add-hook hook #'electric-spacing-mode))
-                    '(python-mode-hook
-                      ess-mode-hook
-                      c-mode-hook
-                      c++-mode-hook
-                      java-mode-hook)))
+  :config
+  ;; Enable in some modes
+  (mapcar (lambda (hook) (add-hook hook #'electric-spacing-mode))
+          '(python-mode-hook
+            ess-mode-hook
+            c-mode-hook
+            c++-mode-hook
+            java-mode-hook))
   )
 
 
@@ -1167,42 +1155,38 @@ $0")
 (add-to-list 'load-path "~/code/helm-dash")
 (use-package helm-dash
   :config
-  (progn
 
-    ;; base docsets
-    (set 'ds/docsets '("Bash" "Emacs Lisp" "Markdown"
-                       "Python 3" "SciPy" "NumPy"
-                       "C" "C++"
-                       "Haskell" "R"))
+  ;; base docsets
+  (set 'ds/docsets '("Bash" "Emacs Lisp" "Markdown"
+                     "Python 3" "SciPy" "NumPy"
+                     "C" "C++"
+                     "Haskell" "R"))
 
-    ;; user contrib docsets
-    (set 'ds/contrib-docsets '("SymPy" "scikit-learn"))
-    ;; matplotlib seems to be broken
+  ;; user contrib docsets
+  (set 'ds/contrib-docsets '("SymPy" "scikit-learn"))
+  ;; matplotlib seems to be broken
 
-    ;; I generated the toolz docset myself
+  ;; I generated the toolz docset myself
 
-    (set 'python-docsets '("Python 3"
-                           "NumPy" "SciPy" "SymPy"
-                           "scikit-learn"
-                           "toolz"
-                           ))
+  (set 'python-docsets '("Python 3"
+                         "NumPy" "SciPy" "SymPy"
+                         "scikit-learn"
+                         "toolz"
+                         ))
 
-    ;; Add: dash.el pytoolz scikit-learn
+  ;; Add: dash.el pytoolz scikit-learn
 
-    (defun ds/installed-docsets ()
-      (-map (lambda (x) (s-replace " " "_" x)) (helm-dash-installed-docsets)))
+  (defun ds/installed-docsets ()
+    (-map (lambda (x) (s-replace " " "_" x)) (helm-dash-installed-docsets)))
 
-    (defun install-docsets ()
-      (interactive)
-      (let ((required (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) ds/docsets)))
-        (-map #'helm-dash-install-docset required)))
+  (defun install-docsets ()
+    (interactive)
+    (let ((required (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) ds/docsets)))
+      (-map #'helm-dash-install-docset required)))
 
-    (add-hook 'python-mode-hook (lambda () (setq-local helm-dash-docsets python-docsets)))
-    (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local helm-dash-docsets '("Emacs Lisp"))))
+  (add-hook 'python-mode-hook (lambda () (setq-local helm-dash-docsets python-docsets)))
+  (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local helm-dash-docsets '("Emacs Lisp"))))
 
-    )
-
-  ;; :ensure nil
   )
 
 
