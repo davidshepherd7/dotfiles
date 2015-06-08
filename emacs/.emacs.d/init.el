@@ -1023,6 +1023,7 @@ $0")
 ;; Pretty colours
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
+;; (load-theme 'adwaita t)
 
 (add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
 (load-library "aggressive-fill-paragraph")
