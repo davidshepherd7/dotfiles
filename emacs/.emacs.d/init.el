@@ -697,7 +697,7 @@ index in STRING."
 
   (sml/setup)
 
-  (sml/apply-theme 'dark)
+  (sml/apply-theme 'automatic)
 
   ;; Shorten some directories to useful stuff
   (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
