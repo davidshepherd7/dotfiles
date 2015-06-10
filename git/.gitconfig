@@ -14,3 +14,6 @@
 
 [diff "diffpdf"]
     command = diffpdf
+
+[push]
+	default = matching
