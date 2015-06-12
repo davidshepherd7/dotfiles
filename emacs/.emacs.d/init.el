@@ -1098,6 +1098,13 @@ $0")
             java-mode-hook))
   )
 
+(use-package feature-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.feature$" . feature-mode))
+  (define-key feature-mode-map (kbd "C-c") nil)
+  (define-key orgtbl-mode-map (kbd "C-c") nil)
+  (add-hook 'feature-mode-hook #'set-tab))
 
 (use-package hydra
   :ensure t
