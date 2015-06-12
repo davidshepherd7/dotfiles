@@ -1011,8 +1011,8 @@ $0")
 
    ;; Don't do it in non-programming modes (just to be safe)
    (not (or (derived-mode-p 'prog-mode)
-	    (eq major-mode 'ess-mode)))))
-
+	    (eq major-mode 'ess-mode)
+            (eq major-mode 'feature-mode)))))
 
 (defun maybe-delete-trailing-whitespace ()
   (when (not (preserve-trailing-whitespace-p))
