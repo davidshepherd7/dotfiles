@@ -33,3 +33,5 @@ stow bash -t $HOME
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
 sudo stow hwdb -t /etc/udev/hwdb.d
+
+sudo stow desktop-session -t /usr/share/xsessions/
