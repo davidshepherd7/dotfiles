@@ -1199,13 +1199,18 @@ $0")
 
   ;; Add: dash.el pytoolz scikit-learn
 
+  (defun ds/fix-docset-url (x)
+    (s-replace " " "_" x))
+
   (defun ds/installed-docsets ()
-    (-map (lambda (x) (s-replace " " "_" x)) (helm-dash-installed-docsets)))
+    (-map #'ds/fix-docset-url (helm-dash-installed-docsets)))
 
   (defun install-docsets ()
     (interactive)
-    (let ((required (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) ds/docsets)))
-      (-map #'helm-dash-install-docset required)))
+    (--> ds/docsets
+         (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
+         (-map #'ds/fix-docset-url it)
+         (-map #'helm-dash-install-docset it)))
 
   (add-hook 'python-mode-hook (lambda () (setq-local helm-dash-docsets python-docsets)))
   (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local helm-dash-docsets '("Emacs Lisp"))))
