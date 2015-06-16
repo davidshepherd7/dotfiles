@@ -34,4 +34,5 @@ stow bash -t $HOME
 sudo mkdir -p /etc/udev/hwdb.d
 sudo stow hwdb -t /etc/udev/hwdb.d
 
-sudo stow desktop-session -t /usr/share/xsessions/
+# Just do a plain copy for this, links don't seem to work
+sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
