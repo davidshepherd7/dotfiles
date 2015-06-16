@@ -55,6 +55,10 @@
 (use-package paradox :ensure t)
 
 
+(setq global-edebug-prefix "\C-\\X")
+(setq edebug-inhibit-emacs-lisp-mode-bindings t)
+(require 'edebug)
+
 (defun starting-comment-p ()
   "Are we starting to insert a c/java mode comment?"
   (interactive)
