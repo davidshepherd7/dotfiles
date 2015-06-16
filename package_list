@@ -85,3 +85,8 @@ pyflakes
 xbacklight
 tmux
 pandoc
+stow
+sqlite3
+xcb
+libxcb-keysyms1-dev
+libxcb-util0-dev
