@@ -59,6 +59,13 @@
 (setq edebug-inhibit-emacs-lisp-mode-bindings t)
 (require 'edebug)
 
+
+;; Pretty colours
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+;; (load-theme 'shepherd t)
+(load-theme 'adwaita t)
+
+
 (defun starting-comment-p ()
   "Are we starting to insert a c/java mode comment?"
   (interactive)
@@ -1023,11 +1030,6 @@ $0")
     (delete-trailing-whitespace)))
 
 (add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
-
-;; Pretty colours
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'shepherd t)
-;; (load-theme 'adwaita t)
 
 (add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
 (load-library "aggressive-fill-paragraph")
