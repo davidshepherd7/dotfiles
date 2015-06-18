@@ -11,7 +11,7 @@ own_window_argb_value 150
 own_window yes
 own_window_type panel
 disable_auto_reload yes # autoreload + panel + xmonad doesn't work well..
-minimum_size 1440 15
+minimum_size 1600 18
 alignment tl
 gap_x 0
 gap_y 0
@@ -35,6 +35,4 @@ TEXT
  apt-get: ${execi 60 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'} \
  ${battery} \
                                \
- ${time %H:%M  %d/%m/%Y} \
- ${offset 5000} # position a space character way off to the right so that
-                # the bar covers the screen
+ ${time %H:%M  %d/%m/%Y}
