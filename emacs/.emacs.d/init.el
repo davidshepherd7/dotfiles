@@ -448,9 +448,8 @@
 ;; Handle colours in compile buffers
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
-  (toggle-read-only)
-  (ansi-color-apply-on-region (point-min) (point-max))
-  (toggle-read-only))
+  (when (eq major-mode 'compilation-mode)
+    (ansi-color-apply-on-region compilation-filter-start (point-max))))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
 
