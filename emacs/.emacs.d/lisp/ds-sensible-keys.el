@@ -510,5 +510,6 @@ the line break."
 ;; Help mode
 ;; ============================================================
 
+(require 'help-mode)
 (define-key help-mode-map (kbd "<M-left>") #'help-go-back)
 (define-key help-mode-map (kbd "<M-right>") #'help-go-forward)
