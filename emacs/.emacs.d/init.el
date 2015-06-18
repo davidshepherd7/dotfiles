@@ -1117,6 +1117,13 @@ $0")
   (define-key orgtbl-mode-map (kbd "C-c") nil)
   (add-hook 'feature-mode-hook #'set-tab))
 
+(use-package sgml-mode
+  :ensure t
+  :config
+  (define-key sgml-mode-map (kbd "<f5>") (lambda () (interactive)
+					   (save-buffer)
+					   (browse-url-of-buffer))))
+
 (use-package hydra
   :ensure t
   :config
