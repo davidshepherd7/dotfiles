@@ -513,3 +513,15 @@ the line break."
 (require 'help-mode)
 (define-key help-mode-map (kbd "<M-left>") #'help-go-back)
 (define-key help-mode-map (kbd "<M-right>") #'help-go-forward)
+
+
+;; Window management
+;; ============================================================
+
+(defun focus-active-minibuffer ()
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-frame-set-input-focus (window-frame (active-minibuffer-window)))
+    (select-window (active-minibuffer-window))))
+
+(global-set-key (kbd "C-\\ m") #'focus-active-minibuffer)
