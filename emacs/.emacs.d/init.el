@@ -1090,12 +1090,12 @@ $0")
   :config (global-discover-mode)
   :ensure t)
 
-(add-to-list 'load-path "~/.emacs.d/electric-spacing")
-(load-library "electric-spacing")
-(use-package electric-spacing
+(add-to-list 'load-path "~/.emacs.d/electric-operator")
+(load-library "electric-operator")
+(use-package electric-operator
   :config
   ;; Enable in some modes
-  (mapcar (lambda (hook) (add-hook hook #'electric-spacing-mode))
+  (mapcar (lambda (hook) (add-hook hook #'electric-operator-mode))
           '(python-mode-hook
             ess-mode-hook
             c-mode-hook

@@ -13,3 +13,6 @@
 [submodule ".emacs.d/electric-spacing"]
 	path = .emacs.d/electric-spacing
 	url = git@github.com:davidshepherd7/electric-spacing.git
+[submodule "emacs/.emacs.d/electric-operator"]
+	path = emacs/.emacs.d/electric-operator
+	url = git@github.com:davidshepherd7/electric-operator.git
