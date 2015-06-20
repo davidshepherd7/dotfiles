@@ -3,3 +3,4 @@ cytoolz
 scikit-learn
 sympy
 pandas
+flake8
