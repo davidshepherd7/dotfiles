@@ -252,6 +252,8 @@ else
     echo "homebrew is not installed"
 fi
 
+export PATH="$PATH:$HOME/code/google_appengine"
+
 # Ruby gems
 gemdir="$HOME/.gem/ruby/2.1.0/bin"
 export PATH="$PATH:$gemdir"
@@ -264,6 +266,8 @@ export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscript
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/workflows/cloudworkflowsimulator/scripts/"
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/education"
+
+export PYTHONPATH="$PYTHONPATH:$HOME/code/google_appengine/lib/webapp2-2.5.1"
 
 
 # Java
