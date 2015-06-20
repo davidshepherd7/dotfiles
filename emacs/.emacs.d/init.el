@@ -631,6 +631,15 @@ index in STRING."
   :config (global-diff-hl-mode))
 
 
+;; Emacs package creation
+;; ============================================================
+
+(use-package names-dev
+  :ensure names)
+
+(add-to-list 'auto-mode-alist (cons "Cask" #'emacs-lisp-mode))
+
+
 ;; Markdown mode
 ;; ============================================================
 
@@ -1113,8 +1122,10 @@ $0")
   :config
   (add-to-list 'auto-mode-alist '("\\.feature$" . feature-mode))
   (define-key feature-mode-map (kbd "C-c") nil)
-  (define-key orgtbl-mode-map (kbd "C-c") nil)
-  (add-hook 'feature-mode-hook #'set-tab))
+  (add-hook 'feature-mode-hook #'set-tab)
+  (add-hook 'feature-mode-hook  (lambda () (define-key orgtbl-mode-map (kbd "C-c") nil)))
+  )
+
 
 (use-package sgml-mode
   :ensure t
