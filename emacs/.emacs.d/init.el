@@ -618,6 +618,35 @@ index in STRING."
 (use-package magit
   :init
   (setq magit-last-seen-setup-instructions "1.4.0")
+
+  (defun endless/visit-pull-request-url ()
+    "Visit the current branch's PR on Github.
+
+For magit versions > 2.1.0"
+    (interactive)
+    (browse-url
+     (format "https://github.com/%s/pull/new/%s"
+             (replace-regexp-in-string
+              "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1"
+              (magit-get "remote"
+                         (magit-get-remote)
+                         "url"))
+             (cdr (magit-get-remote-branch)))))
+
+  (defun endless/visit-pull-request-url-1 ()
+    "Visit the current branch's PR on Github."
+    (interactive)
+    (browse-url
+     (format "https://github.com/%s/compare/%s"
+             (replace-regexp-in-string
+              "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1"
+              (magit-get "remote"
+                         (magit-get-current-remote)
+                         "url"))
+             (magit-get-current-branch))))
+
+  (define-key magit-mode-map "v" #'endless/visit-pull-request-url-1)
+
   :ensure t)
 
 ;; Use markdown mode for git commits (github displays it nicely)
