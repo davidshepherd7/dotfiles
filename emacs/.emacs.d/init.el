@@ -78,7 +78,7 @@
   ;; Enable in modes where it's safe
   (mapcar (lambda (hook) (add-hook hook #'aggressive-indent-mode))
           (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
-                'java-mode-hook 'sh-mode-hook 'ess-mode-hook))
+                'java-mode-hook 'sh-mode-hook 'ess-mode-hook 'sgml-mode-hook))
 
   (define-key aggressive-indent-mode-map (kbd "C-c") nil)
 
@@ -1060,7 +1060,8 @@ $0")
    ;; Don't do it in non-programming modes (just to be safe)
    (not (or (derived-mode-p 'prog-mode)
 	    (eq major-mode 'ess-mode)
-            (eq major-mode 'feature-mode)))))
+            (eq major-mode 'feature-mode)
+            (eq major-mode 'sgml-mode)))))
 
 (defun maybe-delete-trailing-whitespace ()
   (when (not (preserve-trailing-whitespace-p))
@@ -1161,7 +1162,8 @@ $0")
   :config
   (define-key sgml-mode-map (kbd "<f5>") (lambda () (interactive)
 					   (save-buffer)
-					   (browse-url-of-buffer))))
+					   (browse-url-of-buffer)))
+  (add-hook 'sgml-mode-hook #'set-tab))
 
 (use-package hydra
   :ensure t
