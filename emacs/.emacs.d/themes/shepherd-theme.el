@@ -21,7 +21,7 @@
  ;; ----------------- Frame stuff --------------------
  `(default ((t (:background "black" :foreground "white"))))
  `(cursor  ((t (:background "#fff394"))))
- `(region ((t (:background "#161A1F"))))
+ `(region ((t (:background "#111F2C"))))
 
  ;; edges
  `(fringe ((t (:background "grey2"))))
