@@ -668,6 +668,9 @@ For magit versions > 2.1.0"
 
 (add-to-list 'auto-mode-alist (cons "Cask" #'emacs-lisp-mode))
 
+(use-package hl-sexp
+  :ensure t
+  (add-hook 'emacs-lisp-mode-hook #'hl-sexp-mode))
 
 ;; Markdown mode
 ;; ============================================================
