@@ -16,6 +16,9 @@ killall xcape
 # Make alt gr just normal alt:
 xmodmap -e "keycode 108 = Alt_L"
 
+# Make caps lock another function key (which we can bind to whatever we like)
+xmodmap -e "keycode 66 = F35"
+
 # String ready to store out xcape commands (so that we only run it once)
 xcape_str=""
 
