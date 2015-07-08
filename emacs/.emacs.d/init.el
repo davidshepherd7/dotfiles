@@ -1271,6 +1271,25 @@ $0")
   )
 
 
+;; Use rainbow delimeters to highlight mismatched parens.
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  ;; Use everywhere sensible
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+  ;; Normal delimeters are normal colour
+  (setq rainbow-delimiters-max-face-count 1)
+  (set-face-attribute 'rainbow-delimiters-depth-1-face nil
+                      :foreground 'unspecified
+                      :inherit 'default)
+
+  ;; Error delimiters get error colour
+  (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                      :foreground 'unspecified
+                      :inherit 'error))
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
