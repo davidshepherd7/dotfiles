@@ -247,6 +247,9 @@ index in STRING."
 ;; makes scripts executable automatically
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
+;; Make losing focus save buffers
+(add-hook 'focus-out-hook (lambda () (interactive) (save-some-buffers t)))
+
 ;; ;; auto-save in-place
 ;; (setq auto-save-visited-file-name t)
 
