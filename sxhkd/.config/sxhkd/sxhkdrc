@@ -41,3 +41,6 @@ XF86MonBrightnessUp
 
 XF86MonBrightnessDown
     xbacklight -20
+
+Print
+    gnome-screenshot
