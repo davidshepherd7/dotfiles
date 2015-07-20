@@ -508,6 +508,11 @@ index in STRING."
 
 ;; My functions
 ;; ============================================================
+
+(defun kill-this-buffer ()
+  (interactive)
+  (kill-buffer (buffer-name)))
+
 (defun copy-file-name ()
   "Add `buffer-file-name' to the kill ring."
   (interactive)
@@ -669,7 +674,7 @@ For magit versions > 2.1.0"
                          "url"))
              (magit-get-current-branch))))
 
-  (define-key magit-mode-map "v" #'endless/visit-pull-request-url-1)
+  (define-key magit-mode-map "V" #'endless/visit-pull-request-url-1)
 
   :ensure t)
 
@@ -694,6 +699,7 @@ For magit versions > 2.1.0"
 
 (use-package hl-sexp
   :ensure t
+  :config
   (add-hook 'emacs-lisp-mode-hook #'hl-sexp-mode))
 
 ;; Markdown mode
@@ -1229,6 +1235,16 @@ $0")
 					   (browse-url-of-buffer)))
   (add-hook 'sgml-mode-hook #'set-tab))
 
+;; My lex mode
+(add-to-list 'load-path "~/.emacs.d/lex-mode")
+(use-package lex-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.lex\\'" . lex-mode))
+  (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
+
+
+  :demand)
+
 (use-package hydra
   :ensure t
   :config
@@ -1306,9 +1322,10 @@ $0")
   ;; I generated the toolz docset myself
 
   (set 'python-docsets '("Python 3"
-                         "NumPy" "SciPy" "SymPy"
+                         "NumPy" "SciPy"
+                         "SymPy"
                          "scikit-learn"
-                         "toolz"
+                         ;; "toolz"
                          ))
 
   ;; Add: dash.el pytoolz scikit-learn
@@ -1330,6 +1347,11 @@ $0")
   (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local helm-dash-docsets '("Emacs Lisp"))))
 
   )
+
+(defun ds/insert-current-date ()
+  (interactive)
+  (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+
 
 (use-package multiple-cursors
   :ensure t
@@ -1415,6 +1437,9 @@ $0")
      ("\\.hxx\\'"
       (".cxx")))))
  '(column-number-mode t)
+ '(custom-safe-themes
+   (quote
+    ("da41ee46d2f74bb1af6591206b37c07941ee42707299da8058683d3d4917c5b1" default)))
  '(ff-ignore-include t)
  '(gud-gdb-command-name "gdb -i=mi --args")
  '(htmlize-output-type (quote font))

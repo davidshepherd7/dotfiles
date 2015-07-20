@@ -258,6 +258,11 @@ export PATH="$PATH:$HOME/code/google_appengine"
 gemdir="$HOME/.gem/ruby/2.1.0/bin"
 export PATH="$PATH:$gemdir"
 
+
+# Cool compiler (for course)
+export PATH="$PATH:$HOME/Dropbox/education/compilers/cool/bin"
+
+
 # Python
 # ============================================================
 

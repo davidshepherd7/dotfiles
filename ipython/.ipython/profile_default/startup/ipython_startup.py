@@ -15,7 +15,7 @@ from matplotlib.pyplot import show as pltshow
 
 # and import some common functions into the global namespace
 from scipy.linalg import norm, eig
-from scipy import sin, cos, tan, log, pi, sqrt, exp, mean
+from scipy import sin, cos, tan, log, pi, sqrt, exp, mean, log2, log10
 from math import atan2, acos
 
 import sympy

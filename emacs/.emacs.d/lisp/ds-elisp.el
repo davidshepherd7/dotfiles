@@ -9,6 +9,6 @@
 
 (defun insert-key-as-kbd (key)
   (interactive "kKey: ")
-  (insert (format "(kbd \"%s\")" (key-description key))))
+  (insert (format "(kbd %S)" (key-description key))))
 
 (define-key emacs-lisp-mode-map (kbd "C-,") #'insert-key-as-kbd)

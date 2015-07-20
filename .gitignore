@@ -2,3 +2,5 @@
 
 # Generated files
 zsh/.zsh/completion/generated/*
+/emacs/.emacs.d/lex-mode/
+/emacs/.emacs.d/elpa/

@@ -49,6 +49,11 @@ alias x="xargs -I %"
 
 # ??ds emacs with pipe in support
 
+ismyinternetdown ()
+{
+    ping 'www.google.com'
+}
+
 
 # ??ds better diff
 gdiff()
@@ -448,3 +453,8 @@ regenerate_all_completions ()
     # splot
     generate_completion "splot"
 }
+
+
+# Games
+# ============================================================
+alias hlands="gargoyle-free $HOME/Dropbox/other/HadeanLands-generic/HadeanLands.gblorb"
