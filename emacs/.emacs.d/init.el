@@ -1019,23 +1019,19 @@ $0")
 (add-hook 'c-mode-hook #'set-tab)
 
 
-
-
-;; Ace jump mode
-(use-package ace-jump-mode
+(use-package avy
   :ensure t
-  :config
-  (set 'ace-jump-mode-case-fold t)
 
+  :config
   ;; favour home row keys
   (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
-    (set 'ace-jump-mode-move-keys
+    (set 'avy-keys
          (nconc first-list
-                (-difference (loop for i from ?a to ?z collect i) first-list)
-                (loop for i from ?A to ?Z collect i))))
+                (-difference (loop for i from ?a to ?z collect i) first-list))))
 
-  (set 'ace-jump-mode-scope 'window)
-  (global-set-key (kbd "C-p") 'ace-jump-mode))
+  (set 'avy-dispatch-alist nil)
+
+  (global-set-key (kbd "C-p") 'avy-goto-word-1))
 
 
 (use-package expand-region
