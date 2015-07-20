@@ -104,7 +104,6 @@
 (set 'inhibit-startup-screen t) ;; No startup screen
 (scroll-bar-mode -1);; No scroll bar
 (global-visual-line-mode 1) ;; Wrap lines at nearest word
-(global-subword-mode 1) ;; Treat CamelCase as separate words
 (set 'truncate-partial-width-windows nil) ;; Make line wrapping work for
 ;; multiple frames
 (tool-bar-mode -1) ;; Disable toolbar
@@ -198,6 +197,48 @@
 (require 'saveplace)
 (setq-default save-place t)
 (setq save-place-file (expand-file-name ".places" user-emacs-directory))
+
+
+;; Camel case word handling
+;; ============================================================
+
+;; Treat CamelCase as separate words everywhere
+(global-subword-mode 1)
+
+;; Also handle CamelCase in evil mode
+(require 'evil)
+(define-category ?U "Uppercase")
+(define-category ?u "Lowercase")
+(modify-category-entry (cons ?A ?Z) ?U)
+(modify-category-entry (cons ?a ?z) ?u)
+(make-variable-buffer-local 'evil-cjk-word-separating-categories)
+(add-hook 'subword-mode-hook
+          (lambda ()
+            (if subword-mode
+                (push '(?u . ?U) evil-cjk-word-separating-categories)
+              (setq evil-cjk-word-separating-categories
+                    (default-value 'evil-cjk-word-separating-categories)))))
+
+
+(defun un-camelcase-string (s &optional sep start)
+  "Convert CamelCase string S to lower case with word separator SEP.
+Default for SEP is a hyphen \"-\".
+
+If third argument START is non-nil, convert words after that
+index in STRING."
+  (let ((case-fold-search nil))
+    (while (string-match "[A-Z]" s (or start 1))
+      (setq s (replace-match (concat (or sep "_")
+                                     (downcase (match-string 0 s)))
+                             t nil s)))
+    (downcase s)))
+
+(defun un-camelcase-word ()
+  (interactive)
+  (let ((camel-word (buffer-substring (point)
+				      (save-excursion (forward-word) (point)))))
+    (kill-word 1)
+    (insert-string (un-camelcase-string camel-word))))
 
 
 ;; Saving
@@ -534,28 +575,6 @@ If point was already at that position, move point to beginning of line."
 
   ;; Position point ready to type or continue typing the header
   (end-of-line))
-
-
-(defun un-camelcase-string (s &optional sep start)
-  "Convert CamelCase string S to lower case with word separator SEP.
-Default for SEP is a hyphen \"-\".
-
-If third argument START is non-nil, convert words after that
-index in STRING."
-  (let ((case-fold-search nil))
-    (while (string-match "[A-Z]" s (or start 1))
-      (setq s (replace-match (concat (or sep "_")
-                                     (downcase (match-string 0 s)))
-                             t nil s)))
-    (downcase s)))
-
-
-(defun un-camelcase-word ()
-  (interactive)
-  (let ((camel-word (buffer-substring (point)
-				      (save-excursion (forward-word) (point)))))
-    (kill-word 1)
-    (insert-string (un-camelcase-string camel-word))))
 
 
 (defun generate-org-buffer ()
