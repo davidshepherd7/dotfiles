@@ -62,8 +62,8 @@
 
 ;; Pretty colours
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-;; (load-theme 'shepherd t)
-(load-theme 'adwaita t)
+(load-theme 'shepherd t)
+;; (load-theme 'adwaita t)
 
 
 (defun starting-comment-p ()
