@@ -789,12 +789,11 @@ For magit versions > 2.1.0"
 (use-package projectile
   :ensure t
   :init
-  ;; Use C-\ p as prefix
-  (set 'projectile-keymap-prefix (kbd "C-\\ p"))
+
+  ;; kill all projectile keys
+  (set 'projectile-mode-map (make-sparse-keymap))
 
   :config
-  ;; Kill C-c keys just in case
-  (define-key projectile-mode-map (kbd "C-c") nil)
 
   ;; Use projectile to open files by default, if available.
   (defun maybe-projectile-find-file ()
@@ -812,6 +811,48 @@ For magit versions > 2.1.0"
   (global-set-key (kbd "<f8>") #'projectile-grep)
 
   (set 'projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
+
+  (require 'hydra)
+
+  (defhydra hydra-projectile (:color teal
+                                     :hint nil)
+    "
+     PROJECTILE: %(projectile-project-root)
+
+     Find File            Search/Tags          Buffers                Cache
+------------------------------------------------------------------------------------------
+_s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache clear
+ _ff_: file dwim       _g_: update gtags      _b_: switch to buffer  _x_: remove known project
+ _fd_: file curr dir   _o_: multi-occur     _s-k_: Kill all buffers  _X_: cleanup non-existing
+  _r_: recent file                                               ^^^^_z_: cache current
+  _d_: dir
+
+"
+    ("a"   projectile-ag)
+    ("b"   projectile-switch-to-buffer)
+    ("c"   projectile-invalidate-cache)
+    ("d"   projectile-find-dir)
+    ("s-f" projectile-find-file)
+    ("ff"  projectile-find-file-dwim)
+    ("fd"  projectile-find-file-in-directory)
+    ("g"   ggtags-update-tags)
+    ("s-g" ggtags-update-tags)
+    ("i"   projectile-ibuffer)
+    ("K"   projectile-kill-buffers)
+    ("s-k" projectile-kill-buffers)
+    ("m"   projectile-multi-occur)
+    ("o"   projectile-multi-occur)
+    ("s-p" projectile-switch-project "switch project")
+    ("p"   projectile-switch-project)
+    ("s"   projectile-switch-project)
+    ("r"   projectile-recentf)
+    ("x"   projectile-remove-known-project)
+    ("X"   projectile-cleanup-known-projects)
+    ("z"   projectile-cache-current-file)
+    ("`"   hydra-projectile-other-window/body "other window")
+    ("q"   nil "cancel" :color blue))
+
+  (define-key projectile-mode-map (kbd "C-\\ p") #'hydra-projectile/body)
   )
 
 
