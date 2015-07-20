@@ -390,6 +390,8 @@ index in STRING."
 ;; Needs to after other file loads so that hooks are in scope
 (load-file "~/.emacs.d/lisp/ds-sensible-keys.el")
 
+(load-file "~/.emacs.d/lisp/ds-evil.el")
+
 
 ;; Save command history between sessions
 ;; ===============================================================
