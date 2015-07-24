@@ -1128,94 +1128,14 @@ $0")
                 'ess-mode-hook))
   )
 
-;; For some stupid reason ess doesn't define this autoload, or this
-;; file association!
-(autoload 'R-mode "ess-site.el" "ESS" t)
-(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
-(use-package ess
-  :ensure t
-  :config
-  (define-key ess-mode-map (kbd "C-c") nil)
-  (define-key ess-mode-map (kbd "C-x") nil)
-
-  ;; ess-mode tries to do some stupid stuff with '_' and ',',
-  ;; disable this.
-  (define-key ess-mode-map (kbd "_") nil)
-  (define-key ess-mode-map (kbd ",") nil)
-
-  (add-hook 'ess-roxy-mode-hook
-            (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
-
-  (add-hook 'ess-mode-hook
-            (lambda() (ess-set-style 'C++ 'quiet)
-              (set 'ess-arg-function-offset t)))
-
-  ;; auto newline after '{'
-  (add-hook 'ess-mode-hook
-            (lambda()
-              (add-to-list 'electric-layout-rules '( ?\{ .  after))
-              (add-to-list 'electric-layout-rules '( ?\} .  before))
-              ))
-
-  ;; Use rtags to make the tags file
-  (add-hook 'ess-mode-hook
-            (lambda()
-              (make-local-variable 'projectile-tags-command)
-              (set 'projectile-tags-command
-                   "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
-  )
-
+;; Packages to help remember keys
+;; ============================================================
 
 (use-package discover
   :config (global-discover-mode)
   :ensure t)
 
-(add-to-list 'load-path "~/.emacs.d/electric-operator")
-(load-library "electric-operator")
-(use-package electric-operator
-  :config
-  ;; Enable in some modes
-  (mapcar (lambda (hook) (add-hook hook #'electric-operator-mode))
-          '(python-mode-hook
-            ess-mode-hook
-            c-mode-hook
-            c++-mode-hook
-            java-mode-hook))
-  )
-
-(use-package yaml-mode
-  :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode)))
-
-(use-package feature-mode
-  :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("\\.feature$" . feature-mode))
-  (define-key feature-mode-map (kbd "C-c") nil)
-  (add-hook 'feature-mode-hook #'set-tab)
-  (add-hook 'feature-mode-hook  (lambda () (define-key orgtbl-mode-map (kbd "C-c") nil)))
-  )
-
-
-(use-package sgml-mode
-  :ensure t
-  :config
-  (define-key sgml-mode-map (kbd "<f5>") (lambda () (interactive)
-					   (save-buffer)
-					   (browse-url-of-buffer)))
-  (add-hook 'sgml-mode-hook #'set-tab))
-
-;; My lex mode
-(add-to-list 'load-path "~/.emacs.d/lex-mode")
-(use-package lex-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.lex\\'" . lex-mode))
-  (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
-
-
-  :demand)
 
 (use-package hydra
   :ensure t
@@ -1274,6 +1194,110 @@ $0")
   (global-set-key (kbd "C-<f1>") help-map)
   )
 
+
+;; Auto generated for all keys, but not as nicely layed out as
+;; hydra/discover-mode.
+(use-package which-key
+  :ensure t
+  :init
+
+  ;; Popup immediately (magit style)
+  (setq which-key-idle-delay 0)
+
+  ;; ;; Don' truncate key names
+  ;; (setq which-key-special-keys nil)
+
+  ;; ??ds wait for new patch ^
+
+  :config
+  (which-key-mode)
+  )
+
+
+;; For some stupid reason ess doesn't define this autoload, or this
+;; file association!
+(autoload 'R-mode "ess-site.el" "ESS" t)
+(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+
+(use-package ess
+  :ensure t
+  :config
+  (define-key ess-mode-map (kbd "C-c") nil)
+  (define-key ess-mode-map (kbd "C-x") nil)
+
+  ;; ess-mode tries to do some stupid stuff with '_' and ',',
+  ;; disable this.
+  (define-key ess-mode-map (kbd "_") nil)
+  (define-key ess-mode-map (kbd ",") nil)
+
+  (add-hook 'ess-roxy-mode-hook
+            (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
+
+  (add-hook 'ess-mode-hook
+            (lambda() (ess-set-style 'C++ 'quiet)
+              (set 'ess-arg-function-offset t)))
+
+  ;; auto newline after '{'
+  (add-hook 'ess-mode-hook
+            (lambda()
+              (add-to-list 'electric-layout-rules '( ?\{ .  after))
+              (add-to-list 'electric-layout-rules '( ?\} .  before))
+              ))
+
+  ;; Use rtags to make the tags file
+  (add-hook 'ess-mode-hook
+            (lambda()
+              (make-local-variable 'projectile-tags-command)
+              (set 'projectile-tags-command
+                   "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
+  )
+
+
+(add-to-list 'load-path "~/.emacs.d/electric-operator")
+(load-library "electric-operator")
+(use-package electric-operator
+  :config
+  ;; Enable in some modes
+  (mapcar (lambda (hook) (add-hook hook #'electric-operator-mode))
+          '(python-mode-hook
+            ess-mode-hook
+            c-mode-hook
+            c++-mode-hook
+            java-mode-hook))
+  )
+
+(use-package yaml-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode)))
+
+(use-package feature-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.feature$" . feature-mode))
+  (define-key feature-mode-map (kbd "C-c") nil)
+  (add-hook 'feature-mode-hook #'set-tab)
+  (add-hook 'feature-mode-hook  (lambda () (define-key orgtbl-mode-map (kbd "C-c") nil)))
+  )
+
+
+(use-package sgml-mode
+  :ensure t
+  :config
+  (define-key sgml-mode-map (kbd "<f5>") (lambda () (interactive)
+					   (save-buffer)
+					   (browse-url-of-buffer)))
+  (add-hook 'sgml-mode-hook #'set-tab))
+
+;; My lex mode
+(add-to-list 'load-path "~/.emacs.d/lex-mode")
+(use-package lex-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.lex\\'" . lex-mode))
+  (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
+
+
+  :demand)
 
 ;; (setq helm-dash-common-docsets '("Python 3"))
 
