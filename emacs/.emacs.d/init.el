@@ -593,12 +593,6 @@ If point was already at that position, move point to beginning of line."
   (org-mode))
 
 
-(defun clean-whitespace-and-save ()
-  (interactive)
-  (delete-trailing-whitespace)
-  (save-buffer))
-
-
 (global-set-key [home] 'smart-beginning-of-line)
 (global-set-key (kbd "C-b") 'smart-beginning-of-line)
 (global-set-key (kbd "C-\\ ;") 'insert-comment-header)
@@ -1042,12 +1036,6 @@ $0")
 (add-to-list 'compilation-error-regexp-alist-alist '(jshint "^\\(.*\\): line \\([0-9]+\\), col \\([0-9]+\\), " 1 2 3))
 (add-to-list 'compilation-error-regexp-alist 'jshint)
 
-;; always clean whitespace in javascript mode
-(defun remap-save-clean-whitespace ()
-  (interactive)
-  (local-set-key [remap save-buffer] 'clean-whitespace-and-save))
-(add-hook 'js-mode-hook 'remap-save-clean-whitespace)
-
 ;; set up tab key
 (add-hook 'js-mode-hook 'set-tab)
 
@@ -1115,29 +1103,11 @@ $0")
 ;; Clean up whitespace
 ;; ============================================================
 
-;; has to go near the end because we need some project/language specific
-;; functions.
-
-(defun preserve-trailing-whitespace-p ()
-  (interactive)
-  (or
-   ;; makefile mode doesn't play well with this
-   (string= major-mode "makefile-mode")
-
-   ;; oomph-lib doesn't stick to no trailing whitespace :(
-   (is-oomph-code)
-
-   ;; Don't do it in non-programming modes (just to be safe)
-   (not (or (derived-mode-p 'prog-mode)
-	    (eq major-mode 'ess-mode)
-            (eq major-mode 'feature-mode)
-            (eq major-mode 'sgml-mode)))))
-
-(defun maybe-delete-trailing-whitespace ()
-  (when (not (preserve-trailing-whitespace-p))
-    (delete-trailing-whitespace)))
-
-(add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
+;; Automatically clean whitespace in lines that we have touched
+(use-package ws-butler
+  :ensure t
+  :config
+  (ws-butler-global-mode))
 
 (add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
 (load-library "aggressive-fill-paragraph")
@@ -1154,7 +1124,6 @@ $0")
                 'org-mode-hook
                 'ess-mode-hook))
   )
-
 
 ;; For some stupid reason ess doesn't define this autoload, or this
 ;; file association!
