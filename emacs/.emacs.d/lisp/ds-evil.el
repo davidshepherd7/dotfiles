@@ -22,15 +22,13 @@
 
   ;; Coloured modeline when in insert mode
   ;; ============================================================
-  (defvar ds/mode-line-default-background)
+  (defvar ds/mode-line-default-background (face-attribute 'mode-line :background))
   (set 'ds/mode-line-evil-insert-background "#002900")
   (defun ds/set-mode-line-background (colour)
     (set-face-attribute 'mode-line nil :background colour))
 
   (add-hook 'evil-insert-state-entry-hook
             (lambda () (interactive)
-              (set 'ds/mode-line-default-background
-                   (face-attribute 'mode-line :background))
               (ds/set-mode-line-background ds/mode-line-evil-insert-background)))
 
   (add-hook 'evil-insert-state-exit-hook

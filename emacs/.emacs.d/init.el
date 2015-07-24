@@ -360,6 +360,28 @@ index in STRING."
   )
 
 
+;; Mode line
+;; ============================================================
+
+;; Pretty modeline
+(use-package smart-mode-line
+  :ensure t
+  :config
+  (setq sml/no-confirm-load-theme t)
+
+  (sml/setup)
+
+  (sml/apply-theme 'automatic)
+
+  ;; Shorten some directories to useful stuff
+  (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
+  (add-to-list 'sml/replacer-regexp-list
+               '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
+  (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
+  (add-to-list 'sml/replacer-regexp-list
+               '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
+  )
+
 
 ;; Load my other config files
 ;; ============================================================
@@ -393,6 +415,10 @@ index in STRING."
 ;; Needs to after other file loads so that hooks are in scope
 (load-file "~/.emacs.d/lisp/ds-sensible-keys.el")
 
+
+
+;; This needs to go after SML is loaded so that the mode line colours are
+;; correct.
 (load-file "~/.emacs.d/lisp/ds-evil.el")
 
 
@@ -759,29 +785,6 @@ For magit versions > 2.1.0"
   (global-set-key (kbd "C-\\ r v") 'list-register)
   (global-set-key (kbd "C-\\ r s") 'copy-to-register)
   (global-set-key (kbd "C-\\ r i") 'insert-register))
-
-
-;; Mode line
-;; ============================================================
-
-;; Pretty modeline
-(use-package smart-mode-line
-  :ensure t
-  :config
-  (setq sml/no-confirm-load-theme t)
-
-  (sml/setup)
-
-  (sml/apply-theme 'automatic)
-
-  ;; Shorten some directories to useful stuff
-  (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
-  (add-to-list 'sml/replacer-regexp-list
-               '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
-  (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
-  (add-to-list 'sml/replacer-regexp-list
-               '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
-  )
 
 
 ;; Projectile
