@@ -682,25 +682,15 @@ For magit versions > 2.1.0"
                          "url"))
              (cdr (magit-get-remote-branch)))))
 
-  (defun endless/visit-pull-request-url-1 ()
-    "Visit the current branch's PR on Github."
-    (interactive)
-    (browse-url
-     (format "https://github.com/%s/compare/%s"
-             (replace-regexp-in-string
-              "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1"
-              (magit-get "remote"
-                         (magit-get-current-remote)
-                         "url"))
-             (magit-get-current-branch))))
+  (define-key magit-mode-map (kbd "C-v") #'endless/visit-pull-request-url)
 
-  (define-key magit-mode-map "V" #'endless/visit-pull-request-url-1)
+  (set 'magit-revert-buffers 'silent)
+  (set 'magit-save-repository-buffers 'dontask)
+  (set 'magit-push-always-verify nil)
+  (set 'git-commit-major-mode 'markdown-mode)
 
   :ensure t)
 
-;; Use markdown mode for git commits (github displays it nicely)
-(set 'auto-mode-alist
-     (append auto-mode-alist '(("COMMIT_EDITMSG" . markdown-mode))))
 
 ;; Show changes vs VC in sidebar
 (use-package diff-hl

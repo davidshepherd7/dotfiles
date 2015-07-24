@@ -206,8 +206,8 @@
   ;; Non command settings
   ;; ============================================================
 
-  ;; Use insert state by default in git commit mode
-  (add-to-list 'evil-insert-state-modes 'git-commit-mode)
+  ;; Use insert state by default in some modes
+  (add-hook 'git-commit-mode-hook #'evil-insert-state)
   (add-to-list 'evil-insert-state-modes 'deft-mode)
 
   )
