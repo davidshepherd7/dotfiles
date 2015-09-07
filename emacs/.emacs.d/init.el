@@ -1382,6 +1382,10 @@ $0")
                       :foreground 'unspecified
                       :inherit 'error))
 
+(use-package nameless
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'nameless-mode))
 
 ;; Automagically added by customise
 ;; ============================================================
