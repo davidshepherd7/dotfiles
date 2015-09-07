@@ -20,6 +20,11 @@
 
 ;; C-x from discover mode
 
+;; In python: typing for should add : after cursor (similarly for if,
+;; while, ..)
+
+;; transpose lines easy binding, evil-ify?
+
 ;; Set up "package" package manager etc.
 ;; ============================================================
 
@@ -1194,10 +1199,8 @@ $0")
   ;; Popup immediately (magit style)
   (setq which-key-idle-delay 0)
 
-  ;; ;; Don' truncate key names
-  ;; (setq which-key-special-keys nil)
-
-  ;; ??ds wait for new patch ^
+  ;; Don' truncate key names
+  (setq which-key-special-keys nil)
 
   :config
   (which-key-mode)

@@ -2,6 +2,59 @@
   :ensure t
   :config
 
+  ;; TODO
+
+  ;; Case change
+
+  ;; Auto indent insertion
+
+  ;; Insert after character
+
+  ;; Insert newlines before/after line
+
+  ;; Replace in region
+
+  ;; Insert new comment
+
+  ;; Goto line number?
+
+  ;; Vimify delete/backspace?
+
+  ;; use vim sneak instead of search? Or vimify isearch somehow...
+
+
+  ;; Maybe use:
+
+  ;; 							*f*
+  ;; f{char}			To [count]'th occurrence of {char} to the right.  The
+  ;; 			cursor is placed on {char} |inclusive|.
+  ;; 			{char} can be entered as a digraph |digraph-arg|.
+  ;; 			When 'encoding' is set to Unicode, composing
+  ;; 			characters may be used, see |utf-8-char-arg|.
+  ;; 			|:lmap| mappings apply to {char}.  The CTRL-^ command
+  ;; 			in Insert mode can be used to switch this on/off
+  ;; 			|i_CTRL-^|.
+
+
+  ;; 							*F*
+  ;; F{char}			To the [count]'th occurrence of {char} to the left.
+  ;; 			The cursor is placed on {char} |exclusive|.
+  ;; 			{char} can be entered like with the |f| command.
+
+
+  ;; 							*t*
+  ;; t{char}			Till before [count]'th occurrence of {char} to the
+  ;; 			right.  The cursor is placed on the character left of
+  ;; 			{char} |inclusive|.
+  ;; 			{char} can be entered like with the |f| command.
+
+
+  ;; 							*T*
+  ;; T{char}			Till after [count]'th occurrence of {char} to the
+  ;; 			left.  The cursor is placed on the character right of
+  ;; 			{char} |exclusive|.
+  ;; 			{char} can be entered like with the |f| command.
+
   ;; Some bindings for these here
   (require 'projectile)
   (require 'hydra)
@@ -197,6 +250,10 @@
   (define-key ds/evil-leader-map (kbd "k") #'ido-switch-buffer)
   (define-key ds/evil-leader-map (kbd "q") #'kill-this-buffer)
 
+  (define-key ds/evil-leader-map (kbd "t") #'my-recompile)
+  (define-key ds/evil-leader-map (kbd "C-t") #'compile-with-default)
+
+  (define-key ds/evil-leader-map (kbd "n") #'projectile-vc)
 
   (define-key ds/evil-leader-map (kbd "'") #'query-replace)
   (define-key ds/evil-leader-map (kbd ";") #'eval-expression)
