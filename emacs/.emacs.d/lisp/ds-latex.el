@@ -31,12 +31,6 @@
 ;; Use isearch over whole document by default
 (reftex-isearch-minor-mode t)
 
-;; Keep whitespace clean
-(defun remap-save-clean-whitespace-latex ()
-  (interactive)
-  (local-set-key [remap save-buffer] 'clean-whitespace-and-save))
-(add-hook 'LaTeX-mode-hook 'remap-save-clean-whitespace-latex)
-
 ;; ;; Use a more normal end of paragraph
 ;; (defun latex-normal-paragraph-starts ()
 ;;   (interactive)
