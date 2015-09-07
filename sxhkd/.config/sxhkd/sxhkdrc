@@ -44,3 +44,9 @@ XF86MonBrightnessDown
 
 Print
     gnome-screenshot
+
+super + F11
+    setxkbmap gb
+
+super + F12
+    setxkbmap gb colemak
