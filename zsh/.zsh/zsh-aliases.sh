@@ -6,6 +6,9 @@ alias top='htop || top'
 # Tail -F isn't really tail anymore...c all it rcat(refresh cat)
 alias rcat='tail -F -n 100000'
 
+# We can also use tail to get cat with file names
+alias fcat='tail -n +1'
+
 # gdb with autorun and --args
 alias gdbr='gdb -ex "run" --args'
 
