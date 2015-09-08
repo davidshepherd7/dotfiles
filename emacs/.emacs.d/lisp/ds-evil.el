@@ -175,6 +175,15 @@
 
   (define-key evil-normal-state-map (kbd "q") #'quoted-insert)
 
+  (defun ds/newline-below ()
+    "Open a newline below this line"
+    (interactive)
+    (save-excursion
+      (end-of-line)
+      (newline-and-indent)))
+
+  (define-key evil-normal-state-map (kbd "M-RET") #'ds/newline-below)
+
   ;; Text object selections
   ;; ============================================================
 
