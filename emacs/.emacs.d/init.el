@@ -1254,6 +1254,8 @@ $0")
             c-mode-hook
             c++-mode-hook
             java-mode-hook))
+
+  (set 'electric-operator-c-pointer-type-style 'type)
   )
 
 (use-package yaml-mode
