@@ -2,6 +2,10 @@
   :ensure t
   :config
 
+  ;; spare keys:
+  ;; '\km,x/
+  ;; `!"£$&*_-+=
+
   ;; TODO
 
   ;; Case change
@@ -12,40 +16,7 @@
 
   ;; Goto line number?
 
-  ;; use vim sneak instead of search? Or vimify isearch somehow...
-
-
-  ;; Maybe use:
-
-  ;; 							*f*
-  ;; f{char}			To [count]'th occurrence of {char} to the right.  The
-  ;; 			cursor is placed on {char} |inclusive|.
-  ;; 			{char} can be entered as a digraph |digraph-arg|.
-  ;; 			When 'encoding' is set to Unicode, composing
-  ;; 			characters may be used, see |utf-8-char-arg|.
-  ;; 			|:lmap| mappings apply to {char}.  The CTRL-^ command
-  ;; 			in Insert mode can be used to switch this on/off
-  ;; 			|i_CTRL-^|.
-
-
-  ;; 							*F*
-  ;; F{char}			To the [count]'th occurrence of {char} to the left.
-  ;; 			The cursor is placed on {char} |exclusive|.
-  ;; 			{char} can be entered like with the |f| command.
-
-
-  ;; 							*t*
-  ;; t{char}			Till before [count]'th occurrence of {char} to the
-  ;; 			right.  The cursor is placed on the character left of
-  ;; 			{char} |inclusive|.
-  ;; 			{char} can be entered like with the |f| command.
-
-
-  ;; 							*T*
-  ;; T{char}			Till after [count]'th occurrence of {char} to the
-  ;; 			left.  The cursor is placed on the character right of
-  ;; 			{char} |exclusive|.
-  ;; 			{char} can be entered like with the |f| command.
+  ;; Improve/learn bindings for isearch integration
 
   ;; Some bindings for these here
   (require 'projectile)
@@ -58,6 +29,7 @@
   (setcdr evil-insert-state-map nil)
   (setcdr evil-normal-state-map nil)
   (setcdr evil-motion-state-map nil)
+
 
   ;; Getting to normal state
   ;; ============================================================
@@ -143,6 +115,9 @@
 
   (define-key evil-motion-state-map (kbd "{") #'evil-previous-open-brace)
   (define-key evil-motion-state-map (kbd "}") #'evil-next-close-brace)
+
+  (define-key evil-motion-state-map (kbd "j") #'evil-find-char)
+  (define-key evil-motion-state-map (kbd "g") #'evil-find-char-backward)
 
 
   ;; Actions
