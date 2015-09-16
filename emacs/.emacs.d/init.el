@@ -14,15 +14,6 @@
 
 ;; TODO:
 
-;; Bootstrap use-package
-
-;; use-package s and dash
-
-;; C-x from discover mode
-
-;; In python: typing for should add : after cursor (similarly for if,
-;; while, ..)
-
 ;; transpose lines easy binding, evil-ify?
 
 ;; Set up "package" package manager etc.
@@ -49,8 +40,9 @@
         (add-to-list 'load-path name)))))
 
 
-;; Load the use-package lib which adds a nice macro for keeping package
-;; config all wrapped up together
+;; Install and load use-package, a nice macro for keeping package config all
+;; wrapped up together
+(package-install 'use-package)
 (require 'ert) ; Need this for now...
 (load-library "bind-key")
 (load-library "use-package")
@@ -58,6 +50,11 @@
 ;; add some packages for improving package.el
 (use-package package-utils :ensure t)
 (use-package paradox :ensure t)
+
+
+;; some useful libraries
+(use-package dash :ensure t)
+(use-package s :ensure t)
 
 
 (setq global-edebug-prefix "\C-\\X")
