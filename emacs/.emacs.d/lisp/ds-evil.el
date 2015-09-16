@@ -8,17 +8,9 @@
 
   ;; Auto indent insertion
 
-  ;; Insert after character
-
-  ;; Insert newlines before/after line
-
   ;; Replace in region
 
-  ;; Insert new comment
-
   ;; Goto line number?
-
-  ;; Vimify delete/backspace?
 
   ;; use vim sneak instead of search? Or vimify isearch somehow...
 
@@ -203,6 +195,27 @@
       (newline-and-indent)))
 
   (define-key evil-normal-state-map (kbd "M-RET") #'ds/newline-below)
+
+  (defun ds/blank-line-p ()
+    (string-blank-p (thing-at-point 'line)))
+
+  (defun ds/evil-insert-new-comment ()
+    (interactive)
+    (beginning-of-line)
+    (unless (ds/blank-line-p)
+      (save-excursion (insert "\n")))
+    (ds/evil-insert-new-comment-here))
+
+  (defun ds/evil-insert-new-comment-here ()
+    (interactive)
+    (insert comment-start)
+    (insert " ")
+    (save-excursion
+      (insert comment-end)
+      (indent-for-tab-command))
+    (evil-insert-state))
+
+  (define-key evil-normal-state-map (kbd "C-;") #'ds/evil-insert-new-comment)
 
   ;; Text object selections
   ;; ============================================================
