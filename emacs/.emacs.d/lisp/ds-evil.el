@@ -62,16 +62,36 @@
   ;; Globally enable evil mode
   (evil-mode 1)
 
-  (setq evil-default-state 'normal)
-
   ;; remove all keybindings from most state keymaps
   (setcdr evil-insert-state-map nil)
   (setcdr evil-normal-state-map nil)
   (setcdr evil-motion-state-map nil)
 
-  ;; ways to get back to normal state
+  ;; Getting to normal state
+  ;; ============================================================
+
+  (setq evil-default-state 'normal)
+
+  ;; keys to get back to normal state
   (define-key evil-insert-state-map [escape] 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "<f35>") 'evil-normal-state)
+
+  ;; Double tap n for normal state
+  (use-package key-chord
+    :ensure t
+    :config
+    (key-chord-mode 1)
+    (key-chord-define evil-insert-state-map "nn" 'evil-normal-state)
+    )
+
+  ;; Go to normal state on focus out
+  (add-hook 'focus-out-hook #'evil-normal-state)
+
+  ;; Also leave insert state when using the menu
+  (define-key evil-insert-state-map (kbd "<menu>") (lambda () (interactive)
+                                                     (evil-normal-state)
+                                                     (smex)))
+
 
   ;; Coloured modeline when in insert mode
   ;; ============================================================
@@ -238,10 +258,6 @@
   ;;   (set-in-all-evil-states-but-insert "(" 'evil-jump-backward)
   ;;   (set-in-all-evil-states-but-insert ")" 'evil-jump-forward)
 
-  ;; Also leave insert state when using the menu
-  (define-key evil-insert-state-map (kbd "<menu>") (lambda () (interactive)
-                                                     (evil-normal-state)
-                                                     (smex)))
 
   ;; Leader key
   ;; ============================================================
@@ -283,12 +299,7 @@
 ;;   :config
 ;;   (define-key evil-normal-state-map #')
 ;;   )
-(use-package key-chord
-  :ensure t
-  :config
-  (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "nn" 'evil-normal-state)
-  )
+
 
 (use-package evil-matchit
   :ensure t
