@@ -598,3 +598,5 @@ export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscript
 export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/bin/"
 export PYTHONPATH="$PYTHONPATH:$HOME/oomph-lib/user_drivers/micromagnetics/etc/"
+
+export PATH="/local/david-builds/linuxbrew/bin:$PATH"

@@ -248,8 +248,10 @@ fi
 brewdir="$HOME/code/linuxbrew/bin"
 if [[ -d "$brewdir" ]]; then
     export PATH="$brewdir:$PATH"
-else
-    echo "homebrew is not installed"
+fi
+brewdir="/local/david-builds/linuxbrew/bin"
+if [[ -d "$brewdir" ]]; then
+    export PATH="$brewdir:$PATH"
 fi
 
 export PATH="$PATH:$HOME/code/google_appengine"

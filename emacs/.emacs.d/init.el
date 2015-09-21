@@ -200,6 +200,8 @@
 (setq-default save-place t)
 (setq save-place-file (expand-file-name ".places" user-emacs-directory))
 
+(setq-default tab-width 4)
+
 
 ;; Camel case word handling
 ;; ============================================================
@@ -396,7 +398,6 @@ index in STRING."
 ;; Load configs from other files
 (load-file "~/.emacs.d/lisp/ds-cpp.el")
 (load-file "~/.emacs.d/lisp/ds-latex.el")
-(load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file "~/.emacs.d/lisp/ds-scheme.el")
 (load-file "~/.emacs.d/lisp/ds-octave.el")
 (load-file "~/.emacs.d/lisp/ds-matlab.el")
@@ -407,6 +408,8 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-elisp.el")
 (load-file "~/.emacs.d/lisp/ds-java.el")
 
+(load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
+(load-file  "~/.emacs.d/lisp/ds-biosite.el")
 
 ;; Helm or ido...
 (load-file "~/.emacs.d/lisp/ds-ido.el")
