@@ -1,0 +1,11 @@
+
+# Files to ignore with hg in any/every project
+
+# build files
+CMakeFiles/*
+CMakeCache\.txt
+
+
+\.~/
+
+\#*\#

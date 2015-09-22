@@ -1,0 +1,22 @@
+[ui]
+username = David Shepherd <david.shepherd@biositesystems.com>
+ignore = ~/.hgignore
+
+[pager]
+pager = less -F -R -X
+
+[extensions]
+pager =
+progress =
+color =
+purge =
+shelve =
+graphlog =
+
+
+[color]
+custom.rev = red
+custom.tag = yellow bold
+custom.bookmark = yellow
+custom.author = blue bold
+custom.time = green

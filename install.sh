@@ -17,6 +17,8 @@ stow conky -t $HOME --ignore=".dropbox.attr"
 
 stow git -t $HOME --ignore=".dropbox.attr"
 
+stow hg -t $HOME --ignore=".dropbox.attr"
+
 mkdir -p ~/.ipython/profile_default/
 mkdir -p ~/.ipython/profile_default/startup
 stow ipython -t $HOME --ignore=".dropbox.attr"
