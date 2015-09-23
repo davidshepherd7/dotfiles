@@ -21,3 +21,15 @@ custom.tag = yellow bold
 custom.bookmark = yellow
 custom.author = blue bold
 custom.time = green
+
+[alias]
+# pretty log graphs:
+
+# Detailed
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {desc} {label('custom.time',date|age)} {label('custom.author',author|person)}" | less -FRX
+
+# Simpler
+lgs = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {label('custom.time',date|age)} {label('custom.author',author|person)}" | less -FRX
+
+# Compact log (removes empty lines)
+lgc = !$HG lg -l 50 $@ | grep '[^| ]' --color=never
