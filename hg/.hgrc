@@ -1,6 +1,7 @@
 [ui]
 username = David Shepherd <david.shepherd@biositesystems.com>
 ignore = ~/.hgignore
+editor = emacsclient -c
 
 [pager]
 pager = less -F -R -X
