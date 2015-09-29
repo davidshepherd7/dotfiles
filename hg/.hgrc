@@ -4,7 +4,7 @@ ignore = ~/.hgignore
 editor = emacsclient -c
 
 [pager]
-pager = less -F -R -X
+pager = less -F -R -X -S
 
 [extensions]
 pager =
@@ -13,7 +13,10 @@ color =
 purge =
 shelve =
 graphlog =
-
+record =
+histedit =
+crecord = ~/.hgex/crecord/
+rebase =
 
 [color]
 custom.rev = red
@@ -26,10 +29,10 @@ custom.time = green
 # pretty log graphs:
 
 # Detailed
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {desc} {label('custom.time',date|age)} {label('custom.author',author|person)}" | less -FRX
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {desc} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRX
 
 # Simpler
-lgs = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {label('custom.time',date|age)} {label('custom.author',author|person)}" | less -FRX
+lgs = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRX
 
 # Compact log (removes empty lines)
-lgc = !$HG lg -l 50 $@ | grep '[^| ]' --color=never
+lgc = !$HG lg $@ | grep '[^| ]' --color=never | less -FRX

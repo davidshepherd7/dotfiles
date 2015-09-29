@@ -5,7 +5,9 @@
 CMakeFiles/*
 CMakeCache\.txt
 
-
+# emacs files
 \.~/
-
 \#*\#
+
+# hg files
+.orig
