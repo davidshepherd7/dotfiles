@@ -999,6 +999,15 @@ $0")
 (global-set-key (kbd "C-<f7>") 'external-shell-in-dir)
 
 
+(defun external-shell-in-project-root ()
+  "Start urxvt in the current project's root"
+  (interactive)
+  (let ((default-directory (projectile-project-root)))
+    (start-process "urxvt" nil "urxvt")))
+(global-set-key (kbd "C-<f6>") 'external-shell-in-project-root)
+
+
+
 ;; deft (note taking)
 ;; ============================================================
 (use-package deft

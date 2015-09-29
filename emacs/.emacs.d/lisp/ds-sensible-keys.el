@@ -500,7 +500,6 @@ the line break."
                 '(lambda () (interactive) (find-file "~/.emacs.d/abbrev_defs")))
 (global-set-key (kbd "C-<f8>")
                 '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
-(global-set-key (kbd "C-<f6>") 'ibuffer)
 
 
 (require 'cc-mode)
