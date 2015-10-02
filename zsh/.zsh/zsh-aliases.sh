@@ -110,8 +110,10 @@ alias go='nautilus .'
 # ============================================================
 
 
-# Use hub for better github integration
-alias git='hub'
+# Use hub for better github integration, if it exists
+if [ command -v hub > /dev/null 2>&1 ]; then
+    alias git='hub'
+fi
 
 alias g='git'
 
