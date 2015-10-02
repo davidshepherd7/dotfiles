@@ -9,7 +9,24 @@
   ;; (delete-trailing-whitespace)
   (indent-region (point-min) (point-max) nil))
 
-
+;; Endings to look for with find other file. First entry will be used if we
+;; are creating it.
+(setq cc-other-file-alist
+      (quote
+       (("\\.cc\\'" (".hh" ".h"))
+        ("\\.hh\\'" (".cc" ".C"))
+        ("\\.c\\'" (".h"))
+        ("\\.h\\'" (".cpp" ".cc" ".c" ".C" ".CC" ".cxx"))
+        ("\\.C\\'" (".H" ".hh" ".h"))
+        ("\\.H\\'" (".C" ".CC"))
+        ("\\.CC\\'" (".HH" ".H" ".hh" ".h"))
+        ("\\.HH\\'" (".CC"))
+        ("\\.c\\+\\+\\'" (".h++" ".hh" ".h"))
+        ("\\.h\\+\\+\\'" (".c++"))
+        ("\\.cpp\\'" (".hpp" ".hh" ".h"))
+        ("\\.hpp\\'" (".cpp"))
+        ("\\.cxx\\'" (".hxx" ".hh" ".h"))
+        ("\\.hxx\\'" (".cxx")))))
 
 (defun my-c-mode-keys ()
   (use-local-map '())
