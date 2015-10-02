@@ -436,9 +436,7 @@ the line break."
   (interactive)
 
   (define-key haskell-mode-map (kbd "C-c") 'nil)
-  (define-key haskell-mode-map (kbd "C-x") 'nil)
-
-  (local-set-key (kbd "<f5>") 'my-recompile))
+  (define-key haskell-mode-map (kbd "C-x") 'nil))
 
 (add-hook 'haskell-mode-hook 'sensible-haskell-keys)
 
@@ -471,9 +469,7 @@ the line break."
   (interactive)
 
   (define-key sh-mode-map (kbd "C-c") 'nil)
-  (define-key sh-mode-map (kbd "C-x") 'nil)
-
-  (local-set-key (kbd "<f5>") 'my-recompile))
+  (define-key sh-mode-map (kbd "C-x") 'nil))
 
 (add-hook 'sh-mode-hook 'sensible-bash-keys)
 

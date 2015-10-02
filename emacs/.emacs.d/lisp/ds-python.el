@@ -80,8 +80,6 @@
   (local-set-key (kbd "C-`") 'next-error)
   (local-set-key (kbd "C-¬") 'previous-error)
   (local-set-key (kbd "<f6>") 'renose)
-  (local-set-key (kbd "<f5>") 'recompile)
-  (local-set-key (kbd "S-<f5>") 'python-run-file)
 
   ;; ;; Some things copied from python mode that were actually useful:
   ;; (local-set-key [remap delete-forward-char] 'py-electric-delete)

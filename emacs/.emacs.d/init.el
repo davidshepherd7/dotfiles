@@ -491,28 +491,13 @@ index in STRING."
     ;; history).
     (quit (set 'compile-command backup-compile-command))))
 
-(defun my-recompile ()
-  "Recompile if possible, otherwise compile current buffer."
-  (interactive)
-  ;; If recompile exists do it, else compile
-  (if (fboundp 'recompile) (recompile)
-    (call-interactively #'compile)))
-
-(add-hook 'compilation-mode-hook 'my-compilation-mode-keys)
-(add-hook 'compilation-shell-mode-hook 'my-compilation-mode-keys)
-
-(defun my-compilation-mode-keys ()
-  (local-set-key (kbd "<f5>") 'my-recompile)
-  (local-set-key (kbd "<C-f5>") 'compile)
-  (local-set-key (kbd "C-`") 'next-error)
-  (local-set-key (kbd "C-¬") 'previous-error)
-  (local-set-key (kbd "M-`") 'toggle-skip-compilation-warnings))
-
 (defun toggle-skip-compilation-warnings ()
   (interactive)
   (if (equal compilation-skip-threshold 1)
       (set 'compilation-skip-threshold 2)
     (set 'compilation-skip-threshold 1)))
+(define-key compilation-mode-map (kbd "M-`") #'toggle-skip-compilation-warnings)
+
 
 ;; scroll compilation buffer to first error
 (setq compilation-scroll-output 'first-error)
@@ -530,11 +515,11 @@ index in STRING."
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
 
-(global-set-key (kbd "<f5>") 'my-recompile)
-(global-set-key (kbd "C-<f5>") 'compile-with-default)
-
-(global-set-key (kbd "C-`") 'next-error)
-(global-set-key (kbd "C-¬") 'previous-error)
+(global-set-key (kbd "<f5>") #'recompile)
+(global-set-key (kbd "C-<f5>") #'compile-with-default)
+(global-set-key (kbd "<M-f5>") #'projectile-compile-project)
+(global-set-key (kbd "C-`") #'next-error)
+(global-set-key (kbd "C-¬") #'previous-error)
 
 
 ;; My functions

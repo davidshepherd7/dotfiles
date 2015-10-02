@@ -13,13 +13,12 @@
 
 (defun my-c-mode-keys ()
   (use-local-map '())
-  (local-set-key (kbd "<f5>") 'my-recompile)
   (local-set-key (kbd "C-\\ o") 'ff-find-other-file)
   (local-set-key (kbd "C-\\ C-o") 'ff-find-other-file)
 
   ;; (local-set-key [tab] 'yas-expand)
   ;; (set 'yas-fallback-behavior '(apply indent-according-to-mode))
-)
+  )
 (add-hook 'c++-mode-hook 'my-c-mode-keys)
 
 
