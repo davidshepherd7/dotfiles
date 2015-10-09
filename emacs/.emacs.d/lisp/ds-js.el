@@ -6,7 +6,7 @@
 
 (add-hook 'js-mode-hook #'electric-operator-mode)
 
-
+(require 'grep)
 (add-to-list 'grep-find-ignored-files "*.min.js")
 (add-to-list 'grep-find-ignored-files "*.min.js.map")
 
