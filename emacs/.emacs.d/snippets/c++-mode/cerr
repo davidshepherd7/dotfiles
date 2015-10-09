@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: cerr
+# --
+std::cerr << "$1" << std::endl;

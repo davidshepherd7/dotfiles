@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: coolte
+# --
+env->type_error(this) << "$1"
+                      << endl;
+return Object

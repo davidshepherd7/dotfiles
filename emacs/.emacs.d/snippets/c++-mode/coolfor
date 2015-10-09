@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: coolfor
+# --
+for(int i=${1:l}->first(); $1->more(i); i=$1->next(i)) {
+    $2 $3 = $1->nth(i);
+}
