@@ -41,3 +41,6 @@ lgc = !$HG lg $@ | grep '[^| ]' --color=never | less -FRXS
 st = st -S
 status = status -S
 
+
+[hooks]
+pre-merge = kill_gulp.sh
