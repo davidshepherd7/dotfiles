@@ -34,6 +34,9 @@
   ;; Getting to normal state
   ;; ============================================================
 
+  ;; Use evil-change-to-initial-state in places where I want normal-state
+  ;; if it's an editing mode, but emacs state for things like magit.
+
   (setq evil-default-state 'normal)
 
   ;; keys to get back to normal state
@@ -45,15 +48,15 @@
     :ensure t
     :config
     (key-chord-mode 1)
-    (key-chord-define evil-insert-state-map "nn" 'evil-normal-state)
+    (key-chord-define evil-insert-state-map "nn" #'evil-change-to-initial-state)
     )
 
   ;; Go to normal state on focus out
-  (add-hook 'focus-out-hook #'evil-normal-state)
+  (add-hook 'focus-out-hook #'evil-change-to-initial-state)
 
   ;; Also leave insert state when using the menu
   (define-key evil-insert-state-map (kbd "<menu>") (lambda () (interactive)
-                                                     (evil-normal-state)
+                                                     (evil-change-to-initial-state)
                                                      (smex)))
 
 
