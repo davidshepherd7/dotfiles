@@ -92,6 +92,9 @@ install_brew_packages () {
     brew update
     < "$rcdir/brew_package_list" x brew install %
 }
+
+install_gem_packages () {
+    <  "$rcdir/gem_package_list" x sudo gem install %
 }
 
 update () {
@@ -100,6 +103,7 @@ update () {
 
     install_packages
     install_pip_packages
+    install_gem_packages
     install_brew_packages
 }
 
