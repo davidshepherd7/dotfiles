@@ -116,8 +116,8 @@
   (define-key evil-motion-state-map (kbd "{") #'evil-previous-open-brace)
   (define-key evil-motion-state-map (kbd "}") #'evil-next-close-brace)
 
-  (define-key evil-motion-state-map (kbd "j") #'evil-find-char)
-  (define-key evil-motion-state-map (kbd "g") #'evil-find-char-backward)
+  (define-key evil-motion-state-map (kbd "j") #'evil-find-char-to)
+  (define-key evil-motion-state-map (kbd "g") #'evil-find-char-to-backward)
 
 
   ;; Actions
