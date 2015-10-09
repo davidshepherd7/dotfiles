@@ -1254,6 +1254,11 @@ $0")
             java-mode-hook))
 
   (set 'electric-operator-c-pointer-type-style 'type)
+
+  ;; Disable <, > in C++: support isn't good enough yet
+  (electric-operator-add-rules-for-mode 'c++-mode
+                                        (cons "<" nil)
+                                        (cons ">" nil))
   )
 
 (use-package yaml-mode
