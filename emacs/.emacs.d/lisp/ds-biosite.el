@@ -46,3 +46,7 @@
   (interactive)
   (setq indent-tabs-mode t))
 (add-hook 'cmake-mode-hook #'ds/biosite-cmake-style)
+
+(add-to-list 'grep-find-ignored-directories "boron/web_applications/app")
+(add-to-list 'grep-find-ignored-directories "boron/web_applications/dev-app")
+(add-to-list 'grep-find-ignored-directories "build/")
