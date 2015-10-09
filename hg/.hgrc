@@ -29,10 +29,15 @@ custom.time = green
 # pretty log graphs:
 
 # Detailed
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {desc} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRX
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRXS
 
 # Simpler
-lgs = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRX
+lgs = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRXS
 
 # Compact log (removes empty lines)
-lgc = !$HG lg $@ | grep '[^| ]' --color=never | less -FRX
+lgc = !$HG lg $@ | grep '[^| ]' --color=never | less -FRXS
+
+# Substate friendly status
+st = st -S
+status = status -S
+

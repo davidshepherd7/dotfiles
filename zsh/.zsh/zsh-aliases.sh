@@ -73,22 +73,25 @@ alias ai='sudo apt-get install -yq'
 alias arm="sudo apt-get remove -yq"
 alias acs="apt-cache search"
 
+rcdir="$HOME/Dropbox/linux_setup/rcfiles"
+
 install_packages ()
 {
     sudo apt-get update
-    package_list="$HOME/Dropbox/linux_setup/rcfiles/package_list"
+    package_list="$rcdir/package_list"
     < $package_list | xargs sudo apt-get install -y -q
 }
 
 install_pip_packages ()
 {
-    package_list="$HOME/Dropbox/linux_setup/rcfiles/pip_package_list"
+    package_list="$rcdir/pip_package_list"
     < $package_list | xargs sudo pip3 install --upgrade
 }
 
 install_brew_packages () {
     brew update
-    < "$HOME/Dropbox/linux_setup/rcfiles/brew_package_list" x brew install %
+    < "$rcdir/brew_package_list" x brew install %
+}
 }
 
 update () {

@@ -4,7 +4,7 @@
 
 
 # Directory for zsh rc files:
-rcdir="$HOME/.zsh"
+zshdir="$HOME/.zsh"
 
 
 # Completion
@@ -288,14 +288,14 @@ export ANT_ARGS='-emacs -logger org.apache.tools.ant.listener.AnsiColorLogger'
 # ============================================================
 
 # Load key binds
-source ${rcdir}/zsh-bindings.sh
+source ${zshdir}/zsh-bindings.sh
 
 # Load aliases and simple functions
-source ${rcdir}/zsh-aliases.sh
+source ${zshdir}/zsh-aliases.sh
 
 # Load work specific aliases/functions
-source ${rcdir}/zsh-oomph-aliases.sh
-source ${rcdir}/zsh-classifier-aliases.sh
+source ${zshdir}/zsh-oomph-aliases.sh
+source ${zshdir}/zsh-classifier-aliases.sh
 
 # e function
-source ${rcdir}/emacs-read-stdin/emacs-read-stdin.sh
+source ${zshdir}/emacs-read-stdin/emacs-read-stdin.sh

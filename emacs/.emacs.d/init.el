@@ -437,7 +437,8 @@ index in STRING."
 (set 'savehist-additional-variables '(kill-ring
                                       search-ring
                                       regexp-search-ring
-                                      compile-command))
+                                      compile-command
+                                      compilation-directory))
 
 ;; Enable save history (must be done after changing any variables).
 (savehist-mode 1)
@@ -791,7 +792,7 @@ For magit versions > 2.1.0"
 
   (set 'projectile-use-git-grep t)
 
-  (global-set-key (kbd "<f8>") #'projectile-grep)
+  (global-set-key (kbd "<f8>") #'projectile-ag)
 
   (set 'projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
 
@@ -1408,7 +1409,12 @@ $0")
  '(org-startup-folded nil)
  '(safe-local-variable-values
    (quote
-    ((TeX-master . "../poster")
+    ((projectile-project-compilation-dir . "../build/")
+     (projectile-project-compilation-cmd . "ninja")
+     (projectile-project-relative-compilation-dir . "build/")
+     (projectile-project-compilation-dir . "build/")
+     (projectile-project-compilation-dir . t)
+     (TeX-master . "../poster")
      (TeX-master . "./main_poster")
      (TeX-master . "../main_poster")
      (TeX-master . t)
@@ -1424,3 +1430,9 @@ $0")
 (when (not ds/emacs-up-to-date?)
   (set-face-attribute 'mode-line nil
                       :background "dark red"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

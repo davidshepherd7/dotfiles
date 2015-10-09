@@ -74,8 +74,8 @@ octave
 astyle
 keychain
 gtkpod
-ack-grep
 atool
+silversearcher-ag
 curl
 parallel
 rar
