@@ -1100,6 +1100,7 @@ $0")
 (use-package ws-butler
   :ensure t
   :config
+  (set 'ws-butler-keep-whitespace-before-point nil)
   (ws-butler-global-mode))
 
 (add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
