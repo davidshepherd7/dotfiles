@@ -407,6 +407,7 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-haskell.el")
 (load-file "~/.emacs.d/lisp/ds-elisp.el")
 (load-file "~/.emacs.d/lisp/ds-java.el")
+(load-file "~/.emacs.d/lisp/ds-js.el")
 
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-biosite.el")
