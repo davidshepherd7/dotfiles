@@ -285,11 +285,15 @@
 
   )
 
-;; (use-package evil-surround
-;;   :ensure t
-;;   :config
-;;   (define-key evil-normal-state-map #')
-;;   )
+(use-package evil-surround
+  :ensure t
+  :config
+  ;; Disable default keys
+  (set 'evil-surround-mode-map (make-sparse-keymap))
+
+  ;; use w instead
+  (define-key evil-normal-state-map (kbd "w") #'evil-surround-edit)
+  )
 
 
 (use-package evil-matchit
