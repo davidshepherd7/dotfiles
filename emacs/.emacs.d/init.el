@@ -653,7 +653,7 @@ If point was already at that position, move point to beginning of line."
 		  (indent-region (region-beginning) (region-end) nil))))))
 
 
-;; Git
+;; VC
 ;; ============================================================
 
 (use-package magit
@@ -682,6 +682,23 @@ For magit versions > 2.1.0"
   (set 'git-commit-major-mode 'markdown-mode)
 
   :ensure t)
+
+(use-package monky
+  :ensure t
+  :config
+  (set-face-attribute 'monky-diff-add nil
+                      :background "#335533"
+                      :foreground "#ddffdd")
+
+  (set-face-attribute 'monky-diff-del nil
+                      :background "#553333"
+                      :foreground "#ffddd")
+
+  (set-face-attribute 'monky-diff-hunk-header nil
+                      :weight 'bold)
+
+  (set 'monky-process-type 'cmdserver)
+  )
 
 
 ;; Show changes vs VC in sidebar

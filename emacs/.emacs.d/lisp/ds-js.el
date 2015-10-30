@@ -12,3 +12,5 @@
 
 ;; Don't really know what these are but they show up in the biosite repo
 (add-to-list 'grep-find-ignored-files "*.bmml")
+
+(add-hook 'js-mode-hook #'aggressive-indent-mode)

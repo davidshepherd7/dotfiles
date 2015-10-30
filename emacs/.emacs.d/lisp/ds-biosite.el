@@ -19,9 +19,16 @@
 
   (c-set-offset 'substatement-open '0)
 
+  ;; Indent extra function argument line by 1 tab
   (c-set-offset 'arglist-cont-nonempty '+)
   (c-set-offset 'arglist-intro '+)
-  (c-set-offset 'arglist-close '+))
+
+  ;; Don't indent trailing `)` in functions
+  (c-set-offset 'arglist-close '0)
+
+  ;; Don't indent braces for enums
+  (c-set-offset 'brace-list-open 0)
+  )
 
 (add-hook 'c++-mode-hook #'biosite-c-style)
 
@@ -51,3 +58,19 @@
 (add-to-list 'grep-find-ignored-directories "boron/web_applications/app")
 (add-to-list 'grep-find-ignored-directories "boron/web_applications/dev-app")
 (add-to-list 'grep-find-ignored-directories "build/")
+
+
+(defun ds/biosite-test-to-main ()
+  (--> (buffer-file-name)
+       (file-relative-name it (projectile-project-root))
+       (replace-regexp-in-string "/tests/" "/" it)
+       (replace-regexp-in-string "\.cpp" ".h" it)))
+
+;; align commas (for PA_SERIALISE macros)
+(require 'align)
+(add-to-list 'align-rules-list
+             '(align-biosite-comma
+               (regexp . ",\\(\\s-*\\)[^\\s-*]")
+               (group . 1)
+               (modes . '(c-mode c++-mode))
+               (repeat . nil)))

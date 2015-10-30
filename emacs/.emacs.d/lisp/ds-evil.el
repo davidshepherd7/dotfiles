@@ -48,7 +48,7 @@
     :ensure t
     :config
     (key-chord-mode 1)
-    (key-chord-define evil-insert-state-map "nn" #'evil-change-to-initial-state)
+    (key-chord-define evil-insert-state-map "ii" #'evil-change-to-initial-state)
     )
 
   ;; Go to normal state on focus out
