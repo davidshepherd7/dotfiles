@@ -38,3 +38,5 @@ sudo stow hwdb -t /etc/udev/hwdb.d --ignore=".dropbox.attr"
 
 # Just do a plain copy for this, links don't seem to work
 sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
+
+stow bin -t $HOME --ignore=".dropbox.attr"

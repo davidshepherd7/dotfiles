@@ -31,8 +31,9 @@ TEXT
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
- Dropbox: ${execi 6 dropbox status | sed -n 1p} \
- apt-get: ${execi 60 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'} \
+ Dropbox: ${execi 6 dropbox status | sed -n 1p}    \
+ apt-get: ${execi 60 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
+ layout: ${execi 0.1 keyboard-layout.sh }    \
  ${battery} \
-                               \
+               \
  ${time %H:%M  %d/%m/%Y}

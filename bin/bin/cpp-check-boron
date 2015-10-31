@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+# dir is $1 or "."
+boron_root="${1-.}"
+
+cppcheck "$boron_root" \
+         --quiet --enable=all --force \
+         -i common boron/web_applications -i boron/web_boron -i boron/web_browser/-i boron/web_client \
+         -i fluorine -i sodium -i boron/client -i build \
+         --std=c++11 \
+         -j 8 \
+         --suppress=variableScope \
+         \
+         --suppress=commaSeparatedReturn:boron/cscs_server/get_cscs_card_colour_map.cpp \
+         --suppress=unusedPrivateFunction:boron/event_server/event_server.h \
+         --suppress=uninitMemberVar:common/common/optional.h \
+         --suppress=arrayIndexOutOfBounds:boron/tests/db_tests/canonical_user_ids.cpp
+
+
+# -D BOOST_TEST_MESSAGE -D BOOST_REQUIRE_EQUAL
+
+# --force makes it check all combinations of #defines
+
+# -i flags ignore things that aren't boron, and the client code because it's old
+
+# -D flag is to hide some warnings about these macros being used in #ifdefs

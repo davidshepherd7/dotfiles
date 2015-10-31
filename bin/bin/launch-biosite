@@ -1,0 +1,41 @@
+#!/bin/bash
+
+
+# TODO: use getopts for real parsing
+launch_client="false"
+if [[ "$1" = "-c" ]]; then
+    launch_client="true"
+fi
+
+
+set -o errexit
+set -o nounset
+
+label ()
+{
+    my_label="$1"
+    color="$2"
+    awk "{ print \"[${color}${my_label}\033[0m]\t\" \$0 }"
+}
+
+# TODO: leave colour from logging library in output
+
+# TODO: be smarter about finding build dir?
+cd ~/code/boron-unstable/build
+
+# Kill all jobs on exit of script (i.e. on Ctrl-C)
+trap 'kill $(jobs -p)' EXIT
+
+bin/boron-event-server 2>&1 | label "event" "\033[0;34m" &
+bin/boron-api-server --server-root ../boron/web_applications/dev-app 2>&1 | label " api  " "\033[0;36m" &
+bin/boron-biometric-node 2>&1 | label "bio" "\033[0;35m" &
+bin/boron-job-server 2>&1 | label "job" "\033[0;33m" &
+bin/boron-report-server 2>&1 | label "report" "\033[0;37m" &
+bin/boron-cscs-server 2>&1 | label "cscs" "\033[0;31m" &
+
+if [[ "$launch_client" = "true" ]]; then
+    bin/boron-client 2>&1 | label "client" "\033[1;35m" &
+fi
+
+# Sleep until interrupted
+sleep infinity
