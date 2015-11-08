@@ -92,3 +92,8 @@ URxvt*saveLines:32767
 URxvt.scrollWithBuffer: true
 URxvt.scrollTtyOutput: false
 URxvt.scrollTtyKeypress: true
+
+! Enable extensions (default includes searchable-scrollback, matcher allows
+! clickable URLs).
+URxvt.perl-ext-common: default,matcher
+URxvt.matcher.button: 1
