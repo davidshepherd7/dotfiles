@@ -2,7 +2,7 @@ super + t
     urxvt
 
 super + r
-    firefox
+    sensible-browser
 
 super + s
     emacsclient -c -n -e '(switch-to-buffer nil)'
@@ -11,7 +11,7 @@ super + m
     emacsclient -c -n -e '(new-clean-deft)'
 
 super + a
-    firefox -new-window 'inbox.google.com'
+    sensible-browser 'inbox.google.com'
 
 super + p
     dmenu_run

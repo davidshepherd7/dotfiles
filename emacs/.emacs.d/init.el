@@ -133,9 +133,9 @@
 ;; Auto-newlines after { } etc.
 ;; (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-newline 1)))
 
-;; Use chrome not firefox to open urls
+;; Open urls
 (set 'browse-url-browser-function 'browse-url-generic)
-(set 'browse-url-generic-program "firefox")
+(set 'browse-url-generic-program "sensible-browser")
 
 ;; Draw a line accross the screen instead of ^L for page breaks
 (use-package page-break-lines
