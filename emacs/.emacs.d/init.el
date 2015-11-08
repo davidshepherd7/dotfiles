@@ -412,14 +412,14 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-biosite.el")
 
-;; Helm or ido...
-(load-file "~/.emacs.d/lisp/ds-ido.el")
-(load-file "~/.emacs.d/lisp/ds-helm.el")
-
-
 ;; Major changes to keybinds
 ;; Needs to after other file loads so that hooks are in scope
 (load-file "~/.emacs.d/lisp/ds-sensible-keys.el")
+
+;; Helm or ido. Goes after keybinds so that we can temporarily override
+;; them with helm keys
+;; (load-file "~/.emacs.d/lisp/ds-ido.el")
+(load-file "~/.emacs.d/lisp/ds-helm.el")
 
 
 
@@ -801,9 +801,12 @@ For magit versions > 2.1.0"
   (defun maybe-projectile-find-file ()
     (interactive)
     (if (projectile-project-p)
-        (projectile-find-file)
-      (call-interactively #'find-file)))
+        (helm-projectile-find-file)
+      (call-interactively #'helm-find-files)))
   (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
+
+  (with-eval-after-load 'helm
+    (set 'projectile-completion-system 'helm))
 
   ;; Use everywhere
   (projectile-global-mode)
@@ -1316,8 +1319,10 @@ $0")
 
 ;; (setq helm-dash-common-docsets '("Python 3"))
 
-(add-to-list 'load-path "~/code/helm-dash")
+;; (add-to-list 'load-path "~/code/helm-dash")
 (use-package helm-dash
+  :ensure t
+
   :config
 
   ;; base docsets

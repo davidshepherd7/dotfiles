@@ -248,7 +248,7 @@ the line break."
 ;; Now assign new keys for the things we just wrote all over
 (global-set-key (kbd "C-\\") ctl-x-map)
 (global-set-key (kbd "C-\\ C-\\") 'exchange-point-and-mark)
-(global-set-key (kbd "M-\\") 'execute-extended-command) ;; also menu key
+;; (global-set-key (kbd "M-\\") 'execute-extended-command) ;; also menu key
 
 ;; Don't have the suspend button somewhere that I can press it easily...
 (global-set-key (kbd "C-\\ C-z") nil)
