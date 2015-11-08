@@ -13,4 +13,8 @@ sys.path.insert(0, '/home/david/.gdb_pretty_printers/Boost-Pretty-Printer')
 import boost.latest
 boost.register_printers()
 
+sys.path.insert(0, '/home/david/.gdb_pretty_printers/qt4_printers')
+from qt4 import register_qt4_printers
+register_qt4_printers (None)
+
 end
