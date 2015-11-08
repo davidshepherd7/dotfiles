@@ -42,6 +42,21 @@ lgc = !$HG lg $@ | grep '[^| ]' --color=never | less -FRXS
 st = st -S
 status = status -S
 
+# View shelved changesets
+shs = !$HG shelve --list --patch $@ --color=always | less -FRXS
+
+
+# Deal with gulp better
+diff = diff --git --exclude 'path:boron/web_applications/app/'
+ungulp = revert --include 'path:boron/web_applications/app' --all
+
+
+# Interact with RhodeCode
+pr = !pa-pull-request.sh
+
+
+# Manifest with better xargs integration
+manifest0 = !$HG manifest | tr '\n' '\0'
 
 [hooks]
 pre-merge = kill_gulp.sh

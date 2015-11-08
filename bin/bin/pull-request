@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -o errexit
-set -o nounset
-
-firefox "http://gauss.pa/hg/$USER/boron-unstable/pull-request/new"
