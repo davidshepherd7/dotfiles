@@ -163,6 +163,9 @@
   (define-key evil-normal-state-map (kbd "t") #'evil-insert)
   (define-key evil-normal-state-map (kbd "T") #'evil-append)
 
+  (define-key evil-normal-state-map (kbd "B") (lambda () (interactive) (evil-beginning-of-line) (evil-insert 1)))
+  (define-key evil-normal-state-map (kbd "L") (lambda () (interactive) (evil-end-of-line) (evil-append 1)))
+
   (define-key evil-normal-state-map (kbd "q") #'quoted-insert)
 
   (defun ds/newline-below ()
