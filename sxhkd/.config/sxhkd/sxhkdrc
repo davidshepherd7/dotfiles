@@ -26,6 +26,17 @@ super + period
     urxvt -e ipython3
 
 
+# numpad launchers
+KP_End
+    urxvt
+
+KP_Down
+    emacsclient -c -n -e '(switch-to-buffer nil)'
+
+KP_Next
+    sensible-browser
+
+
 # function keys
 XF86AudioMute
     amixer -D pulse sset Master mute

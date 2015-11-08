@@ -212,3 +212,19 @@ myKeys = [
        | (tag, key)  <- zip myWorkspaces "123456789"
        , (otherModMasks, action) <- [ ("", windows . W.view)
        , ("S-", windows . W.shift)]]
+
+  ++
+  [
+    ("<KP_Insert>", windows W.focusUp)
+    , ("<KP_Delete>", windows W.focusDown)
+
+    , ("<KP_Left>", prevWS)
+    , ("<KP_Begin>", nextScreen)
+    , ("<KP_Right>", nextWS)
+
+    , ("<KP_Home>", shiftToPrev)
+    , ("<KP_Up>", shiftNextScreen)
+    , ("<KP_Prior>", shiftToNext)
+
+    , ("<KP_Subtract>", kill)
+  ]
