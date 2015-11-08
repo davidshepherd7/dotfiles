@@ -190,6 +190,13 @@
 ;; Automatically add closing character where appropriate
 (add-hook 'prog-mode-hook #'electric-pair-mode)
 
+;; Highlight todo etc.
+(defun highlight-todos ()
+  (interactive)
+  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|HACK\\|??ds\\):" 1 font-lock-warning-face t))))
+(add-hook 'prog-mode-hook 'highlight-todos)
+(add-hook 'text-mode-hook 'highlight-todos)
+
 ;; show number of matches when searching
 (use-package anzu
   :ensure t
