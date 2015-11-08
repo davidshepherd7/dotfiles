@@ -14,3 +14,10 @@
 (add-to-list 'grep-find-ignored-files "*.bmml")
 
 (add-hook 'js-mode-hook #'aggressive-indent-mode)
+
+;; Show function as lambda. Append prettify-symbols-mode so that symbol for
+;; function is added before the mode is enabled.
+(defun ds/pretty-function ()
+  (add-to-list 'prettify-symbols-alist '("function" . 955)))
+(add-hook 'js-mode-hook #'ds/pretty-function)
+(add-hook 'js-mode-hook #'prettify-symbols-mode t)
