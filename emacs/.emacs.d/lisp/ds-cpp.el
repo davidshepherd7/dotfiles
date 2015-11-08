@@ -72,3 +72,8 @@ access functions are BAD for class access (too much copying)."
       (insert "{")
       (newline-and-indent) (end-of-line) (newline-and-indent)
       (insert "}"))))
+
+;; Parse cppcheck output
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(cppcheck "\\[\\([^]]*\\):\\([0-9]+\\)\\]:" 1 2))
+(add-to-list 'compilation-error-regexp-alist 'cppcheck)
