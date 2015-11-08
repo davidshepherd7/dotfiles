@@ -177,6 +177,7 @@ the line break."
       (add-hook 'prog-mode-hook 'set-tab)
       (add-hook 'nxml-mode-hook 'set-tab)
       (add-hook 'org-mode-hook 'set-tab)
+      (add-hook 'c++-mode-hook 'set-tab t)
       )
 
 
