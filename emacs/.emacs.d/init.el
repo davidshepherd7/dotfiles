@@ -188,7 +188,7 @@
 (make-variable-buffer-local 'electric-layout-rules)
 
 ;; Automatically add closing character where appropriate
-(electric-pair-mode)
+(add-hook 'prog-mode-hook #'electric-pair-mode)
 
 ;; show number of matches when searching
 (use-package anzu
