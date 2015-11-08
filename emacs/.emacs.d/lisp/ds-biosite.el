@@ -28,6 +28,9 @@
 
   ;; Don't indent braces for enums
   (c-set-offset 'brace-list-open 0)
+
+  ;; Indent by single tab for streaming
+  (c-set-offset 'stream-op '+)
   )
 
 (add-hook 'c++-mode-hook #'biosite-c-style)

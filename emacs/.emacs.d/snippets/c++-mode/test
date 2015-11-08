@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: test
+# --
+#include "catch/catch.hpp"
+
+#include "${1:`(ds/biosite-test-to-main)`}"
+
+TEST_CASE("$2")
+{
+$0
+}

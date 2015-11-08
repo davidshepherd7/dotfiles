@@ -1309,9 +1309,6 @@ $0")
 (use-package sgml-mode
   :ensure t
   :config
-  (define-key sgml-mode-map (kbd "<f5>") (lambda () (interactive)
-					   (save-buffer)
-					   (browse-url-of-buffer)))
   (add-hook 'sgml-mode-hook #'set-tab))
 
 ;; My lex mode

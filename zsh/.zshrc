@@ -167,7 +167,7 @@ export EDITOR="emacsclient -c -n"
 export ALTERNATE_EDITOR=''
 
 
-# Make
+# Compiling and testing
 # ============================================================
 
 # How many cores do we have? Find out from /proc/cpuinfo (using regexp matching
@@ -178,6 +178,13 @@ NCORES=$(grep --count '^processor[[:space:]]*:' /proc/cpuinfo)
 # with one more job than there are cores.
 NJOBS=$(($NCORES + 1))
 export MAKEFLAGS="-j$NJOBS"
+
+# and use it for ctest too
+export CTEST_PARALLEL_LEVEL="$NJOBS"
+export CTEST_OUTPUT_ON_FAILURE="yes"
+
+# Use GNU gold instead of ld for linking
+export PATH="/usr/lib/gold-ld:${PATH}"
 
 
 # PATH additions
@@ -299,3 +306,10 @@ source ${zshdir}/zsh-classifier-aliases.sh
 
 # e function
 source ${zshdir}/emacs-read-stdin/emacs-read-stdin.sh
+
+source ${zshdir}/biosite.sh
+
+
+# ccache config
+# ============================================================
+export CCACHE_SLOPPINESS="time_macros"

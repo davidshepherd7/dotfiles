@@ -17,6 +17,7 @@ record =
 histedit =
 crecord = ~/.hgex/crecord/
 rebase =
+strip =
 
 [color]
 custom.rev = red

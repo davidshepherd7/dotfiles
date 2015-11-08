@@ -11,4 +11,4 @@ CMakeCache\.txt
 .dir-locals.el
 
 # hg files
-.orig
+\.orig
