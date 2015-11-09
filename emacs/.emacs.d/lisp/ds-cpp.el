@@ -74,6 +74,7 @@ access functions are BAD for class access (too much copying)."
       (insert "}"))))
 
 ;; Parse cppcheck output
+(require 'compile)
 (add-to-list 'compilation-error-regexp-alist-alist
              '(cppcheck "\\[\\([^]]*\\):\\([0-9]+\\)\\]:" 1 2))
 (add-to-list 'compilation-error-regexp-alist 'cppcheck)
