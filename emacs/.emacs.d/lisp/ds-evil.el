@@ -57,7 +57,7 @@
   ;; Also leave insert state when using the menu
   (define-key evil-insert-state-map (kbd "<menu>") (lambda () (interactive)
                                                      (evil-change-to-initial-state)
-                                                     (smex)))
+                                                     (helm-M-x)))
 
 
   ;; Coloured modeline when in insert mode
