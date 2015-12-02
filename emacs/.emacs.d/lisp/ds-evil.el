@@ -148,6 +148,13 @@
     (eval-region beg end t))
   (define-key evil-normal-state-map (kbd "#") #'evil-eval)
 
+  (evil-define-operator evil-mark (beg end)
+    (goto-char beg)
+    (set-mark-command nil)
+    (goto-char end)
+    (setq deactivate-mark nil))
+  (define-key evil-normal-state-map (kbd "'") #'evil-mark)
+
   ;; (evil-define-operator evil-query-replace (beg end from-string to-string)
   ;;   (call-interactively #'query-replace from-string to-string nil beg end))
   ;; (define-key evil-normal-state-map (kbd "'") #'evil-query-replace)
