@@ -61,3 +61,8 @@ super + F11
 
 super + F12
     setxkbmap gb colemak
+
+
+# biosite
+super + f
+    urxvt -e psql -U boron_user boron
