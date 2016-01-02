@@ -3,6 +3,10 @@
 set -o errexit
 set -o nounset
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+
 stow zsh -t $HOME --ignore=".dropbox.attr"
 
 mkdir -p ~/.emacs.d
@@ -40,3 +44,7 @@ sudo stow hwdb -t /etc/udev/hwdb.d --ignore=".dropbox.attr"
 sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
 
 stow bin -t $HOME --ignore=".dropbox.attr"
+
+
+# Firefox needs extra tricks to find the user dir
+./firefox/setup-firefox.sh

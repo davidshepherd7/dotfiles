@@ -1,3 +1,6 @@
+
+// Firemacs
+
 user_pref("firemacs2.AccessRegex", "");
 user_pref("firemacs2.AllTabs", "");
 user_pref("firemacs2.ArrowNextChar", "");
@@ -80,3 +83,7 @@ user_pref("firemacs2.ViScrollTop", "<");
 user_pref("firemacs2.WalkForm", true);
 user_pref("firemacs2.WebSearch", "");
 user_pref("firemacs2.XPrefix", "C-\\");
+
+
+// itsalltext
+user_pref("extensions.itsalltext.editor", "/home/david/Dropbox/linux_setup/rcfiles/bin/its-all-text-emacs.sh");
