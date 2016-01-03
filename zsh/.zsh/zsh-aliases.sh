@@ -454,3 +454,17 @@ regenerate_all_completions ()
 # Games
 # ============================================================
 alias hlands="gargoyle-free $HOME/Dropbox/other/HadeanLands-generic/HadeanLands.gblorb"
+
+# Profiling
+# ============================================================
+
+perf_flame()
+{
+    # Using pl scripts from https://github.com/brendangregg/FlameGraph
+
+    set -o nounset
+
+    tempfile="$(mktemp evince-$USER.XXXXXXX --tmpdir)"
+    perf script | stackcollapse-perf.pl - | flamegraph.pl - > "$tempfile"
+    sensible-browser "$tempfile"
+}
