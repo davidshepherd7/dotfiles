@@ -71,6 +71,21 @@ compdef gdiff=diff
 # zmv magic
 alias mmv='noglob zmv -W'
 
+# Rename files with .bak appended
+bak()
+{
+    for arg in "$@"; do
+        cp -r "$arg" "$arg.bak"
+    done
+}
+
+unbak()
+{
+    for arg in "$@"; do
+        mv "$arg" "${arg%%.bak}"
+    done
+}
+
 # package manager
 # ============================================================
 
