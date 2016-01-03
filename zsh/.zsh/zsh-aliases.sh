@@ -129,8 +129,6 @@ update () {
 
 alias pm='sudo pacmatic -S'
 
-# Open location in gnome
-alias go='nautilus .'
 
 
 # Git aliases

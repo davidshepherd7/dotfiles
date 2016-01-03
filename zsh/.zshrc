@@ -289,6 +289,12 @@ export PYTHONPATH="$PYTHONPATH:$HOME/code/google_appengine/lib/webapp2-2.5.1"
 
 export ANT_ARGS='-emacs -logger org.apache.tools.ant.listener.AnsiColorLogger'
 
+# Go
+# ============================================================
+
+export GOPATH="$HOME/code/go"
+export PATH="$PATH:$HOME/code/go/bin"
+
 
 
 # Imports
