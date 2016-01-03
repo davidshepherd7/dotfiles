@@ -21,6 +21,7 @@ gap_y 0
 update_interval 0.2
 
 
+# Dropbox: ${execi 6 dropbox status | sed -n 1p}    \
 
 TEXT
  (${desktop}/${desktop_number}) \
@@ -31,9 +32,8 @@ TEXT
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
- Dropbox: ${execi 6 dropbox status | sed -n 1p}    \
- apt-get: ${execi 60 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
+ apt-get: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
  layout: ${execi 0.1 keyboard-layout.sh }    \
  ${battery} \
-               \
- ${time %H:%M  %d/%m/%Y}
+                                                              \
+ ${time %H:%M  %d/%m/%Y} #
