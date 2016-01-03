@@ -48,3 +48,5 @@ stow bin -t $HOME --ignore=".dropbox.attr"
 
 # Firefox needs extra tricks to find the user dir
 ./firefox/setup-firefox.sh
+
+stow calibre -t "$HOME" --ignore=".dropbox.attr"
