@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: btd
+# --
+boost::posix_time::time_duration

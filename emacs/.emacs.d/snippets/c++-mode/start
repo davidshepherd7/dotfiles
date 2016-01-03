@@ -1,0 +1,8 @@
+# key: start
+# --
+#ifndef ${1:`(upcase (replace-regexp-in-string "[.-/]" "_" (file-relative-name (buffer-file-name) (projectile-project-root))))`_INCLUDED}
+#define $1
+
+$0
+
+#endif // $1

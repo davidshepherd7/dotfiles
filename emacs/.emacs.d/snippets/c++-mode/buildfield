@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: buildfield
+# --
+move_user_builder& $1(${2:$1_type} $1_)
+{
+m_$1 = $1_;
+return *this;
+}

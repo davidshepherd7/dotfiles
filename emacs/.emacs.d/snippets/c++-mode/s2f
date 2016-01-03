@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: s2f
+# --
+PA_SERIALISE2_FIELD_FWD($0);

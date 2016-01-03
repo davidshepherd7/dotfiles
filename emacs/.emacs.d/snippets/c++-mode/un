@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: un
+# --
+using namespace ${1:boron};
+$0

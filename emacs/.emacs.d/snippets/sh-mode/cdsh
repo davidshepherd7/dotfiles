@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: cdsh
+# --
+DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
+${1:cd "$DIR"}
+
+$0

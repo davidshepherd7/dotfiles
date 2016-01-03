@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: s2fi
+# --
+#include "serialise2/pa_serialise2_field.h"
+
+PA_SERIALISE2_FIELD_IMPL($1::`(file-name-base (buffer-file-name))`, $2);

@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startcpp
+# --
+#include "${1:`(cpp-to-h-path (file-relative-name (buffer-file-name) (projectile-project-root)))`}"

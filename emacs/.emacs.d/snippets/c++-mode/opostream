@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: opostream
+# --
+ostream& operator<<(ostream& os, const $1& that)
+{
+os << that.$0;
+
+return os;
+}

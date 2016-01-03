@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: s2
+# --
+
+#include "serialise2/base.h"
+#include "db/database_id.h"
+
+struct $1 : public pa::serialise2::base<$1>
+{
+    typedef pa::db::database_id<$1> id_type;
+
+    PA_SERIALISE2_ATTRIBUTES_FWD();
+
+    PA_SERIALISE2_FIELD_FWD(id_type, ${3:id});
+};

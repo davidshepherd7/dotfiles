@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: given
+# --
+GIVEN("$1")
+{
+$0
+}
