@@ -18,45 +18,49 @@ histedit =
 crecord = ~/.hgex/crecord/
 rebase =
 strip =
+transplant =
 
 [color]
-custom.rev = red
+
 custom.tag = yellow bold
 custom.bookmark = yellow
 custom.author = blue bold
 custom.time = green
 
+changeset.public=red
+changeset.secret=blue
+changeset.draft=green
+
 [alias]
-# pretty log graphs:
 
-# Detailed
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRXS
+# Interact with RhodeCode
+push-review = push -f review
+pr = !$HG push-review "$@" && pa-pull-request.sh
 
-# Simpler
-lgs = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('custom.rev',node|short)} {label('custom.time',date|age)} {label('custom.author',author|person)}" $@ | less -FRXS
 
-# Compact log (removes empty lines)
-lgc = !$HG lg $@ | grep '[^| ]' --color=never | less -FRXS
+# pretty log graph
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
-# Substate friendly status
-st = st -S
-status = status -S
+
+# status including subrepos and with path relative to root
+s = !$HG status -S $($HG root) --color=always "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
+st = !$HG status -S $($HG root) --color=always "$@"
 
 # View shelved changesets
 shs = !$HG shelve --list --patch $@ --color=always | less -FRXS
 
-
-# Deal with gulp better
-diff = diff --git --exclude 'path:boron/web_applications/app/'
-ungulp = revert --include 'path:boron/web_applications/app' --all
-
-
-# Interact with RhodeCode
-pr = !pa-pull-request.sh
-
-
 # Manifest with better xargs integration
 manifest0 = !$HG manifest | tr '\n' '\0'
 
-[hooks]
-pre-merge = kill_gulp.sh
+# Side by side diff
+sdiff = !$HG diff $@ | cdiff -s
+
+
+
+diff = diff --exclude "path:boron/web_applications/app/" --exclude "path:boron/web_applications/lib/"
+
+
+doagain = !$HG up -r "$1" && $HG import --no-commit <(hg diff -r . -r "$2")
+
+# Get the real hash of a revision (as needed for hgsubstate)
+idfull = !$HG --debug id -i "$@"
