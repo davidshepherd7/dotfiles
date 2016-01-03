@@ -194,11 +194,6 @@
 (add-hook 'prog-mode-hook 'highlight-todos)
 (add-hook 'text-mode-hook 'highlight-todos)
 
-;; show number of matches when searching
-(use-package anzu
-  :ensure t
-  :config (global-anzu-mode))
-
 ;; Save point location in files even between sessions
 (require 'saveplace)
 (setq-default save-place t)
@@ -209,6 +204,17 @@
 
 ;; Always try to load the newest version of a file (byte-compiled or not).
 (set 'load-prefer-newer t)
+
+;; isearch
+;; ============================================================
+
+;; show number of matches when searching
+(use-package anzu
+  :ensure t
+  :config (global-anzu-mode))
+
+;; Treat space-like characters as spaces
+(setq search-whitespace-regexp "[-_ 	\n]")
 
 ;; Camel case word handling
 ;; ============================================================
