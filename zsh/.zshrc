@@ -166,6 +166,9 @@ ssh-add -l >/dev/null || \
 export EDITOR="emacsclient -c -n"
 export ALTERNATE_EDITOR=''
 
+# Use E for sudo edit
+alias E="SUDO_EDITOR=\"emacsclient -c\" sudo -e"
+
 
 # Compiling and testing
 # ============================================================
@@ -319,3 +322,10 @@ source ${zshdir}/biosite.sh
 # ccache config
 # ============================================================
 export CCACHE_SLOPPINESS="time_macros"
+
+
+# Postgres
+# ============================================================
+
+# Don't use $EDITOR because we always want to wait
+export PSQL_EDITOR="emacsclient -c"
