@@ -124,9 +124,6 @@
 ;; Allow some disabled commands
 (put 'narrow-to-region 'disabled nil)
 
-;; Set the location for bookmarks
-(set 'bookmark-default-file "~/.emacs.d/bookmarks")
-
 ;; save point in file
 (setq-default save-place t)
 
@@ -209,6 +206,9 @@
 
 (setq-default tab-width 4)
 
+
+;; Always try to load the newest version of a file (byte-compiled or not).
+(set 'load-prefer-newer t)
 
 ;; Camel case word handling
 ;; ============================================================
@@ -415,6 +415,7 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-elisp.el")
 (load-file "~/.emacs.d/lisp/ds-java.el")
 (load-file "~/.emacs.d/lisp/ds-js.el")
+(load-file "~/.emacs.d/lisp/ds-sql.el")
 
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-biosite.el")
@@ -486,6 +487,9 @@ index in STRING."
 
    ((derived-mode-p 'tex-mode)
     (concat "latexmk -C && latexmk -pdf" " " (file-name-nondirectory (buffer-file-name))))
+
+   ((derived-mode-p 'js-mode)
+    "gulp --silent && refresh-browser.sh")
 
    ;; make is probably a good default for anything else
    (t "make")))
@@ -647,17 +651,17 @@ If point was already at that position, move point to beginning of line."
 ;; (set 'tramp-backup-directory-alist  ??ds
 
 
-;; Auto indent pasted code in programming modes
-;; ============================================================
-(dolist (command '(yank yank-pop))
-  (eval `(defadvice ,command (after indent-region activate)
-	   (and (not current-prefix-arg)
-		(member major-mode '(emacs-lisp-mode lisp-mode clojure-mode
-						     scheme-mode ruby-mode rspec-mode
-						     c-mode c++-mode objc-mode latex-mode
-						     plain-tex-mode))
-		(let ((mark-even-if-inactive transient-mark-mode))
-		  (indent-region (region-beginning) (region-end) nil))))))
+;; ;; Auto indent pasted code in programming modes
+;; ;; ============================================================
+;; (dolist (command '(yank yank-pop))
+;;   (eval `(defadvice ,command (after indent-region activate)
+;; 	   (and (not current-prefix-arg)
+;; 		(member major-mode '(emacs-lisp-mode lisp-mode clojure-mode
+;; 						     scheme-mode ruby-mode rspec-mode
+;; 						     c-mode c++-mode objc-mode latex-mode
+;; 						     plain-tex-mode))
+;; 		(let ((mark-even-if-inactive transient-mark-mode))
+;; 		  (indent-region (region-beginning) (region-end) nil))))))
 
 
 ;; VC
@@ -876,12 +880,8 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   :ensure t
   :config
 
-  ;; Load my oomph-lib snippets
-  (add-to-list 'yas-snippet-dirs "~/.emacs.d/oomph-snippets" t)
-
-  ;; and my other snippets
-  (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets" t)
-
+  ;; Load my snippets
+  (set 'yas-snippet-dirs (list "~/.emacs.d/snippets"))
 
   ;; kill C-c keys
   (add-hook 'yas-minor-mode-hook
@@ -1144,7 +1144,8 @@ $0")
                 'sh-mode-hook
                 'python-mode-hook
                 'org-mode-hook
-                'ess-mode-hook))
+                'ess-mode-hook
+                'js-mode-hook))
   )
 
 
@@ -1421,6 +1422,18 @@ $0")
   :config
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode))
 
+(defun ds/disable-mode-if-exists (mode)
+  (when (boundp mode)
+    (apply mode (list 0))))
+
+(defun ds/disable-electricity ()
+  (interactive)
+  (ds/disable-mode-if-exists #'aggressive-fill-paragraph-mode)
+  (ds/disable-mode-if-exists #'aggressive-indent-mode)
+  (ds/disable-mode-if-exists #'electric-indent-mode)
+  (ds/disable-mode-if-exists #'electric-operator-mode)
+  )
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
@@ -1434,16 +1447,20 @@ $0")
  '(custom-safe-themes
    (quote
     ("da41ee46d2f74bb1af6591206b37c07941ee42707299da8058683d3d4917c5b1" default)))
- '(ff-ignore-include t)
  '(gud-gdb-command-name "gdb -i=mi --args")
  '(htmlize-output-type (quote font))
  '(indent-tabs-mode nil)
  '(markdown-bold-underscore nil)
+ '(minibuffer-prompt-properties
+   (quote
+    (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
  '(org-hide-block-startup t)
  '(org-startup-folded nil)
  '(safe-local-variable-values
    (quote
-    ((projectile-project-compilation-dir . "../build/")
+    ((projectile-project-compilation-dir . "./build")
+     (projectile-project-compilation-dir . "clang-build/")
+     (projectile-project-compilation-dir . "../build/")
      (projectile-project-compilation-cmd . "ninja")
      (projectile-project-relative-compilation-dir . "build/")
      (projectile-project-compilation-dir . "build/")

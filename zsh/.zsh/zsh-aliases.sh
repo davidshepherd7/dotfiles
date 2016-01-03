@@ -195,6 +195,7 @@ alias trsh='trash-put'
 # Simplified find comamnds
 function fname() { find . -iname "*$@*"; }
 alias findc="find \( -name '*.cc' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' \)"
+alias fcmake="find \( -name 'CMakeLists.txt' -o -name '*.cmake' \) -type f"
 
 # python
 alias pylab='ipython --pylab'
@@ -244,10 +245,15 @@ function now ()
 }
 
 # Aliases for cds upwards
+alias .....='cd ../../../../'
 alias ....='cd ../../..'
 alias ...='cd ../..'
 alias ..='cd ../'
 
+# Alias: cd then ls
+c() {
+    cd "$1" && ls "${@:2}"
+}
 
 
 # test that emacs works with this config
@@ -469,6 +475,12 @@ regenerate_all_completions ()
 # Games
 # ============================================================
 alias hlands="gargoyle-free $HOME/Dropbox/other/HadeanLands-generic/HadeanLands.gblorb"
+
+# mercurial
+# ============================================================
+
+alias hca="hg commit --amend"
+
 
 # Profiling
 # ============================================================

@@ -112,12 +112,10 @@ It is meant to use with `filter-one-by-one' slot."
 (global-set-key (kbd "M-\\") #'helm-M-x)
 (global-set-key (kbd "<menu>") #'helm-M-x)
 
-;; Use helm-buffers-list over helm-mini because with this setting it uses
-;; "virtual buffers" (allows you to switch to buffers that you closed).
-(global-set-key (kbd "M-k") #'helm-buffers-list)
+(global-set-key (kbd "M-k") #'helm-mini)
 
 (global-set-key (kbd "C-S-k") #'helm-find-files)
-
+(global-set-key (kbd "C-M-k") (lambda () (interactive) (find-file-other-window (buffer-file-name))))
 
 (global-set-key (kbd "C-.") #'helm-all-mark-rings)
 
@@ -125,23 +123,78 @@ It is meant to use with `filter-one-by-one' slot."
 
 
 
+;; Bookmarks
+;; ============================================================
+
+(global-set-key (kbd "C-=") #'helm-bookmarks)
+
+;; Set the location for bookmarks
+(set 'bookmark-default-file "~/.emacs.d/bookmarks")
+
+
+;; Keys inside helm
+;; ============================================================
+
+(define-key helm-map (kbd "C-<return>") #'helm-maybe-exit-minibuffer)
+(define-key helm-map (kbd "C-RET") #'helm-maybe-exit-minibuffer)
+
+;; navigation
+(define-key helm-map (kbd "C-i") #'helm-previous-line)
+(define-key helm-map (kbd "C-h") #'helm-next-line)
+(define-key helm-map (kbd "C-t") #'helm-next-line)
+
+
+(define-key helm-map (kbd "C-a") #'helm-mark-all)
+
+;; Do things
+(define-key helm-map (kbd "C-s") #'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-r") #'helm-select-action)
+
+(define-key helm-map (kbd "C-<return>") #'helm-maybe-exit-minibuffer)
+(define-key helm-map (kbd "C-RET") #'helm-maybe-exit-minibuffer)
+
+(defun ds/helm-maybe-exit-minibuffer-other-window ()
+  (interactive)
+  ()
+  )
+
+(define-key helm-map (kbd "M-<return>") #'helm-execute-other-window)
+(define-key helm-map (kbd "M-RET") #'helm-execute-other-window)
+
+
+
+;; undef useful editing commands
+(define-key helm-map (kbd "C-z") nil)
+(define-key helm-map (kbd "C-v") nil)
+(define-key helm-map (kbd "C-n") nil)
+(define-key helm-map (kbd "C-e") nil)
+
+
+
+
 ;; Enter in file finding enters dirs
 ;; ============================================================
 
-(defun dwim-helm-find-files-navigate-forward (orig-fun &rest args)
+(cl-defun dwim-helm-find-files-navigate-forward
+    (&optional (attr 'persistent-action) split-onewindow)
   "Adjust how helm-execute-persistent actions behaves, depending on context"
+  (interactive)
   (if (file-directory-p (helm-get-selection))
-      (apply orig-fun args)
+      (helm-execute-persistent-action attr split-onewindow)
     (helm-maybe-exit-minibuffer)))
 
 
-(define-key helm-map (kbd "<return>") 'helm-maybe-exit-minibuffer)
-(define-key helm-map (kbd "RET") 'helm-maybe-exit-minibuffer)
-(define-key helm-find-files-map (kbd "<return>") 'helm-execute-persistent-action)
-(define-key helm-read-file-map (kbd "<return>") 'helm-execute-persistent-action)
-(define-key helm-find-files-map (kbd "RET") 'helm-execute-persistent-action)
-(define-key helm-read-file-map (kbd "RET") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "<return>") #'helm-maybe-exit-minibuffer)
+(define-key helm-map (kbd "RET") #'helm-maybe-exit-minibuffer)
 
-(advice-add 'helm-execute-persistent-action :around #'dwim-helm-find-files-navigate-forward)
+(define-key helm-find-files-map (kbd "<return>") #'dwim-helm-find-files-navigate-forward)
+(define-key helm-find-files-map (kbd "RET") #'dwim-helm-find-files-navigate-forward)
+(define-key helm-find-files-map (kbd "C-<return>") #'helm-maybe-exit-minibuffer)
+(define-key helm-find-files-map (kbd "C-RET") #'helm-maybe-exit-minibuffer)
+
+(define-key helm-read-file-map (kbd "<return>") #'dwim-helm-find-files-navigate-forward)
+(define-key helm-read-file-map (kbd "RET") #'dwim-helm-find-files-navigate-forward)
+(define-key helm-read-file-map (kbd "C-<return>") #'helm-maybe-exit-minibuffer)
+(define-key helm-read-file-map (kbd "C-RET") #'helm-maybe-exit-minibuffer)
 
 (require 'helm-help)

@@ -1,5 +1,8 @@
 ;; Emacs options and keys for C++
 
+;; Clear existing keys
+(set 'c++-mode-map (make-sparse-keymap))
+
 ;; Set .h files to use c++ mode
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
@@ -28,15 +31,17 @@
         ("\\.cxx\\'" (".hxx" ".hh" ".h"))
         ("\\.hxx\\'" (".cxx")))))
 
-(defun my-c-mode-keys ()
-  (use-local-map '())
-  (local-set-key (kbd "C-\\ o") 'ff-find-other-file)
-  (local-set-key (kbd "C-\\ C-o") 'ff-find-other-file)
+;; Don't try to open includes etc (it never works...)
+(set 'ff-special-constructs nil)
 
-  ;; (local-set-key [tab] 'yas-expand)
-  ;; (set 'yas-fallback-behavior '(apply indent-according-to-mode))
-  )
-(add-hook 'c++-mode-hook 'my-c-mode-keys)
+;; Bind it
+(define-key c++-mode-map (kbd "C-\\ o") #'ff-find-other-file)
+(define-key c++-mode-map (kbd "C-\\ C-o") #'ff-find-other-file)
+
+
+;; For use in snippets
+(defun cpp-to-h-path (cpp-path)
+  (replace-regexp-in-string "\\.cpp" ".h" cpp-path))
 
 
 (defun cpp-access-function ()
@@ -78,3 +83,10 @@ access functions are BAD for class access (too much copying)."
 (add-to-list 'compilation-error-regexp-alist-alist
              '(cppcheck "\\[\\([^]]*\\):\\([0-9]+\\)\\]:" 1 2))
 (add-to-list 'compilation-error-regexp-alist 'cppcheck)
+
+
+;; Parse boost test REQUIRE macro output
+(require 'compile)
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(boost-test-require "^\\(.*\\)(\\([0-9]*\\)): fatal error" 1 2))
+(add-to-list 'compilation-error-regexp-alist 'boost-test-require)
