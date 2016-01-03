@@ -1,0 +1,7 @@
+[paths]
+review = http://gauss.pa/hg/david/boron-unstable
+unstable = http://gauss.pa/hg/boron-unstable
+stable = http://gauss.pa/hg/boron-stable
+staging = http://gauss.pa/hg/boron-staging-stable
+
+%include ../.boron.hgrc

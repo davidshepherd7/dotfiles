@@ -3,7 +3,7 @@
 set -o errexit
 set -o nounset
 
-sensible-browser "$(hg paths default)/pull-request/new" &
+sensible-browser "$(hg paths review)/pull-request/new" &
 
 subject="PR+Boron%3A+"
 to="software%40biositesystems.com"
