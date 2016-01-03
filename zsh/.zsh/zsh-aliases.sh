@@ -68,6 +68,8 @@ gdiff()
 }
 compdef gdiff=diff
 
+# zmv magic
+alias mmv='noglob zmv -W'
 
 # package manager
 # ============================================================
