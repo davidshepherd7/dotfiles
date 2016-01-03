@@ -96,7 +96,7 @@ myLayout = avoidStruts(tiled ||| -- Mirror matlabsucks |||
     ratio   = 1/2
 
     -- Percent of screen to increment by when resizing panes
-    delta   = 3/100
+    delta   = 10/100
 
 ------------------------------------------------------------------------
 -- Event handling
