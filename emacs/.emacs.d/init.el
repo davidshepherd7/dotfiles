@@ -4,6 +4,7 @@
 
 
 ;; Use C-\ p as prefix
+(defvar projectile-keymap-prefix)
 (set 'projectile-keymap-prefix (kbd "C-\\ p"))
 (global-set-key (kbd "C-\\") ctl-x-map)
 
@@ -78,9 +79,9 @@
   :ensure t
   :config
   ;; Enable in modes where it's safe
-  (mapcar (lambda (hook) (add-hook hook #'aggressive-indent-mode))
-          (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
-                'java-mode-hook 'sh-mode-hook 'ess-mode-hook 'sgml-mode-hook))
+  (mapc (lambda (hook) (add-hook hook #'aggressive-indent-mode))
+        (list 'c-mode-hook 'c++-mode-hook 'emacs-lisp-mode-hook
+              'java-mode-hook 'sh-mode-hook 'ess-mode-hook 'sgml-mode-hook))
 
   (define-key aggressive-indent-mode-map (kbd "C-c") nil)
 
@@ -115,7 +116,7 @@
 (setq-default fill-column 75) ;; not 80 because when things are later indented
 ;; by e.g. diff, git log we lose some columns and
 ;; it gets messy.
-(set 'default-abbrev-mode t) ;; Use abbrev mode always
+(set 'abbrev-mode t) ;; Use abbrev mode always
 (set 'tags-revert-without-query 1) ;; Autorevert if the tags table has changed
 
 (set 'sentence-end-double-space nil)
@@ -255,9 +256,9 @@ index in STRING."
 (defun un-camelcase-word ()
   (interactive)
   (let ((camel-word (buffer-substring (point)
-				      (save-excursion (forward-word) (point)))))
+                                      (save-excursion (forward-word) (point)))))
     (kill-word 1)
-    (insert-string (un-camelcase-string camel-word))))
+    (insert (un-camelcase-string camel-word))))
 
 
 ;; Saving
@@ -929,7 +930,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 
 
   ;; Use everywhere
-  (yas/global-mode)
+  (yas-global-mode)
 
   ;; Keys for snippet editing mode
   (add-hook 'snippet-mode-hook
@@ -1144,16 +1145,16 @@ $0")
 (use-package aggressive-fill-paragraph
   :config
   ;; Enable in modes where it works nicely
-  (mapcar (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
-          (list 'c-mode-hook
-                'c++-mode-hook
-                'emacs-lisp-mode-hook
-                'java-mode-hook
-                'sh-mode-hook
-                'python-mode-hook
-                'org-mode-hook
-                'ess-mode-hook
-                'js-mode-hook))
+  (mapc (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
+        (list 'c-mode-hook
+              'c++-mode-hook
+              'emacs-lisp-mode-hook
+              'java-mode-hook
+              'sh-mode-hook
+              'python-mode-hook
+              'org-mode-hook
+              'ess-mode-hook
+              'js-mode-hook))
   )
 
 
@@ -1284,13 +1285,13 @@ $0")
 (use-package electric-operator
   :config
   ;; Enable in some modes
-  (mapcar (lambda (hook) (add-hook hook #'electric-operator-mode))
-          '(python-mode-hook
-            ess-mode-hook
-            c-mode-hook
-            c++-mode-hook
-            java-mode-hook
-            js-mode-hook))
+  (mapc (lambda (hook) (add-hook hook #'electric-operator-mode))
+        '(python-mode-hook
+          ess-mode-hook
+          c-mode-hook
+          c++-mode-hook
+          java-mode-hook
+          js-mode-hook))
 
   (set 'electric-operator-c-pointer-type-style 'type)
 
