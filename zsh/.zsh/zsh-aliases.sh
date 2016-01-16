@@ -51,7 +51,11 @@ t ()
 }
 
 # xargs with default for -I
-alias x="xargs -I %"
+# alias x="xargs -I %"
+x ()
+{
+    parallel --no-notice -I % -u "$@"
+}
 
 # ??ds emacs with pipe in support
 
@@ -495,3 +499,6 @@ perf_flame()
     perf script | stackcollapse-perf.pl - | flamegraph.pl - > "$tempfile"
     sensible-browser "$tempfile"
 }
+
+# Numberwang
+# ============================================================

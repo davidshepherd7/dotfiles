@@ -41,10 +41,15 @@ pr = !$HG push-review "$@" && pa-pull-request.sh
 # pretty log graph
 lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
+logb = !$HG log -p --color=always -r 'reverse(ancestors($1))' | less -FRXS
+
 
 # status including subrepos and with path relative to root
 s = !$HG status -S $($HG root) --color=always "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 st = !$HG status -S $($HG root) --color=always "$@"
+
+# st with numberwang selection
+stnw = !$HG status --no-status --color=always -S $($HG root) "$@" | nwc
 
 # View shelved changesets
 shs = !$HG shelve --list --patch $@ --color=always | less -FRXS
@@ -64,3 +69,7 @@ doagain = !$HG up -r "$1" && $HG import --no-commit <(hg diff -r . -r "$2")
 
 # Get the real hash of a revision (as needed for hgsubstate)
 idfull = !$HG --debug id -i "$@"
+
+
+# Single command bisection
+autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG bisect --bad "$2" && $HG bisect --command "$3"

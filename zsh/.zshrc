@@ -186,8 +186,8 @@ export MAKEFLAGS="-j$NJOBS"
 export CTEST_PARALLEL_LEVEL="$NJOBS"
 export CTEST_OUTPUT_ON_FAILURE="yes"
 
-# Use GNU gold instead of ld for linking
-export PATH="/usr/lib/gold-ld:${PATH}"
+# # Use GNU gold instead of ld for linking
+# export PATH="/usr/lib/gold-ld:${PATH}"
 
 
 # PATH additions

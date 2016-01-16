@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# key: opequals
-# --
-bool operator==(const $1& a, const $1& b)
-{
-return $0;
-}

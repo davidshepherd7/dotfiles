@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: opeq
+# --
+//! Equality based on operator< (similar to std::set).
+inline bool operator==(const ${1:obj}& lhs, const $1& rhs)
+{
+ return !(lhs < rhs) && !(rhs < lhs);
+}

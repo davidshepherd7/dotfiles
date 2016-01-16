@@ -118,6 +118,8 @@
 (set 'default-abbrev-mode t) ;; Use abbrev mode always
 (set 'tags-revert-without-query 1) ;; Autorevert if the tags table has changed
 
+(set 'sentence-end-double-space nil)
+
 ;; Shut up and just open symbolic links
 (set 'vc-follow-symlinks t)
 

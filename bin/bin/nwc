@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+if [[ "$#" -ge 1 ]] && [[ "$1" = "-h" ]]; then
+    echo "Copy selected lines from stdin to clipboard using numberwang" 1>&2
+    echo "Numberwang help:" 1>&2
+    nw "-h"
+    exit 1
+fi
+
+echo "Stdout is redirected to clipboard." 1>&2
+nw "$@" | tr '\n' ' ' | xclip -i -selection primary -f | xclip -i -selection clipboard
