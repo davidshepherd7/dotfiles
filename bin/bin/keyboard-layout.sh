@@ -1,6 +1,6 @@
 #!/bin/bash
 
-layout="$(setxkbmap -query | grep variant | tr -d ' ' | cut -f 2 -d ':')"
-layout_2="${layout:-qwerty}"
+lang="$(setxkbmap -query | grep 'layout' | tr -d ' ' | cut -f 2 -d ':')"
+layout="$(setxkbmap -query | grep 'variant' | tr -d ' ' | cut -f 2 -d ':')"
 
-echo "$layout_2"
+echo "$lang ${layout:-qwerty}"
