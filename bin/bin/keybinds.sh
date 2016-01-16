@@ -1,5 +1,8 @@
 #! /bin/bash
 
+set -o errexit
+set -o nounset
+
 
 # TODO ??ds
 # Make caps lock button generate caps lock when tapped or alt gr when held
@@ -7,14 +10,17 @@
 # or dollar maybe? &? smart depending on emacs mode?
 # bind super keys as well? Figure out how to get alt gr to bind keys?
 
+lang="${1:-gb}"
 
-# Reset to standard keyboard layout (just in case...)
-setxkbmap gb -variant colemak
-killall xcape
+# Reset to standard keyboard layout
+setxkbmap "${lang}" -variant colemak
+killall xcape || true
 
 
 # Make alt gr just normal alt:
-xmodmap -e "keycode 108 = Alt_L"
+if [[ "$lang" = "gb" ]]; then
+    xmodmap -e "keycode 108 = Alt_L"
+fi
 
 # Make caps lock another function key (which we can bind to whatever we like)
 xmodmap -e "keycode 66 = F35"
