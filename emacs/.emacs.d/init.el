@@ -1428,6 +1428,34 @@ $0")
   :config
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode))
 
+
+(use-package flycheck
+  :ensure t
+  :init
+  ;; Stop flycheck from stomping C-c. Don't really know why but this *must*
+  ;; go before flycheck is loaded.
+  (defvar flycheck-keymap-prefix)
+  (setq flycheck-keymap-prefix (kbd "C-\\ f"))
+  (setq flycheck-mode-map (make-sparse-keymap))
+  (define-key flycheck-mode-map (kbd "M-`") #'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "M-¬") #'flycheck-previous-error)
+
+  :config
+  (set 'flycheck-display-errors-delay 0.2)
+  (set 'flycheck-standard-error-navigation nil)
+
+  ;; emacs lisp stuff
+  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+  (setq-default flycheck-emacs-lisp-load-path 'inherit)
+  (setq-default flycheck-disabled-checkers
+                (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))
+  (use-package flycheck-cask
+    :ensure t
+    :config
+    (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
+    )
+  )
+
 (defun ds/disable-mode-if-exists (mode)
   (when (boundp mode)
     (apply mode (list 0))))
