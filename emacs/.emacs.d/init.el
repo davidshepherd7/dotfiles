@@ -1429,6 +1429,18 @@ $0")
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode))
 
 
+(use-package beacon
+  :ensure t
+  :config
+  (add-hook 'text-mode-hook 'beacon-mode))
+
+(use-package smooth-scrolling
+  :ensure t
+  :config
+
+  ;; Keep n lines of context around point (usually...)
+  (set 'smooth-scrolling-margin 3))
+
 (use-package flycheck
   :ensure t
   :init
