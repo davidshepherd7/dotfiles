@@ -1308,7 +1308,9 @@ $0")
           c-mode-hook
           c++-mode-hook
           java-mode-hook
-          js-mode-hook))
+          js-mode-hook
+          sql-mode-hook
+          ))
 
   (set 'electric-operator-c-pointer-type-style 'type)
 
