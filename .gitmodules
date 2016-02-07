@@ -16,3 +16,6 @@
 [submodule "emacs/.emacs.d/electric-operator"]
 	path = emacs/.emacs.d/electric-operator
 	url = git@github.com:davidshepherd7/electric-operator.git
+[submodule "emacs/.emacs.d/replace-pairs"]
+	path = emacs/.emacs.d/replace-pairs
+	url = git@github.com:davidshepherd7/replace-pairs.git

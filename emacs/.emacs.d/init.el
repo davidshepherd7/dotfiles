@@ -1304,6 +1304,9 @@ $0")
                                         (cons ">" nil))
   )
 
+(use-package replace-pairs
+  :load-path "~/.emacs.d/replace-pairs")
+
 (use-package yaml-mode
   :ensure t
   :config
