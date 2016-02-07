@@ -102,8 +102,6 @@
 ;; (server-start) ;; Start emacs as a server
 (line-number-mode 1) ;; Line numbers in mode line
 (column-number-mode 1) ;; Column numbers in mode line
-(global-linum-mode t) ;; Line numbers on edge of screen
-(set 'backup-directory-alist '(("." . ".~"))) ;; Keep backups in .~/
 (set 'inhibit-startup-screen t) ;; No startup screen
 (scroll-bar-mode -1);; No scroll bar
 (global-visual-line-mode 1) ;; Wrap lines at nearest word
@@ -141,6 +139,10 @@
 (use-package page-break-lines
   :ensure t
   :config (global-page-break-lines-mode t))
+
+;; Fucking line numbering is broken as hell
+;; (global-linum-mode -1)
+;; (global-nlinum-mode -1)
 
 ;; Show messages on startup, not the stupid scratch buffer
 (switch-to-buffer "*Messages*")
