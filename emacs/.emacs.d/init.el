@@ -1159,9 +1159,8 @@ $0")
   (set 'ws-butler-keep-whitespace-before-point nil)
   (ws-butler-global-mode))
 
-(add-to-list 'load-path "~/.emacs.d/aggressive-fill-paragraph-mode")
-(load-library "aggressive-fill-paragraph")
 (use-package aggressive-fill-paragraph
+  :load-path "~/.emacs.d/aggressive-fill-paragraph-mode"
   :config
   ;; Enable in modes where it works nicely
   (mapc (lambda (hook) (add-hook hook #'aggressive-fill-paragraph-mode))
@@ -1299,9 +1298,8 @@ $0")
   )
 
 
-(add-to-list 'load-path "~/.emacs.d/electric-operator")
-(load-library "electric-operator")
 (use-package electric-operator
+  :load-path "~/.emacs.d/electric-operator"
   :config
   ;; Enable in some modes
   (mapc (lambda (hook) (add-hook hook #'electric-operator-mode))
@@ -1344,18 +1342,15 @@ $0")
   (add-hook 'sgml-mode-hook #'set-tab))
 
 ;; My lex mode
-(add-to-list 'load-path "~/.emacs.d/lex-mode")
 (use-package lex-mode
+  :load-path "~/.emacs.d/lex-mode"
   :config
   (add-to-list 'auto-mode-alist '("\\.lex\\'" . lex-mode))
   (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
-
-
   :demand)
 
 ;; (setq helm-dash-common-docsets '("Python 3"))
 
-;; (add-to-list 'load-path "~/code/helm-dash")
 (use-package helm-dash
   :ensure t
 
