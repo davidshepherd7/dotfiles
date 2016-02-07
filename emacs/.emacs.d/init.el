@@ -1120,18 +1120,25 @@ $0")
   :ensure t
   :bind ("C-a" . er/expand-region))
 
+;; Tagging
+;; ============================================================
+
 ;; (use-package ggtags
-;;   :disabled
 ;;   :ensure t
 ;;   :config
 ;;   (add-hook 'prog-mode-hook #'ggtags-mode)
 ;;   (define-key ggtags-mode-map (kbd "C-c") nil)
 ;;   (define-key ggtags-mode-map (kbd "M-.") #'ggtags-find-tag-dwim)
 ;;   (set 'ggtags-mode-line-project-name nil)
-
-
 ;;   (define-key ggtags-mode-map (kbd "M-<") nil)
 ;;   (define-key ggtags-mode-map (kbd "M->") nil))
+
+
+(use-package imenu-anywhere
+  :ensure t
+  :config
+  (global-set-key (kbd "M-,") #'helm-imenu-anywhere)
+  )
 
 ;; Better help commands
 ;; ============================================================
