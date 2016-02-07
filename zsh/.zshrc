@@ -117,7 +117,7 @@ else
 fi
 
 # Create prompt
-PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f$(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
+PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f $(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
 '
 
 # Function to export functions to bash (for use with xargs or parallel)

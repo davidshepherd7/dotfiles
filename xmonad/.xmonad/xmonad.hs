@@ -80,7 +80,7 @@ myManageHook =
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 
-myLayout = avoidStruts(tiled ||| -- Mirror matlabsucks |||
+myLayout = avoidStruts(tiled ||| matlabsucks |||
                        noBorders Full)
   where
     -- Default tiling algorithm: partitions the screen into two panes

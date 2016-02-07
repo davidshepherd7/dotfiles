@@ -172,7 +172,7 @@
 (setq enable-recursive-minibuffers t)
 
 ;; Don't be so stingy on the memory, we have lots now. It's the distant future.
-(setq gc-cons-threshold 20000000)
+(setq gc-cons-threshold (* 2 1000 1000 10))
 
 ;; Sentences do not need double spaces to end (so when moving by sentence
 ;; use "." to find ends).
@@ -209,6 +209,11 @@
 
 ;; Always try to load the newest version of a file (byte-compiled or not).
 (set 'load-prefer-newer t)
+
+;; Yes, it's disgusting, but it's a portable way to disable that silly
+;; message
+(put 'inhibit-startup-echo-area-message 'saved-value
+     (setq inhibit-startup-echo-area-message (user-login-name)))
 
 ;; isearch
 ;; ============================================================
@@ -275,8 +280,10 @@ index in STRING."
   :config
   (super-save-mode +1))
 
-;; ;; auto-save in-place
-;; (setq auto-save-visited-file-name t)
+;; Keep auto saves and backups in one place out of the way
+(set 'backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/backups" t)))
+(setq auto-save-list-file-prefix nil)
 
 ;; Add a new line at end of file on save if none exists (note: doesn't play
 ;; nice with scheme).
@@ -1489,6 +1496,10 @@ $0")
   (ds/disable-mode-if-exists #'aggressive-indent-mode)
   (ds/disable-mode-if-exists #'electric-indent-mode)
   (ds/disable-mode-if-exists #'electric-operator-mode)
+  )
+
+(use-package crux
+  :ensure t
   )
 
 ;; Automagically added by customise

@@ -21,3 +21,7 @@
   (add-to-list 'prettify-symbols-alist '("function" . 955)))
 (add-hook 'js-mode-hook #'ds/pretty-function)
 (add-hook 'js-mode-hook #'prettify-symbols-mode t)
+
+(font-lock-add-keywords
+ 'js-mode '(("\\<\\(expect\\)\\>" . font-lock-keyword-face)))
+

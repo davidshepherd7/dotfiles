@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# key: vout
+# --
+std::cerr << "$1: " << $1 << std::endl;
