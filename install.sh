@@ -50,3 +50,5 @@ stow bin -t $HOME --ignore=".dropbox.attr"
 ./firefox/setup-firefox.sh
 
 stow calibre -t "$HOME" --ignore=".dropbox.attr"
+
+stow psql -t "$HOME" --ignore=".dropbox.attr"

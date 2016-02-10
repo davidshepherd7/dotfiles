@@ -1,0 +1,3 @@
+\pset pager always
+\setenv PAGER less
+\setenv LESS '-S -F -X -R'
