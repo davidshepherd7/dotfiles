@@ -30,3 +30,5 @@ burl()
         "https://localhost:8088${1}" \
         "${@:2}"
 }
+
+alias boron-client='/home/david/code/boron-unstable/build/bin/boron-client'
