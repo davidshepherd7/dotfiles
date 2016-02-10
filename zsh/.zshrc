@@ -98,7 +98,7 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-if git --version > /dev/null; then
+if [[ -f "/usr/lib/git-core/git-sh-prompt" ]]; then
     # Allow for functions in the prompt.
     setopt PROMPT_SUBST
 
@@ -113,12 +113,20 @@ if git --version > /dev/null; then
     # Add git prompt function to path:
     source "/usr/lib/git-core/git-sh-prompt"
 else
-    function __git_ps1 () {}
+    function __git_ps1 () {
+        echo ""
+    }
 fi
 
-# Create prompt
-PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f $(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
+if [[ -f "/usr/lib/git-core/git-sh-prompt" ]]; then
+
+    # Create prompt
+    PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f $(__git_ps1 " (%s)")%(?/%f/%F{red})$%f%b
 '
+else
+    PROMPT='%B%F{green}%n@%M%f: %F{blue}%~%f %(?/%f/%F{red})$%f%b
+'
+fi
 
 # Function to export functions to bash (for use with xargs or parallel)
 # ============================================================

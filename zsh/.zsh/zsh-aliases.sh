@@ -39,7 +39,9 @@ v ()
     tempfile=$(mktemp viewer-$USER.XXXXXXX --tmpdir)
     setsid "$viewer" $@ >"$tempfile" 2>&1 </dev/null &
 }
-compdef v=evince
+if [[ -x evince ]]; then
+    compdef v=evince
+fi
 
 # some default options for feh
 alias feh="feh -B black --scale-down -d"
