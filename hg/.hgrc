@@ -50,7 +50,7 @@ lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags
 
 logb = !$HG log -p --color=always -r 'reverse(ancestors($1))' | less -FRXS
 
-lp = !$HG log -p -r 'reverse(ancestors(.))' --color=always | less -FRXS
+lp = !$HG log -p -r 'reverse(ancestors(.)) - (keyword(chore) and keyword(gulp)) - keyword(merge)' --color=always | less -FRXS
 
 # status including subrepos and with path relative to root
 s = !$HG status -S $($HG root) --color=always "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
