@@ -1506,6 +1506,15 @@ $0")
   :ensure t
   )
 
+(use-package ag
+  :ensure t
+  :config
+  (add-to-list 'ag-arguments "--hidden")
+  (add-to-list 'ag-ignore-list "LICENSE")
+  (add-to-list 'ag-ignore-list "LICENSE\.txt")
+  (add-to-list 'ag-ignore-list "firefox/.resbackup"))
+
+
 ;; Automagically added by customise
 ;; ============================================================
 (put 'downcase-region 'disabled nil)
