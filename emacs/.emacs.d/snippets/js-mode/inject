@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: inject
+# --
+var ${1:func};
+beforeEach(inject(function (_$1_) {
+    $1 = _$1_;
+}));

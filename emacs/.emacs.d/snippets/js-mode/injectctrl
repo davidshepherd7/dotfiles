@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: injectctrl
+# --
+var $controller, $scope;
+beforeEach(inject(function (_$controller_, $rootScope) {
+    $controller = _$controller_;
+    $scope = $rootScope.$new();
+}));

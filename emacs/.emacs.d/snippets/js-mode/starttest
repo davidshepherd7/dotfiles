@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: starttest
+# --
+
+(function(){
+'use strict';
+
+describe('$1', function() {
+    beforeEach(angular.mock.module('${2:boron.components.$3}'));
+
+$0
+
+});
+
+})();
