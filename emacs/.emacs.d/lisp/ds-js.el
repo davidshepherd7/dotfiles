@@ -1,3 +1,5 @@
+(require 'js)
+
 
 (defun ds/disable-electric-semicolon ()
   (interactive)
