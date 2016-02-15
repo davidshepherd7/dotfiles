@@ -2,7 +2,7 @@
 
 # Generated files
 zsh/.zsh/completion/generated/*
-/emacs/.emacs.d/lex-mode/
-/emacs/.emacs.d/elpa/
+emacs/.emacs.d/lex-mode/
+emacs/.emacs.d/elpa/
 .dropbox.attr
-/hg/.hgex
+hg/.hgex
