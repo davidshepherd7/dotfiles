@@ -157,9 +157,7 @@
   :ensure t
   :config (global-page-break-lines-mode t))
 
-;; Fucking line numbering is broken as hell
-;; (global-linum-mode -1)
-;; (global-nlinum-mode -1)
+(global-linum-mode 1)
 
 ;; Show messages on startup, not the stupid scratch buffer
 (switch-to-buffer "*Messages*")
