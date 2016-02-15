@@ -2,20 +2,34 @@
 
 ;; test with compile command: \emacs --debug-init --batch -u $USER
 
-
-;; Use C-\ p as prefix
-(defvar projectile-keymap-prefix)
-(set 'projectile-keymap-prefix (kbd "C-\\ p"))
-(global-set-key (kbd "C-\\") ctl-x-map)
-
-
-
-(defvar ds/emacs-up-to-date? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
-  "Are we using my prefered emacs version or newer?")
-
 ;; TODO:
 
 ;; transpose lines easy binding, evil-ify?
+
+
+;; Fixes to allow rebinding of C-x
+;; ============================================================
+
+;; These need to go early on because the rebinds need to be done before the
+;; things are loaded.
+
+
+;; Use C-\ p as prefix for projectile
+(defvar projectile-keymap-prefix)
+(set 'projectile-keymap-prefix (kbd "C-\\ p"))
+
+(global-set-key (kbd "C-\\") ctl-x-map)
+
+(defvar global-edebug-prefix)
+(defvar edebug-inhibit-emacs-lisp-mode-bindings)
+(setq global-edebug-prefix "\C-\\X")
+(setq edebug-inhibit-emacs-lisp-mode-bindings t)
+(require 'edebug)
+
+(defvar hi-lock-map)
+(set 'hi-lock-map (make-sparse-keymap))
+(require 'hi-lock)
+
 
 ;; Set up "package" package manager etc.
 ;; ============================================================
@@ -52,16 +66,19 @@
 (use-package package-utils :ensure t)
 (use-package paradox :ensure t)
 
+;; Functions/packages used in multiple files
+;; ============================================================
+
+(defvar ds/emacs-up-to-date? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+  "Are we using my prefered emacs version or newer?")
 
 ;; some useful libraries
 (use-package dash :ensure t)
 (use-package s :ensure t)
 
 
-(setq global-edebug-prefix "\C-\\X")
-(setq edebug-inhibit-emacs-lisp-mode-bindings t)
-(require 'edebug)
-
+;; Config start
+;; ============================================================
 
 ;; Pretty colours
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
@@ -556,7 +573,7 @@ index in STRING."
 (global-set-key (kbd "C-¬") #'previous-error)
 
 
-;; My functions
+;; My functions etc
 ;; ============================================================
 
 (defun kill-this-buffer ()
