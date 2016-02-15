@@ -78,6 +78,16 @@ access functions are BAD for class access (too much copying)."
       (newline-and-indent) (end-of-line) (newline-and-indent)
       (insert "}"))))
 
+
+(require 'company)
+(defun ds/set-up-completion ()
+  (interactive)
+  (set (make-local-variable 'company-backends)
+       (list (list 'company-dabbrev-code 'company-files 'company-yasnippet 'company-keywords))))
+
+(add-hook 'c++-mode-hook #'ds/set-up-completion)
+
+
 ;; Parse cppcheck output
 (require 'compile)
 (add-to-list 'compilation-error-regexp-alist-alist
