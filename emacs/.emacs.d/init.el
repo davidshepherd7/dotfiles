@@ -171,8 +171,21 @@
 (require 'whitespace)
 (set 'whitespace-line-column 80) ;; limit line length
 (set 'whitespace-style '(face lines-tail))
-
 (add-hook 'prog-mode-hook 'whitespace-mode)
+
+(use-package hi-lock-mode
+  ;; There's also some customisation stuff at the top of init.el to prevent
+  ;; it from binding to C-x.
+
+  :config
+  (global-hi-lock-mode)
+
+  (defun ds/highlight-spaces-after-tabs ()
+    (interactive)
+    (highlight-regexp "^		*  *"))
+
+  (add-hook 'prog-mode-hook #'ds/highlight-spaces-after-tabs)
+  (add-hook 'sgml-mode-hook #'ds/highlight-spaces-after-tabs))
 
 ;; Don't create lockfiles (only safe on single user systems and in ~/ dir
 ;; technically, but I don't think I'll ever be messing with admin server
