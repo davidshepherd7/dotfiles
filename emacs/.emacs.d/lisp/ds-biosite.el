@@ -63,9 +63,11 @@
 (add-hook 'js-mode-hook #'ds/biosite-js-style)
 
 
+(require 'cmake-mode)
 (defun ds/biosite-cmake-style ()
   (interactive)
-  (setq indent-tabs-mode t))
+  (setq indent-tabs-mode t)
+  (setq cmake-tab-width 4))
 (add-hook 'cmake-mode-hook #'ds/biosite-cmake-style)
 
 (require 'grep)
