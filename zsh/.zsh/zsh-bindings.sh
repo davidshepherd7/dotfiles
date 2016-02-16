@@ -120,8 +120,19 @@ bindkey "\e/" down-case-word
 # Alt-q inserts "sudo " at the start of line
 function prepend-sudo {
   if [[ $BUFFER != "sudo "* ]]; then
-    BUFFER="sudo $BUFFER"; CURSOR+=5
+      BUFFER="sudo $BUFFER"
+      CURSOR+=5
   fi
 }
 zle -N prepend-sudo
 bindkey "\eq" prepend-sudo
+
+
+function prepend-watch {
+    if [[ $BUFFER != "watch "* ]]; then
+        BUFFER="watch -n 0.1 $BUFFER"
+        CURSOR+=13
+    fi
+}
+zle -N prepend-watch
+bindkey "\ew" prepend-watch
