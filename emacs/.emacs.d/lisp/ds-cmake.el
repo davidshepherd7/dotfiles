@@ -4,7 +4,7 @@
 (defun ds/set-up-cmake-completion ()
   (interactive)
   (set (make-local-variable 'company-backends)
-       (list (list 'company-cmake)))
+       (list (list 'company-cmake 'company-dabbrev)))
   (set (make-local-variable 'company-require-match)
        nil))
 (add-hook 'cmake-mode-hook #'ds/set-up-cmake-completion)
