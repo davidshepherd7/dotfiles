@@ -485,6 +485,8 @@ alias hlands="gargoyle-free $HOME/Dropbox/other/HadeanLands-generic/HadeanLands.
 # mercurial
 # ============================================================
 
+alias h="hg"
+alias hd="hg diff"
 alias hca="hg commit --amend"
 
 
