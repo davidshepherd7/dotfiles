@@ -8,3 +8,8 @@
 
 (require 'aggressive-indent)
 (add-hook 'sgml-mode-hook #'aggressive-indent-mode)
+
+(defun ds/switch-to-js ()
+  (interactive)
+  (ds/switch-to-related ".js"))
+(define-key html-mode-map (kbd "C-\\ o") #'ds/switch-to-js)

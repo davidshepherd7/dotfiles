@@ -30,3 +30,9 @@
 
 (font-lock-add-keywords
  'js-mode '(("\\<\\(then\\)\\>" . font-lock-keyword-face)))
+
+
+(defun ds/switch-to-html ()
+  (interactive)
+  (ds/switch-to-related ".html"))
+(define-key js-mode-map (kbd "C-\\ o") #'ds/switch-to-html)

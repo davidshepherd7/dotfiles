@@ -76,6 +76,9 @@
 (use-package dash :ensure t)
 (use-package s :ensure t)
 
+(defun ds/switch-to-related (ext)
+  (find-file (concat (file-name-sans-extension (buffer-file-name)) ext)))
+
 
 ;; Config start
 ;; ============================================================
