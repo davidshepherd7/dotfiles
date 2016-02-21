@@ -27,3 +27,6 @@
 (font-lock-add-keywords
  'js-mode '(("\\<\\(expect\\)\\>" . font-lock-keyword-face)))
 
+
+(font-lock-add-keywords
+ 'js-mode '(("\\<\\(then\\)\\>" . font-lock-keyword-face)))
