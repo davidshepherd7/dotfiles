@@ -1408,33 +1408,46 @@ $0")
   (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
   :demand)
 
-;; (setq helm-dash-common-docsets '("Python 3"))
 
 (use-package helm-dash
   :ensure t
 
   :config
+  ;; Add dash.el pytoolz scikit-learn by hand :(
 
   ;; base docsets
-  (set 'ds/docsets '("Bash" "Emacs Lisp" "Markdown"
-                     "Python 3" "SciPy" "NumPy"
-                     "C" "C++"
-                     "Haskell" "R"))
+  (set 'ds/general-docsets '(
+                             "Bash"
+                             "Emacs Lisp"
+                             "Markdown"
+                             "C"
+                             "C++"
+                             "PostgreSQL"
+                             "CMake"
+                             ))
 
-  ;; user contrib docsets
-  (set 'ds/contrib-docsets '("SymPy" "scikit-learn"))
-  ;; matplotlib seems to be broken
-
-  ;; I generated the toolz docset myself
-
-  (set 'python-docsets '("Python 3"
-                         "NumPy" "SciPy"
+  (set 'python-docsets '(
+                         "Python 3"
+                         "NumPy"
+                         "SciPy"
                          "SymPy"
                          "scikit-learn"
-                         ;; "toolz"
+                         "toolz"
                          ))
 
-  ;; Add: dash.el pytoolz scikit-learn
+  (set 'ds/js-docsets '(
+                        "MomentJS"
+                        "AngularJS"
+                        "JavaScript"
+                        "CSS"
+                        "HTML"
+                        "Gulp"
+                        "Jasmine"
+                        "Lo-Dash"
+                        ))
+
+  (set 'ds/docsets
+       (-concat ds/general-docsets ds/js-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1442,15 +1455,23 @@ $0")
   (defun ds/installed-docsets ()
     (-map #'ds/fix-docset-url (helm-dash-installed-docsets)))
 
-  (defun install-docsets ()
+  (defun ds/install-docsets ()
     (interactive)
     (--> ds/docsets
          (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
          (-map #'ds/fix-docset-url it)
          (-map #'helm-dash-install-docset it)))
 
-  (add-hook 'python-mode-hook (lambda () (setq-local helm-dash-docsets python-docsets)))
-  (add-hook 'emacs-lisp-mode-hook (lambda () (setq-local helm-dash-docsets '("Emacs Lisp"))))
+  (defmacro ds/set-docsets-fn (docsets)
+    `(lambda () (setq-local helm-dash-docsets ,docsets)))
+
+  (add-hook 'python-mode-hook (ds/set-docsets-fn python-docsets))
+  (add-hook 'emacs-lisp-mode-hook (ds/set-docsets-fn '("Emacs Lisp")))
+  (add-hook 'c++-mode-hook (ds/set-docsets-fn' ("C++")))
+  (add-hook 'js-mode-hook (ds/set-docsets-fn ds/js-docsets))
+  (add-hook 'cmake-mode-hook (ds/set-docsets-fn '("CMake")))
+  (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
+  (add-hook 'shell-script-mode-hook (ds/set-docsets-fn '("Bash")))
 
   )
 
