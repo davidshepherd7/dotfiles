@@ -314,6 +314,9 @@ the line break."
 (global-set-key (kbd "C-<prior>") #'scroll-down-half-screen)
 (global-set-key (kbd "C-<next>") #'scroll-up-half-screen)
 
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
 
 ;; New keymap for search
 ;; ============================================================
