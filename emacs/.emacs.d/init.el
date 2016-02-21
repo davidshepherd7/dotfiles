@@ -522,6 +522,14 @@ index in STRING."
 ;; Enable save history (must be done after changing any variables).
 (savehist-mode 1)
 
+;; Long history for everything
+(set 'history-length (* 10 1000)) ;; default value for histories without
+;; their own variable
+(set 'kill-ring-max (* 10 1000))
+(set 'search-ring-max (* 10 1000))
+(set 'regexp-search-ring-max (* 10 1000))
+(set 'history-delete-duplicates t)
+
 
 ;; Compile mode settings
 ;; ===============================================================
