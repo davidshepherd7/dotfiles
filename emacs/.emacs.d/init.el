@@ -170,11 +170,6 @@
 ;; Show messages on startup, not the stupid scratch buffer
 (switch-to-buffer "*Messages*")
 
-;; Set the default font
-(set-face-attribute 'default '()
-                    :family "DejaVu Sans Mono"
-                    :height 98)
-
 ;; Highlight long lines
 (require 'whitespace)
 (set 'whitespace-line-column 80) ;; limit line length
@@ -250,6 +245,23 @@
 ;; message
 (put 'inhibit-startup-echo-area-message 'saved-value
      (setq inhibit-startup-echo-area-message (user-login-name)))
+
+
+;; Fonts
+;; ============================================================
+
+;; Set the default font
+(set-face-attribute 'default '()
+                    :family "DejaVu Sans Mono"
+                    :height 98)
+
+;; Might be useful at some point
+(defun ds/what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property pos 'read-face-name)
+                  (get-char-property pos 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
 
 ;; isearch
 ;; ============================================================
