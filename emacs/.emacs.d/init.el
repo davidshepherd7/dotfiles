@@ -544,7 +544,7 @@ index in STRING."
     (concat "latexmk -C && latexmk -pdf" " " (file-name-nondirectory (buffer-file-name))))
 
    ((derived-mode-p 'js-mode)
-    "gulp --silent && refresh-browser.sh")
+    "gulp --silent --reporter=simple && refresh-browser.sh")
 
    ;; make is probably a good default for anything else
    (t "make")))
