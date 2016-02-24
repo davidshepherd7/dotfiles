@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: eftime
+# --
+<edit-form-time
+ng-model="$1"
+edit-form-label="$2"$0
+>
+</edit-form-time>

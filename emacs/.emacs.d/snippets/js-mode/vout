@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: vout
+# --
+console.log("$1:", $1);
