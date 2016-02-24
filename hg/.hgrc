@@ -38,7 +38,7 @@ changeset.draft=green
 
 # Interact with RhodeCode
 push-review = push -f review
-pr = !$HG push-review "$@" && pa-pull-request.sh
+pr = !$HG push-review "$@"; pa-pull-request.sh
 
 ccommon = commit -m "chore(common): Update common" 'path:common'
 

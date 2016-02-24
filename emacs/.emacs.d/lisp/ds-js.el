@@ -7,6 +7,8 @@
 (add-hook 'js-mode-hook #'ds/disable-electric-semicolon)
 
 (add-hook 'js-mode-hook #'electric-operator-mode)
+(add-hook 'js-mode-hook #'flycheck-mode)
+(add-hook 'js-mode-hook #'aggressive-indent-mode)
 
 (require 'grep)
 (add-to-list 'grep-find-ignored-files "*.min.js")
@@ -15,7 +17,6 @@
 ;; Don't really know what these are but they show up in the biosite repo
 (add-to-list 'grep-find-ignored-files "*.bmml")
 
-(add-hook 'js-mode-hook #'aggressive-indent-mode)
 
 ;; Show function as lambda. Append prettify-symbols-mode so that symbol for
 ;; function is added before the mode is enabled.
@@ -36,3 +37,4 @@
   (interactive)
   (ds/switch-to-related ".html"))
 (define-key js-mode-map (kbd "C-\\ o") #'ds/switch-to-html)
+

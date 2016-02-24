@@ -5,11 +5,16 @@ bgulp()
     # subshell to avoid changing directory
     (
         cd ~/code/boron-unstable/boron/web_applications/;
-        gulp --silent "$@"
+        gulp --silent --reporter=simple --nolint "$@"
     )
 }
 
 alias lbiosite='/home/david/code/boron-unstable/scripts/launch-biosite-single-terminal.sh'
+
+bgulpr()
+{
+    bgulp "$@" && refresh-browser.sh
+}
 
 aburl()
 {
