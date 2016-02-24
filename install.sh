@@ -6,35 +6,38 @@ set -o nounset
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
+stow_file()
+{
+    stow "$1" -t "$HOME" --ignore=".dropbox.attr"
+}
 
-stow zsh -t $HOME --ignore=".dropbox.attr"
+stow_file zsh
+stow_file conky
+stow_file git
+stow_file hg
+stow_file readlin_e
+stow_file gdb
+stow_file bash
+stow_file bin
+stow_file calibre
+stow_file psql
+stow_file ag
 
+# Cases which need dirs creating
 mkdir -p ~/.emacs.d
-stow emacs -t $HOME --ignore=".dropbox.attr"
+stow_file emacs
 
-stow X -t $HOME --ignore=".dropbox.attr"
+stow_file X
 
 mkdir -p ~/.xmonad
-stow xmonad -t $HOME --ignore=".dropbox.attr"
-
-stow conky -t $HOME --ignore=".dropbox.attr"
-
-stow git -t $HOME --ignore=".dropbox.attr"
-
-stow hg -t $HOME --ignore=".dropbox.attr"
+stow_file xmonad
 
 mkdir -p ~/.ipython/profile_default/
 mkdir -p ~/.ipython/profile_default/startup
-stow ipython -t $HOME --ignore=".dropbox.attr"
+stow_file ipython
 
 mkdir -p ~/.config/sxhkd
-stow sxhkd -t $HOME --ignore=".dropbox.attr"
-
-stow readline -t $HOME --ignore=".dropbox.attr"
-
-stow gdb -t $HOME --ignore=".dropbox.attr"
-
-stow bash -t $HOME --ignore=".dropbox.attr"
+stow_file sxhkd
 
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
@@ -43,12 +46,6 @@ sudo stow hwdb -t /etc/udev/hwdb.d --ignore=".dropbox.attr"
 # Just do a plain copy for this, links don't seem to work
 sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
 
-stow bin -t $HOME --ignore=".dropbox.attr"
-
-
-# Firefox needs extra tricks to find the user dir
-./firefox/setup-firefox.sh
-
-stow calibre -t "$HOME" --ignore=".dropbox.attr"
-
-stow psql -t "$HOME" --ignore=".dropbox.attr"
+# Firefox needs extra tricks to find the user dir run:
+# ./firefox/setup-firefox.sh, not done here because it's error prone and
+# not idempotent.
