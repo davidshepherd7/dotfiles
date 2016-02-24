@@ -1587,10 +1587,9 @@ $0")
 (use-package ag
   :ensure t
   :config
+  ;; Include hidden files
   (add-to-list 'ag-arguments "--hidden")
-  (add-to-list 'ag-ignore-list "LICENSE")
-  (add-to-list 'ag-ignore-list "LICENSE\.txt")
-  (add-to-list 'ag-ignore-list "firefox/.resbackup"))
+  )
 
 
 ;; When using the "wrong" emacs version colour the modeline red, after

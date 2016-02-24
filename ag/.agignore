@@ -1,0 +1,19 @@
+*.min.js
+*.min.css
+*.css.map
+*.min.js.map
+
+LICENSE
+LICENSE.txt
+LICENSE.md
+
+*.orig
+
+# Boron stuff
+*boron/web_applications/lib/*
+*boron/web_applications/node_modules/*
+*boron/web_applications/app/*
+*boron/web_applications/dev-app/*
+
+# rcfiles stuff
+firefox/.resbackup
