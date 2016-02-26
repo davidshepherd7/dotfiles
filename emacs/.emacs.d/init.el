@@ -908,10 +908,15 @@ For magit versions > 2.1.0"
 
   (require 'hydra)
 
+  (defun ds/projectile-project-root-nothrow ()
+    (condition-case nil
+        (projectile-project-root)
+      (error nil)))
+
   (defhydra hydra-projectile (:color teal
                                      :hint nil)
     "
-     PROJECTILE: %(projectile-project-root)
+     PROJECTILE: %(or (ds/projectile-project-root-nothrow) \"Not in a project\")
 
      Find File            Search/Tags          Buffers                Cache
 ------------------------------------------------------------------------------------------
