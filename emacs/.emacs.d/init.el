@@ -744,9 +744,10 @@ If point was already at that position, move point to beginning of line."
 ;; 		  (indent-region (region-beginning) (region-end) nil))))))
 
 
-;; VC
+;; version control
 ;; ============================================================
 
+;; git
 (use-package magit
   :init
   (setq magit-last-seen-setup-instructions "1.4.0")
@@ -774,6 +775,7 @@ For magit versions > 2.1.0"
 
   :ensure t)
 
+;; mercurial
 (use-package monky
   :ensure t
   :config
@@ -790,6 +792,9 @@ For magit versions > 2.1.0"
 
   (set 'monky-process-type 'cmdserver)
   )
+
+(add-to-list 'auto-mode-alist (cons "hgrc$" #'conf-mode))
+
 
 
 ;; Show changes vs VC in sidebar
