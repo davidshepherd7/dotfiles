@@ -120,17 +120,23 @@ install_brew_packages () {
 }
 
 install_gem_packages () {
-    <  "$rcdir/gem_package_list" x sudo gem install %
+    < "$rcdir/gem_package_list" x sudo gem install %
+}
+
+install_npm_packages () {
+    < "$rcdir/npm_package_list" x sudo npm install -g %
 }
 
 update () {
-    sudo apt-get update
-    sudo apt-get upgrade --assume-yes --quiet
-
-    install_packages
-    install_pip_packages
-    install_gem_packages
-    install_brew_packages
+    sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet &&
+        (
+            # Allow failures in subshell
+            install_packages
+            install_pip_packages
+            install_gem_packages
+            install_brew_packages
+            install_npm_packages
+        )
 }
 
 alias pm='sudo pacmatic -S'
