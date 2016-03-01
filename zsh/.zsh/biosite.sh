@@ -9,11 +9,18 @@ bgulp()
     )
 }
 
+alias bgulpn='bgulp --nolint'
+
 alias lbiosite='/home/david/code/boron-unstable/scripts/launch-biosite-single-terminal.sh'
 
 bgulpr()
 {
     bgulp "$@" && refresh-browser.sh
+}
+
+bgulpnr()
+{
+    bgulp --nolint "$@" && refresh-browser.sh
 }
 
 aburl()

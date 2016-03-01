@@ -1,6 +1,9 @@
 super + t
     urxvt
 
+super + d
+    urxvt -e "$SHELL" -c 'cd "$HOME/code/boron-unstable" && exec $SHELL'
+
 super + r
     sensible-browser
 
