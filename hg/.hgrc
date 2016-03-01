@@ -70,9 +70,6 @@ sdiff = !$HG diff $@ | cdiff -s
 
 
 
-diff = diff --exclude "path:boron/web_applications/app/" --exclude "path:boron/web_applications/lib/"
-
-
 doagain = !$HG up -r "$1" && $HG import --no-commit <(hg diff -r . -r "$2")
 
 # Get the real hash of a revision (as needed for hgsubstate)
