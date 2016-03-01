@@ -7,7 +7,6 @@
 (add-hook 'js-mode-hook #'ds/disable-electric-semicolon)
 
 (add-hook 'js-mode-hook #'electric-operator-mode)
-(add-hook 'js-mode-hook #'flycheck-mode)
 (add-hook 'js-mode-hook #'aggressive-indent-mode)
 
 (require 'grep)
@@ -16,7 +15,6 @@
 
 ;; Don't really know what these are but they show up in the biosite repo
 (add-to-list 'grep-find-ignored-files "*.bmml")
-
 
 ;; Show function as lambda. Append prettify-symbols-mode so that symbol for
 ;; function is added before the mode is enabled.
@@ -38,3 +36,13 @@
   (ds/switch-to-related ".html"))
 (define-key js-mode-map (kbd "C-\\ o") #'ds/switch-to-html)
 
+(defun ds/js-switch-to-test ()
+  (interactive)
+  (if (s-contains? ".spec.js" (buffer-file-name))
+      (ds/switch-to-related ".js" (file-name-sans-extension (buffer-file-name)))
+    (ds/switch-to-related ".spec.js")))
+(define-key js-mode-map (kbd "C-\\ n") #'ds/js-switch-to-test)
+
+;; Flycheck config
+(require 'flycheck)
+(add-hook 'js-mode-hook #'flycheck-mode)

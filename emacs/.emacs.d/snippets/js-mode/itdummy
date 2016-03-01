@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: itdummy
+# --
+it('runs', function() {
+    expect(true).toBe(true);
+});

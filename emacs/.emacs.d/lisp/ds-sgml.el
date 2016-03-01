@@ -13,3 +13,14 @@
   (interactive)
   (ds/switch-to-related ".js"))
 (define-key html-mode-map (kbd "C-\\ o") #'ds/switch-to-js)
+
+
+(defun ds/html-switch-to-test ()
+  (interactive)
+  (ds/switch-to-related ".spec.js"))
+(define-key html-mode-map (kbd "C-\\ n") #'ds/html-switch-to-test)
+
+
+(require 'flycheck)
+(add-hook 'html-mode-hook #'flycheck-mode)
+(add-hook 'css-mode-hook #'flycheck-mode)

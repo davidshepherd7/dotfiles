@@ -1,0 +1,14 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startctrl
+# --
+(function(){
+    'use strict';
+
+angular.module('$1', [
+])
+${2:.controller('$3Ctrl', function () {
+$0
+})}
+;
+
+})();

@@ -76,8 +76,9 @@
 (use-package dash :ensure t)
 (use-package s :ensure t)
 
-(defun ds/switch-to-related (ext)
-  (find-file (concat (file-name-sans-extension (buffer-file-name)) ext)))
+(defun ds/switch-to-related (ext &optional current-file-in)
+  (let ((current-file (or current-file-in (buffer-file-name))))
+    (find-file (concat (file-name-sans-extension current-file) ext))))
 
 
 ;; Config start
@@ -486,6 +487,7 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-js.el")
 (load-file "~/.emacs.d/lisp/ds-sql.el")
 (load-file  "~/.emacs.d/lisp/ds-cmake.el")
+(load-file  "~/.emacs.d/lisp/ds-sgml.el")
 
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-biosite.el")
@@ -567,7 +569,7 @@ index in STRING."
     (concat "latexmk -C && latexmk -pdf" " " (file-name-nondirectory (buffer-file-name))))
 
    ((derived-mode-p 'js-mode)
-    "gulp --silent --reporter=simple && refresh-browser.sh")
+    "gulp --silent --reporter=simple --nolint && refresh-browser.sh")
 
    ;; make is probably a good default for anything else
    (t "make")))
