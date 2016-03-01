@@ -1,3 +1,8 @@
 \pset pager always
 \setenv PAGER less
 \setenv LESS '-S -F -X -R'
+
+\set HISTCONTROL ignoredups
+\set HISTSIZE 100000
+\set SINGLELINE
+\set VERBOSITY verbose
