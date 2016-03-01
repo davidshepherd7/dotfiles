@@ -79,5 +79,8 @@ doagain = !$HG up -r "$1" && $HG import --no-commit <(hg diff -r . -r "$2")
 idfull = !$HG --debug id -i "$@"
 
 
+# Clean up whitespace, warning: not well tested yet, potentially dangerous
+clean-ws = !hg-clean-whitespace.sh
+
 # Single command bisection
 autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG bisect --bad "$2" && $HG bisect --command "$3"
