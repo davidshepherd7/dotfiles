@@ -100,3 +100,10 @@ access functions are BAD for class access (too much copying)."
 (add-to-list 'compilation-error-regexp-alist-alist
              '(boost-test-require "^\\(.*\\)(\\([0-9]*\\)): fatal error" 1 2))
 (add-to-list 'compilation-error-regexp-alist 'boost-test-require)
+
+
+;; Don't go so nuts with font-lock, it's slow
+(defun ds/limit-font-lock ()
+  (interactive)
+  (setq-local font-lock-maximum-decoration 3))
+(add-hook 'c++-mode-hook #'ds/limit-font-lock)
