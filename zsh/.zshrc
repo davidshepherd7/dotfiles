@@ -80,7 +80,9 @@ setopt extendedhistory
 alias hist='history -f -D -E'
 
 # Remove redundant whitespace from history lines
-setopt histreduceblanks
+# setopt histreduceblanks
+
+# Don't use: it garbles history!
 
 
 # Fancy move command
