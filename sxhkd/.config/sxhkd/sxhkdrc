@@ -8,7 +8,7 @@ super + r
     sensible-browser
 
 super + c
-    chromium-browser http://gauss.pa/hg/_admin/notifications
+    sensible-browser http://gauss.pa/hg/_admin/notifications
 
 super + s
     emacsclient -c -n -e '(switch-to-buffer nil)'
