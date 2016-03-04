@@ -6,3 +6,5 @@
 \set HISTSIZE 100000
 \set SINGLELINE
 \set VERBOSITY verbose
+
+\set ON_ERROR_ROLLBACK interactive
