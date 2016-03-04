@@ -15,8 +15,9 @@ zstyle ':completion:*' match-original both
 zstyle ':completion:*' max-errors 2
 zstyle :compinstall filename '/home/david/.zshrc'
 
-# Case-insensitive (all), partial-word, and then substring completion.
-# (stolen from the internet, not sure what it all does)
+# Case-insensitive (all), underscore vs dash insensitive, partial-word, and
+# then substring completion. (stolen from the internet, not sure what it
+# all does)
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 # completion for kill and killall

@@ -15,5 +15,43 @@ LICENSE.md
 *boron/web_applications/app/*
 *boron/web_applications/dev-app/*
 
+# The above doesn't work if we are in web_applications, so add these as well :(
+app/nearmiss/*
+app/client/*
+app/adduser/*
+app/client/*
+app/configuration/*
+app/delivery/*
+app/induction/*
+app/lib/*
+app/messagescreen/*
+app/messagescreen2/*
+app/mobileverification/*
+app/nearmiss/*
+app/online/*
+app/reports/*
+app/site-management/*
+app/site-stats/*
+app/tablet/*
+
+dev-app/nearmiss/*
+dev-app/client/*
+dev-app/adduser/*
+dev-app/client/*
+dev-app/configuration/*
+dev-app/delivery/*
+dev-app/induction/*
+dev-app/lib/*
+dev-app/messagescreen/*
+dev-app/messagescreen2/*
+dev-app/mobileverification/*
+dev-app/nearmiss/*
+dev-app/online/*
+dev-app/reports/*
+dev-app/site-management/*
+dev-app/site-stats/*
+dev-app/tablet/*
+
+
 # rcfiles stuff
 firefox/.resbackup

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: Start
+# --
+-- Start: $1
+$0
+-- End: $1
