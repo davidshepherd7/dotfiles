@@ -72,9 +72,8 @@ manifest0 = !$HG manifest | tr '\n' '\0'
 # Side by side diff
 sdiff = !$HG diff $@ | cdiff -s
 
-
-
-doagain = !$HG up -r "$1" && $HG import --no-commit <(hg diff -r . -r "$2")
+# "undo" commiting.
+doagain = !hg-do-again.sh
 
 # Get the real hash of a revision (as needed for hgsubstate)
 idfull = !$HG --debug id -i "$@"
