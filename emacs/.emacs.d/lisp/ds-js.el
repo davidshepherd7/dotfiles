@@ -24,11 +24,22 @@
 (add-hook 'js-mode-hook #'prettify-symbols-mode t)
 
 (font-lock-add-keywords
- 'js-mode '(("\\<\\(expect\\)\\>" . font-lock-keyword-face)))
+ 'js-mode '(
+            ;; Jasmine
+            ("\\<\\(expect\\)\\>" 1 font-lock-keyword-face)
+            ("\\<\\(it\\)\\>" 1 font-lock-keyword-face)
+            ("\\<\\(describe\\)\\>" 1 font-lock-keyword-face)
 
+            ;; Promises
+            ("\\.\\<\\(then\\)\\>" 1 font-lock-keyword-face)
 
-(font-lock-add-keywords
- 'js-mode '(("\\<\\(then\\)\\>" . font-lock-keyword-face)))
+            ;; Angular
+            ("\\.\\<\\(controller\\)\\>" 1 font-lock-keyword-face)
+            ("\\.\\<\\(directive\\)\\>" 1 font-lock-keyword-face)
+            ("\\.\\<\\(factory\\)\\>" 1 font-lock-keyword-face)
+            ("\\.\\<\\(service\\)\\>" 1 font-lock-keyword-face)
+
+            ))
 
 
 (defun ds/switch-to-html ()
@@ -46,3 +57,6 @@
 ;; Flycheck config
 (require 'flycheck)
 (add-hook 'js-mode-hook #'flycheck-mode)
+
+
+(add-to-list 'auto-mode-alist '("\\.jshintrc\\'" . js-mode))
