@@ -1603,6 +1603,10 @@ $0")
   (add-to-list 'ag-arguments "--hidden")
   )
 
+(use-package scratch
+  :ensure t
+  )
+
 
 ;; When using the "wrong" emacs version colour the modeline red, after
 ;; everything else to override any customisations.
