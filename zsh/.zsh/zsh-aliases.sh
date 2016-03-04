@@ -495,6 +495,8 @@ alias h="hg"
 alias hd="hg diff"
 alias hca="hg commit --amend"
 
+alias hgplain="HGPLAIN=1 hg"
+
 
 # Profiling
 # ============================================================
