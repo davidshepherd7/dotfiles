@@ -17,7 +17,14 @@
 ;; Add any other alignment functions here
 
 
-(defun biosite-c-style ()
+
+(defun ds/comment-offset (dummy)
+  "No offset for closing comment lines"
+  (save-excursion
+    (beginning-of-line)
+    (if (looking-at-p "\\s-+\\*/") 0 '+)))
+
+(defun ds/biosite-c-style ()
   (interactive)
 
   (set 'indent-tabs-mode t)
@@ -40,11 +47,11 @@
   ;; Indent by single tab for streaming
   (c-set-offset 'stream-op '+)
 
-  ;; Indent comments by one tab
-  (c-set-offset 'c '+)
+  ;; Indent comments by one tab normally, or none on closing comment lines.
+  (c-set-offset 'c #'ds/comment-offset)
   )
 
-(add-hook 'c++-mode-hook #'biosite-c-style)
+(add-hook 'c++-mode-hook #'ds/biosite-c-style)
 
 
 (defun ds/biosite-html-style ()
