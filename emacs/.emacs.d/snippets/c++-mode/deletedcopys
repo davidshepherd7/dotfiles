@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: deletedcopys
+# --
+${1:class_name}(const $1&) = delete;
+$1& operator=(const $1&) = delete;
+$1($1&&) = delete;
+$1& operator=($1&&) = delete;

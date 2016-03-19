@@ -1,14 +1,16 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: startctrl
+# key: startfact
 # --
 (function(){
     'use strict';
 
 angular.module('boron.$1.${2:`(s-dashed-words (ds/buffer-basename))`}', [
 ])
-${2:.controller('${3:`(s-upper-camel-case (ds/buffer-basename))`}Ctrl', function ($scope) {
+.factory('${3:`(s-upper-camel-case (ds/buffer-basename))`}', function() {
+return function() {
 $0
-})}
+};
+})
 ;
 
 })();

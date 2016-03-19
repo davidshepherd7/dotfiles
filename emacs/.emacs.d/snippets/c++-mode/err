@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: err
+# --
+case $1:
+    throw std::runtime_error("pa::safe_bstr error: $2");
