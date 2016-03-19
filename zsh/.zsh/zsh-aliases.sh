@@ -143,8 +143,28 @@ alias pm='sudo pacmatic -S'
 
 
 
-# Git aliases
+# Version control aliases
 # ============================================================
+
+# Pick correct version control system
+function h() {
+    if hg root 1>/dev/null 2>&1; then
+        hg "$@"
+    elif git rev-parse --is-inside-work-tree 1>/dev/null 2>&1; then
+        git "$@"
+    else
+        echo "No VC found" 1>&2
+        return 1
+    fi
+}
+
+alias hd="h diff"
+alias hs="h status"
+
+alias hc="h commit"
+alias hca="h commit --amend"
+
+alias hgplain="HGPLAIN=1 hg"
 
 
 # Use hub for better github integration, if it exists
@@ -152,15 +172,12 @@ if [ command -v hub > /dev/null 2>&1 ]; then
     alias git='hub'
 fi
 
-alias g='git'
 
 alias gs='git status -s -b'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gl1='git log -n1 -p'
 alias gc='git cherry-pick'
-alias gca='git commit --amend'
-alias gc='git commit'
 alias gsri='git stash --keep-index && git stash && git rebase --interactive HEAD~20 && git stash pop && git add -p && git commit --amend && git rebase --continue && git stash pop'
 alias gap='git add -p'
 alias gcp='git checkout -p'
@@ -187,6 +204,8 @@ git-ignore-rest () {
 # svn aliases
 alias sst='svn status -q'
 alias sd='svn diff'
+
+# ===============================
 
 # A make alias
 m()
@@ -487,15 +506,6 @@ regenerate_all_completions ()
 # Games
 # ============================================================
 alias hlands="gargoyle-free $HOME/Dropbox/other/HadeanLands-generic/HadeanLands.gblorb"
-
-# mercurial
-# ============================================================
-
-alias h="hg"
-alias hd="hg diff"
-alias hca="hg commit --amend"
-
-alias hgplain="HGPLAIN=1 hg"
 
 
 # Profiling
