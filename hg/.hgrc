@@ -35,6 +35,12 @@ changeset.draft=green
 
 this_branch_simple($1) = reverse(ancestors($1)) - (keyword(chore) and keyword(gulp)) - keyword(merge)
 
+# Get the last branching commit (i.e. last commit with multiple descendents)
+prev_branchpoint($1) = last(ancestors($1) and branchpoint())
+
+# Get the commit after the last branch (i.e. what you rebase from if you do rebase -b $1).
+base($1) = last(limit(reverse(last(prev_branchpoint($1)::$1)),2))
+
 
 [alias]
 
