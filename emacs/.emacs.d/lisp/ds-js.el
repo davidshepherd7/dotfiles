@@ -1,6 +1,8 @@
 (require 'js)
 
 
+(add-to-list 'auto-mode-alist (cons "\\.ts$" #'js-mode))
+
 (defun ds/disable-electric-semicolon ()
   (interactive)
   (add-to-list 'electric-layout-rules (cons ?\; nil)))
@@ -60,3 +62,14 @@
 
 
 (add-to-list 'auto-mode-alist '("\\.jshintrc\\'" . js-mode))
+
+
+
+;; Parse typescript compiler output
+(require 'compile)
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(typescript "\\(.*\\)(\\([0-9]*\\),\\([0-9]*\\)): " 1 2))
+(add-to-list 'compilation-error-regexp-alist 'typescript)
+
+
+(use-package json-mode :ensure t)
