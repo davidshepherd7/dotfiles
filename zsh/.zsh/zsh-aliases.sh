@@ -524,3 +524,9 @@ perf_flame()
 
 # Numberwang
 # ============================================================
+
+# Node
+# ============================================================
+
+# Run locally installed node modules
+alias npm-exec='PATH=$(npm bin):$PATH'
