@@ -69,7 +69,8 @@
 ;; Functions/packages used in multiple files
 ;; ============================================================
 
-(defvar ds/emacs-up-to-date? (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+(defvar ds/emacs-up-to-date? (or (and (>= emacs-major-version 24) (>= emacs-minor-version 4))
+                                 (> emacs-major-version 24))
   "Are we using my prefered emacs version or newer?")
 
 ;; some useful libraries
@@ -244,10 +245,10 @@
 ;; Always try to load the newest version of a file (byte-compiled or not).
 (set 'load-prefer-newer t)
 
-;; Yes, it's disgusting, but it's a portable way to disable that silly
-;; message
-(put 'inhibit-startup-echo-area-message 'saved-value
-     (setq inhibit-startup-echo-area-message (user-login-name)))
+;; ;; Yes, it's disgusting, but it's a portable way to disable that silly
+;; ;; message
+;; (put 'inhibit-startup-echo-area-message 'saved-value
+;;      (setq inhibit-startup-echo-area-message (user-login-name)))
 
 
 ;; Fonts
@@ -454,7 +455,7 @@ index in STRING."
 
   (sml/setup)
 
-  (sml/apply-theme 'automatic)
+  (sml/apply-theme 'dark)
 
   ;; Shorten some directories to useful stuff
   (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
