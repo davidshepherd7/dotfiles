@@ -20,6 +20,9 @@ super + a
     sensible-browser 'inbox.google.com'
 
 super + p
+    helm-dmenu.sh
+
+super + P
     dmenu_run
 
 super + equal
