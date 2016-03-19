@@ -54,13 +54,13 @@
 (add-hook 'c++-mode-hook #'ds/biosite-c-style)
 
 
-(defun ds/biosite-html-style ()
+(defun ds/biosite-sgml-style ()
   (interactive)
   (setq sgml-basic-offset tab-width)
   (setq indent-tabs-mode t)
   )
 
-(add-hook 'html-mode-hook #'ds/biosite-html-style)
+(add-hook 'sgml-mode-hook #'ds/biosite-sgml-style)
 
 
 (defun ds/biosite-js-style ()
@@ -131,7 +131,12 @@
     (insert (format "UPDATE version SET current = %i;" next-version))))
 
 
-;; html indentation
+(defun ds/open-with-qt-designer ()
+  (interactive)
+  (start-process "qtdesigner.sh" nil "qtdesigner.sh" (buffer-file-name)))
+
+
+;; sgml indentation
 ;; ============================================================
 
 (defvar ds/sgml-fancy-align nil)
