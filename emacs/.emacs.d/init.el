@@ -775,6 +775,8 @@ For magit versions > 2.1.0"
   (set 'magit-push-always-verify nil)
   (set 'git-commit-major-mode 'markdown-mode)
 
+  (set 'git-commit-summary-max-length 100)
+
   :ensure t)
 
 ;; mercurial
