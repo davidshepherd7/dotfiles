@@ -1329,12 +1329,6 @@ $0")
   (which-key-mode)
   )
 
-
-;; For some stupid reason ess doesn't define this autoload, or this
-;; file association!
-(autoload 'R-mode "ess-site.el" "ESS" t)
-(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
-
 (use-package ess
   :ensure t
   :config
