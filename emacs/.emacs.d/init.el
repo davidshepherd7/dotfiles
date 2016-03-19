@@ -780,6 +780,9 @@ For magit versions > 2.1.0"
 
   :ensure t)
 
+(add-to-list 'auto-mode-alist (cons "gitconfig$" #'conf-mode))
+(add-to-list 'auto-mode-alist (cons "gitignore$" #'conf-mode))
+
 ;; mercurial
 (use-package monky
   :ensure t
