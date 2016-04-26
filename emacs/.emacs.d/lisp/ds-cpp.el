@@ -34,9 +34,20 @@
 ;; Don't try to open includes etc (it never works...)
 (set 'ff-special-constructs nil)
 
-;; Bind it
-(define-key c++-mode-map (kbd "C-\\ o") #'ff-find-other-file)
-(define-key c++-mode-map (kbd "C-\\ C-o") #'ff-find-other-file)
+;; ;; Bind it
+;; (define-key c++-mode-map (kbd "C-\\ o") #'ff-find-other-file)
+;; (define-key c++-mode-map (kbd "C-\\ C-o") #'ff-find-other-file)
+
+(defun ds/switch-to-from-header ()
+  (interactive)
+  (cond
+   ((s-ends-with? ".h" (buffer-file-name))
+    (find-file (s-concat (s-chop-suffix ".h" (buffer-file-name)) ".cpp")))
+   ((s-ends-with? ".cpp" (buffer-file-name))
+    (find-file (s-concat (s-chop-suffix ".cpp" (buffer-file-name)) ".h")))
+   (t (error "Not a .cpp or .h file."))))
+(define-key c++-mode-map (kbd "C-\\ o") #'ds/switch-to-from-header)
+(define-key c++-mode-map (kbd "C-\\ C-o") #'ds/switch-to-from-header)
 
 
 ;; For use in snippets
