@@ -57,6 +57,7 @@ myManageHook =
   , className =? "Tk" --> doFloat
   , className =? "Octave"          --> doFloat
   , className =? "Gnuplot"          --> doFloat
+  , className =? "chromium-browser" --> doShift "dump"
 
   -- , className =? "Tk" --> doShift "plots"
   , isFullscreen --> doFullFloat
@@ -140,7 +141,7 @@ myStartupHook = do
 ------------------------------------------------------------------------
 -- Workspaces
 
-myWorkspaces = ["1", "2", "3", "4", "5", "6"]
+myWorkspaces = ["1", "2", "3", "dump"]
 
 ------------------------------------------------------------------------
 -- Now run xmonad with these settings and some others given here
