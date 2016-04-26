@@ -89,6 +89,48 @@
        (replace-regexp-in-string "/tests/" "/" it)
        (replace-regexp-in-string "\.cpp" ".h" it)))
 
+(defvar ds/biosite-dir-to-ns '())
+
+(set 'ds/biosite-dir-to-ns
+     '(("report_server" "reports")
+       ("helpers" "helper")))
+
+(defun ds/biosite-dir-to-namespace (dir)
+  (let ((found (assoc dir ds/biosite-dir-to-ns)))
+    (if found (cadr found) dir)))
+
+(defun ds/biosite-path-to-namespaces (path)
+  (--> path
+       (file-name-directory it)
+       (s-split "/" it t)
+       (-map #'ds/biosite-dir-to-namespace it)))
+;; (ds/biosite-path-to-namespaces "boron/report_server/helpers/count_week_days.h")
+
+(defun ds/biosite-get-namespaces  ()
+  (interactive)
+  (ds/biosite-path-to-namespaces
+   (file-relative-name (buffer-file-name) (projectile-project-root))))
+
+(defun ds/biosite-open-namespaces ()
+  (interactive)
+  (apply #'s-concat
+         (-map
+          (lambda (ns) (s-concat "namespace " ns "\n{\n"))
+          (ds/biosite-get-namespaces))))
+
+(defun ds/biosite-close-namespaces ()
+  (interactive)
+  (apply #'s-concat
+         (-map
+          (lambda (ns) (s-concat "\n} // namespace " ns "\n"))
+          (reverse (ds/biosite-get-namespaces)))))
+
+(defun ds/biosite-cpp-namespaces ()
+  (interactive)
+  (apply #'s-concat
+         (-map
+          (lambda (ns) (s-concat "using namespace " ns ";\n"))
+          (ds/biosite-get-namespaces))))
 
 (defun ds/align-comma ()
   (interactive)

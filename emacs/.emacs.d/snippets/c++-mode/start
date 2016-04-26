@@ -3,6 +3,11 @@
 #ifndef ${1:`(upcase (replace-regexp-in-string "[.-/]" "_" (file-relative-name (buffer-file-name) (projectile-project-root))))`_INCLUDED}
 #define $1
 
-$0
+`(ds/biosite-open-namespaces)`
+$0 `(downcase (file-name-base))`()
+{
+
+}
+`(ds/biosite-close-namespaces)`
 
 #endif // $1

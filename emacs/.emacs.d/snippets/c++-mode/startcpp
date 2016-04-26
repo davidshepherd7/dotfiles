@@ -2,3 +2,10 @@
 # key: startcpp
 # --
 #include "${1:`(cpp-to-h-path (file-relative-name (buffer-file-name) (projectile-project-root)))`}"
+
+`(ds/biosite-cpp-namespaces)`
+
+$2 `(downcase (file-name-base))`()
+{
+$0
+}
