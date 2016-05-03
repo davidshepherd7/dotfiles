@@ -12,6 +12,9 @@
 (add-hook 'js-mode-hook #'electric-operator-mode)
 (add-hook 'js-mode-hook #'aggressive-indent-mode)
 
+(require 'align)
+(add-to-list 'align-sq-string-modes 'js-mode)
+
 (require 'grep)
 (add-to-list 'grep-find-ignored-files "*.min.js")
 (add-to-list 'grep-find-ignored-files "*.min.js.map")
