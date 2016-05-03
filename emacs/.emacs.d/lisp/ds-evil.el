@@ -160,6 +160,15 @@
   ;;   (call-interactively #'query-replace from-string to-string nil beg end))
   ;; (define-key evil-normal-state-map (kbd "'") #'evil-query-replace)
 
+  (evil-define-operator evil-destroy (beg end type register yank-handler)
+    "Delete and don't copy to kill-ring"
+    (evil-delete beg end type ?_ yank-handler))
+
+  (evil-define-operator evil-destroy-replace (beg end type register yank-handler)
+    "Replace something with the clipboard"
+    (evil-destroy beg end type register yank-handler)
+    (evil-paste-before 1 register))
+  (define-key evil-normal-state-map (kbd "C-v") #'evil-destroy-replace)
 
   (define-key evil-normal-state-map "^" #'evil-join)
 
