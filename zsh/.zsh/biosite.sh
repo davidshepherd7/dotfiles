@@ -74,3 +74,17 @@ _complete-vms() {
 compctl -K _complete-vms get-vm-ip
 compctl -K _complete-vms ssh-vm
 
+
+cd-boron-build () {
+    cd '/home/david/code/boron-unstable/build'
+}
+
+boron-test () {
+    (
+        cd-boron-build && ninja "$1" && "./bin/$1" "$2"
+    )
+}
+_boron-test () {
+    reply=(`cd-boron-build && ninja -t targets | awk -F: '{print $1}' | grep 'test'`);
+}
+compctl -K _boron-test boron-test
