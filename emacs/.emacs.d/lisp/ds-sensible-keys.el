@@ -133,7 +133,8 @@ the line break."
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-S-s") 'write-file)
 
-(global-set-key (kbd "C-w")
+(global-set-key (kbd "C-w") #'bury-buffer)
+(global-set-key (kbd "M-w")
                 (lambda () (interactive) (kill-buffer (buffer-name))))
 (global-set-key (kbd "C-S-w")
                 (lambda () (interactive) (progn (kill-buffer (buffer-name))
