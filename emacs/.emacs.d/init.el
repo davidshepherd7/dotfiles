@@ -1401,6 +1401,9 @@ $0")
   :ensure t
 
   :config
+
+  (set 'helm-dash-min-length 0)
+
   ;; Add dash.el pytoolz scikit-learn by hand :(
 
   ;; base docsets
