@@ -142,7 +142,11 @@
 
   (define-key evil-normal-state-map (kbd "s") #'evil-change)
 
-  (define-key evil-normal-state-map (kbd "<tab>") #'evil-indent)
+  (evil-define-operator ds/evil-indent (beg end)
+    "Like evil-indent but don't move point"
+    :move-point nil
+    (indent-region beg end))
+  (define-key evil-normal-state-map (kbd "<tab>") #'ds/evil-indent)
 
   (define-key evil-normal-state-map (kbd "<") #'evil-shift-left)
   (define-key evil-normal-state-map (kbd ">") #'evil-shift-right)
