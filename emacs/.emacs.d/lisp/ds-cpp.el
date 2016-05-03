@@ -94,7 +94,7 @@ access functions are BAD for class access (too much copying)."
 (defun ds/set-up-completion ()
   (interactive)
   (set (make-local-variable 'company-backends)
-       (list (list 'company-dabbrev-code 'company-files 'company-yasnippet 'company-keywords))))
+       (list ds/global-company-backends)))
 
 (add-hook 'c++-mode-hook #'ds/set-up-completion)
 
