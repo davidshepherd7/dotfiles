@@ -81,7 +81,7 @@ alias mmv='noglob zmv -W'
 bak()
 {
     for arg in "$@"; do
-        cp -r "$arg" "$arg.bak"
+        cp -r "${arg%/}" "${arg%/}.bak"
     done
 }
 
