@@ -22,3 +22,6 @@
 [submodule "zsh/.zsh/completion/zsh-completions"]
 	path = zsh/.zsh/completion/zsh-completions
 	url = git://github.com/zsh-users/zsh-completions.git
+[submodule "emacs/.emacs.d/fill-function-arguments"]
+	path = emacs/.emacs.d/fill-function-arguments
+	url = git@github.com:davidshepherd7/fill-function-arguments.git

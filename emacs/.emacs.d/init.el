@@ -1594,6 +1594,12 @@ $0")
   (add-hook 'prog-mode-hook #'highlight-symbol-mode)
   )
 
+(use-package fill-function-arguments
+  :load-path "~/.emacs.d/fill-function-arguments"
+  :config
+  (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "M-q") #'fill-function-arguments-dwim)))
+  )
+
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.
 
