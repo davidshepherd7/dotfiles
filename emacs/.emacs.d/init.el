@@ -1588,6 +1588,11 @@ $0")
   :ensure t
   )
 
+(use-package highlight-symbol
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'highlight-symbol-mode)
+  )
 
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.
