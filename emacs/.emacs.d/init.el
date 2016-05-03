@@ -1078,31 +1078,6 @@ $0")
 
   )
 
-;; Irony mode (fancy c/c++ autocomplete)
-;; ============================================================
-(use-package irony
-
-  :disabled
-
-  :config
-  ;; the ac plugin will be activated in each buffer using irony-mode
-  (irony-enable 'ac)             ; hit C-RET to trigger completion
-
-  ;; avoid enabling irony-mode in other modes that inherit from c-mode,
-  ;; e.g: php-mode
-  (defun irony-mode-if-safe ()
-    (interactive)
-    (when (member major-mode irony-known-modes)
-      (irony-mode 1)))
-  (add-hook 'c++-mode-hook 'irony-mode-if-safe)
-  (add-hook 'c-mode-hook 'irony-mode-if-safe)
-
-  ;; Kill C-c keys
-  (define-key irony-mode-map (kbd "C-c") nil)
-
-  )
-
-
 (defun external-shell-in-dir ()
   "Start urxvt in the current file's dir"
   (interactive)
