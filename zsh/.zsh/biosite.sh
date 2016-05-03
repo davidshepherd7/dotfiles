@@ -1,15 +1,15 @@
 #! /bin/zsh
 
-bgulp()
+bgulpl()
 {
     # subshell to avoid changing directory
     (
         cd ~/code/boron-unstable/boron/web_applications/;
-        gulp --silent --reporter=simple --nolint "$@"
+        gulp --silent --reporter=simple "$@"
     )
 }
 
-alias bgulpn='bgulp --nolint'
+alias bgulp='bgulpl --nolint'
 
 alias lbiosite='/home/david/code/boron-unstable/scripts/launch-biosite-single-terminal.sh'
 
@@ -18,14 +18,21 @@ bgulpr()
     bgulp "$@" && refresh-browser.sh
 }
 
-bgulpnr()
+bgulplr()
 {
-    bgulp --nolint "$@" && refresh-browser.sh
+    bgulpl "$@" && refresh-browser.sh
 }
 
 aburl()
 {
     burl "$1" \
+         -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyb290In0.KeGNGBnBlQ5aiWv_3k1tMuxySXQwaEwbkb__Dqgu9T8' \
+         "${@:2}"
+}
+
+acurl() {
+    curl "$1" \
+         -k \
          -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyb290In0.KeGNGBnBlQ5aiWv_3k1tMuxySXQwaEwbkb__Dqgu9T8' \
          "${@:2}"
 }
