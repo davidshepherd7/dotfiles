@@ -28,6 +28,15 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;32'
 # Add custom completions
 fpath=(~/.zsh/completion $fpath)
 
+
+# Add zsh-completions repo
+fpath=(~/.zsh/completion/zsh-completions/src $fpath)
+autoload ~/.zsh/completion/zsh-completions/src/*(:t)
+
+# fix crazy oracle caps for commands in zsh-completions
+compdef _VBoxManage vboxmanage
+compdef _VBoxHeadless vboxheadless
+
 # Add generated python completions
 fpath=(~/.zsh/completion/generated $fpath)
 
