@@ -118,3 +118,10 @@ access functions are BAD for class access (too much copying)."
   (interactive)
   (setq-local font-lock-maximum-decoration 3))
 (add-hook 'c++-mode-hook #'ds/limit-font-lock)
+
+(require 'flycheck)
+(defun ds/cpp-flycheck ()
+  (interactive)
+  (flycheck-mode)
+  (flycheck-select-checker 'c/c++-cppcheck))
+(add-hook 'c++-mode-hook #'ds/cpp-flycheck)
