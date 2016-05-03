@@ -251,7 +251,7 @@
 ;; Highlight todo etc.
 (defun highlight-todos ()
   (interactive)
-  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|HACK\\|??ds\\):" 1 font-lock-warning-face t))))
+  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|HACK\\|\\?\\?ds\\)\\>" 1 font-lock-warning-face t))))
 (add-hook 'prog-mode-hook 'highlight-todos)
 (add-hook 'text-mode-hook 'highlight-todos)
 
