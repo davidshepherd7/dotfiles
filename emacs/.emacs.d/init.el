@@ -171,8 +171,8 @@
 
 (global-linum-mode 1)
 
-;; Show messages on startup, not the stupid scratch buffer
-(switch-to-buffer "*Messages*")
+;; Show something useful in scratch buffer
+(set 'initial-scratch-message (emacs-version))
 
 ;; Highlight long lines
 (require 'whitespace)
