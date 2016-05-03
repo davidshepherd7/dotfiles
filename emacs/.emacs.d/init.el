@@ -1431,6 +1431,7 @@ $0")
                         "Gulp"
                         "Jasmine"
                         "Lo-Dash"
+                        "jQuery"
                         ))
 
   (set 'ds/shell-docsets '("Bash"))
