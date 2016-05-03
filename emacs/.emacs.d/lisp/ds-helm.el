@@ -1,7 +1,17 @@
 
 (set 'helm-command-prefix-key "C-\\ c")
 
-(use-package helm :ensure t :demand)
+(use-package helm :ensure t
+
+  :config
+
+  ;; Don't try to guess names from text at point, it just fails and tries
+  ;; to open files in root dir.
+  (set 'helm-ff-guess-ffap-urls nil)
+  (set 'helm-ff-guess-ffap-filenames nil)
+
+  :demand
+  )
 
 
 ;; Use fuzzy matching with helm

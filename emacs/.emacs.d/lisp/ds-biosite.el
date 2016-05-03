@@ -83,17 +83,75 @@
 (add-to-list 'grep-find-ignored-directories "build/")
 
 
-(defun ds/biosite-test-to-main ()
-  (--> (buffer-file-name)
-       (file-relative-name it (projectile-project-root))
+(defun ds/biosite-test-to-main (path)
+  (--> path
        (replace-regexp-in-string "/tests/" "/" it)
-       (replace-regexp-in-string "\.cpp" ".h" it)))
+       (s-chop-suffix ".cpp" it)
+       (s-concat it ".h")))
+
+(defun ds/biosite--in-tests-dir (path)
+  (file-name-directory path)
+  (f-join (file-name-directory path) "tests" (file-name-nondirectory path)))
+
+(defun ds/biosite-main-to-test (path)
+  (--> path
+       (ds/biosite--in-tests-dir it)
+       (s-chop-suffix ".h" it)
+       (s-concat it ".cpp")))
+
+(defun ds/biosite-file-test-main ()
+  (interactive)
+  (cond
+   ((s-contains? "test" (buffer-file-name))
+    (find-file (ds/biosite-test-to-main (buffer-file-name))))
+   (t
+    (pp (ds/biosite-main-to-test (buffer-file-name)))
+    (find-file (ds/biosite-main-to-test (buffer-file-name))))))
+
+(define-key c++-mode-map (kbd "C-\\ n") #'ds/biosite-file-test-main)
+
+(defun ds/biosite-test-include-path ()
+  (interactive)
+  (--> (buffer-file-name)
+       (ds/biosite-test-to-main it)
+       (file-relative-name it (projectile-project-root))))
+
+
+;; C++ headers
+;; ============================================================
+
+(defun ds/biosite-path-to-include (path)
+  (interactive)
+  (--> path
+       (s-trim it)
+       (file-relative-name it (projectile-project-root))
+       (s-chop-prefix "boron/" it)
+       (s-chop-prefix "common/" it)
+       (s-concat "#include \"" it "\"")))
+
+(defun ds/biosite-paste-as-include ()
+  (interactive)
+  (end-of-line)
+  (insert "\n")
+  (insert (ds/biosite-path-to-include (current-kill 0 t))))
+
+
+
+;; C++ namespaces
+;; ============================================================
 
 (defvar ds/biosite-dir-to-ns '())
 
 (set 'ds/biosite-dir-to-ns
-     '(("report_server" "reports")
-       ("helpers" "helper")))
+     '(
+       ;; report_server
+       ("report_server" "reports")
+       ("json_reporters" "json")
+       ("reporters" "")
+       ("helpers" "helper")
+
+       ("test" "")
+       ("tests" "")))
 
 (defun ds/biosite-dir-to-namespace (dir)
   (let ((found (assoc dir ds/biosite-dir-to-ns)))
@@ -103,8 +161,8 @@
   (--> path
        (file-name-directory it)
        (s-split "/" it t)
-       (-map #'ds/biosite-dir-to-namespace it)))
-;; (ds/biosite-path-to-namespaces "boron/report_server/helpers/count_week_days.h")
+       (-map #'ds/biosite-dir-to-namespace it)
+       (-filter (lambda (ns) (not (equal ns ""))) it)))
 
 (defun ds/biosite-get-namespaces  ()
   (interactive)
@@ -131,6 +189,10 @@
          (-map
           (lambda (ns) (s-concat "using namespace " ns ";\n"))
           (ds/biosite-get-namespaces))))
+
+
+
+
 
 (defun ds/align-comma ()
   (interactive)
