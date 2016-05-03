@@ -93,9 +93,9 @@
   (define-key evil-motion-state-map (kbd "i") #'evil-previous-line)
   (define-key evil-motion-state-map (kbd "h") #'evil-next-line)
   (define-key evil-motion-state-map (kbd "n") #'evil-backward-word-begin)
-  (define-key evil-motion-state-map (kbd "e") #'evil-forward-word-begin)
+  (define-key evil-motion-state-map (kbd "e") #'evil-forward-word-end)
   (define-key evil-motion-state-map (kbd "N") #'evil-backward-WORD-begin)
-  (define-key evil-motion-state-map (kbd "E") #'evil-forward-WORD-begin)
+  (define-key evil-motion-state-map (kbd "E") #'evil-forward-WORD-end)
   (define-key evil-motion-state-map (kbd "C-n") #'evil-backward-char)
   (define-key evil-motion-state-map (kbd "C-e") #'evil-forward-char)
 
