@@ -124,6 +124,10 @@ install_gem_packages () {
 }
 
 install_npm_packages () {
+    # Update node itself
+    sudo n stable
+
+    # And now the npm packages
     < "$rcdir/npm_package_list" x sudo npm install -g %
 }
 
