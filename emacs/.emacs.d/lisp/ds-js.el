@@ -72,4 +72,17 @@
 (add-to-list 'compilation-error-regexp-alist 'typescript)
 
 
-(use-package json-mode :ensure t)
+(use-package json-mode
+  :ensure t
+  :config
+
+  (defun setup-json-indent ()
+    (interactive)
+    (setq-local indent-tabs-mode nil)
+    (setq-local js-indent-level 2))
+  (add-hook 'json-mode-hook #'setup-json-indent)
+
+  (defun ds/set-json-mode (fname)
+    (add-to-list 'auto-mode-alist (cons fname 'json-mode)))
+  (-map #'ds/set-json-mode (list ".bowerrc" ".jscsrc"))
+  )
