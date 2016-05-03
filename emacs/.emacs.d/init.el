@@ -1405,7 +1405,6 @@ $0")
 
   ;; base docsets
   (set 'ds/general-docsets '(
-                             "Bash"
                              "Emacs Lisp"
                              "Markdown"
                              "C"
@@ -1434,8 +1433,10 @@ $0")
                         "Lo-Dash"
                         ))
 
+  (set 'ds/shell-docsets '("Bash"))
+
   (set 'ds/docsets
-       (-concat ds/general-docsets ds/js-docsets))
+       (-concat ds/general-docsets ds/js-docsets ds/shell-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1459,7 +1460,7 @@ $0")
   (add-hook 'js-mode-hook (ds/set-docsets-fn ds/js-docsets))
   (add-hook 'cmake-mode-hook (ds/set-docsets-fn '("CMake")))
   (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
-  (add-hook 'shell-script-mode-hook (ds/set-docsets-fn '("Bash")))
+  (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
 
   )
 
