@@ -421,7 +421,23 @@ index in STRING."
   :ensure t
   :config
   (global-company-mode)
+
+  (set 'company-transformers '(company-sort-by-occurrence))
   (global-set-key (kbd "<C-tab>") #'company-complete)
+
+  (defvar ds/global-company-backends)
+  (set 'ds/global-company-backends
+       (list
+        'company-capf
+        'company-dabbrev-code
+        'company-etags
+        'company-keywords
+        'company-dabbrev
+        'company-yasnippet
+        'company-files))
+
+  (set 'company-backends (list ds/global-company-backends))
+
   )
 
 ;; Undo tree
