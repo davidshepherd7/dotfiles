@@ -277,6 +277,18 @@
   (define-key evil-inner-text-objects-map (kbd "N") #'evil-inner-WORD)
   (define-key evil-inner-text-objects-map (kbd "E") #'evil-inner-WORD)
 
+  ;; lines
+  (evil-define-text-object evil-i-line (count &optional beg end type)
+    (evil-range (save-excursion (back-to-indentation) (point))
+                (save-excursion (end-of-line) (point))))
+  (define-key evil-inner-text-objects-map (kbd "l") #'evil-i-line)
+  (define-key evil-inner-text-objects-map (kbd "b") #'evil-i-line)
+  (evil-define-text-object evil-a-line (count &optional beg end type)
+    (evil-range (point-at-bol) (point-at-eol)))
+  (define-key evil-outer-text-objects-map (kbd "l") #'evil-a-line)
+  (define-key evil-outer-text-objects-map (kbd "b") #'evil-a-line)
+
+
   ;; buffer
   (evil-define-text-object evil-a-buffer (count &optional beg end type)
     "Select entire buffer"
