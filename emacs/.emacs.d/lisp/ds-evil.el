@@ -2,8 +2,11 @@
   :ensure t
   :config
 
+  ;; Keep the byte compiler happy
+  (require 'evil)
+
   ;; spare keys:
-  ;; '\km,x/
+  ;; \,x/
   ;; `!"£$&*_-+=
 
   ;; TODO
@@ -17,6 +20,9 @@
   ;; Goto line number?
 
   ;; Improve/learn bindings for isearch integration
+
+  ;; Remove whitespace from text objects?
+
 
   ;; Some bindings for these here
   (require 'projectile)
@@ -199,6 +205,7 @@
     ;; Not really evil-mode, but uses smartparens:
     (global-set-key (kbd "C-M-t") #'sp-transpose-hybrid-sexp)
     )
+
   ;; Insertion
   ;; ============================================================
 
