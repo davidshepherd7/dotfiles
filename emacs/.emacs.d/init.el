@@ -1545,6 +1545,10 @@ $0")
   (set 'flycheck-display-errors-delay 0.2)
   (set 'flycheck-standard-error-navigation nil)
 
+  ;; Don't pop an errors buffer, it's really annoying
+  (set 'flycheck-display-errors-function
+       (lambda (errors) (message "%s" (mapcar #'flycheck-error-format-message-and-id errors))))
+
   ;; emacs lisp stuff
   (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
   (setq-default flycheck-emacs-lisp-load-path 'inherit)
