@@ -371,6 +371,8 @@ index in STRING."
 (load-file "~/.emacs.d/frames-only-mode/frames-only-mode.el")
 (use-package frames-only-mode)
 
+(global-set-key (kbd "s-k") #'make-frame)
+
 ;; Copy/Paste interaction with other X11 applications
 ;; ============================================================
 
