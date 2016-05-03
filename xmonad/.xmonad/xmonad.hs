@@ -52,8 +52,6 @@ myManageHook =
   composeAll
   [
     resource  =? "desktop_window" --> doIgnore
-  , className =? "Paraview" --> doShift "pv"
-  , className =? "Mendeleydesktop" --> doShift "mly"
   , className =? "Tk" --> doFloat
   , className =? "Octave"          --> doFloat
   , className =? "Gnuplot"          --> doFloat
