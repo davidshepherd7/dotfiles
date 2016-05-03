@@ -163,6 +163,30 @@
 
   (define-key evil-normal-state-map "^" #'evil-join)
 
+  (use-package smartparens
+    :ensure t
+    :config
+
+    ;; move by sexp
+    (evil-define-motion ds/evil-sp-previous-sexp (count)
+      ;; Use negative arg and next-sexp so that point always lands at the start
+      (sp-next-sexp (* -1 (or count 1))))
+    (define-key evil-motion-state-map (kbd "I") #'ds/evil-sp-previous-sexp)
+
+    (evil-define-motion ds/evil-sp-next-sexp (count) (sp-next-sexp count))
+    (define-key evil-motion-state-map (kbd "H") #'ds/evil-sp-next-sexp)
+
+    (evil-define-motion ds/evil-sp-down-sexp (count) (sp-down-sexp count))
+    (define-key evil-motion-state-map (kbd "K") #'ds/evil-sp-down-sexp)
+
+    ;; slurp and barf
+    (define-key evil-normal-state-map (kbd "k") #'sp-slurp-hybrid-sexp)
+    (define-key evil-normal-state-map (kbd "m") #'sp-forward-barf-sexp)
+    (define-key evil-normal-state-map (kbd "M") #'sp-backward-barf-sexp)
+
+    ;; Not really evil-mode, but uses smartparens:
+    (global-set-key (kbd "C-M-t") #'sp-transpose-hybrid-sexp)
+    )
   ;; Insertion
   ;; ============================================================
 
