@@ -6,9 +6,16 @@ unstable = http://gauss.pa/hg/boron-unstable
 stable = http://gauss.pa/hg/boron-stable
 staging = http://gauss.pa/hg/boron-staging-stable
 
+7review = http://gauss.pa/hg/david/boron-7-stable
+7stable = http://gauss.pa/hg/boron-7-stable
+
+
 [alias]
 diff = gdiff
 # commit = gcommit
 status = gstatus
 crecord = gcrecord
 record = grecord
+shelve = gshelve
+
+gulplog = log 'path:boron/web_applications/app/' --color=always

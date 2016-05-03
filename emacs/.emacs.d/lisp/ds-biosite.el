@@ -202,8 +202,8 @@
 (require 'align)
 (add-to-list 'align-rules-list
              '(align-biosite-comma
-               (regexp . ",\\(\\s-*\\)")))
-
+               (regexp . ",\\(\\s-*\\)")
+               (repeat . t)))
 
 (defun ds/biosite-sql-style ()
   (interactive)
