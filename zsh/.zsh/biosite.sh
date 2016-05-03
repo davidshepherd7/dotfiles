@@ -51,3 +51,26 @@ burl()
 }
 
 alias boron-client='/home/david/code/boron-unstable/build/bin/boron-client'
+
+
+# Get the ip of a local virtualbox vm. The VM must be running, booted into
+# Linux, have the package virtualbox-guest-utils installed, and have been
+# rebooted since that package was installed.
+get-vm-ip () {
+    server_name="$1"
+    vboxmanage guestproperty get "$server_name" '/VirtualBox/GuestInfo/Net/0/V4/IP' \
+        | awk '{print $2}'
+}
+
+# ssh to a local virtualbox vm. The same caveats as with get-vm-ip apply.
+ssh-vm () {
+    ssh "$(get-vm-ip "$1")" -o StrictHostKeyChecking=no "${@:2}"
+}
+
+# TODO: try this out
+_complete-vms() {
+    reply=(`vboxmanage list runningvms`);
+}
+compctl -K _complete-vms get-vm-ip
+compctl -K _complete-vms ssh-vm
+
