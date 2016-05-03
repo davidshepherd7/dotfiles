@@ -163,7 +163,7 @@ main = do
         , handleEventHook = myEventHook
         }
         -- Unbind some keys
-        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-.", "M-,", "M-t", "M-m", "M-p"]
+        `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-.", "M-,", "M-t", "M-m", "M-p", "M-P", "M-k"]
         `additionalKeysP` myKeys
 
 -- Some additional keybinds, mostly inspired by chromes tab management
