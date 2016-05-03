@@ -800,23 +800,6 @@ For magit versions > 2.1.0"
 (add-to-list 'auto-mode-alist (cons "gitignore$" #'conf-mode))
 
 ;; mercurial
-(use-package monky
-  :ensure t
-  :config
-  (set-face-attribute 'monky-diff-add nil
-                      :background "#335533"
-                      :foreground "#ddffdd")
-
-  (set-face-attribute 'monky-diff-del nil
-                      :background "#553333"
-                      :foreground "#ffddd")
-
-  (set-face-attribute 'monky-diff-hunk-header nil
-                      :weight 'bold)
-
-  (set 'monky-process-type 'cmdserver)
-  )
-
 (add-to-list 'auto-mode-alist (cons "hgrc$" #'conf-mode))
 
 
