@@ -1,4 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: vout
+# key: when
 # --
-console.log('$1:', $1);
+WHEN("$1")
+{
+$0
+}

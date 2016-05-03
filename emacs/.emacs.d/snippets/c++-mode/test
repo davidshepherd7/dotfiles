@@ -3,9 +3,18 @@
 # --
 #include "catch/catch.hpp"
 
-#include "${1:`(ds/biosite-test-to-main)`}"
+#include "${1:`(ds/biosite-test-include-path)`}"
 
-TEST_CASE("$2")
+#include "nowarnings/qt/QSqlDatabase"
+
+#include "db/test/test_scope.h"
+
+`(ds/biosite-cpp-namespaces)`
+
+TEST_CASE("${2:`(downcase (file-name-base))`}")
 {
+    QSqlDatabase db = boron::db::get_database();
+    pa::db::test::test_scope s("$2", db);
+
 $0
 }

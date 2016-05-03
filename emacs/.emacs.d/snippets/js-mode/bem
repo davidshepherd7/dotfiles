@@ -1,4 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: vout
+# key: bem
 # --
-console.log('$1:', $1);
+beforeEach(angular.mock.module(''));
+$0

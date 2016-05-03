@@ -1,0 +1,28 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startdirective
+# --
+(function(){
+    'use strict';
+
+angular.module('boron.$1.`(s-dashed-words (ds/buffer-basename))`', [
+])
+
+.controller('`(s-upper-camel-case (ds/buffer-basename))`Ctrl', function($scope) {
+$0
+})
+
+.directive('`(s-lower-camel-case (ds/buffer-basename))`', function() {
+    return {
+      restrict: 'E',
+      controller: '`(s-upper-camel-case (ds/buffer-basename))`Ctrl',
+      link: linkFn,
+      templateUrl: './path/to/`(s-dashed-words (ds/buffer-basename))`.html',
+    };
+})
+;
+
+function linkFn(scope, element, attrs, controllers) {
+
+}
+
+})();

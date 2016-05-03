@@ -1,4 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: vout
+# key: then
 # --
-console.log('$1:', $1);
+then(function(response) {
+$0
+})

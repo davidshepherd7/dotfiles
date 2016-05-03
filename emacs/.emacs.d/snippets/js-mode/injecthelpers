@@ -1,4 +1,3 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: vout
+# key: injecthelpers
 # --
-console.log('$1:', $1);

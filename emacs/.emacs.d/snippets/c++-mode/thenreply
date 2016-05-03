@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: thenreply
+# --
+THEN("the reply status is ${1:OK}")
+{
+    REQUIRE(${2:reply}.status() == pa::http::status::${1:$(downcase yas-text)});
+    INFO("Reply content: " << $2.json_content());
+}
+$0
