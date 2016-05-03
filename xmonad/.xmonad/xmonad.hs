@@ -148,7 +148,7 @@ myWorkspaces = ["1", "2", "3", "dump"]
 
 main = do
      -- xmproc <- spawnPipe "xmobar ~/.xmobarrc"
-     xmonad $ gnomeConfig
+     xmonad $ ewmh gnomeConfig
         { modMask    = mod4Mask -- use super as modifier key
         , borderWidth = 2
         , manageHook = myManageHook
