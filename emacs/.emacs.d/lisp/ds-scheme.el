@@ -1,6 +1,8 @@
 ;; Scheme
 ;;=================================================================
 
+(require 'scheme)
+
 ;; Set scheme interpreter name
 (setq scheme-program-name "scheme")
 
@@ -25,10 +27,17 @@
 ;;   )
 
 ;; make f5 run the current buffer
-(add-hook 'scheme-mode-hook
-	  '(lambda()
-	     (local-set-key (kbd "<f5>") 'scheme-send-buffer)
-	     (setq-default require-final-newline nil)))
+(add-hook 'scheme-mode-hook '(lambda() (setq-default require-final-newline nil)))
 
 ;; Display .rkt (racket) files using scheme mode
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))
+
+(defun ds/scheme-pretty-lambda ()
+  (add-to-list 'prettify-symbols-alist '("lambda" . 955))
+  (prettify-symbols-mode t))
+
+(add-hook 'scheme-mode-hook #'ds/scheme-pretty-lambda t)
+(add-hook 'scheme-mode-hook #'aggressive-indent-mode)
+
+
+(provide 'ds/scheme)
