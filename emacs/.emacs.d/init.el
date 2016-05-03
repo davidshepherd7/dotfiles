@@ -245,12 +245,6 @@
 ;; Always try to load the newest version of a file (byte-compiled or not).
 (set 'load-prefer-newer t)
 
-;; ;; Yes, it's disgusting, but it's a portable way to disable that silly
-;; ;; message
-;; (put 'inhibit-startup-echo-area-message 'saved-value
-;;      (setq inhibit-startup-echo-area-message (user-login-name)))
-
-
 ;; Fonts
 ;; ============================================================
 
