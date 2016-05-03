@@ -30,6 +30,9 @@
   (setcdr evil-normal-state-map nil)
   (setcdr evil-motion-state-map nil)
 
+  ;; Why is this a thing? It's crazy...
+  (set 'evil-move-cursor-back nil)
+
 
   ;; Getting to normal state
   ;; ============================================================
