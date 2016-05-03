@@ -140,7 +140,7 @@
 (menu-bar-mode -1) ;; Disable menu bar
 (defalias 'yes-or-no-p 'y-or-n-p) ;; y/n instead of yes/no
 (show-paren-mode 1) ;; Highlight matching parenthesis
-(setq-default fill-column 75) ;; not 80 because when things are later indented
+(setq-default fill-column 80) ;; not 80 because when things are later indented
 ;; by e.g. diff, git log we lose some columns and
 ;; it gets messy.
 (set 'abbrev-mode t) ;; Use abbrev mode always
@@ -179,6 +179,27 @@
 (set 'whitespace-line-column 80) ;; limit line length
 (set 'whitespace-style '(face lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; More noticable markings
+(set 'whitespace-display-mappings
+     ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
+     '(
+       (space-mark 32 [9655] [46])
+       (newline-mark 10 [8629 10])
+       ))
+
+(defun ds/whitespace-all ()
+  (interactive)
+  (set 'whitespace-style '(spaces tabs newline space-mark tab-mark newline-mark))
+
+  (whitespace-mode nil)
+  (whitespace-mode t))
+
+(defun ds/whitespace-sane ()
+  (interactive)
+  (set 'whitespace-style '(spaces tabs newline))
+  (whitespace-mode nil)
+  (whitespace-mode t))
 
 (use-package hi-lock-mode
   ;; There's also some customisation stuff at the top of init.el to prevent
