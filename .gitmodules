@@ -19,3 +19,6 @@
 [submodule "emacs/.emacs.d/replace-pairs"]
 	path = emacs/.emacs.d/replace-pairs
 	url = git@github.com:davidshepherd7/replace-pairs.git
+[submodule "zsh/.zsh/completion/zsh-completions"]
+	path = zsh/.zsh/completion/zsh-completions
+	url = git://github.com/zsh-users/zsh-completions.git
