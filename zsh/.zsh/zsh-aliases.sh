@@ -294,6 +294,9 @@ c() {
 # test that emacs works with this config
 alias emacstest='\emacs --debug-init --batch -u $USER'
 
+
+alias gdbemacs="cd ~/code/emacs/src && sudo gdb emacs $(ps aux | grep -i 'emac[s]' | awk '{print $2}')"
+
 pdfpages ()
 {
     pdftk A=$1 cat A$2 output "${1:r}_pp${2}.pdf"

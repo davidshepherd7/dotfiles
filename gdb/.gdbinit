@@ -2,6 +2,8 @@ set history save
 
 set history filename ~/.gdb_history
 
+add-auto-load-safe-path /home/david/code/emacs/src/.gdbinit
+
 python
 import sys
 
