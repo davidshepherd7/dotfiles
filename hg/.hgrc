@@ -6,7 +6,7 @@ editor = emacsclient -c
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp
 
 [extensions]
 pager =
@@ -17,7 +17,7 @@ shelve =
 graphlog =
 record =
 histedit =
-crecord = ~/.hgex/crecord/
+crecord = ~/.hgex/crecord/crecord
 rebase =
 strip =
 transplant =
@@ -42,6 +42,8 @@ prev_branchpoint($1) = last(ancestors($1) and branchpoint())
 
 # Get the commit after the last branch (i.e. what you rebase from if you do rebase -b $1).
 base($1) = last(limit(reverse(last(prev_branchpoint($1)::$1)),2))
+
+anc($1) = reverse(ancestors($1))
 
 
 [alias]

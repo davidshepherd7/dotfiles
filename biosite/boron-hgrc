@@ -19,3 +19,6 @@ record = grecord
 shelve = gshelve
 
 gulplog = log 'path:boron/web_applications/app/' --color=always
+
+grebase = !$HG ungulp && $HG rebase "$@"
+ghistedit = !$HG ungulp && $HG histedit "$@"

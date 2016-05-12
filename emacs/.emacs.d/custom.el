@@ -23,7 +23,8 @@
     (yasnippet yaml-mode ws-butler which-key wgrep-ag web-beautify use-package super-save sqlup-mode smooth-scrolling smex smart-mode-line sequences scratch rust-mode rtags restart-emacs rainbow-delimiters pos-tip paradox page-break-lines package-utils nlinum nameless multiple-cursors monky mmm-mode matlab-mode markdown-mode magit list-register key-chord julia-mode json-mode js2-mode javadoc-lookup imenu-anywhere ido-ubiquitous hl-sexp highlight-tail highlight-chars helm-projectile helm-ls-hg helm-ls-git helm-descbinds helm-dash haskell-mode go-mode fuzzy flycheck-package flycheck-cask flx-ido feature-mode expand-region evil-surround evil-matchit evil ess discover diff-hl deft debbugs crux control-mode company-anaconda coffee-mode cmake-mode cmake-ide camcorder beacon avy auto-complete auctex anzu ansi aggressive-indent ag ack ace-jump-mode)))
  '(safe-local-variable-values
    (quote
-    ((projectile-project-compilation-dir . "./build")
+    ((projectile-project-compilation-dir . "../build")
+     (projectile-project-compilation-dir . "./build")
      (projectile-project-compilation-dir . "clang-build/")
      (projectile-project-compilation-dir . "../build/")
      (projectile-project-compilation-cmd . "ninja")
