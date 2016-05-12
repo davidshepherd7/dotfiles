@@ -1553,16 +1553,17 @@ $0")
 
 (use-package flycheck
   :ensure t
-  :init
-  ;; Stop flycheck from stomping C-c. Don't really know why but this *must*
-  ;; go before flycheck is loaded.
-  (defvar flycheck-keymap-prefix)
-  (setq flycheck-keymap-prefix (kbd "C-\\ f"))
-  (setq flycheck-mode-map (make-sparse-keymap))
+  :config
+
+  ;; Stop flycheck from stomping C-c
+  (define-key flycheck-mode-map flycheck-keymap-prefix nil)
+  (set 'flycheck-keymap-prefix (kbd "C-\\ f"))
+  (define-key flycheck-mode-map flycheck-keymap-prefix flycheck-command-map)
+
+  ;; Setup keybinds
   (define-key flycheck-mode-map (kbd "M-`") #'flycheck-next-error)
   (define-key flycheck-mode-map (kbd "M-¬") #'flycheck-previous-error)
 
-  :config
   (set 'flycheck-display-errors-delay 0.2)
   (set 'flycheck-standard-error-navigation nil)
 
