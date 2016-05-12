@@ -296,8 +296,9 @@
 ;; Camel case word handling
 ;; ============================================================
 
-;; Treat CamelCase as separate words everywhere
+;; Treat CamelCase as separate words everywhere, but don't transpose as subwords
 (global-subword-mode 1)
+(define-key subword-mode-map [remap transpose-words] nil)
 
 ;; Also handle CamelCase in evil mode
 (require 'evil)
