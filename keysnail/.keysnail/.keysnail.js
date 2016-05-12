@@ -137,7 +137,7 @@ key.setGlobalKey(["C-\\", "1"], function (ev) {
     window.loadURI(ev.target.ownerDocument.location.href);
 }, 'Show current frame only', true);
 
-key.setGlobalKey(["C-\\", "C-f"], function (ev) {
+key.setGlobalKey([], function (ev) {
     BrowserOpenFileWindow();
 }, 'Open the local file', true);
 
@@ -183,9 +183,9 @@ key.setEditKey('C-l', function (ev) {
     command.endLine(ev);
 }, 'End of the line', false);
 
-key.setEditKey('C-f', function (ev) {
-    command.nextChar(ev);
-}, 'Forward char', false);
+// key.setEditKey('C-f', function (ev) {
+//     command.nextChar(ev);
+// }, 'Forward char', false);
 
 key.setEditKey('C-b', function (ev) {
     command.previousChar(ev);
@@ -322,9 +322,9 @@ key.setViewKey([["C-p"], ["k"]], function (ev) {
     key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_UP, true);
 }, 'Scroll line up', false);
 
-key.setViewKey([["C-f"], ["."]], function (ev) {
-    key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_RIGHT, true);
-}, 'Scroll right', false);
+// key.setViewKey([["C-f"], ["."]], function (ev) {
+//     key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_RIGHT, true);
+// }, 'Scroll right', false);
 
 key.setViewKey([["C-b"], [","]], function (ev) {
     key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_LEFT, true);
@@ -402,9 +402,9 @@ key.setCaretKey([["C-p"], ["k"]], function (ev) {
     ev.target.ksMarked ? goDoCommand("cmd_selectLinePrevious") : goDoCommand("cmd_scrollLineUp");
 }, 'Move caret to the previous line', false);
 
-key.setCaretKey([["C-f"], ["l"]], function (ev) {
-    ev.target.ksMarked ? goDoCommand("cmd_selectCharNext") : goDoCommand("cmd_scrollRight");
-}, 'Move caret to the right', false);
+// key.setCaretKey([["C-f"], ["l"]], function (ev) {
+//     ev.target.ksMarked ? goDoCommand("cmd_selectCharNext") : goDoCommand("cmd_scrollRight");
+// }, 'Move caret to the right', false);
 
 key.setCaretKey([["C-b"], ["h"], ["C-h"]], function (ev) {
     ev.target.ksMarked ? goDoCommand("cmd_selectCharPrevious") : goDoCommand("cmd_scrollLeft");
