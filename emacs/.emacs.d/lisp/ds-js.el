@@ -90,3 +90,7 @@
     (add-to-list 'auto-mode-alist (cons fname 'json-mode)))
   (-map #'ds/set-json-mode (list ".bowerrc" ".jscsrc"))
   )
+
+
+;; Support es6 string literals
+(modify-syntax-entry ?` "\"" js-mode-syntax-table)
