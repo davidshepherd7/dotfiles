@@ -97,6 +97,7 @@
   (--> path
        (ds/biosite--in-tests-dir it)
        (s-chop-suffix ".h" it)
+       (s-chop-suffix ".cpp" it)
        (s-concat it ".cpp")))
 
 (defun ds/biosite-file-test-main ()
