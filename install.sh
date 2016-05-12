@@ -15,7 +15,7 @@ stow_file zsh
 stow_file conky
 stow_file git
 stow_file hg
-stow_file readlin_e
+stow_file readline
 stow_file gdb
 stow_file bash
 stow_file bin
@@ -38,6 +38,9 @@ stow_file ipython
 
 mkdir -p ~/.config/sxhkd
 stow_file sxhkd
+
+mkdir -p ~/.keysnail/
+stow_file keysnail
 
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
