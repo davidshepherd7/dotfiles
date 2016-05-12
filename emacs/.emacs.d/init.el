@@ -1594,6 +1594,19 @@ $0")
   (ds/disable-mode-if-exists #'electric-operator-mode)
   )
 
+
+;; Don't indent string blocks
+(defun ds/line-in-string-block? (&rest args)
+  "Does this line either end or start as a string?"
+  (save-excursion
+    (or (progn (beginning-of-line) (nth 8 (syntax-ppss)))
+        (progn (end-of-line) (nth 8 (syntax-ppss))))))
+
+(advice-add #'indent-for-tab-command :before-until #'ds/line-in-string-block?)
+(advice-add #'indent-region :before-until #'ds/line-in-string-block?)
+(advice-add #'indent-according-to-mode :before-until #'ds/line-in-string-block?)
+
+
 (use-package crux
   :ensure t
   )
