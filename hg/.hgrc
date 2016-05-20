@@ -97,3 +97,5 @@ autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG 
 
 # histedit with default revision the earliest multable revision on this branch
 he = histedit -r 'min(draft() and only(.))'
+
+backout-commit = !$HG backout -r "$1" && $HG commit -m "Backed out $1"
