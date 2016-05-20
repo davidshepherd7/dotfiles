@@ -1,5 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: bem
 # --
-beforeEach(angular.mock.module(''));
+beforeEach(angular.mock.module('${1:`(ds/biosite-path-to-js-path (buffer-file-name))`}'));
 $0

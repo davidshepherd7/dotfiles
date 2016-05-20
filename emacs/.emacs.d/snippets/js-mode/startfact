@@ -6,7 +6,7 @@
 
 angular.module('boron.$1.${2:`(s-dashed-words (ds/buffer-basename))`}', [
 ])
-.factory('${3:`(s-upper-camel-case (ds/buffer-basename))`}', function() {
+.factory('${3:`(s-lower-camel-case (ds/buffer-basename))`}', function() {
 return function() {
 $0
 };

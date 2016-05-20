@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: bec
+# --
+
+beforeEach(angular.mock.module('${1:`(ds/biosite-path-to-html-template-path (buffer-file-name))`}'));
+
+var cmpl;
+beforeEach(function() {
+cmpl = helpers.compileTemplateUrl('$1', {
+});
+cmpl.scope.$digest();
+});

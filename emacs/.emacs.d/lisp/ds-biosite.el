@@ -137,6 +137,49 @@
   (insert (ds/biosite-path-to-include (current-kill 0 t))))
 
 
+;; js template paths
+;; ============================================================
+(defun ds/biosite-relative-web-path (path)
+  (let ((web-root (f-join (projectile-project-root) "boron" "web_applications")))
+    (--> path
+         (s-trim it)
+         (file-relative-name it web-root))))
+
+(defun ds/chop-web-suffixes (path)
+  (--> path
+       (s-trim it)
+       (s-chop-suffix ".spec.js" it)
+       (s-chop-suffix ".js" it)
+       (s-chop-suffix ".html" it)))
+
+(defun ds/biosite-path-to-html-template-path (path)
+  (interactive)
+  (--> path
+       (ds/biosite-relative-web-path it)
+       (ds/chop-web-suffixes it)
+       (s-concat "./" it ".html")))
+
+(defun ds/biosite-guess-template-path ()
+  (interactive)
+  (insert (ds/biosite-path-to-html-template-path (buffer-file-name))))
+
+(defun ds/biosite-path-to-js-path (path)
+  (interactive)
+  (--> path
+       (ds/biosite-relative-web-path it)
+       (ds/chop-web-suffixes it)
+       (s-concat "./" it ".js")))
+
+(defun ds/s-space-words (str)
+  "Hopefully this will be in s.el soon"
+  (s-join " " (s-split-words str)))
+
+(defun ds/biosite-path-to-module-label (path)
+  (--> path
+       (ds/chop-web-suffixes it)
+       (file-name-nondirectory it)
+       (ds/s-space-words it)))
+
 
 ;; C++ namespaces
 ;; ============================================================
