@@ -293,6 +293,20 @@
 ;; Treat space-like characters as spaces
 (setq search-whitespace-regexp "[-_ 	\n]")
 
+(defun ds/string-symbol-at-point ()
+  (symbol-name (or (symbol-at-point)
+                   (error "No symbol at point"))))
+
+(defun ds/query-replace-symbol-at-point (replace-str)
+  (interactive
+   (list (read-string (s-concat "Replace " (ds/string-symbol-at-point) " with: ")
+                      nil
+                      query-replace-to-history-variable)))
+  (let ((symb (ds/string-symbol-at-point)))
+    (beginning-of-line) ; Ensure this symbol is included in the replace
+    (query-replace symb replace-str)))
+
+
 ;; Camel case word handling
 ;; ============================================================
 

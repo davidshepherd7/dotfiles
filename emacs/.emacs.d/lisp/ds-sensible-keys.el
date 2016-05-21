@@ -250,6 +250,8 @@ the line break."
 ;; Just because it's handy
 (global-set-key (kbd "C-'") 'query-replace)
 (global-set-key (kbd "M-'") 'query-replace-regexp)
+(global-set-key (kbd "C-@") #'ds/query-replace-symbol-at-point)
+
 
 ;; Now assign new keys for the things we just wrote all over
 (global-set-key (kbd "C-\\") ctl-x-map)
