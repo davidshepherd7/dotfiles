@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: gkey
+# --
+(global-set-key `(call-interactively #'insert-key-as-kbd)` #'$1)
+$0

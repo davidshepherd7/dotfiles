@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: beif
+# --
+var $1;
+beforeEach(inject(function(_$1_) {
+$1 = _$1_;
+}));

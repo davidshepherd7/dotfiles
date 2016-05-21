@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: btn
+# --
+<button class="btn btn-${1:primary}"
+ng-click="$2"
+>
+$0
+</button>

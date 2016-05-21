@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: key
+# --
+(define-key $1-mode-map `(call-interactively #'insert-key-as-kbd)` #'$2)
+$0
