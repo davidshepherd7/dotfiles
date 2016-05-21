@@ -4,10 +4,12 @@
 
 (add-to-list 'auto-mode-alist (cons "\\.ts$" #'js-mode))
 
-(defun ds/disable-electric-semicolon ()
+(defun ds/js-electric-layout-rules ()
   (interactive)
-  (add-to-list 'electric-layout-rules (cons ?\; nil)))
-(add-hook 'js-mode-hook #'ds/disable-electric-semicolon)
+  (add-to-list 'electric-layout-rules (cons ?\; nil))
+  (add-to-list 'electric-layout-rules (cons ?{ nil))
+  (electric-layout-mode 0))
+(add-hook 'js-mode-hook #'ds/js-electric-layout-rules)
 
 (add-hook 'js-mode-hook #'electric-operator-mode)
 (add-hook 'js-mode-hook #'aggressive-indent-mode)
