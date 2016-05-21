@@ -1601,8 +1601,8 @@ $0")
 (defun ds/line-in-string-block? (&rest args)
   "Does this line either end or start as a string?"
   (save-excursion
-    (or (progn (beginning-of-line) (nth 8 (syntax-ppss)))
-        (progn (end-of-line) (nth 8 (syntax-ppss))))))
+    (or (progn (beginning-of-line) (nth 3 (syntax-ppss)))
+        (progn (end-of-line) (nth 3 (syntax-ppss))))))
 
 (advice-add #'indent-for-tab-command :before-until #'ds/line-in-string-block?)
 (advice-add #'indent-region :before-until #'ds/line-in-string-block?)
