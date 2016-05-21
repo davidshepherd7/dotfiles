@@ -203,6 +203,10 @@ the line break."
     (global-set-key (kbd "C-M-k") 'backward-sexp)))
 
 
+;; Disable insert key, because it sucks
+(global-set-key (kbd "<insert>") nil)
+
+
 ;; case changes
 ;; ============================================================
 
