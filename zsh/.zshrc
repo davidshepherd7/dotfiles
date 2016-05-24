@@ -344,6 +344,10 @@ source ${zshdir}/emacs-read-stdin/emacs-read-stdin.sh
 source ${zshdir}/biosite.sh
 
 
+# plugins
+source "${zshdir}/plugins/safe-paste.sh"
+
+
 # ccache config
 # ============================================================
 export CCACHE_SLOPPINESS="time_macros"
