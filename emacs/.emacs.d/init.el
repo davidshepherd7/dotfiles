@@ -1650,6 +1650,10 @@ $0")
   (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "M-q") #'fill-function-arguments-dwim)))
   )
 
+(use-package emerge
+  :config
+  (add-hook 'emerge-startup-hook #'emerge-fast-mode))
+
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.
 

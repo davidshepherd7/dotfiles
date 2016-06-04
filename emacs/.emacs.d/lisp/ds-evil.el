@@ -351,6 +351,7 @@
 
   ;; Use insert state by default in some modes
   (add-hook 'git-commit-mode-hook #'evil-insert-state)
+  (add-hook 'emerge-startup-hook #'evil-insert-state)
   (add-to-list 'evil-insert-state-modes 'deft-mode)
 
   )

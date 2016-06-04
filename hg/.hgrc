@@ -2,11 +2,12 @@
 username = David Shepherd <david.shepherd@biositesystems.com>
 ignore = ~/.hgignore
 editor = emacsclient -c
+merge = emacsclient
 
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge
 
 [extensions]
 pager =
@@ -45,6 +46,10 @@ base($1) = last(limit(reverse(last(prev_branchpoint($1)::$1)),2))
 
 anc($1) = reverse(ancestors($1))
 
+[merge-tools]
+emacsclient.premerge = True
+emacsclient.args = -c --eval "(emerge-files-with-ancestor nil \""$local"\" \""$other"\" \""$base"\" \""$output"\" nil #'delete-frame)"
+# I don't know what's going on with the quoting on the line above, but it seems to be necessary
 
 [alias]
 
