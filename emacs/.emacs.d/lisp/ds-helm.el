@@ -10,6 +10,11 @@
   (set 'helm-ff-guess-ffap-urls nil)
   (set 'helm-ff-guess-ffap-filenames nil)
 
+  ;; Don't show compiled files etc in helm find files
+  (set 'helm-ff-skip-boring-files t)
+
+  (add-to-list 'helm-boring-file-regexp-list "\\.orig$")
+
   :demand
   )
 
