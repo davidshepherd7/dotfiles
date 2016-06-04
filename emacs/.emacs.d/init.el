@@ -539,6 +539,7 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-sql.el")
 (load-file  "~/.emacs.d/lisp/ds-cmake.el")
 (load-file  "~/.emacs.d/lisp/ds-sgml.el")
+(load-file  "~/.emacs.d/lisp/ds-sh.el")
 
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-biosite.el")
@@ -1166,15 +1167,6 @@ $0")
 
 ;; indent by 2
 (set 'js-indent-level 2)
-
-
-;; Shell mode
-;; ============================================================
-
-(add-hook 'shell-mode-hook 'set-tab)
-(add-hook 'shell-mode-hook (lambda ()
-			     (set 'sh-basic-offset 2)
-			     (set 'sh-indentation 2)))
 
 
 ;; C mode
