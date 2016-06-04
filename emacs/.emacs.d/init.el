@@ -176,7 +176,7 @@
 
 ;; Highlight long lines
 (require 'whitespace)
-(set 'whitespace-line-column 80) ;; limit line length
+(set 'whitespace-line-column 120) ;; limit line length
 (set 'whitespace-style '(face lines-tail))
 (add-hook 'prog-mode-hook 'whitespace-mode)
 
