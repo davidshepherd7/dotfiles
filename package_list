@@ -79,7 +79,7 @@ silversearcher-ag
 curl
 parallel
 rar
-conky
+conky-all
 pyflakes
 xbacklight
 tmux

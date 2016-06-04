@@ -5,3 +5,5 @@ js-beautify
 jscs
 n
 npm
+eslint-cli
+gulp
