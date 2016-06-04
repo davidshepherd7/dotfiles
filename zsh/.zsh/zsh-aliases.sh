@@ -114,11 +114,6 @@ install_pip_packages ()
     < $package_list | xargs sudo pip3 install --upgrade
 }
 
-install_brew_packages () {
-    brew update
-    < "$rcdir/brew_package_list" x brew install %
-}
-
 install_gem_packages () {
     < "$rcdir/gem_package_list" x sudo gem install %
 }
@@ -138,7 +133,6 @@ update () {
             install_packages
             install_pip_packages
             install_gem_packages
-            install_brew_packages
             install_npm_packages
         )
 }
