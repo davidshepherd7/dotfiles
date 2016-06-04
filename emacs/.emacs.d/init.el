@@ -1477,7 +1477,7 @@ $0")
     (--> ds/docsets
          (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
          (-map #'ds/fix-docset-url it)
-         (-map #'helm-dash-install-docset it)))
+         (-each it #'helm-dash-install-docset)))
 
   (defmacro ds/set-docsets-fn (docsets)
     `(lambda () (setq-local helm-dash-docsets ,docsets)))
