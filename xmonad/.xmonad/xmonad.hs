@@ -55,9 +55,7 @@ myManageHook =
   , className =? "Tk" --> doFloat
   , className =? "Octave"          --> doFloat
   , className =? "Gnuplot"          --> doFloat
-  , className =? "chromium-browser" --> doShift "dump"
 
-  -- , className =? "Tk" --> doShift "plots"
   , isFullscreen --> doFullFloat
   ]
   <+> manageHook gnomeConfig -- keep gnome/xfce compatability settings
