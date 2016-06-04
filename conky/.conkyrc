@@ -34,6 +34,7 @@ TEXT
                                \
  apt-get: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
  layout: ${execi 0.1 keyboard-layout.sh }    \
+ ${execi 0.1 ifconfig eth0 | grep 'inet addr:' | tr ':' ' ' | awk '{print $3}'}    \
  ${battery} \
                                                               \
  ${time %H:%M  %d/%m/%Y} #
