@@ -1672,3 +1672,9 @@ for a file to visit if current buffer is not visiting a file."
 (when (not ds/emacs-up-to-date?)
   (set-face-attribute 'mode-line nil
                       :background "dark red"))
+
+(defun save-and-close-client ()
+  (interactive)
+  (save-buffer)
+  (server-edit))
+(global-set-key (kbd "C-\\ #") #'save-and-close-client)
