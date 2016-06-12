@@ -559,6 +559,7 @@ index in STRING."
 ;; correct.
 (load-file "~/.emacs.d/lisp/ds-evil.el")
 
+(load-file "~/.emacs.d/lisp/ds-toggle-electricity.el")
 
 ;; Save command history between sessions
 ;; ===============================================================
