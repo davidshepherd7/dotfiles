@@ -5,13 +5,19 @@ set -o nounset
 
 keystroke="CTRL+F5"
 
-# The browser to refresh
-BROWSER="${1:-firefox}"
+browsers=(firefox chromium chrome)
 
-# find all visible browser windows
-browser_windows="$(xdotool search --sync --all --onlyvisible --name "$BROWSER")"
+current_window="$(xdotool getwindowfocus)"
 
-# Send keystroke
-for bw in $browser_windows; do
+for browser in "${browsers[@]}"; do
+  # find all visible browser windows
+  browser_windows="$(xdotool search --all --onlyvisible --name "$browser" || echo '')"
+
+  # Send keystroke
+  for bw in $browser_windows; do
+    xdotool windowfocus "$bw"
     xdotool key --window "$bw" "$keystroke"
+  done
 done
+
+xdotool windowfocus "$current_window"
