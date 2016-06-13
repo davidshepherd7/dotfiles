@@ -1,6 +1,7 @@
 vim
 rxvt-unicode
 xmonad
+libghc-xmonad-contrib-dev
 triangle-bin
 tetgen
 build-essential
