@@ -77,6 +77,10 @@
 (use-package dash :ensure t)
 (use-package s :ensure t)
 
+;; Keep the compiler happy
+(require 'dash)
+(require 's)
+
 (load-file "~/.emacs.d/lisp/string-manip.el")
 
 (defun ds/switch-to-related (ext &optional current-file-in)
@@ -927,7 +931,7 @@ For magit versions > 2.1.0"
 ;; Projectile
 ;; ============================================================
 (use-package projectile
-  :ensure t
+  ;; :ensure t
   :init
 
   ;; kill all projectile keys
@@ -1424,7 +1428,7 @@ $0")
 
 
 (use-package helm-dash
-  :ensure t
+  ;; :ensure t
 
   :config
 

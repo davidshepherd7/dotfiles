@@ -4,6 +4,8 @@
 (use-package helm :ensure t
 
   :config
+  (require 'helm)
+  (require 'helm-files)
 
   ;; Don't try to guess names from text at point, it just fails and tries
   ;; to open files in root dir.

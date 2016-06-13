@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (require 'js)
 
 (set 'js-switch-indent-offset js-indent-level)
