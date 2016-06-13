@@ -6,3 +6,5 @@ emacs/.emacs.d/lex-mode/
 emacs/.emacs.d/elpa/
 .dropbox.attr
 hg/.hgex
+
+*.elc
