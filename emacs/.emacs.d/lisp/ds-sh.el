@@ -2,10 +2,7 @@
 (require 'shell)
 (require 'sh-script)
 
-(add-hook 'shell-mode-hook 'set-tab)
-(add-hook 'shell-mode-hook (lambda ()
-                             (set 'sh-basic-offset 2)
-                             (set 'sh-indentation 2)))
+(add-hook 'sh-mode-hook 'set-tab)
 
 (require 'flycheck)
-(add-hook 'shell-mode-hook #'flycheck-mode)
+(add-hook 'sh-mode-hook #'flycheck-mode)
