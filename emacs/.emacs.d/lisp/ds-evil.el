@@ -75,6 +75,12 @@
     (evil-change-to-initial-state))
   (-each (list #'compile #'recompile #'my-recompile #'projectile-compile-project #'compile-with-default)
     (lambda (fn) (advice-add fn :before #'evil-change-to-initial-state-ignore-args)))
+
+  ;; Cancel company completion when entering normal mode
+  (require 'company)
+  (add-hook 'evil-normal-state-entry-hook #'company-abort)
+
+
   ;; Coloured modeline when in insert mode
   ;; ============================================================
   (defvar ds/mode-line-default-background (face-attribute 'mode-line :background))
