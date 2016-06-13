@@ -12,3 +12,6 @@ CMakeCache\.txt
 
 # hg files
 \.orig
+
+
+future-eslintrc-temp.json

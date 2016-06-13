@@ -88,3 +88,4 @@ _boron-test () {
     reply=(`cd-boron-build && ninja -t targets | awk -F: '{print $1}' | grep 'test'`);
 }
 compctl -K _boron-test boron-test
+alias esfix="eslint -c ~/code/boron-unstable/boron/web_applications/future-eslintrc.json --fix"

@@ -195,7 +195,11 @@
        ("helpers" "helper")
 
        ("test" "")
-       ("tests" "")))
+       ("tests" "")
+
+       ("db_types" "db")
+       ("shared" "")
+       ))
 
 (defun ds/biosite-dir-to-namespace (dir)
   (let ((found (assoc dir ds/biosite-dir-to-ns)))
@@ -229,11 +233,9 @@
 
 (defun ds/biosite-cpp-namespaces ()
   (interactive)
-  (apply #'s-concat
-         (-map
-          (lambda (ns) (s-concat "using namespace " ns ";\n"))
-          (ds/biosite-get-namespaces))))
-
+  (--> (ds/biosite-get-namespaces)
+       (-map (lambda (ns) (s-concat "using namespace " ns ";")) it)
+       (s-join "\n" it)))
 
 
 
