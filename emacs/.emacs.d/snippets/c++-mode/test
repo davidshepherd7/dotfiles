@@ -6,15 +6,16 @@
 #include "${1:`(ds/biosite-test-include-path)`}"
 
 #include "nowarnings/qt/QSqlDatabase"
-
 #include "db/test/test_scope.h"
+
+#include "shared/db/get_database.h"
 
 `(ds/biosite-cpp-namespaces)`
 
 TEST_CASE("${2:`(downcase (file-name-base))`}")
 {
     QSqlDatabase db = boron::db::get_database();
-    pa::db::test::test_scope s("$2", db);
+    pa::db::test::test_scope db_scope("$2", db);
 
 $0
 }

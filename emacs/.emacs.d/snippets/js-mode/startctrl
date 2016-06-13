@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: startctrl
 # --
-(function(){
+(function() {
     'use strict';
 
 angular.module('boron.$1.${2:`(s-dashed-words (ds/buffer-basename))`}', [
