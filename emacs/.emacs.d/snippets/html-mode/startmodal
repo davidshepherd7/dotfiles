@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startmodal
+# --
+<div class="modal-header">
+    <h3 class="modal-title">$1</h3>
+</div>
+
+<div class="modal-body">
+$0
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="$close(...)">Ok</button>
+    <button class="btn btn-default" ng-click="$dismiss('cancel')">Cancel</button>
+</div>
