@@ -215,6 +215,35 @@ git-ignore-rest () {
 alias sst='svn status -q'
 alias sd='svn diff'
 
+
+# Store/apply/revert testing patches for hg (e.g. $timeout stuff)
+HG_TEST_DIFF="$HOME/scratch/hg-test-diff.diff"
+reverse-patch() {
+    local temp="$(mktemp reverse-patch-$USER.XXXXXXX --tmpdir)"
+    cat - > "$temp"
+    interdiff "$temp" /dev/null
+}
+
+hg-apply-test() {
+    (
+        cd "$(hg root)"
+        patch -p1 <"$HG_TEST_DIFF"
+    )
+}
+
+hg-unapply-test() {
+    (
+        cd "$(hg root)"
+        <"$HG_TEST_DIFF" reverse-patch | patch -p1
+    )
+}
+
+hg-set-test() {
+    mkdir -p "$(dirname "$HG_TEST_DIFF")"
+    hg diff > "$HG_TEST_DIFF"
+}
+
+
 # ===============================
 
 # A make alias
