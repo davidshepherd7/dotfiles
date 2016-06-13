@@ -72,9 +72,9 @@ lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tag
 lp = log -p --color=always -r 'this_branch_simple(.)'
 lgs = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'this_branch_simple(.)'
 
-# status including subrepos and with path relative to root
-s = !$HG status -S $($HG root) --color=always "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
-st = !$HG status -S $($HG root) --color=always "$@" | less -FRXS
+# status including subrepos and with path relative to cwd
+s = !$HG status -S "" --color=always "$@" -n | sed -e '1i\\' 2>/dev/null | less -FRXS
+st = !$HG status -S "" --color=always "$@" -n | less -FRXS
 
 # st with numberwang selection
 stnw = !$HG status --no-status --color=always -S $($HG root) "$@" | nwc
