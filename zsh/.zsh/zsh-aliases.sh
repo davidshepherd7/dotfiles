@@ -168,7 +168,9 @@ function h() {
     fi
 }
 
-alias hd="h diff"
+alias hd="hg"
+alias hglg="hg lg"
+
 alias hs="h status"
 
 alias hc="h commit"
