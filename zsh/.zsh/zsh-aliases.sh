@@ -134,7 +134,19 @@ update () {
             install_pip_packages
             install_gem_packages
             install_npm_packages
+            recompile_elisp
         )
+}
+
+
+recompile_elisp() {
+    find -L "$HOME/.emacs.d/" -name '*.el' \
+         -type f \
+         -not -path "*/.cask/*" \
+         -not -path '*/elpa/*' \
+         -print0 \
+        | \
+        xargs -0 emacs -Q --batch -f batch-byte-compile
 }
 
 alias pm='sudo pacmatic -S'
