@@ -14,6 +14,7 @@
 *-i386-linux
 *-x86_64-linux
 *.pyc
+*.elc
 
 # build files
 Makefile.in
