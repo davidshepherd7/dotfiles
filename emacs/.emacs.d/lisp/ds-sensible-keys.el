@@ -205,6 +205,7 @@ the line break."
 
 ;; Disable insert key, because it sucks
 (global-set-key (kbd "<insert>") nil)
+(global-set-key (kbd "C-M-<insert>") #'overwrite-mode)
 
 
 ;; case changes
