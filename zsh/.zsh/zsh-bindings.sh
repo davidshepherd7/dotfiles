@@ -136,3 +136,11 @@ function prepend-watch {
 }
 zle -N prepend-watch
 bindkey "\ew" prepend-watch
+
+function append-refresh {
+  if [[ $BUFFER != *"refresh-browser.sh" ]]; then
+    BUFFER="$BUFFER && refresh-browser.sh"
+  fi
+}
+zle -N append-refresh
+bindkey "\er" append-refresh
