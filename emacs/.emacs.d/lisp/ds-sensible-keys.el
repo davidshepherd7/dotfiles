@@ -533,3 +533,9 @@ the line break."
     (select-window (active-minibuffer-window))))
 
 (global-set-key (kbd "C-\\ m") #'focus-active-minibuffer)
+
+
+;; No more arrow keys!
+;; ============================================================
+
+(-each (list (kbd "<left>") (kbd "<down>") (kbd "<right>") (kbd "<up>")) #'global-unset-key)
