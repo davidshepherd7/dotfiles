@@ -104,6 +104,9 @@
              '(typescript "\\(.*\\)(\\([0-9]*\\),\\([0-9]*\\)): " 1 2))
 (add-to-list 'compilation-error-regexp-alist 'typescript)
 
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(node "at [^( ]+ (\\(.*?\\):\\([0-9]*\\):\\([0-9]*\\))" 1 2))
+(add-to-list 'compilation-error-regexp-alist 'node)
 
 (use-package json-mode
   :ensure t
