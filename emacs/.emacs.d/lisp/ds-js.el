@@ -46,6 +46,8 @@
             ("\\.\\<\\(directive\\)\\>" 1 font-lock-keyword-face)
             ("\\.\\<\\(factory\\)\\>" 1 font-lock-keyword-face)
             ("\\.\\<\\(service\\)\\>" 1 font-lock-keyword-face)
+            ("\\.\\<\\(component\\)\\>" 1 font-lock-keyword-face)
+            ("[^_]\\.\\<\\(filter\\)\\>" 1 font-lock-keyword-face)
 
             ))
 
