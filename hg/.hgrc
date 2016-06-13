@@ -19,6 +19,7 @@ graphlog =
 record =
 histedit =
 crecord = ~/.hgex/crecord/crecord
+remotebranches = ~/.hgex/remotebranches/hg_remotebranches.py
 rebase =
 strip =
 transplant =
@@ -66,10 +67,10 @@ ccommon = commit -m "chore(common): Update common" 'path:common'
 ##############
 
 # pretty log graph
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
 lp = log -p --color=always -r 'this_branch_simple(.)'
-lgs = log --color=always -G --template "{if(tags, label('custom.tag','[{tags}] '))}{if(bookmarks, label('custom.bookmark','[{bookmarks}] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'this_branch_simple(.)'
+lgs = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'this_branch_simple(.)'
 
 # status including subrepos and with path relative to root
 s = !$HG status -S $($HG root) --color=always "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
