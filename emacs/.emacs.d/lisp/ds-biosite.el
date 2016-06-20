@@ -132,9 +132,14 @@
 
 (defun ds/biosite-paste-as-include ()
   (interactive)
-  (end-of-line)
-  (insert "\n")
-  (insert (ds/biosite-path-to-include (current-kill 0 t))))
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 4) ; Should get us past any initial stuff
+    (end-of-line)
+    (insert "\n")
+    (let ((include-line (ds/biosite-path-to-include (current-kill 0 t))))
+      (insert include-line)
+      (message "Added include: %s" include-line))))
 
 
 ;; js template paths
@@ -429,12 +434,15 @@ LCON is the lexical context, if any."
 (defun ds/biosite-js--proper-indentation (parse-status)
   "Return the proper indentation for the current line."
   (save-excursion
+    ;; (pp "ctrl") (pp (js--ctrl-statement-indentation)) (pp "\n")
+    ;; (pp "multi") (pp (js--multi-line-declaration-indentation)) (pp "\n")
+
     (back-to-indentation)
     (cond ((nth 4 parse-status)    ; inside comment
            (js--get-c-offset 'c (nth 8 parse-status)))
           ((nth 3 parse-status) 0) ; inside string
           ((eq (char-after) ?#) 0)
-          ((save-excursion (js--beginning-of-macro)) 4)
+          ((save-excursion (js--beginning-of-macro)) (message "macro") 4)
           ;; Indent array comprehension continuation lines specially.
           ((let ((bracket (nth 1 parse-status))
                  beg)
@@ -463,6 +471,7 @@ LCON is the lexical context, if any."
                  (skip-syntax-backward " ")
                  (when (eq (char-before) ?\)) (backward-list))
                  (back-to-indentation)
+                 (js--maybe-goto-declaration-keyword-end parse-status)
                  (let* ((in-switch-p (unless same-indent-p
                                        (looking-at "\\_<switch\\_>")))
                         (same-indent-p (or same-indent-p
@@ -498,5 +507,44 @@ LCON is the lexical context, if any."
            (+ js-indent-level js-expr-indent-offset))
           (t 0))))
 
+
+(defun ds/biosite-js--multi-line-declaration-indentation ()
+  "Helper function for `js--proper-indentation'.
+Return the proper indentation of the current line if it belongs to a declaration
+statement spanning multiple lines; otherwise, return nil."
+  (let (at-opening-bracket)
+    (save-excursion
+      (back-to-indentation)
+      (when (not (looking-at js--declaration-keyword-re))
+        (when (looking-at js--indent-operator-re)
+          (goto-char (match-end 0)))
+        (while (and (not at-opening-bracket)
+                    (not (bobp))
+                    (let ((pos (point)))
+                      (save-excursion
+                        (js--backward-syntactic-ws)
+                        (or (eq (char-before) ?,)
+                            (and (not (eq (char-before) ?\;))
+                                 (prog2
+                                     (skip-syntax-backward ".")
+                                     (looking-at js--indent-operator-re)
+                                   (js--backward-syntactic-ws))
+                                 (not (eq (char-before) ?\;)))
+                            (js--same-line pos)))))
+          (condition-case nil
+              (backward-sexp)
+            (scan-error (setq at-opening-bracket t))))
+        (when (looking-at js--declaration-keyword-re)
+          (if ds/js-fancy-align
+              (progn
+                (goto-char (match-end 0))
+                (1+ (current-column)))
+            (progn
+              ;; (forward-line -1)
+              (back-to-indentation)
+              (+ (current-column) js-indent-level))))))))
+
+
 ;; lol, more monkey patching
 (fset #'js--proper-indentation #'ds/biosite-js--proper-indentation)
+(fset #'js--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
