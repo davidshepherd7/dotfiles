@@ -18,6 +18,14 @@
 
 
 
+;; Highlight spaces for indentation
+(defun ds/highlight-space-indents (activate)
+  (let ((regex "^[ 	]*? [ 	]*"))
+    (if activate
+        (highlight-regexp regex)
+      (unhighlight-regexp regex))))
+
+
 (defun ds/comment-offset (dummy)
   "No offset for closing comment lines"
   (save-excursion
@@ -548,3 +556,17 @@ statement spanning multiple lines; otherwise, return nil."
 ;; lol, more monkey patching
 (fset #'js--proper-indentation #'ds/biosite-js--proper-indentation)
 (fset #'js--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
+
+
+
+
+;; Activate all this stuff in a minor mode (eventually, for now only some
+;; things...)
+
+(define-minor-mode biosite-mode
+  "Set up Biosite specific syntax etc."
+  :lighter " Biosite"
+  :global nil
+
+  ;; body
+  (ds/highlight-space-indents biosite-mode))
