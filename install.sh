@@ -52,3 +52,8 @@ sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
 # Firefox needs extra tricks to find the user dir run:
 # ./firefox/setup-firefox.sh, not done here because it's error prone and
 # not idempotent.
+
+
+# Don't store ssh config here because this is public, but we need to make a temp
+# dir in there for connection multiplexing.
+mkdir -p ~/.ssh/tmp
