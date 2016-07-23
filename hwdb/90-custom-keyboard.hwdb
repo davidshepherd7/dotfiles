@@ -7,3 +7,15 @@ keyboard:usb:v0426p3011*
  KEYBOARD_KEY_7001e=f13
  KEYBOARD_KEY_7001f=f14
  KEYBOARD_KEY_70020=f15
+
+# For newer versions of Ubuntu (at least since 16.04)
+
+evdev:input:b*v0C45p7403e*-*
+ KEYBOARD_KEY_70004=f13
+ KEYBOARD_KEY_70005=f14
+ KEYBOARD_KEY_70006=f15
+
+evdev:input:b*v0426p3011e*-*
+ KEYBOARD_KEY_7001e=f13
+ KEYBOARD_KEY_7001f=f14
+ KEYBOARD_KEY_70020=f15
