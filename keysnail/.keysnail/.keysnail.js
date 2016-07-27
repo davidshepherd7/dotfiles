@@ -270,8 +270,8 @@ key.setEditKey('C-Z', function (ev) {
 }, 'Redo');
 
 key.setEditKey('C-b', function (ev) {
-    command.previousChar(ev);
-}, 'Backward char');
+    command.beginLine(ev);
+});
 
 key.setEditKey('C-l', function (ev) {
     command.endLine(ev);
@@ -358,12 +358,12 @@ key.setEditKey('C-x', function (ev) {
 }, 'Cut current region', true);
 
 key.setEditKey('M-n', function (ev) {
-    command.walkInputElement(command.elementsRetrieverTextarea, true, true);
-}, 'Focus to the next text area');
+	command.previousChar(ev);
+});
 
-key.setEditKey('M-p', function (ev) {
-    command.walkInputElement(command.elementsRetrieverTextarea, false, true);
-}, 'Focus to the previous text area');
+key.setEditKey('M-e', function (ev) {
+	command.nextChar(ev);
+});
 
 key.setCaretKey([['C-a'], ['^']], function (ev) {
     ev.target.ksMarked ? goDoCommand("cmd_selectBeginLine") : goDoCommand("cmd_beginLine");
