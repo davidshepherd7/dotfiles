@@ -44,7 +44,6 @@ a2ps
 cmake
 valgrind
 kcachegrind
-nautilus-open-terminal
 evtest
 git-svn
 cmake-curses-gui
@@ -96,3 +95,5 @@ mercurial
 gdebi
 anki
 rlwrap
+chromium-browser
+redshift
