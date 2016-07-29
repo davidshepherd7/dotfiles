@@ -373,6 +373,42 @@
   (add-to-list 'evil-insert-state-modes 'makey-key-mode)
 
 
+  ;; Square brackets
+  ;; ============================================================
+
+  ;; Why the hell is this not already a thing?
+
+  (evil-define-motion evil-previous-open-square-bracket (count)
+    "Go to [count] previous unmatched '['."
+    :type exclusive
+    (evil-up-paren ?[ ?] (- (or count 1))))
+
+  (evil-define-motion evil-previous-close-square-bracket (count)
+    "go to [count] next unmatched ']'."
+    :type exclusive
+    (forward-char)
+    (evil-up-paren ?[ ?] (or count 1))
+    (backward-char))
+
+  (define-key evil-normal-state-map (kbd "[") #'evil-previous-open-square-bracket)
+  (define-key evil-normal-state-map (kbd "]") #'evil-previous-close-square-bracket)
+
+  (evil-define-motion evil-previous-open-angle-bracket (count)
+    "Go to [count] previous unmatched '<'."
+    :type exclusive
+    (evil-up-paren ?< ?> (- (or count 1))))
+
+  (evil-define-motion evil-previous-close-angle-bracket (count)
+    "go to [count] next unmatched '>'."
+    :type exclusive
+    (forward-char)
+    (evil-up-paren ?< ?> (or count 1))
+    (backward-char))
+
+  (define-key evil-normal-state-map (kbd "<") #'evil-previous-open-angle-bracket)
+  (define-key evil-normal-state-map (kbd ">") #'evil-previous-close-angle-bracket)
+
+
   )
 
 (use-package evil-surround
