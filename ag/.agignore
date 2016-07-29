@@ -3,6 +3,8 @@
 *.css.map
 *.min.js.map
 
+build.ninja
+
 LICENSE
 LICENSE.txt
 LICENSE.md
@@ -14,6 +16,8 @@ LICENSE.md
 *boron/web_applications/node_modules/*
 *boron/web_applications/app/*
 *boron/web_applications/dev-app/*
+
+*build/*
 
 # The above doesn't work if we are in web_applications, so add these as well :(
 app/nearmiss/*
