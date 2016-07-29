@@ -8,3 +8,9 @@ emacs/.emacs.d/elpa/
 hg/.hgex
 
 *.elc
+
+/bin/bin/lein
+/calibre/.config/calibre/*
+
+# Dropbox junk
+*conflicted copy*
