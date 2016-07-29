@@ -124,6 +124,4 @@
   )
 
 
-;; Support es6 string literals
-(modify-syntax-entry ?` "\"" js-mode-syntax-table)
 (provide 'ds-js)
