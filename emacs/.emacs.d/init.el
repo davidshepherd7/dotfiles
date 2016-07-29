@@ -373,7 +373,7 @@ index in STRING."
 
 ;; Add a new line at end of file on save if none exists (note: doesn't play
 ;; nice with scheme).
-(setq-default require-final-newline 0)
+(setq-default require-final-newline t)
 
 
 ;; Create non-existant directories automatically
