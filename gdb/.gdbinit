@@ -2,6 +2,15 @@ set history save
 
 set history filename ~/.gdb_history
 
+# set disable-completion on
+set print array on
+set print array-indexes on
+set print pretty on
+
+set print object on
+
+set pagination off
+
 add-auto-load-safe-path /home/david/code/emacs/src/.gdbinit
 
 python
