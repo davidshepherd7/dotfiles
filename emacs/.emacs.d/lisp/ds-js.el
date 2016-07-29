@@ -115,6 +115,9 @@
     (setq-local js-indent-level 2))
   (add-hook 'json-mode-hook #'setup-json-indent)
 
+  (add-hook 'json-mode-hook (lambda () (biosite-mode 0)))
+  (add-hook 'json-mode-hook (lambda () (flycheck-mode 0)))
+
   (defun ds/set-json-mode (fname)
     (add-to-list 'auto-mode-alist (cons fname 'json-mode)))
   (-map #'ds/set-json-mode (list ".bowerrc" ".jscsrc"))
