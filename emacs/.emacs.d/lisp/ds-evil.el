@@ -370,6 +370,8 @@
   (add-hook 'git-commit-mode-hook #'evil-insert-state)
   (add-hook 'emerge-startup-hook #'evil-insert-state)
   (add-to-list 'evil-insert-state-modes 'deft-mode)
+  (add-to-list 'evil-insert-state-modes 'makey-key-mode)
+
 
   )
 
