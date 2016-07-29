@@ -1557,6 +1557,7 @@ $0")
 
 
 (use-package beacon
+  :disabled
   :ensure t
   :config
   (add-hook 'text-mode-hook 'beacon-mode))
