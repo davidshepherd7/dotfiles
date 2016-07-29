@@ -15,6 +15,9 @@ alias gdbr='gdb -ex "run" --args'
 # gdb with catch-throw, autorun and --args
 alias gdbcr='gdb -ex "catch throw" -ex "run" --args'
 
+# valgrind with debugger
+alias cvalgrind='valgrind --track-origins=yes --db-attach=yes --db-command='\''cgdb -nw %f %p'\'
+
 # ls aliases
 alias ls='ls --color=auto'
 alias ll='ls -alF'
@@ -73,6 +76,10 @@ gdiff()
     git diff --color=always --no-index $@ | perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less -R
 }
 compdef gdiff=diff
+
+dif() {
+    diff -u "$@" | cdiff
+} 
 
 # zmv magic
 alias mmv='noglob zmv -W'
@@ -176,7 +183,16 @@ alias hs="h status"
 alias hc="h commit"
 alias hca="h commit --amend"
 
+alias hra="hg revert --all"
 alias hgplain="HGPLAIN=1 hg"
+
+hg-recent-bundles ()
+{
+    export HG_PLAIN=1
+    ls -d -1 "$(hg root)/.hg/strip-backup/"* -t \
+        | head -n20 \
+        | xargs -I{} -n1 sh -c 'hg in {} || true'
+}
 
 
 # Use hub for better github integration, if it exists
@@ -243,6 +259,22 @@ hg-unapply-test() {
 hg-set-test() {
     mkdir -p "$(dirname "$HG_TEST_DIFF")"
     hg diff > "$HG_TEST_DIFF"
+}
+
+hg-rename-function() {
+    local old="$1"
+    local new="$2"
+
+    # Replace everywhere
+    hg manifest | xargs sed -i "s/${old}/${new}/g"
+
+    # And uppercase too (for include guards)
+    local old_upper="$(echo $old | awk '{print toupper($0)}')"
+    local new_upper="$(echo $new | awk '{print toupper($0)}')"
+    hg manifest | xargs sed -i "s/${old_upper}/${new_upper}/g"
+
+    # Move the files
+    hg manifest | grep "$old" | xargs -I{} -n1 bash -c 'hg mv "$1" "$(dirname $1)/$2.${1##*.}"' "" {} "$new"
 }
 
 
