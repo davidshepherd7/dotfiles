@@ -132,3 +132,8 @@ access functions are BAD for class access (too much copying)."
   (add-to-list 'flycheck-cppcheck-checks "missingInclude")
   )
 (add-hook 'c++-mode-hook #'ds/cpp-flycheck)
+
+(use-package modern-cpp-font-lock
+  :ensure t
+  :config
+  (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode))
