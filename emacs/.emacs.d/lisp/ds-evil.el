@@ -308,6 +308,12 @@
   (define-key evil-outer-text-objects-map (kbd "M->") #'evil-a-buffer)
   (define-key evil-outer-text-objects-map (kbd "a") #'evil-a-buffer)
 
+  (use-package evil-args
+    :ensure t
+    :config
+    (define-key evil-outer-text-objects-map (kbd ",") #'evil-outer-arg)
+    (define-key evil-inner-text-objects-map (kbd ",") #'evil-inner-arg)
+    )
 
   ;; Other
   ;; ============================================================
