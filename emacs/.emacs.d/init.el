@@ -1431,8 +1431,7 @@ $0")
 
 
 (use-package helm-dash
-  ;; :ensure t
-
+  :ensure t
   :config
 
   (set 'helm-dash-min-length 0)
