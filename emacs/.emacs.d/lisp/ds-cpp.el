@@ -1,4 +1,6 @@
 ;; Emacs options and keys for C++
+(require 'cc-mode)
+(require 's)
 
 ;; Clear existing keys
 (set 'c++-mode-map (make-sparse-keymap))
@@ -12,24 +14,24 @@
   ;; (delete-trailing-whitespace)
   (indent-region (point-min) (point-max) nil))
 
-;; Endings to look for with find other file. First entry will be used if we
-;; are creating it.
-(setq cc-other-file-alist
-      (quote
-       (("\\.cc\\'" (".hh" ".h"))
-        ("\\.hh\\'" (".cc" ".C"))
-        ("\\.c\\'" (".h"))
-        ("\\.h\\'" (".cpp" ".cc" ".c" ".C" ".CC" ".cxx"))
-        ("\\.C\\'" (".H" ".hh" ".h"))
-        ("\\.H\\'" (".C" ".CC"))
-        ("\\.CC\\'" (".HH" ".H" ".hh" ".h"))
-        ("\\.HH\\'" (".CC"))
-        ("\\.c\\+\\+\\'" (".h++" ".hh" ".h"))
-        ("\\.h\\+\\+\\'" (".c++"))
-        ("\\.cpp\\'" (".hpp" ".hh" ".h"))
-        ("\\.hpp\\'" (".cpp"))
-        ("\\.cxx\\'" (".hxx" ".hh" ".h"))
-        ("\\.hxx\\'" (".cxx")))))
+;; ;; Endings to look for with find other file. First entry will be used if we
+;; ;; are creating it.
+;; (setq cc-other-file-alist
+;;       (quote
+;;        (("\\.cc\\'" (".hh" ".h"))
+;;         ("\\.hh\\'" (".cc" ".C"))
+;;         ("\\.c\\'" (".h"))
+;;         ("\\.h\\'" (".cpp" ".cc" ".c" ".C" ".CC" ".cxx"))
+;;         ("\\.C\\'" (".H" ".hh" ".h"))
+;;         ("\\.H\\'" (".C" ".CC"))
+;;         ("\\.CC\\'" (".HH" ".H" ".hh" ".h"))
+;;         ("\\.HH\\'" (".CC"))
+;;         ("\\.c\\+\\+\\'" (".h++" ".hh" ".h"))
+;;         ("\\.h\\+\\+\\'" (".c++"))
+;;         ("\\.cpp\\'" (".hpp" ".hh" ".h"))
+;;         ("\\.hpp\\'" (".cpp"))
+;;         ("\\.cxx\\'" (".hxx" ".hh" ".h"))
+;;         ("\\.hxx\\'" (".cxx")))))
 
 ;; Don't try to open includes etc (it never works...)
 (set 'ff-special-constructs nil)

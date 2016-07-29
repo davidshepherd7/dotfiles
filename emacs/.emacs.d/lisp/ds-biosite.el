@@ -98,15 +98,21 @@
        (s-concat it ".h")))
 
 (defun ds/biosite--in-tests-dir (path)
-  (file-name-directory path)
-  (f-join (file-name-directory path) "tests" (file-name-nondirectory path)))
+  (-first #'f-exists?
+          (list (ds/biosite--to-test-helper (file-name-directory path) "tests" (file-name-nondirectory path))
+                (ds/biosite--to-test-helper (file-name-directory path) ".." "tests" (file-name-nondirectory path))
+                (ds/biosite--to-test-helper (file-name-directory path) ".." ".." "tests" (file-name-nondirectory path))
+                )
+          ))
 
-(defun ds/biosite-main-to-test (path)
-  (--> path
-       (ds/biosite--in-tests-dir it)
+(defun ds/biosite--to-test-helper (&rest args)
+  (--> (apply #'f-join args)
        (s-chop-suffix ".h" it)
        (s-chop-suffix ".cpp" it)
        (s-concat it ".cpp")))
+
+(defun ds/biosite-main-to-test (path)
+  (ds/biosite--in-tests-dir path))
 
 (defun ds/biosite-file-test-main ()
   (interactive)
