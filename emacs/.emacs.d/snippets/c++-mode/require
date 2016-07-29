@@ -1,7 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: then
+# key: require
 # --
-THEN("$1")
-{
-CHECK($0);
-}
+REQUIRE($0);

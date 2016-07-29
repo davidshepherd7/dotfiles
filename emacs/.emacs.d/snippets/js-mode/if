@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: if
+# --
+/* @ngInject */
+function $1() {
+const $ctrl = this;
+
+$0
+}

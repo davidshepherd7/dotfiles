@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: pmap
+# --
+std::cout << "$1: ";
+for(const auto& u : $1) std::cout << u.first << "," << u.second << " ";
+std::cout << std::endl;

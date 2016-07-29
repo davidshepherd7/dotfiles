@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: nsbg
+# --
+namespace bg = boost::gregorian;
+namespace bp = boost::posix_time;

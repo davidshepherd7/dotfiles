@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: sctj
+# --
+console.log(_.toArray(${1:cmpl.elem.find('$2')}));
+$0

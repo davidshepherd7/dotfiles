@@ -1,8 +1,10 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: buildfield
 # --
-insert_user_type_builder& $1(${2:$1_type} $1_)
+user_has_custom_field_builder& $1(${2:$1_type} $1)
 {
-m_$1 = $1_;
+m_$1 = $1;
 return *this;
 }
+
+pa::optional<$2> m_$1;

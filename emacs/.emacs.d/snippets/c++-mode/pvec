@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: pvec
+# --
+std::cout << "$1: ";
+for(const auto& u : $1) std::cout << u << " ";
+std::cout << std::endl;

@@ -14,8 +14,8 @@
 
 TEST_CASE("${2:`(downcase (file-name-base))`}")
 {
-    QSqlDatabase db = boron::db::get_database();
-    pa::db::test::test_scope db_scope("$2", db);
+QSqlDatabase dbase = boron::db::get_database();
+pa::db::test::test_scope db_scope("$2", dbase);
 
 $0
 }

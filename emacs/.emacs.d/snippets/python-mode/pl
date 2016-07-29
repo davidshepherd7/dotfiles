@@ -1,7 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: then
+# key: pl
 # --
-THEN("$1")
-{
-CHECK($0);
-}
+print(list($0))

@@ -1,7 +1,3 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: then
+# key: b
 # --
-THEN("$1")
-{
-CHECK($0);
-}

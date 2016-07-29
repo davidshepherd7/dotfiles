@@ -1,7 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: then
+# key: t
 # --
-THEN("$1")
-{
-CHECK($0);
-}
+def test_$1():
+    $0
