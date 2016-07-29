@@ -546,6 +546,7 @@ index in STRING."
 (load-file  "~/.emacs.d/lisp/ds-css.el")
 (load-file  "~/.emacs.d/lisp/ds-sh.el")
 (load-file  "~/.emacs.d/lisp/ds-clojure.el")
+(load-file  "~/.emacs.d/lisp/ds-typescript.el")
 
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-biosite.el")

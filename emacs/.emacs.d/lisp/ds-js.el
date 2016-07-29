@@ -33,25 +33,29 @@
 (add-hook 'js-mode-hook #'ds/pretty-function)
 (add-hook 'js-mode-hook #'prettify-symbols-mode t)
 
-(font-lock-add-keywords
- 'js-mode '(
-            ;; Jasmine
-            ("\\<\\(expect\\)\\>" 1 font-lock-keyword-face)
-            ("\\<\\(it\\)\\>" 1 font-lock-keyword-face)
-            ("\\<\\(describe\\)\\>" 1 font-lock-keyword-face)
+(defun js-extra-keywords (mode)
+  (font-lock-add-keywords
+   mode '(
+          ;; Jasmine
+          ("\\<\\(expect\\)\\>" 1 font-lock-keyword-face)
+          ("\\<\\(it\\)\\>" 1 font-lock-keyword-face)
+          ("\\<\\(describe\\)\\>" 1 font-lock-keyword-face)
 
-            ;; Promises
-            ("\\.\\<\\(then\\)\\>" 1 font-lock-keyword-face)
+          ;; Promises
+          ("\\.\\<\\(then\\)\\>" 1 font-lock-keyword-face)
 
-            ;; Angular
-            ("\\.\\<\\(controller\\)\\>" 1 font-lock-keyword-face)
-            ("\\.\\<\\(directive\\)\\>" 1 font-lock-keyword-face)
-            ("\\.\\<\\(factory\\)\\>" 1 font-lock-keyword-face)
-            ("\\.\\<\\(service\\)\\>" 1 font-lock-keyword-face)
-            ("\\.\\<\\(component\\)\\>" 1 font-lock-keyword-face)
-            ("[^_]\\.\\<\\(filter\\)\\>" 1 font-lock-keyword-face)
+          ;; Angular
+          ("\\.\\<\\(controller\\)\\>" 1 font-lock-keyword-face)
+          ("\\.\\<\\(directive\\)\\>" 1 font-lock-keyword-face)
+          ("\\.\\<\\(factory\\)\\>" 1 font-lock-keyword-face)
+          ("\\.\\<\\(service\\)\\>" 1 font-lock-keyword-face)
+          ("\\.\\<\\(component\\)\\>" 1 font-lock-keyword-face)
+          ("[^_]\\.\\<\\(filter\\)\\>" 1 font-lock-keyword-face)
 
-            ))
+          ))
+  )
+
+(js-extra-keywords 'js-mode)
 
 
 (defun ds/switch-to-html ()
@@ -72,7 +76,6 @@
 (defcustom ds/use-future-eslintrc t "use the eslintrc in boron web_applications?")
 
 (defun ds/maybe-future-eslintrc ()
-  (interactive)
   (let ((future-eslint
          (-find #'f-file?
                 (list (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc.json")
@@ -102,16 +105,6 @@
 
 
 
-;; Parse typescript compiler output
-(require 'compile)
-(add-to-list 'compilation-error-regexp-alist-alist
-             '(typescript "\\(.*\\)(\\([0-9]*\\),\\([0-9]*\\)): " 1 2))
-(add-to-list 'compilation-error-regexp-alist 'typescript)
-
-(add-to-list 'compilation-error-regexp-alist-alist
-             '(node "at [^( ]+ (\\(.*?\\):\\([0-9]*\\):\\([0-9]*\\))" 1 2))
-(add-to-list 'compilation-error-regexp-alist 'node)
-
 (use-package json-mode
   :ensure t
   :config
@@ -130,3 +123,4 @@
 
 ;; Support es6 string literals
 (modify-syntax-entry ?` "\"" js-mode-syntax-table)
+(provide 'ds-js)
