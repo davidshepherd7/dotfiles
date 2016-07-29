@@ -25,6 +25,14 @@
         (highlight-regexp regex)
       (unhighlight-regexp regex))))
 
+(defun ds/fix-space-indents ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^[	]* [ 	]*" nil t)
+      (replace-match "")
+      (indent-for-tab-command))))
+
 
 (defun ds/comment-offset (dummy)
   "No offset for closing comment lines"
@@ -76,6 +84,7 @@
   (setq indent-tabs-mode t)
   (setq js-indent-level tab-width))
 (add-hook 'js-mode-hook #'ds/biosite-js-style)
+(add-hook 'typescript-mode-hook #'ds/biosite-js-style)
 
 
 (require 'cmake-mode)
@@ -144,16 +153,19 @@
        (s-chop-prefix "common/" it)
        (s-concat "#include \"" it "\"")))
 
-(defun ds/biosite-paste-as-include ()
-  (interactive)
+(defun ds/biosite-insert-as-include (filepath)
   (save-excursion
     (goto-char (point-min))
     (forward-line 4) ; Should get us past any initial stuff
     (end-of-line)
     (insert "\n")
-    (let ((include-line (ds/biosite-path-to-include (current-kill 0 t))))
+    (let ((include-line (ds/biosite-path-to-include filepath)))
       (insert include-line)
       (message "Added include: %s" include-line))))
+
+(defun ds/biosite-paste-as-include ()
+  (interactive)
+  (ds/biosite-insert-as-include (current-kill 0 t)))
 
 
 ;; js template paths
@@ -456,7 +468,7 @@ LCON is the lexical context, if any."
            (js--get-c-offset 'c (nth 8 parse-status)))
           ((nth 3 parse-status) 0) ; inside string
           ((eq (char-after) ?#) 0)
-          ((save-excursion (js--beginning-of-macro)) (message "macro") 4)
+          ((save-excursion (js--beginning-of-macro)) 4)
           ;; Indent array comprehension continuation lines specially.
           ((let ((bracket (nth 1 parse-status))
                  beg)
@@ -481,7 +493,6 @@ LCON is the lexical context, if any."
                0)
               ((or (looking-at "[({[]\\s-*\\(/[/*]\\|$\\)") (not ds/js-fancy-align))
                (progn ; nothing following the opening paren/bracket
-                 (message "a")
                  (skip-syntax-backward " ")
                  (when (eq (char-before) ?\)) (backward-list))
                  (back-to-indentation)
@@ -495,7 +506,6 @@ LCON is the lexical context, if any."
                          (cond (same-indent-p
                                 (current-column))
                                (continued-expr-p
-                                (message "cont-expr")
                                 (+ (current-column) (* 2 js-indent-level)
                                    js-expr-indent-offset))
                                (t
@@ -511,7 +521,6 @@ LCON is the lexical context, if any."
               ;; paren/bracket, everything else should be indented at
               ;; the same level.
               (t
-               (message "b")
                (unless same-indent-p
                  (forward-char)
                  (skip-chars-forward " \t"))
@@ -563,6 +572,9 @@ statement spanning multiple lines; otherwise, return nil."
 (fset #'js--proper-indentation #'ds/biosite-js--proper-indentation)
 (fset #'js--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
 
+(fset #'typescript--proper-indentation #'ds/biosite-js--proper-indentation)
+(fset #'typescript--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
+
 
 
 
@@ -575,4 +587,19 @@ statement spanning multiple lines; otherwise, return nil."
   :global nil
 
   ;; body
-  (ds/highlight-space-indents biosite-mode))
+  (ds/highlight-space-indents biosite-mode)
+
+  (set 'indent-tabs-mode biosite-mode))
+
+(defun maybe-enable-biosite-mode ()
+  (interactive)
+  (if (-any?
+       (lambda (project-regex) (s-match project-regex (projectile-project-name)))
+       '(".*boron.*" ".*caesium.*"))
+      (biosite-mode 1)
+    (biosite-mode 0)))
+
+(add-hook 'c++-mode-hook #'maybe-enable-biosite-mode)
+(add-hook 'js-mode-hook #'maybe-enable-biosite-mode)
+(add-hook 'html-mode-hook #'maybe-enable-biosite-mode)
+(add-hook 'css-mode-hook #'maybe-enable-biosite-mode)

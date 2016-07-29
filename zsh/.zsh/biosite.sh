@@ -80,8 +80,9 @@ cd-boron-build () {
 }
 
 boron-test () {
+    local binary="$1"; shift
     (
-        cd-boron-build && ninja "$1" && "./bin/$1" "$2"
+        cd-boron-build && ninja "$binary" && "./bin/$binary" "$@"
     )
 }
 _boron-test () {
@@ -89,3 +90,23 @@ _boron-test () {
 }
 compctl -K _boron-test boron-test
 alias esfix="eslint -c ~/code/boron-unstable/boron/web_applications/future-eslintrc.json --fix"
+
+
+#
+ssh-psql () {
+    ssh "$@" "bash -c 'psql -U boron_user boron -h localhost'"
+}
+_ssh-psql () {
+    local service=ssh
+    _ssh "$@"
+}
+compdef _ssh-psql ssh-psql
+
+
+
+boron-js () {
+    hg manifest |\
+        grep '\.js$' |\
+        grep -v '/dev-app/\|/app/\|/lib/\|/lib-managed/' |\
+        awk "{print \"$(hg root)/\" \$0}"
+}
