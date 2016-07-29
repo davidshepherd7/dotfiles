@@ -880,6 +880,8 @@ For magit versions > 2.1.0"
     ;; get rid of C-c binds
     (local-set-key (kbd "C-c") nil)
 
+    (local-set-key (kbd "M-n") nil)
+
     ;; Compile = preview
     (local-set-key [remap compile] 'markdown-preview)
     (local-set-key [remap my-recompile] 'markdown-preview)
@@ -1445,15 +1447,16 @@ $0")
                              "C++"
                              "PostgreSQL"
                              "CMake"
+                             "CSS"
                              ))
 
   (set 'python-docsets '(
                          "Python 3"
                          "NumPy"
                          "SciPy"
-                         "SymPy"
-                         "scikit-learn"
-                         "toolz"
+                         ;; "SymPy"
+                         ;; "scikit-learn"
+                         ;; "toolz"
                          ))
 
   (set 'ds/js-docsets '(
@@ -1496,7 +1499,7 @@ $0")
   (add-hook 'cmake-mode-hook (ds/set-docsets-fn '("CMake")))
   (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
   (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
-
+  (add-hook 'css-mode-hook (ds/set-docsets-fn '("CSS")))
   )
 
 (defun ds/insert-current-date ()
@@ -1651,7 +1654,9 @@ $0")
 
 (use-package emerge
   :config
-  (add-hook 'emerge-startup-hook #'emerge-fast-mode))
+  (add-hook 'emerge-startup-hook #'emerge-fast-mode)
+  (add-hook 'emerge-startup-hook #'ds/toggle-electricity--disable)
+  )
 
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.
@@ -1677,3 +1682,12 @@ for a file to visit if current buffer is not visiting a file."
   (save-buffer)
   (server-edit))
 (global-set-key (kbd "C-\\ #") #'save-and-close-client)
+
+(use-package editorconfig
+  :init
+  (editorconfig-mode))
+
+(defun occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))

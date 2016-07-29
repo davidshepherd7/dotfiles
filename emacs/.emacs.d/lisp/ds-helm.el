@@ -107,6 +107,11 @@ It is meant to use with `filter-one-by-one' slot."
 ;; Set tab to "next-item", like ido
 (define-key helm-map [tab] #'helm-next-line)
 (define-key helm-map [backtab] #'helm-previous-line)
+(define-key helm-map (kbd "<C-tab>") #'helm-next-source)
+
+;; Disable weird C-backspace behaviour in find files
+(define-key helm-find-files-map (kbd "<C-backspace>") nil)
+(define-key helm-projectile-find-file-map (kbd "<C-backspace>") nil)
 
 
 
@@ -185,7 +190,12 @@ It is meant to use with `filter-one-by-one' slot."
 (define-key helm-map (kbd "C-v") nil)
 (define-key helm-map (kbd "C-n") nil)
 (define-key helm-map (kbd "C-e") nil)
+(define-key helm-map (kbd "M-n") nil)
+(define-key helm-map (kbd "M-e") nil)
 
+;; Arrow keys are banned
+(-each (list (kbd "<left>") (kbd "<down>") (kbd "<right>") (kbd "<up>"))
+  (lambda (key) (define-key helm-map key nil)))
 
 
 

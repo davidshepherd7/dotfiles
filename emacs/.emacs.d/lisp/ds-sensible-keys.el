@@ -523,6 +523,16 @@ the line break."
 (define-key help-mode-map (kbd "<M-right>") #'help-go-forward)
 
 
+;; Minibuffer
+;; ============================================================
+
+(-each
+    (list minibuffer-local-map minibuffer-local-completion-map minibuffer-local-ns-map )
+  (lambda (map)
+    (define-key map (kbd "M-n") 'nil)
+    (define-key map (kbd "M-e") 'nil)))
+
+
 ;; Window management
 ;; ============================================================
 

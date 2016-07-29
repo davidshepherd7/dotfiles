@@ -6,3 +6,5 @@
 
 (require 'flycheck)
 (add-hook 'sh-mode-hook #'flycheck-mode)
+
+(add-hook 'sh-mode-hook #'sh-electric-here-document-mode)

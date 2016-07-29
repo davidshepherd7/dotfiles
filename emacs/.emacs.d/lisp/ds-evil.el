@@ -159,8 +159,8 @@
     (indent-region beg end))
   (define-key evil-normal-state-map (kbd "<tab>") #'ds/evil-indent)
 
-  (define-key evil-normal-state-map (kbd "<") #'evil-shift-left)
-  (define-key evil-normal-state-map (kbd ">") #'evil-shift-right)
+  (define-key evil-normal-state-map (kbd "C-<") #'evil-shift-left)
+  (define-key evil-normal-state-map (kbd "C->") #'evil-shift-right)
 
   (evil-define-operator evil-comment (beg end)
     :move-point nil

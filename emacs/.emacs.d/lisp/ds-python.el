@@ -29,6 +29,8 @@
   :ensure t)
 
 
+(add-hook 'python-mode-hook #'page-break-lines-mode)
+
 ;; Build/test/check functions
 ;; ============================================================
 
