@@ -21,4 +21,14 @@ shelve = gshelve
 gulplog = log 'path:boron/web_applications/app/' --color=always
 
 grebase = !$HG ungulp && $HG rebase "$@"
-ghistedit = !$HG ungulp && $HG histedit "$@"
+ghistedit = !$HG ungulp && $HG he "$@"
+
+# he = !$HG ungulp && $HG histedit -r 'min(draft() and only(.))' "$@"
+
+# This is broken, don't know why...
+# rebase = !$HG ungulp && $HG rebase "$@"
+
+pullall = !$HG pull unstable && $HG pull stable && $HG pull staging
+
+[hooks]
+# pre-commit = "$(hg root)/scripts/pre-commit.sh"

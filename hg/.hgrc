@@ -7,7 +7,7 @@ merge = emacsclient
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase
 
 [extensions]
 pager =
@@ -37,7 +37,7 @@ changeset.draft=green
 
 [revsetalias]
 
-this_branch_simple($1) = reverse(ancestors($1)) - (keyword(chore) and keyword(gulp)) - keyword(merge)
+this_branch_simple($1) = reverse(ancestors($1)) - keyword('chore(gulp)') - keyword(merge) - keyword('chore(bower)')
 
 # Get the last branching commit (i.e. last commit with multiple descendents)
 prev_branchpoint($1) = last(ancestors($1) and branchpoint())
@@ -76,6 +76,9 @@ lgs = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ]
 s = !$HG status -S "" --color=always "$@" -n | sed -e '1i\\' 2>/dev/null | less -FRXS
 st = !$HG status -S "" --color=always "$@" -n | less -FRXS
 
+substatus = !cd "$($HG root)" && awk '{print $$2}' .hgsubstate | xargs -n1 -I{} sh -c 'cd {} && hg status'
+subrepos-are-clean = ![ "$($HG substatus)" = "" ]
+
 # st with numberwang selection
 stnw = !$HG status --no-status --color=always -S $($HG root) "$@" | nwc
 
@@ -102,7 +105,7 @@ clean-ws = !hg-clean-whitespace.sh
 autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG bisect --bad "$2" && $HG bisect --command "$3"
 
 # histedit with default revision the earliest multable revision on this branch
-he = histedit -r 'min(draft() and only(.))'
+he = histedit -r 'min((draft() or secret()) and only(.))'
 
 backout-commit = !$HG backout -r "$1" && $HG commit -m "Backed out $1"
 
