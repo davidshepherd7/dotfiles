@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# set -o errexit
+set -o nounset
+
+rcdir="$HOME/Dropbox/linux_setup/rcfiles"
+
+install_packages ()
+{
+    sudo apt-get update
+    package_list="$rcdir/package_list"
+    < $package_list | xargs sudo apt-get install -y -q
+}
+
+install_pip_packages ()
+{
+    package_list="$rcdir/pip_package_list"
+    < $package_list | xargs sudo pip3 install --upgrade
+}
+
+install_gem_packages () {
+    < "$rcdir/gem_package_list" x sudo gem install %
+}
+
+install_npm_packages () {
+    # Update node itself
+    sudo n stable
+
+    # And now the npm packages
+    < "$rcdir/npm_package_list" x sudo npm install -g %
+}
+
+do_update () {
+    sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet &&
+        (
+            # Allow failures in subshell
+            install_packages
+            install_pip_packages
+            install_gem_packages
+            install_npm_packages
+            recompile_elisp
+        )
+}
+
+
+recompile_elisp() {
+    find -L "$HOME/.emacs.d/" -name '*.el' \
+         -type f \
+         -not -path "*/.cask/*" \
+         -not -path '*/elpa/*' \
+         -print0 \
+        | \
+        xargs -0 emacs -Q --batch -f batch-byte-compile
+}
+
+do_update
