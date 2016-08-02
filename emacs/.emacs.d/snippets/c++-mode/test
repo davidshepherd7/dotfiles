@@ -10,7 +10,13 @@
 
 #include "shared/db/get_database.h"
 
+#include "tests/make_test_data/insert/remote_event_server.h"
+#include "tests/make_test_data/insert/user.h"
+
+
 `(ds/biosite-cpp-namespaces)`
+
+using namespace make_test_data;
 
 TEST_CASE("${2:`(downcase (file-name-base))`}")
 {

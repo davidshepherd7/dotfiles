@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: fwd
+# --
+PA_SERIALISE2_FWD($1, $2);

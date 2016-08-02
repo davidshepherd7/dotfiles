@@ -100,6 +100,9 @@
 (add-to-list 'grep-find-ignored-directories "build/")
 
 
+;; Path manipulation
+;; ============================================================
+
 (defun ds/biosite-test-to-main (path)
   (--> path
        (replace-regexp-in-string "/tests/" "/" it)
@@ -140,6 +143,12 @@
        (ds/biosite-test-to-main it)
        (file-relative-name it (projectile-project-root))))
 
+
+(defun ds/biosite-path-to-class-name (path)
+  (interactive)
+  (--> path
+       (file-name-nondirectory it)
+       (file-name-sans-extension it)))
 
 ;; C++ headers
 ;; ============================================================
@@ -243,30 +252,42 @@
        (-map #'ds/biosite-dir-to-namespace it)
        (-filter (lambda (ns) (not (equal ns ""))) it)))
 
-(defun ds/biosite-get-namespaces  ()
+(defun ds/biosite-get-namespaces  (path)
+  "Get a space-separated list of namespaces for file at path"
   (interactive)
   (ds/biosite-path-to-namespaces
-   (file-relative-name (buffer-file-name) (projectile-project-root))))
+   (file-relative-name path (projectile-project-root))))
 
 (defun ds/biosite-open-namespaces ()
   (interactive)
   (apply #'s-concat
          (-map
           (lambda (ns) (s-concat "namespace " ns "\n{\n"))
-          (ds/biosite-get-namespaces))))
+          (ds/biosite-get-namespaces (buffer-file-name)))))
 
 (defun ds/biosite-close-namespaces ()
   (interactive)
   (apply #'s-concat
          (-map
           (lambda (ns) (s-concat "\n} // namespace " ns "\n"))
-          (reverse (ds/biosite-get-namespaces)))))
+          (reverse (ds/biosite-get-namespaces (buffer-file-name))))))
 
 (defun ds/biosite-cpp-namespaces ()
   (interactive)
-  (--> (ds/biosite-get-namespaces)
+  (--> (ds/biosite-get-namespaces (buffer-file-name))
        (-map (lambda (ns) (s-concat "using namespace " ns ";")) it)
        (s-join "\n" it)))
+
+
+;; serialise2
+;; ============================================================
+
+(defun ds/biosite-make-qualified-class-name (path)
+  "Get the fully-qualified class name for path"
+  (--> path
+       (ds/biosite-get-namespaces it)
+       (s-join "::" it)
+       (s-concat it "::" (ds/biosite-path-to-class-name path))))
 
 
 
