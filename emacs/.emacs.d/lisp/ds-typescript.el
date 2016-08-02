@@ -30,7 +30,7 @@
     :error-patterns
     ((error line-start (file-name) "(" line "," column "): error " (message) line-end))
     :next-checker (typescript-tslint)
-    :mode typescript-mode)
+    :modes (typescript-mode))
 
   (add-to-list 'flycheck-checkers 'typescript-tsc)
 
