@@ -1258,6 +1258,9 @@ $0")
               'org-mode-hook
               'ess-mode-hook
               'js-mode-hook))
+
+  ;; It's annoying to try to fill multiline sql in c++
+  (add-to-list 'afp-fill-comments-only-mode-list 'c++-mode)
   )
 
 
