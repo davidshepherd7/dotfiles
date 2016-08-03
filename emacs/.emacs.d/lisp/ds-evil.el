@@ -111,7 +111,6 @@
   (define-key evil-motion-state-map (kbd "C-e") #'evil-forward-char)
 
   (define-key evil-motion-state-map (kbd "l") #'evil-end-of-line)
-  (define-key evil-motion-state-map (kbd "b") #'evil-beginning-of-line)
 
   (define-key evil-motion-state-map (kbd "p") #'avy-goto-word-1)
   (define-key evil-motion-state-map (kbd "P") #'avy-goto-line)
@@ -142,6 +141,11 @@
 
   (define-key evil-motion-state-map (kbd "j") #'evil-find-char-to)
   (define-key evil-motion-state-map (kbd "g") #'evil-find-char-to-backward)
+
+  ;; BOL at indentation, unless already there
+  (evil-define-motion ds/evil-beginning-of-line (count) (smart-beginning-of-line))
+  (define-key evil-motion-state-map (kbd "b") #'ds/evil-beginning-of-line)
+
 
 
   ;; Actions
@@ -229,7 +233,7 @@
   (define-key evil-normal-state-map (kbd "t") #'evil-insert)
   (define-key evil-normal-state-map (kbd "T") #'evil-append)
 
-  (define-key evil-normal-state-map (kbd "B") (lambda () (interactive) (evil-beginning-of-line) (evil-insert 1)))
+  (define-key evil-normal-state-map (kbd "B") (lambda () (interactive) (ds/evil-beginning-of-line) (evil-insert 1)))
   (define-key evil-normal-state-map (kbd "L") (lambda () (interactive) (evil-end-of-line) (evil-append 1)))
 
   (define-key evil-normal-state-map (kbd "q") #'quoted-insert)
