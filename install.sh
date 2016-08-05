@@ -57,3 +57,6 @@ sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
 # Don't store ssh config here because this is public, but we need to make a temp
 # dir in there for connection multiplexing.
 mkdir -p ~/.ssh/tmp
+
+mkdir -p ~/.docsets/
+stow_file docsets
