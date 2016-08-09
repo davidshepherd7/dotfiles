@@ -343,6 +343,8 @@
 
 (defvar ds/sgml-fancy-align nil)
 
+(defvar ds/hanging-close-tags t)
+
 (defun ds/biosite-sgml-calculate-indent (&optional lcon)
   "Calculate the column to which this line should be indented.
 LCON is the lexical context, if any."
@@ -395,18 +397,22 @@ LCON is the lexical context, if any."
     (`pi nil)
 
     (`tag
-     (goto-char (1+ (cdr lcon)))
-     (skip-chars-forward "^ \t\n")	;Skip tag name.
-     (skip-chars-forward " \t")
-     (cond
-      ((and ds/sgml-fancy-align (not (eolp)))
-       (current-column))
-      (ds/sgml-fancy-align
+     (if (and (looking-at ">") ds/hanging-close-tags)
+         ;; Use opening tag's indentation
+         (save-excursion (goto-char (cdr lcon)) (current-indentation))
+       ;; else
        (goto-char (1+ (cdr lcon)))
-       (+ (current-column) sgml-basic-offset))
-      (t
-       (goto-char (cdr lcon))
-       (+ (current-indentation) sgml-basic-offset))))
+       (skip-chars-forward "^ \t\n")	;Skip tag name.
+       (skip-chars-forward " \t")
+       (cond
+        ((and ds/sgml-fancy-align (not (eolp)))
+         (current-column))
+        (ds/sgml-fancy-align
+         (goto-char (1+ (cdr lcon)))
+         (+ (current-column) sgml-basic-offset))
+        (t
+         (goto-char (cdr lcon))
+         (+ (current-indentation) sgml-basic-offset)))))
 
     (`text
      (while (looking-at "</")
