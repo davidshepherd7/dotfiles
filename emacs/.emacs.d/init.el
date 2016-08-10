@@ -1654,6 +1654,11 @@ $0")
   :load-path "~/.emacs.d/fill-function-arguments"
   :config
   (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "M-q") #'fill-function-arguments-dwim)))
+
+  (add-hook 'sgml-mode-hook (lambda ()
+                              (setq-local fill-function-arguments-first-argument-same-line t)
+                              (setq-local fill-function-arguments-argument-separator " ")
+                              (local-set-key (kbd "M-q") #'fill-function-arguments-dwim)))
   )
 
 (use-package emerge
