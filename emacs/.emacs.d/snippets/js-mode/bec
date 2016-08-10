@@ -4,7 +4,7 @@
 
 beforeEach(angular.mock.module('${1:`(ds/biosite-path-to-html-template-path (buffer-file-name))`}'));
 
-var cmpl;
+let cmpl;
 beforeEach(function() {
 cmpl = helpers.compileTemplateUrl('$1', {
 });

@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: ef
+# --
+<edit-form-$1
+edit-form-label="$2"
+ng-model="$3"$0
+>
+</edit-form-$1>
