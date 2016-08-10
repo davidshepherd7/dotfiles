@@ -1472,6 +1472,7 @@ $0")
                         "Jasmine"
                         "Lo-Dash"
                         "jQuery"
+                        "angular-ui-bootstrap"
                         ))
 
   (set 'ds/shell-docsets '("Bash"))
