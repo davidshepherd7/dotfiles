@@ -26,14 +26,14 @@ bgulplr()
 aburl()
 {
     burl "$1" \
-         -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyb290In0.KeGNGBnBlQ5aiWv_3k1tMuxySXQwaEwbkb__Dqgu9T8' \
+         -H "Authorization: Bearer $BORON_API_TOKEN" \
          "${@:2}"
 }
 
 acurl() {
     curl "$1" \
          -k \
-         -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyb290In0.KeGNGBnBlQ5aiWv_3k1tMuxySXQwaEwbkb__Dqgu9T8' \
+         -H "Authorization: Bearer $BORON_API_TOKEN" \
          "${@:2}"
 }
 

@@ -7,6 +7,10 @@
 zshdir="$HOME/.zsh"
 
 
+# Load api keys
+source "$HOME/.keys/api_keys.sh"
+
+
 # Completion
 # ============================================================
 
