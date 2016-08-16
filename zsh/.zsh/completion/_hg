@@ -729,9 +729,9 @@ _hg_cmd_manifest() {
 _hg_cmd_merge() {
   _arguments -s -w : $_hg_global_opts $_hg_mergetool_opts \
   '(--force -f)'{-f,--force}'[force a merge with outstanding changes]' \
-  '(--rev -r 1)'{-r,--rev}'[revision to merge]:revision:_hg_mergerevs' \
+  '(--rev -r 1)'{-r,--rev}'[revision to merge]:revision:_hg_labels' \
   '(--preview -P)'{-P,--preview}'[review revisions to merge (no merge is performed)]' \
-  ':revision:_hg_mergerevs'
+  ':revision:_hg_labels'
 }
 
 _hg_cmd_outgoing() {
