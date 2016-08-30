@@ -5,7 +5,7 @@
 'use strict';
 
 describe('${1:`(ds/biosite-path-to-module-label (buffer-file-name))`}', function() {
-beforeEach(angular.mock.module('${2:`(ds/biosite-path-to-js-path (buffer-file-name))`}'));
+beforeEach(angular.mock.module('boron.$1.${2:`(s-dashed-words (ds/buffer-basename))`}'));
 
 const helpers = {};
 beforeEach(function() {injectHelpers(helpers);});

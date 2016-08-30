@@ -9,7 +9,7 @@ angular.module('boron.$1.`(s-dashed-words (ds/buffer-basename))`', [
 
 .component('`(s-lower-camel-case (ds/buffer-basename))`', {
 controller: `(s-upper-camel-case (ds/buffer-basename))`Ctrl,
-templateUrl: './path/to/`(s-dashed-words (ds/buffer-basename))`.html',
+templateUrl: '`(ds/biosite-path-to-html-template-path (buffer-file-name))`',
 bindings: {
 
 },
