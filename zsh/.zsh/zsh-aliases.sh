@@ -115,11 +115,20 @@ install_packages ()
     < $package_list | xargs sudo apt-get install -y -q
 }
 
-install_pip_packages ()
+install_pip_3_packages ()
 {
-    package_list="$rcdir/pip_package_list"
-    < $package_list | xargs sudo pip3 install --upgrade
+    sudo -H pip3 install --upgrade pip
+    package_list="$rcdir/pip_3_package_list"
+    < $package_list | xargs sudo -H pip3 install --upgrade
 }
+
+install_pip_2_packages ()
+{
+    sudo -H pip2 install --upgrade pip
+    package_list="$rcdir/pip_2_package_list"
+    < $package_list | xargs sudo -H pip2 install --upgrade
+}
+
 
 install_gem_packages () {
     < "$rcdir/gem_package_list" x sudo gem install %
@@ -138,7 +147,8 @@ update () {
         (
             # Allow failures in subshell
             install_packages
-            install_pip_packages
+            install_pip_2_packages
+            install_pip_3_packages
             install_gem_packages
             install_npm_packages
             recompile_elisp
