@@ -20,6 +20,14 @@ pa::db::test::test_scope db_scope("$2", dbase);
 
 SECTION("the CRUD tests pass")
 {
-pa::db::test::driver<boron::db::$2>(dbase);
+pa::db::test::populator populate;
+db::$2 a, b;
+populate(a);
+populate(b);
+$0
+REQUIRE_NOTHROW( pa::db::test::cascade_save_dependencies(a, dbase) );
+REQUIRE_NOTHROW( pa::db::test::cascade_save_dependencies(b, dbase) );
+
+pa::db::test::crud(a, b, dbase);
 }
 }
