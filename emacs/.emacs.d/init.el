@@ -1135,6 +1135,12 @@ $0")
     (start-process "urxvt" nil "urxvt")))
 (global-set-key (kbd "C-<f6>") 'external-shell-in-project-root)
 
+(defun external-shell-in-project-build ()
+  "Start urxvt in the current project's build directory"
+  (interactive)
+  (let ((default-directory (f-join (projectile-project-root) "build")))
+    (start-process "urxvt" nil "urxvt")))
+(global-set-key (kbd "<M-f6>") 'external-shell-in-project-build)
 
 
 ;; deft (note taking)
