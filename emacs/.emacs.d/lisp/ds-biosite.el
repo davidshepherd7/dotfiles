@@ -616,7 +616,14 @@ statement spanning multiple lines; otherwise, return nil."
   ;; body
   (ds/highlight-space-indents biosite-mode)
 
-  (set 'indent-tabs-mode biosite-mode))
+  (set 'indent-tabs-mode biosite-mode)
+
+  (if biosite-mode
+      (progn
+        (add-hook 'sql-mode-hook #'ds/biosite-set-postgres nil t)
+        (when (derived-mode-p 'sql-mode)
+          (ds/biosite-set-postgres)))
+    (remove-hook 'sql-mode-hook #'ds/biosite-set-postgres t)))
 
 (defun maybe-enable-biosite-mode ()
   (interactive)
@@ -630,3 +637,6 @@ statement spanning multiple lines; otherwise, return nil."
 (add-hook 'js-mode-hook #'maybe-enable-biosite-mode)
 (add-hook 'html-mode-hook #'maybe-enable-biosite-mode)
 (add-hook 'css-mode-hook #'maybe-enable-biosite-mode)
+
+(defun ds/biosite-set-postgres ()
+  (sql-set-product "postgres"))
