@@ -91,7 +91,6 @@ libxcb-keysyms1-dev
 libxcb-util0-dev
 shellcheck
 trayer
-mercurial
 gdebi
 anki
 rlwrap

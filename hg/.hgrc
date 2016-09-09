@@ -3,11 +3,13 @@ username = David Shepherd <david.shepherd@biositesystems.com>
 ignore = ~/.hgignore
 editor = emacsclient -c
 merge = emacsclient
+interface = curses
 
 [pager]
 pager = less -F -R -X -S
 attend=
 ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase
+attend-commit = false
 
 [extensions]
 pager =
@@ -18,7 +20,6 @@ shelve =
 graphlog =
 record =
 histedit =
-crecord = ~/.hgex/crecord/crecord
 remotebranches = ~/.hgex/remotebranches/hg_remotebranches.py
 rebase =
 strip =
