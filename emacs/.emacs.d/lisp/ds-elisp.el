@@ -12,3 +12,9 @@
   (insert (format "(kbd %S)" (key-description key))))
 
 (define-key emacs-lisp-mode-map (kbd "C-,") #'insert-key-as-kbd)
+
+
+(require 'evil-args)
+(defun ds/lisp-evil-args-setup ()
+  (setq-local evil-args-delimiters '(" ")))
+(add-hook 'emacs-lisp-mode-hook #'ds/lisp-evil-args-setup)
