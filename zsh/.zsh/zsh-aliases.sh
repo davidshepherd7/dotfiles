@@ -196,15 +196,6 @@ alias hca="h commit --amend"
 alias hra="hg revert --all"
 alias hgplain="HGPLAIN=1 hg"
 
-hg-recent-bundles ()
-{
-    export HG_PLAIN=1
-    ls -d -1 "$(hg root)/.hg/strip-backup/"* -t \
-        | head -n20 \
-        | xargs -I{} -n1 sh -c 'hg in {} || true'
-}
-
-
 # Use hub for better github integration, if it exists
 if [ command -v hub > /dev/null 2>&1 ]; then
     alias git='hub'
