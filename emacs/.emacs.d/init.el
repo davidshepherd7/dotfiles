@@ -1426,11 +1426,6 @@ $0")
   )
 
 
-(use-package sgml-mode
-  :ensure t
-  :config
-  (add-hook 'sgml-mode-hook #'set-tab))
-
 ;; My lex mode
 (use-package lex-mode
   :load-path "~/.emacs.d/lex-mode"

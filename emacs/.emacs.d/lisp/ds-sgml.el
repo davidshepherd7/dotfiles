@@ -1,6 +1,11 @@
 
 (require 'sgml-mode)
 
+(use-package sgml-mode
+  :ensure t
+  :config
+  (add-hook 'sgml-mode-hook #'set-tab))
+
 (defun insert-br-tag ()
   (interactive)
   (insert "<br>"))
@@ -60,3 +65,5 @@
 (require 'flycheck)
 (add-hook 'html-mode-hook #'flycheck-mode)
 (add-hook 'css-mode-hook #'flycheck-mode)
+
+(add-to-list 'auto-mode-alist (cons "\\.wxs" #'xml-mode))
