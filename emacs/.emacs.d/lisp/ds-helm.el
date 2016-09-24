@@ -1,7 +1,8 @@
 
 (set 'helm-command-prefix-key "C-\\ c")
 
-(use-package helm :ensure t
+(use-package helm
+  :ensure t
 
   :config
   (require 'helm)
@@ -86,6 +87,7 @@ It is meant to use with `filter-one-by-one' slot."
 (require 'helm-config)
 
 (helm-mode 1)
+(diminish 'helm-mode)
 
 
 ;; Generic helm settings:

@@ -22,6 +22,7 @@
 ;; Autocompletion
 (use-package anaconda-mode
   :ensure t
+  :diminish anaconda-mode
   :config
   (add-hook 'python-mode-hook #'anaconda-mode)
   )

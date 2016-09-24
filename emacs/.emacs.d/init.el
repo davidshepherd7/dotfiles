@@ -110,6 +110,7 @@
 
 (use-package aggressive-indent
   :ensure t
+  :diminish aggressive-indent-mode
   :config
   ;; Enable in modes where it's safe
   (mapc (lambda (hook) (add-hook hook #'aggressive-indent-mode))
@@ -137,7 +138,6 @@
 (column-number-mode 1) ;; Column numbers in mode line
 (set 'inhibit-startup-screen t) ;; No startup screen
 (scroll-bar-mode -1);; No scroll bar
-(global-visual-line-mode 1) ;; Wrap lines at nearest word
 (set 'truncate-partial-width-windows nil) ;; Make line wrapping work for
 ;; multiple frames
 (tool-bar-mode -1) ;; Disable toolbar
@@ -168,9 +168,15 @@
 (set 'browse-url-browser-function 'browse-url-generic)
 (set 'browse-url-generic-program "sensible-browser")
 
+;; Wrap lines at nearest word
+(diminish 'visual-line-mode)
+(global-visual-line-mode 1)
+
+
 ;; Draw a line accross the screen instead of ^L for page breaks
 (use-package page-break-lines
   :ensure t
+  :diminish page-break-lines-mode
   :config (global-page-break-lines-mode t))
 
 (global-linum-mode 1)
@@ -179,31 +185,37 @@
 (set 'initial-scratch-message (emacs-version))
 
 ;; Highlight long lines
-(require 'whitespace)
-(set 'whitespace-line-column 120) ;; limit line length
-(set 'whitespace-style '(face lines-tail))
-(add-hook 'prog-mode-hook 'whitespace-mode)
+(use-package whitespace
+  ;; builtin
+  :diminish whitespace-mode
+  :config
 
-;; More noticable markings
-(set 'whitespace-display-mappings
-     ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
-     '(
-       (space-mark 32 [9655] [46])
-       (newline-mark 10 [8629 10])
-       ))
+  (set 'whitespace-line-column 120) ;; limit line length
+  (set 'whitespace-style '(face lines-tail))
+  (add-hook 'prog-mode-hook 'whitespace-mode)
 
-(defun ds/whitespace-all ()
-  (interactive)
-  (set 'whitespace-style '(spaces tabs newline space-mark tab-mark newline-mark))
+  ;; More noticable markings
+  (set 'whitespace-display-mappings
+       ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
+       '(
+         (space-mark 32 [9655] [46])
+         (newline-mark 10 [8629 10])
+         ))
 
-  (whitespace-mode nil)
-  (whitespace-mode t))
+  (defun ds/whitespace-all ()
+    (interactive)
+    (set 'whitespace-style '(spaces tabs newline space-mark tab-mark newline-mark))
 
-(defun ds/whitespace-sane ()
-  (interactive)
-  (set 'whitespace-style '(spaces tabs newline))
-  (whitespace-mode nil)
-  (whitespace-mode t))
+    (whitespace-mode nil)
+    (whitespace-mode t))
+
+  (defun ds/whitespace-sane ()
+    (interactive)
+    (set 'whitespace-style '(spaces tabs newline))
+    (whitespace-mode nil)
+    (whitespace-mode t))
+
+  )
 
 (use-package hi-lock-mode
   ;; There's also some customisation stuff at the top of init.el to prevent
@@ -292,6 +304,7 @@
 ;; show number of matches when searching
 (use-package anzu
   :ensure t
+  :diminish anzu-mode
   :config (global-anzu-mode))
 
 ;; Treat space-like characters as spaces
@@ -315,22 +328,29 @@
 ;; ============================================================
 
 ;; Treat CamelCase as separate words everywhere, but don't transpose as subwords
-(global-subword-mode 1)
-(define-key subword-mode-map [remap transpose-words] nil)
+(use-package subword
+  ;; No ensure: it's built in
+  :diminish subword-mode
+  :config
 
-;; Also handle CamelCase in evil mode
-(require 'evil)
-(define-category ?U "Uppercase")
-(define-category ?u "Lowercase")
-(modify-category-entry (cons ?A ?Z) ?U)
-(modify-category-entry (cons ?a ?z) ?u)
-(make-variable-buffer-local 'evil-cjk-word-separating-categories)
-(add-hook 'subword-mode-hook
-          (lambda ()
-            (if subword-mode
-                (push '(?u . ?U) evil-cjk-word-separating-categories)
-              (setq evil-cjk-word-separating-categories
-                    (default-value 'evil-cjk-word-separating-categories)))))
+  (global-subword-mode 1)
+  (define-key subword-mode-map [remap transpose-words] nil)
+
+  ;; Also handle CamelCase in evil mode
+  (require 'evil)
+  (define-category ?U "Uppercase")
+  (define-category ?u "Lowercase")
+  (modify-category-entry (cons ?A ?Z) ?U)
+  (modify-category-entry (cons ?a ?z) ?u)
+  (make-variable-buffer-local 'evil-cjk-word-separating-categories)
+
+  (add-hook 'subword-mode-hook
+            (lambda ()
+              (if subword-mode
+                  (push '(?u . ?U) evil-cjk-word-separating-categories)
+                (setq evil-cjk-word-separating-categories
+                      (default-value 'evil-cjk-word-separating-categories)))))
+  )
 
 
 (defun un-camelcase-string (s &optional sep start)
@@ -363,6 +383,7 @@ index in STRING."
 ;; Make losing focus save buffers
 (use-package super-save
   :ensure t
+  :diminish super-save-mode
   :config
   (super-save-mode +1))
 
@@ -455,6 +476,7 @@ index in STRING."
 
 (use-package company
   :ensure t
+  :diminish company-mode
   :config
   (global-company-mode)
 
@@ -480,6 +502,7 @@ index in STRING."
 ;;================================================================
 (use-package undo-tree
   :ensure t
+  :diminish undo-tree-mode
   :demand
   :bind (("C-z" . undo-tree-undo)
          ("C-S-z" . undo-tree-redo))
@@ -848,9 +871,13 @@ For magit versions > 2.1.0"
 ;; Show changes vs VC in sidebar
 (use-package diff-hl
   :ensure t
+  :diminish diff-hl-mode
   :init (set 'diff-hl-command-prefix (kbd "C-\\ v"))
   :config (global-diff-hl-mode))
 
+(use-package diff-mode
+  :config
+  (define-key diff-mode-map (kbd "q") #'bury-buffer))
 
 ;; Emacs package creation
 ;; ============================================================
@@ -936,6 +963,7 @@ For magit versions > 2.1.0"
 ;; ============================================================
 (use-package projectile
   ;; :ensure t
+  :diminish projectile-mode
   :init
 
   ;; kill all projectile keys
@@ -1018,6 +1046,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 
 (use-package yasnippet
   :ensure t
+  :diminish yas-minor-mode
   :config
 
   ;; Load my snippets
@@ -1246,6 +1275,7 @@ $0")
 ;; Automatically clean whitespace in lines that we have touched
 (use-package ws-butler
   :ensure t
+  :diminish ws-butler-mode
   :config
   (set 'ws-butler-keep-whitespace-before-point nil)
   (ws-butler-global-mode))
@@ -1340,6 +1370,7 @@ $0")
 ;; hydra/discover-mode.
 (use-package which-key
   :ensure t
+  :diminish which-key-mode
   :init
 
   ;; Popup immediately (magit style)
@@ -1540,6 +1571,7 @@ $0")
 ;; Use rainbow delimeters to highlight mismatched parens.
 (use-package rainbow-delimiters
   :ensure t
+  :diminish rainbow-delimiters-mode
   :config
   ;; Use everywhere sensible
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -1576,6 +1608,7 @@ $0")
 
 (use-package flycheck
   :ensure t
+  :diminish flycheck-mode
   :config
 
   ;; Stop flycheck from stomping C-c
@@ -1648,6 +1681,7 @@ $0")
 
 (use-package highlight-symbol
   :ensure t
+  :diminish highlight-symbol-mode
   :config
   (add-hook 'prog-mode-hook #'highlight-symbol-mode)
   )
@@ -1695,6 +1729,7 @@ for a file to visit if current buffer is not visiting a file."
 (global-set-key (kbd "C-\\ #") #'save-and-close-client)
 
 (use-package editorconfig
+  :diminish editorconfig-mode
   :init
   (editorconfig-mode))
 
