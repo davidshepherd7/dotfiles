@@ -96,3 +96,6 @@ workbench.xmi
 # Version control
 .hg
 .svn
+
+# Emacs dev
+.ecukes-failing-scenarios
