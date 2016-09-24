@@ -16,9 +16,10 @@ add-auto-load-safe-path /home/david/code/emacs/src/.gdbinit
 python
 import sys
 
-sys.path.insert(0, '/usr/share/gcc-4.8/python')
-from libstdcxx.v6.printers import register_libstdcxx_printers
-register_libstdcxx_printers (None)
+# sys.path.insert(0, '/usr/share/gcc-4.8/python')
+# sys.path.insert(0, '/home/david/.gdb_pretty_printers/stl_printers')
+# from libstdcxx.v6.printers import register_libstdcxx_printers
+# register_libstdcxx_printers (None)
 
 sys.path.insert(0, '/home/david/.gdb_pretty_printers/Boost-Pretty-Printer')
 import boost.latest
