@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: inf
+# --
+pa::log::informational("$1");
+$0
+pa::log::informational("$1 -- done");

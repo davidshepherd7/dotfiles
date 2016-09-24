@@ -32,3 +32,6 @@ pullall = !$HG pull unstable && $HG pull stable && $HG pull staging
 
 [hooks]
 # pre-commit = "$(hg root)/scripts/pre-commit.sh"
+
+[phases]
+publish = False
