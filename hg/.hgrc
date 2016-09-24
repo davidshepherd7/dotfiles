@@ -8,7 +8,7 @@ interface = curses
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia
 attend-commit = false
 
 [extensions]
@@ -60,7 +60,8 @@ emacsclient.args = -c --eval "(emerge-files-with-ancestor nil \""$local"\" \""$o
 #########
 
 # Interact with RhodeCode
-pr = !$HG push review -f "$@" && sensible-browser "$(hg paths review)/pull-request/new" &
+pull-request = !sensible-browser "$(hg paths review)/pull-request/new" &
+pr = !$HG push review -f "$@" && $HG pull-request
 
 ccommon = commit -m "chore(common): Update common" 'path:common'
 
@@ -117,3 +118,6 @@ cmerge = commit -m "Merge"
 # Show strip backups against the current repository using hg in. Any arguments are passed to hg in (so e.g. you can use -p to show full patches).
 show-strip-backups = !HGPLAIN="true" ls -d -1 "$(hg root)/.hg/strip-backup/"* -t | xargs -I{} -n 1 sh -c 'hg in --color=always {} "$@" 2>&1 || true' | less -FRX
 # HGPLAIN=true is set so that aliases etc don't ruin things, the command is run in sh with `|| true` so that failed attempts to compare a backup file against the current repo don't kill the command.
+
+ci = commit -i
+cia = ci --amend
