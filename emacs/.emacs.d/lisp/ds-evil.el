@@ -375,6 +375,8 @@
   (add-hook 'emerge-startup-hook #'evil-insert-state)
   (add-to-list 'evil-insert-state-modes 'deft-mode)
   (add-to-list 'evil-insert-state-modes 'makey-key-mode)
+  (add-to-list 'evil-insert-state-modes 'git-rebase-mode)
+  (add-to-list 'evil-insert-state-modes 'diff-mode)
 
 
   ;; Square brackets
