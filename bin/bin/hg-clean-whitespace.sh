@@ -26,4 +26,9 @@ echo "Stored a backup diff in $backupfile"
 
 hg diff -w > "$tempfile"
 hg revert --all
-hg import --no-commit "$tempfile"
+
+# Use patch not import so that this works within a histedit
+(
+    cd "$(hg root)"
+    patch -p1 < "$tempfile"
+)
