@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: deftest
+# --
+#ifdef $1
+#warning yes: $1
+#else
+#warning no: $1
+#endif

@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: attr
+# --
+PA_SERIALISE2_ATTRIBUTES_FWD();
