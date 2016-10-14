@@ -1737,3 +1737,8 @@ for a file to visit if current buffer is not visiting a file."
   "Find any non-ascii characters in the current buffer."
   (interactive)
   (occur "[^[:ascii:]]"))
+(use-package hamburger-menu
+  :ensure t
+  :init
+  (hamburger-menu-mode)
+  )
