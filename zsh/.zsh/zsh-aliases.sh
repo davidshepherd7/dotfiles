@@ -497,56 +497,6 @@ take-a-break ()
 alias urldecode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote(sys.argv[1]))"'
 alias urlencode='python3 -c "import sys, urllib.parse as ul; print(ul.quote(sys.argv[1]))"'
 
-# oomph-lib
-# ============================================================
-
-
-pvdat ()
-{
-    filename=$1
-    shift
-    oomph-convert $filename
-    paraview ${filename%.dat}.vtu "$@"
-}
-export pvdat
-
-pv-most-recent ()
-{
-    dirname=$1
-    shift
-    maxsoln=$(find $dirname -name 'soln*.dat' | sort -V | tail -n1)
-    pvdat ${maxsoln} "$@"
-}
-
-alias parse="parse.py"
-
-# Run oomph-lib micromagnetics parse over ssh and view pdfs locally
-ssh-parse ()
-{
-    # run and save on simulations machine
-    temp_sims=$(ssh david-simulations 'mktemp "ssh-parse-$USER.XXXXXXX" --tmpdir -d')
-    ssh david-simulations "parse.py $@ --ssh-mode --save-to-dir \"$temp_sims\""
-
-    # bring to local machine
-    temp_local=$(mktemp "ssh-parse-local-$USER.XXXXXXX" --tmpdir -d)
-    scp "david-simulations:$temp_sims/*" "$temp_local"
-
-    # view
-    evince "$temp_local/*"
-
-    # temp files are cleared by machines automatically (on boot in
-    # Ubuntu).
-}
-
-# Repeatedly run an experiment
-run() {
-    number=$1
-    shift
-    for i in `seq $number`; do
-        $@
-    done
-}
-
 
 # Completion generation
 # ============================================================

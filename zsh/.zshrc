@@ -223,45 +223,7 @@ export CTEST_OUTPUT_ON_FAILURE="yes"
 # ============================================================
 # Add my scripts to PATH
 PATH="$PATH:$HOME/bin"
-export PATH="$PATH:$HOME/Dropbox/linux_setup/rcfiles/bin"
 export PATH="$PATH:$HOME/Dropbox/bin"
-
-# Paraview
-export PATH="$PATH:$HOME/code/paraview/bin"
-
-# Matlab
-export PATH="$PATH:$HOME/code/matlab/bin:/usr/local/MATLAB/R2013a/bin"
-
-# If we have an alternative doxygen build
-if [[ -d "$HOME/code/doxygen" ]]; then
-    export PATH="$PATH:$HOME/code/doxygen/bin"
-fi
-
-# arch linux stuff
-export PATH="$PATH:$HOME/Dropbox/arch"
-
-
-# Other micromagnetics packages:
-# Add nsim to PATH
-if test "-e $HOME/code/nmag*"; then
-    export PATH="$PATH:$HOME/code/nmag-0.2.1/nsim/bin"
-fi
-
-# Stupid netgen!! Needs to have it's dir set for it
-export NETGENDIR="/usr/share/netgen/"
-
-# add magnum.fe to path if we have it
-if [[ -d $HOME/code/dorsal_code ]]; then
-    # Add FEniCS environment variables
-    source $HOME/code/dorsal_code/FEniCS/share/fenics/fenics.conf
-    export PYTHONPATH=$PYTHONPATH:$HOME/code/magnum.fe/site-packages
-fi
-
-# Add oommf to path
-if [[ -d $HOME/code/oommf* ]]; then
-    export PATH="$PATH:$HOME/code/oommf"
-fi
-
 
 # # Add emacs if it's there
 # emacsdir="$HOME/code/emacs/mybin"
@@ -339,7 +301,7 @@ source ${zshdir}/zsh-bindings.sh
 source ${zshdir}/zsh-aliases.sh
 
 # Load work specific aliases/functions
-source ${zshdir}/zsh-oomph-aliases.sh
+# source ${zshdir}/zsh-oomph-aliases.sh
 source ${zshdir}/zsh-classifier-aliases.sh
 
 # e function

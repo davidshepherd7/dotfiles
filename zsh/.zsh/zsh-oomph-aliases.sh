@@ -114,3 +114,88 @@ full_test()
 # Run all tests with debug, mpi and mpi+opt settings (assuming we are
 # starting in a debug build).
 alias oomphtestall="cd ~/oomph-lib && touch test_results && mv test_results test_results.old && full_test -d && full_test -am && full_test -an"
+
+
+
+pvdat ()
+{
+    filename=$1
+    shift
+    oomph-convert $filename
+    paraview ${filename%.dat}.vtu "$@"
+}
+export pvdat
+
+pv-most-recent ()
+{
+    dirname=$1
+    shift
+    maxsoln=$(find $dirname -name 'soln*.dat' | sort -V | tail -n1)
+    pvdat ${maxsoln} "$@"
+}
+
+alias parse="parse.py"
+
+# Run oomph-lib micromagnetics parse over ssh and view pdfs locally
+ssh-parse ()
+{
+    # run and save on simulations machine
+    temp_sims=$(ssh david-simulations 'mktemp "ssh-parse-$USER.XXXXXXX" --tmpdir -d')
+    ssh david-simulations "parse.py $@ --ssh-mode --save-to-dir \"$temp_sims\""
+
+    # bring to local machine
+    temp_local=$(mktemp "ssh-parse-local-$USER.XXXXXXX" --tmpdir -d)
+    scp "david-simulations:$temp_sims/*" "$temp_local"
+
+    # view
+    evince "$temp_local/*"
+
+    # temp files are cleared by machines automatically (on boot in
+    # Ubuntu).
+}
+
+# Repeatedly run an experiment
+run() {
+    number=$1
+    shift
+    for i in `seq $number`; do
+        $@
+    done
+}
+
+
+# Paraview
+export PATH="$PATH:$HOME/code/paraview/bin"
+
+# Matlab
+export PATH="$PATH:$HOME/code/matlab/bin:/usr/local/MATLAB/R2013a/bin"
+
+# If we have an alternative doxygen build
+if [[ -d "$HOME/code/doxygen" ]]; then
+    export PATH="$PATH:$HOME/code/doxygen/bin"
+fi
+
+# arch linux stuff
+export PATH="$PATH:$HOME/Dropbox/arch"
+
+
+# Other micromagnetics packages:
+# Add nsim to PATH
+if test "-e $HOME/code/nmag*"; then
+    export PATH="$PATH:$HOME/code/nmag-0.2.1/nsim/bin"
+fi
+
+# Stupid netgen!! Needs to have it's dir set for it
+export NETGENDIR="/usr/share/netgen/"
+
+# add magnum.fe to path if we have it
+if [[ -d $HOME/code/dorsal_code ]]; then
+    # Add FEniCS environment variables
+    source $HOME/code/dorsal_code/FEniCS/share/fenics/fenics.conf
+    export PYTHONPATH=$PYTHONPATH:$HOME/code/magnum.fe/site-packages
+fi
+
+# Add oommf to path
+if [[ -d $HOME/code/oommf* ]]; then
+    export PATH="$PATH:$HOME/code/oommf"
+fi
