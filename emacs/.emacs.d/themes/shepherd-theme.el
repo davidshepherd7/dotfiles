@@ -26,7 +26,7 @@
  ;; edges
  `(fringe ((t (:background "grey2"))))
  `(linum ((t (:background "grey2" :foreground "grey20"))))
- `(menu ((t (:background "grey2"))))
+ `(menu ((t (:background "grey2" :foreground "white"))))
 
  ;; un-editable text in minibuffer
  `(minibuffer-prompt ((default (:foreground "grey"))))
