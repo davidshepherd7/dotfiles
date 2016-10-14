@@ -66,6 +66,9 @@
 (use-package package-utils :ensure t)
 (use-package paradox :ensure t)
 
+;; Get a setq which is checked against defcustom types
+(use-package validate :ensure t)
+
 ;; Functions/packages used in multiple files
 ;; ============================================================
 
@@ -136,9 +139,9 @@
 ;; (server-start) ;; Start emacs as a server
 (line-number-mode 1) ;; Line numbers in mode line
 (column-number-mode 1) ;; Column numbers in mode line
-(set 'inhibit-startup-screen t) ;; No startup screen
+(validate-setq inhibit-startup-screen t) ;; No startup screen
 (scroll-bar-mode -1);; No scroll bar
-(set 'truncate-partial-width-windows nil) ;; Make line wrapping work for
+(validate-setq truncate-partial-width-windows nil) ;; Make line wrapping work for
 ;; multiple frames
 (tool-bar-mode -1) ;; Disable toolbar
 (menu-bar-mode -1) ;; Disable menu bar
@@ -147,13 +150,15 @@
 (setq-default fill-column 80) ;; not 80 because when things are later indented
 ;; by e.g. diff, git log we lose some columns and
 ;; it gets messy.
-(set 'abbrev-mode t) ;; Use abbrev mode always
-(set 'tags-revert-without-query 1) ;; Autorevert if the tags table has changed
+(validate-setq abbrev-mode t) ;; Use abbrev mode always
 
-(set 'sentence-end-double-space nil)
+(require 'etags)
+(validate-setq tags-revert-without-query t) ;; Autorevert if the tags table has changed
+
+(validate-setq sentence-end-double-space nil)
 
 ;; Shut up and just open symbolic links
-(set 'vc-follow-symlinks t)
+(validate-setq vc-follow-symlinks t)
 
 ;; Allow some disabled commands
 (put 'narrow-to-region 'disabled nil)
@@ -165,8 +170,9 @@
 ;; (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-newline 1)))
 
 ;; Open urls
-(set 'browse-url-browser-function 'browse-url-generic)
-(set 'browse-url-generic-program "sensible-browser")
+(require 'browse-url)
+(validate-setq browse-url-browser-function 'browse-url-generic)
+(validate-setq browse-url-generic-program "sensible-browser")
 
 ;; Wrap lines at nearest word
 (diminish 'visual-line-mode)
@@ -182,7 +188,7 @@
 (global-linum-mode 1)
 
 ;; Show something useful in scratch buffer
-(set 'initial-scratch-message (emacs-version))
+(validate-setq initial-scratch-message (emacs-version))
 
 ;; Highlight long lines
 (use-package whitespace
