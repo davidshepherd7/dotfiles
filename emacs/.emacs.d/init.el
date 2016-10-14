@@ -16,7 +16,7 @@
 
 ;; Use C-\ p as prefix for projectile
 (defvar projectile-keymap-prefix)
-(set 'projectile-keymap-prefix (kbd "C-\\ p"))
+(setq projectile-keymap-prefix (kbd "C-\\ p"))
 
 (global-set-key (kbd "C-\\") ctl-x-map)
 
@@ -27,7 +27,7 @@
 (require 'edebug)
 
 (defvar hi-lock-map)
-(set 'hi-lock-map (make-sparse-keymap))
+(setq hi-lock-map (make-sparse-keymap))
 (require 'hi-lock)
 
 
@@ -196,28 +196,29 @@
   :diminish whitespace-mode
   :config
 
-  (set 'whitespace-line-column 120) ;; limit line length
-  (set 'whitespace-style '(face lines-tail))
+  (validate-setq whitespace-line-column 120) ;; limit line length
+  (validate-setq whitespace-style '(face lines-tail))
   (add-hook 'prog-mode-hook 'whitespace-mode)
 
   ;; More noticable markings
-  (set 'whitespace-display-mappings
-       ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
-       '(
-         (space-mark 32 [9655] [46])
-         (newline-mark 10 [8629 10])
-         ))
+  (setq whitespace-display-mappings
+        ;; all numbers are Unicode codepoint in decimal. try (insert-char 182 ) to see it
+        '(
+          (space-mark 32 [9655] [46])
+          (newline-mark 10 [8629 10])
+          ))
+
 
   (defun ds/whitespace-all ()
     (interactive)
-    (set 'whitespace-style '(spaces tabs newline space-mark tab-mark newline-mark))
+    (validate-setq whitespace-style '(spaces tabs newline space-mark tab-mark newline-mark))
 
     (whitespace-mode nil)
     (whitespace-mode t))
 
   (defun ds/whitespace-sane ()
     (interactive)
-    (set 'whitespace-style '(spaces tabs newline))
+    (validate-setq whitespace-style '(spaces tabs newline))
     (whitespace-mode nil)
     (whitespace-mode t))
 
@@ -241,7 +242,7 @@
 ;; technically, but I don't think I'll ever be messing with admin server
 ;; config files so it's probably fine). Stops emacs spamming up directories
 ;; with .# files.
-(set 'create-lockfiles nil)
+(validate-setq create-lockfiles nil)
 
 ;; Show keystrokes in progress (eg show C-\ immediately)
 (setq echo-keystrokes 0.1)
@@ -286,7 +287,7 @@
 
 
 ;; Always try to load the newest version of a file (byte-compiled or not).
-(set 'load-prefer-newer t)
+(validate-setq load-prefer-newer t)
 
 ;; Fonts
 ;; ============================================================
@@ -394,7 +395,7 @@ index in STRING."
   (super-save-mode +1))
 
 ;; Keep auto saves and backups in one place out of the way
-(set 'backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+(validate-setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/backups" t)))
 (setq auto-save-list-file-prefix nil)
 
@@ -427,19 +428,19 @@ index in STRING."
 ;; some text selected from earlier, without this setting the old text would
 ;; be put into the primary selection). With this setting only explicit
 ;; selection with the mouse puts things into the primary selection.
-(set 'select-active-regions 'only)
+(validate-setq select-active-regions 'only)
 
 ;; after copy Ctrl+c in X11 apps, you can paste by 'yank' in emacs
-(setq x-select-enable-clipboard t)
+(validate-setq x-select-enable-clipboard t)
 
 ;; after mouse selection in X11, you can paste by 'yank' in emacs
-(setq x-select-enable-primary t)
+(validate-setq x-select-enable-primary t)
 
 ;; Middle click pastes at point not at click position (like in term)
-(set 'mouse-yank-at-point 1)
+(validate-setq mouse-yank-at-point t)
 
 ;; Add things copy pasted from other programs to the kill
-(set 'save-interprogram-paste-before-kill t)
+(validate-setq save-interprogram-paste-before-kill t)
 
 
 ;; Auto complete
@@ -459,18 +460,18 @@ index in STRING."
   (ac-config-default)
 
   (global-auto-complete-mode t)
-  (set 'ac-ignore-case nil)
-  (set 'ac-use-fuzzy t)
-  (set 'ac-fuzzy-enable t)
+  (validate-setq ac-ignore-case nil)
+  (validate-setq ac-use-fuzzy t)
+  (validate-setq ac-fuzzy-enable t)
   (ac-flyspell-workaround)
 
   ;; Show quick help (function info display in tooltip)
-  ;; (set 'ac-use-quick-help t)
-  (set 'ac-delay 0.5) ;; show completions quickly
+  ;; (validate-setq ac-use-quick-help t)
+  (validate-setq ac-delay 0.5) ;; show completions quickly
 
   ;; help is too annoying, press f1 to get it
-  ;; ;; (set 'ac-show-menu-immediately-on-auto-complete 1)
-  ;; (set 'ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
+  ;; ;; (validate-setq ac-show-menu-immediately-on-auto-complete 1)
+  ;; (validate-setq ac-quick-help-delay my-ac-delay) ;; show help as soon as it shows
   ;;                                        ;; completions
 
   ;; let me search even while autocomplete is up!
@@ -486,21 +487,21 @@ index in STRING."
   :config
   (global-company-mode)
 
-  (set 'company-transformers '(company-sort-by-occurrence))
+  (validate-setq company-transformers '(company-sort-by-occurrence))
   (global-set-key (kbd "<C-tab>") #'company-complete)
 
   (defvar ds/global-company-backends)
-  (set 'ds/global-company-backends
-       (list
-        'company-capf
-        'company-dabbrev-code
-        'company-etags
-        'company-keywords
-        'company-dabbrev
-        'company-yasnippet
-        'company-files))
+  (setq ds/global-company-backends
+        (list
+         'company-capf
+         'company-dabbrev-code
+         'company-etags
+         'company-keywords
+         'company-dabbrev
+         'company-yasnippet
+         'company-files))
 
-  (set 'company-backends (list ds/global-company-backends))
+  (validate-setq company-backends (list ds/global-company-backends))
 
   )
 
@@ -601,25 +602,26 @@ index in STRING."
 ;; ===============================================================
 
 ;; Save into a helpfully named file
-(set 'savehist-file "~/.emacs.d/savehist")
+(require 'savehist)
+(validate-setq savehist-file "~/.emacs.d/savehist")
 
 ;; Save other things as well
-(set 'savehist-additional-variables '(kill-ring
-                                      search-ring
-                                      regexp-search-ring
-                                      compile-command
-                                      compilation-directory))
+(validate-setq savehist-additional-variables '(kill-ring
+                                               search-ring
+                                               regexp-search-ring
+                                               compile-command
+                                               compilation-directory))
 
 ;; Enable save history (must be done after changing any variables).
 (savehist-mode 1)
 
 ;; Long history for everything
-(set 'history-length (* 10 1000)) ;; default value for histories without
+(validate-setq history-length (* 10 1000)) ;; default value for histories without
 ;; their own variable
-(set 'kill-ring-max (* 10 1000))
-(set 'search-ring-max (* 10 1000))
-(set 'regexp-search-ring-max (* 10 1000))
-(set 'history-delete-duplicates t)
+(validate-setq kill-ring-max (* 10 1000))
+(validate-setq search-ring-max (* 10 1000))
+(validate-setq regexp-search-ring-max (* 10 1000))
+(validate-setq history-delete-duplicates t)
 
 
 ;; Compile mode settings
@@ -666,28 +668,28 @@ index in STRING."
 (defun compile-with-default ()
   (interactive)
   ;; Run compile with a specially chosen default command
-  (set 'backup-compile-command compile-command)
-  (set 'compile-command (compile-default-command))
+  (validate-setq backup-compile-command compile-command)
+  (validate-setq compile-command (compile-default-command))
   (condition-case nil (call-interactively #'compile)
     ;; If we quit then revert compile command (so that it isn't in the
     ;; history).
-    (quit (set 'compile-command backup-compile-command))))
+    (quit (validate-setq compile-command backup-compile-command))))
 
 (defun toggle-skip-compilation-warnings ()
   (interactive)
   (if (equal compilation-skip-threshold 1)
-      (set 'compilation-skip-threshold 2)
-    (set 'compilation-skip-threshold 1)))
+      (validate-setq compilation-skip-threshold 2)
+    (validate-setq compilation-skip-threshold 1)))
 (define-key compilation-mode-map (kbd "M-`") #'toggle-skip-compilation-warnings)
 
 
 ;; scroll compilation buffer to first error
-(setq compilation-scroll-output 'first-error)
+(validate-setq compilation-scroll-output 'first-error)
 
-(set 'compilation-always-kill t)
+(validate-setq compilation-always-kill t)
 
 ;; Autosave all modified buffers before compile
-(set 'compilation-ask-about-save nil)
+(validate-setq compilation-ask-about-save nil)
 
 ;; Handle colours in compile buffers
 (require 'ansi-color)
@@ -814,10 +816,10 @@ If point was already at that position, move point to beginning of line."
 ;; ============================================================
 
 ;; set to use ssh
-(set 'tramp-default-method "ssh")
+(validate-setq tramp-default-method "ssh")
 
 ;; store backups on my computer
-;; (set 'tramp-backup-directory-alist  ??ds
+;; (setq tramp-backup-directory-alist  ??ds
 
 
 ;; ;; Auto indent pasted code in programming modes
@@ -857,12 +859,12 @@ For magit versions > 2.1.0"
 
   (define-key magit-mode-map (kbd "C-v") #'endless/visit-pull-request-url)
 
-  (set 'magit-revert-buffers 'silent)
-  (set 'magit-save-repository-buffers 'dontask)
-  (set 'magit-push-always-verify nil)
-  (set 'git-commit-major-mode 'markdown-mode)
+  (validate-setq magit-revert-buffers 'silent)
+  (validate-setq magit-save-repository-buffers 'dontask)
+  (validate-setq magit-push-always-verify nil)
+  (setq git-commit-major-mode 'markdown-mode)
 
-  (set 'git-commit-summary-max-length 100)
+  (validate-setq git-commit-summary-max-length 100)
 
   :ensure t)
 
@@ -878,7 +880,7 @@ For magit versions > 2.1.0"
 (use-package diff-hl
   :ensure t
   :diminish diff-hl-mode
-  :init (set 'diff-hl-command-prefix (kbd "C-\\ v"))
+  :init (setq diff-hl-command-prefix (kbd "C-\\ v"))
   :config (global-diff-hl-mode))
 
 (use-package diff-mode
@@ -905,9 +907,9 @@ For magit versions > 2.1.0"
   :ensure t
   :config
   ;; run markdown-mode on files ending in .md
-  (set 'auto-mode-alist
-       (append auto-mode-alist '((".md" . markdown-mode)
-                                 (".markdown" . markdown-mode))))
+  (validate-setq auto-mode-alist
+                 (append auto-mode-alist '((".md" . markdown-mode)
+                                           (".markdown" . markdown-mode))))
   (defun markdown-mode-keys ()
     (interactive)
 
@@ -973,7 +975,7 @@ For magit versions > 2.1.0"
   :init
 
   ;; kill all projectile keys
-  (set 'projectile-mode-map (make-sparse-keymap))
+  (validate-setq projectile-mode-map (make-sparse-keymap))
 
   :config
 
@@ -986,16 +988,16 @@ For magit versions > 2.1.0"
   (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
   (with-eval-after-load 'helm
-    (set 'projectile-completion-system 'helm))
+    (validate-setq projectile-completion-system 'helm))
 
   ;; Use everywhere
   (projectile-global-mode)
 
-  (set 'projectile-use-git-grep t)
+  (validate-setq projectile-use-git-grep t)
 
   (global-set-key (kbd "<f8>") #'projectile-ag)
 
-  (set 'projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
+  (validate-setq projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
 
   (require 'hydra)
 
@@ -1056,7 +1058,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   :config
 
   ;; Load my snippets
-  (set 'yas-snippet-dirs (list "~/.emacs.d/snippets"))
+  (validate-setq yas-snippet-dirs (list "~/.emacs.d/snippets"))
 
   ;; kill C-c keys
   (add-hook 'yas-minor-mode-hook
@@ -1075,7 +1077,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
               (define-key yas-minor-mode-map [tab] nil)
 
 
-              (set 'yas-fallback-behavior nil)
+              (validate-setq yas-fallback-behavior 'return-nil)
 
               ;; (message (substitute-command-keys "\\{yas-minor-mode-map}"))
 
@@ -1148,7 +1150,7 @@ Wrapper function to handle all yasnippets weirdness."
   (global-set-key (kbd "C-S-T") 'ds/new-yasnippet)
 
   ;; Don't add a binding by default in new snippets
-  (set 'yas-new-snippet-default "\
+  (validate-setq yas-new-snippet-default "\
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: `(file-name-nondirectory buffer-file-name)`
 # --
@@ -1217,7 +1219,7 @@ $0")
 (add-hook 'js-mode-hook 'set-tab)
 
 ;; indent by 2
-(set 'js-indent-level 2)
+(validate-setq js-indent-level 2)
 
 
 ;; C mode
@@ -1233,11 +1235,11 @@ $0")
   :config
   ;; favour home row keys
   (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
-    (set 'avy-keys
-         (nconc first-list
-                (-difference (loop for i from ?a to ?z collect i) first-list))))
+    (validate-setq avy-keys
+                   (nconc first-list
+                          (-difference (loop for i from ?a to ?z collect i) first-list))))
 
-  (set 'avy-dispatch-alist nil)
+  (validate-setq avy-dispatch-alist nil)
 
   (global-set-key (kbd "C-p") 'avy-goto-word-1))
 
@@ -1255,7 +1257,7 @@ $0")
 ;;   (add-hook 'prog-mode-hook #'ggtags-mode)
 ;;   (define-key ggtags-mode-map (kbd "C-c") nil)
 ;;   (define-key ggtags-mode-map (kbd "M-.") #'ggtags-find-tag-dwim)
-;;   (set 'ggtags-mode-line-project-name nil)
+;;   (validate-setq ggtags-mode-line-project-name nil)
 ;;   (define-key ggtags-mode-map (kbd "M-<") nil)
 ;;   (define-key ggtags-mode-map (kbd "M->") nil))
 
@@ -1283,7 +1285,7 @@ $0")
   :ensure t
   :diminish ws-butler-mode
   :config
-  (set 'ws-butler-keep-whitespace-before-point nil)
+  (validate-setq ws-butler-keep-whitespace-before-point nil)
   (ws-butler-global-mode))
 
 (use-package aggressive-fill-paragraph
@@ -1405,7 +1407,7 @@ $0")
 
   (add-hook 'ess-mode-hook
             (lambda() (ess-set-style 'C++ 'quiet)
-              (set 'ess-arg-function-offset t)))
+              (validate-setq ess-arg-function-offset t)))
 
   ;; auto newline after '{'
   (add-hook 'ess-mode-hook
@@ -1418,8 +1420,8 @@ $0")
   (add-hook 'ess-mode-hook
             (lambda()
               (make-local-variable 'projectile-tags-command)
-              (set 'projectile-tags-command
-                   "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
+              (validate-setq projectile-tags-command
+                             "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
   )
 
 
@@ -1435,9 +1437,10 @@ $0")
           java-mode-hook
           js-mode-hook
           sql-mode-hook
+          haskell-mode-hook
           ))
 
-  (set 'electric-operator-c-pointer-type-style 'type)
+  (validate-setq electric-operator-c-pointer-type-style 'type)
 
   ;; Disable <, > in C++: support isn't good enough yet
   (electric-operator-add-rules-for-mode 'c++-mode
@@ -1476,12 +1479,12 @@ $0")
   :ensure t
   :config
 
-  (set 'helm-dash-min-length 0)
+  (validate-setq helm-dash-min-length 0)
 
   ;; Add dash.el pytoolz scikit-learn by hand :(
 
   ;; base docsets
-  (set 'ds/general-docsets '(
+  (setq ds/general-docsets '(
                              "Emacs Lisp"
                              "Markdown"
                              "C"
@@ -1491,7 +1494,7 @@ $0")
                              "CSS"
                              ))
 
-  (set 'python-docsets '(
+  (setq python-docsets '(
                          "Python 3"
                          "NumPy"
                          "SciPy"
@@ -1500,7 +1503,7 @@ $0")
                          ;; "toolz"
                          ))
 
-  (set 'ds/js-docsets '(
+  (setq ds/js-docsets '(
                         "MomentJS"
                         "AngularJS"
                         "JavaScript"
@@ -1510,13 +1513,13 @@ $0")
                         "Jasmine"
                         "Lo-Dash"
                         "jQuery"
-                        "angular-ui-bootstrap"
+                        ;; "angular-ui-bootstrap"
                         ))
 
-  (set 'ds/shell-docsets '("Bash"))
+  (setq ds/shell-docsets '("Bash"))
 
-  (set 'ds/docsets
-       (-concat ds/general-docsets ds/js-docsets ds/shell-docsets))
+  (setq ds/docsets
+        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1529,7 +1532,7 @@ $0")
     (--> ds/docsets
          (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
          (-map #'ds/fix-docset-url it)
-         (-each it #'helm-dash-install-docset)))
+         (-each it #'helm-dash-async-install-docset)))
 
   (defmacro ds/set-docsets-fn (docsets)
     `(lambda () (setq-local helm-dash-docsets ,docsets)))
@@ -1610,7 +1613,7 @@ $0")
   :config
 
   ;; Keep n lines of context around point (usually...)
-  (set 'smooth-scrolling-margin 3))
+  (validate-setq smooth-scroll-margin 3))
 
 (use-package flycheck
   :ensure t
@@ -1619,19 +1622,19 @@ $0")
 
   ;; Stop flycheck from stomping C-c
   (define-key flycheck-mode-map flycheck-keymap-prefix nil)
-  (set 'flycheck-keymap-prefix (kbd "C-\\ f"))
+  (validate-setq flycheck-keymap-prefix (kbd "C-\\ f"))
   (define-key flycheck-mode-map flycheck-keymap-prefix flycheck-command-map)
 
   ;; Setup keybinds
   (define-key flycheck-mode-map (kbd "M-`") #'flycheck-next-error)
   (define-key flycheck-mode-map (kbd "M-¬") #'flycheck-previous-error)
 
-  (set 'flycheck-display-errors-delay 0.2)
-  (set 'flycheck-standard-error-navigation nil)
+  (validate-setq flycheck-display-errors-delay 0.2)
+  (validate-setq flycheck-standard-error-navigation nil)
 
   ;; Don't pop an errors buffer, it's really annoying
-  (set 'flycheck-display-errors-function
-       (lambda (errors) (message "%s" (mapcar #'flycheck-error-format-message-and-id errors))))
+  (validate-setq flycheck-display-errors-function
+                 (lambda (errors) (message "%s" (mapcar #'flycheck-error-format-message-and-id errors))))
 
   ;; emacs lisp stuff
   (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
@@ -1659,15 +1662,25 @@ $0")
 
 
 ;; Don't indent string blocks
-(defun ds/line-in-string-block? (&rest args)
-  "Does this line either end or start as a string?"
-  (save-excursion
-    (or (progn (beginning-of-line) (nth 3 (syntax-ppss)))
-        (progn (end-of-line) (nth 3 (syntax-ppss))))))
+(define-minor-mode suppress-multiline-string-indent-mode
+  "Prevent indent commands from indenting multiline strings"
 
-(advice-add #'indent-for-tab-command :before-until #'ds/line-in-string-block?)
-(advice-add #'indent-region :before-until #'ds/line-in-string-block?)
-(advice-add #'indent-according-to-mode :before-until #'ds/line-in-string-block?)
+  (defun ds/line-in-string-block? (&rest args)
+    "Does this line either end or start as a string?"
+    (save-excursion
+      (or (progn (beginning-of-line) (nth 3 (syntax-ppss)))
+          (progn (end-of-line) (nth 3 (syntax-ppss))))))
+
+  (let ((indent-functions (list #'indent-for-tab-command
+                                #'indent-region
+                                #'indent-according-to-mode)))
+    (if suppress-multiline-string-indent-mode
+        (-each indent-functions (lambda (f) (advice-add f :before-until #'ds/line-in-string-block?)))
+      (-each indent-functions (lambda (f) (advice-remove f #'ds/line-in-string-block?))))))
+
+(add-hook 'c++-mode-hook #'suppress-multiline-string-indent-mode)
+(add-hook 'js-mode-hook #'suppress-multiline-string-indent-mode)
+(add-hook 'typescript-mode-hook #'suppress-multiline-string-indent-mode)
 
 
 (use-package crux
@@ -1743,6 +1756,10 @@ for a file to visit if current buffer is not visiting a file."
   "Find any non-ascii characters in the current buffer."
   (interactive)
   (occur "[^[:ascii:]]"))
+
+(use-package ivy
+  :ensure t)
+
 (use-package hamburger-menu
   :ensure t
   :init
