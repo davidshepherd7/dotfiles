@@ -11,13 +11,6 @@ staging = http://gauss.pa/hg/boron-staging-stable
 
 
 [alias]
-diff = gdiff
-# commit = gcommit
-status = gstatus
-crecord = gcrecord
-record = grecord
-shelve = gshelve
-
 gulplog = log 'path:boron/web_applications/app/' --color=always
 
 grebase = !$HG ungulp && $HG rebase "$@"
