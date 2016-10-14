@@ -3,7 +3,7 @@
 (require 's)
 
 ;; Clear existing keys
-(set 'c++-mode-map (make-sparse-keymap))
+(validate-setq c++-mode-map (make-sparse-keymap))
 
 ;; Set .h files to use c++ mode
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -34,7 +34,7 @@
 ;;         ("\\.hxx\\'" (".cxx")))))
 
 ;; Don't try to open includes etc (it never works...)
-(set 'ff-special-constructs nil)
+(validate-setq ff-special-constructs nil)
 
 ;; ;; Bind it
 ;; (define-key c++-mode-map (kbd "C-\\ o") #'ff-find-other-file)

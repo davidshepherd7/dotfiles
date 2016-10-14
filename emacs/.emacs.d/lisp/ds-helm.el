@@ -10,11 +10,11 @@
 
   ;; Don't try to guess names from text at point, it just fails and tries
   ;; to open files in root dir.
-  (set 'helm-ff-guess-ffap-urls nil)
-  (set 'helm-ff-guess-ffap-filenames nil)
+  (validate-setq helm-ff-guess-ffap-urls nil)
+  (validate-setq helm-ff-guess-ffap-filenames nil)
 
   ;; Don't show compiled files etc in helm find files
-  (set 'helm-ff-skip-boring-files t)
+  (validate-setq helm-ff-skip-boring-files t)
 
   (add-to-list 'helm-boring-file-regexp-list "\\.orig$")
 
@@ -104,7 +104,7 @@ It is meant to use with `filter-one-by-one' slot."
 
 ;; Move to end or beginning of source when reaching top or bottom of
 ;; source.
-(set 'helm-move-to-line-cycle-in-source t)
+(validate-setq helm-move-to-line-cycle-in-source t)
 
 ;; Set tab to "next-item", like ido
 (define-key helm-map [tab] #'helm-next-line)
@@ -120,7 +120,7 @@ It is meant to use with `filter-one-by-one' slot."
 (setq ido-use-virtual-buffers t)
 
 ;; increase number of buffers to rememeber
-(set 'recentf-max-saved-items 1000)
+(validate-setq recentf-max-saved-items 1000)
 
 
 (use-package helm-swoop
@@ -153,7 +153,7 @@ It is meant to use with `filter-one-by-one' slot."
 (global-set-key (kbd "C-=") #'helm-bookmarks)
 
 ;; Set the location for bookmarks
-(set 'bookmark-default-file "~/.emacs.d/bookmarks")
+(validate-setq bookmark-default-file "~/.emacs.d/bookmarks")
 
 
 ;; Keys inside helm

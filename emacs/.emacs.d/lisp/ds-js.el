@@ -2,7 +2,7 @@
 
 (require 'js)
 
-(set 'js-switch-indent-offset js-indent-level)
+(validate-setq js-switch-indent-offset js-indent-level)
 
 (add-to-list 'auto-mode-alist (cons "\\.ts$" #'js-mode))
 

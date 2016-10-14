@@ -37,7 +37,7 @@
   (setcdr evil-motion-state-map nil)
 
   ;; Why is this a thing? It's crazy...
-  (set 'evil-move-cursor-back nil)
+  (validate-setq evil-move-cursor-back nil)
 
 
   ;; Getting to normal state
@@ -46,7 +46,7 @@
   ;; Use evil-change-to-initial-state in places where I want normal-state
   ;; if it's an editing mode, but emacs state for things like magit.
 
-  (setq evil-default-state 'normal)
+  (validate-setq evil-default-state 'normal)
 
   ;; keys to get back to normal state
   (define-key evil-insert-state-map [escape] 'evil-normal-state)
@@ -84,7 +84,7 @@
   ;; Coloured modeline when in insert mode
   ;; ============================================================
   (defvar ds/mode-line-default-background (face-attribute 'mode-line :background))
-  (set 'ds/mode-line-evil-insert-background "#002900")
+  (setq ds/mode-line-evil-insert-background "#002900")
   (defun ds/set-mode-line-background (colour)
     (set-face-attribute 'mode-line nil :background colour))
 
@@ -181,7 +181,7 @@
     (goto-char beg)
     (set-mark-command nil)
     (goto-char end)
-    (setq deactivate-mark nil))
+    (validate-setq deactivate-mark nil))
   (define-key evil-normal-state-map (kbd "'") #'evil-mark)
 
   ;; (evil-define-operator evil-query-replace (beg end from-string to-string)
@@ -421,7 +421,7 @@
   :ensure t
   :config
   ;; Disable default keys
-  (set 'evil-surround-mode-map (make-sparse-keymap))
+  (validate-setq evil-surround-mode-map (make-sparse-keymap))
 
   ;; use w instead
   (define-key evil-normal-state-map (kbd "w") #'evil-surround-edit)
@@ -431,6 +431,6 @@
 (use-package evil-matchit
   :ensure t
   :config
-  (setq evilmi-may-jump-by-percentage nil)
+  (validate-setq evilmi-may-jump-by-percentage nil)
   (evilmi-init-plugins)
   (define-key evil-normal-state-map (kbd "%") #'evilmi-jump-items))
