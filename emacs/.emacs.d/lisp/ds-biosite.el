@@ -157,6 +157,7 @@
   (interactive)
   (--> path
        (s-trim it)
+       (f-join (projectile-project-root) it)
        (file-relative-name it (projectile-project-root))
        (s-chop-prefix "boron/" it)
        (s-chop-prefix "common/" it)
@@ -175,6 +176,15 @@
 (defun ds/biosite-paste-as-include ()
   (interactive)
   (ds/biosite-insert-as-include (current-kill 0 t)))
+
+(defun ds/biosite-include ()
+  (interactive)
+  (let* ((headers (--> (projectile-current-project-files)
+                       (-filter (lambda (filepath) (or (s-ends-with-p ".h" filepath)
+                                                  (s-ends-with-p ".hpp" filepath))) it)))
+         (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
+         (file (completing-read "header: " headers nil nil default-input)))
+    (ds/biosite-insert-as-include file)))
 
 
 ;; js template paths
@@ -477,6 +487,9 @@ LCON is the lexical context, if any."
 (defvar ds/js-fancy-align nil
   "Set non-nil to enable alignment of function args etc.")
 
+(defcustom ds/js-indent-chain t
+  "Should we auto indent .then and similar when they are on a new line?")
+
 (defvar ds/js-non-indented-line-regexs '("^\\s-*(function\\s-*()\\s-*{")
   "Lines matching this regex set the current indentation level to zero.")
 
@@ -484,12 +497,21 @@ LCON is the lexical context, if any."
   (-any (lambda (reg) (string-match-p reg line))
         ds/js-non-indented-line-regexs))
 
+(defun ds/js-chain-p ()
+  (save-excursion
+    (back-to-indentation)
+    (looking-at-p "\.")))
+
+(defun ds/js--continued-expression-p ()
+  "Modified version of js--continued-expression-p to return false on .then etc"
+  (and
+   (js--continued-expression-p)
+   (or (not (ds/js-chain-p))
+       ds/js-indent-chain)))
+
 (defun ds/biosite-js--proper-indentation (parse-status)
   "Return the proper indentation for the current line."
   (save-excursion
-    ;; (pp "ctrl") (pp (js--ctrl-statement-indentation)) (pp "\n")
-    ;; (pp "multi") (pp (js--multi-line-declaration-indentation)) (pp "\n")
-
     (back-to-indentation)
     (cond ((nth 4 parse-status)    ; inside comment
            (js--get-c-offset 'c (nth 8 parse-status)))
@@ -513,7 +535,7 @@ LCON is the lexical context, if any."
            ;; "case" and "default".
            (let ((same-indent-p (looking-at "[]})]"))
                  (switch-keyword-p (looking-at "default\\_>\\|case\\_>[^:]"))
-                 (continued-expr-p  (js--continued-expression-p)))
+                 (continued-expr-p  (ds/js--continued-expression-p)))
              (goto-char (nth 1 parse-status)) ; go to the opening char
              (cond
               ((non-indented-line (buffer-substring (point-at-bol) (point-at-eol)))
@@ -553,7 +575,7 @@ LCON is the lexical context, if any."
                  (skip-chars-forward " \t"))
                (current-column)))))
 
-          ((js--continued-expression-p)
+          ((ds/js--continued-expression-p)
            (+ js-indent-level js-expr-indent-offset))
           (t 0))))
 
@@ -620,9 +642,17 @@ statement spanning multiple lines; otherwise, return nil."
 
   (if biosite-mode
       (progn
+
         (add-hook 'sql-mode-hook #'ds/biosite-set-postgres nil t)
         (when (derived-mode-p 'sql-mode)
-          (ds/biosite-set-postgres)))
+          (ds/biosite-set-postgres))
+
+        (when (derived-mode-p 'c++-mode)
+          (local-set-key (kbd "C-,") #'ds/biosite-include))
+
+        (setq-local ds/js-indent-chain nil)
+
+        )
     (remove-hook 'sql-mode-hook #'ds/biosite-set-postgres t)))
 
 (defun maybe-enable-biosite-mode ()

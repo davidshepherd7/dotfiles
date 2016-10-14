@@ -1,27 +1,31 @@
 #! /bin/zsh
 
-bgulpl()
+
+boron_dir="$HOME/code/boron-unstable"
+
+bgulpl_once()
 {
     # subshell to avoid changing directory
     (
-        cd ~/code/boron-unstable/boron/web_applications/;
-        gulp --silent --reporter=simple "$@"
+        cd ~/code/boron-unstable/boron/web_applications/
+        gulp --silent --reporter=simple --deploy_root ~/gulp_dest "$@"
     )
 }
+alias bgulp_once='bgulpl_once --nolint'
+alias bgulpr_once="bgulp_once --done_command 'refresh-browser.sh'"
 
-alias bgulp='bgulpl --nolint'
 
-alias lbiosite='/home/david/code/boron-unstable/scripts/launch-biosite-single-terminal.sh'
-
-bgulpr()
+bgulpl()
 {
-    bgulp "$@" && refresh-browser.sh
+    (
+        cd ~/code/boron-unstable/boron/web_applications/
+        gulp watch --silent --reporter=simple --deploy_root ~/gulp_dest "$@"
+    )
 }
+alias bgulp="bgulpl --nolint"
+alias bgulpr="bgulp --done_command 'refresh-browser.sh'"
 
-bgulplr()
-{
-    bgulpl "$@" && refresh-browser.sh
-}
+alias lbiosite='$boron_dir/scripts/launch-biosite-single-terminal.sh -w ~/gulp_dest/app'
 
 aburl()
 {
@@ -50,7 +54,7 @@ burl()
         "${@:2}"
 }
 
-alias boron-client='/home/david/code/boron-unstable/build/bin/boron-client'
+alias boron_client='$boron_dir/build/bin/boron-client'
 
 
 # Get the ip of a local virtualbox vm. The VM must be running, booted into
@@ -76,7 +80,7 @@ compctl -K _complete-vms ssh-vm
 
 
 cd-boron-build () {
-    cd '/home/david/code/boron-unstable/build'
+    cd "$boron_dir/build"
 }
 
 boron-test () {
@@ -109,4 +113,46 @@ boron-js () {
         grep '\.js$' |\
         grep -v '/dev-app/\|/app/\|/lib/\|/lib-managed/' |\
         awk "{print \"$(hg root)/\" \$0}"
+}
+
+windows_boron_dir="/mnt/windows-boron"
+pull-to-windows-boron () {
+    (
+        set -o errexit
+        set -o nounset
+
+        cd "$windows_boron_dir/common"
+        hg pull "$boron_dir/common"
+        hg strip -r 'not ancestors(tip)' || true
+
+        cd ../
+        hg pull "$boron_dir"
+        hg up -r tip -C
+        hg strip -r 'not ancestors(tip)' || true
+
+        cd "$windows_boron_dir/common"
+        hg up -r tip -C
+    )
+}
+
+pull-from-windows-boron () {
+    (
+        cd "$boron_dir/common"
+        hg pull "$windows_boron_dir/common"
+        cd ../
+        hg pull "$windows_boron_dir"
+    )
+}
+
+replace-db () {
+    "$boron_dir/scripts/replace-boron-db.sh" "$@"
+}
+
+send-deb-to-iris-servers() {
+    local version="$1"
+
+    sudo cp "/redist/experimental/boron/installers/$version" "$HOME/$version" -r
+    sudo chown -R david:david "$HOME/$version"
+    scp "$HOME/$version/boron_$version.deb" iris-boron:~/
+    scp "$HOME/$version/boron_$version.deb" iris-postgres:~/
 }
