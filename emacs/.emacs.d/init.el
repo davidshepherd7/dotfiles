@@ -639,6 +639,8 @@ index in STRING."
   (let ((shell-command-switch "-ic"))
     ad-do-it))
 
+(defvar backup-compile-command nil)
+
 (defun buffer-has-hashbang ()
   (save-excursion (goto-char (point-min))
                   (looking-at-p "#!")))
@@ -668,8 +670,8 @@ index in STRING."
 (defun compile-with-default ()
   (interactive)
   ;; Run compile with a specially chosen default command
-  (validate-setq backup-compile-command compile-command)
-  (validate-setq compile-command (compile-default-command))
+  (setq backup-compile-command compile-command)
+  (setq compile-command (compile-default-command))
   (condition-case nil (call-interactively #'compile)
     ;; If we quit then revert compile command (so that it isn't in the
     ;; history).
@@ -843,6 +845,7 @@ If point was already at that position, move point to beginning of line."
   :init
   (setq magit-last-seen-setup-instructions "1.4.0")
 
+  :config
   (defun endless/visit-pull-request-url ()
     "Visit the current branch's PR on Github.
 

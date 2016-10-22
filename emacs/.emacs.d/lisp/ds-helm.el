@@ -120,6 +120,7 @@ It is meant to use with `filter-one-by-one' slot."
 (setq ido-use-virtual-buffers t)
 
 ;; increase number of buffers to rememeber
+(require 'recentf)
 (validate-setq recentf-max-saved-items 1000)
 
 
