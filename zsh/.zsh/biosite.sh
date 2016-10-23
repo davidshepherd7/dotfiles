@@ -60,23 +60,39 @@ alias boron_client='$boron_dir/build/bin/boron-client'
 # Get the ip of a local virtualbox vm. The VM must be running, booted into
 # Linux, have the package virtualbox-guest-utils installed, and have been
 # rebooted since that package was installed.
-get-vm-ip () {
-    server_name="$1"
-    vboxmanage guestproperty get "$server_name" '/VirtualBox/GuestInfo/Net/0/V4/IP' \
-        | awk '{print $2}'
+vm-get-ip() {
+    local server_name="$1"
+    vboxmanage guestproperty get "$server_name" '/VirtualBox/GuestInfo/Net/0/V4/IP' | awk '{print $2}'
 }
 
-# ssh to a local virtualbox vm. The same caveats as with get-vm-ip apply.
-ssh-vm () {
-    ssh "$(get-vm-ip "$1")" -o StrictHostKeyChecking=no "${@:2}"
+# As above, but wait until we get an ip
+vm-blocking-get-ip() {
+    while [[ "$(vm-get-ip "$1")" = "value" ]]; do
+        sleep 1
+    done
+    vm-get-ip "$1"
 }
+
+
+# ssh to a local virtualbox vm. The same caveats as with get-vm-ip apply.
+
+vm-ssh() {
+    local vm_name="$1"
+    shift 1
+
+    # StrictHostKeyChecking=no disables warnings about it being a new server.
+    ssh "boron-vm@$(vm-blocking-get-ip "$vm_name")" \
+        -o StrictHostKeyChecking=no \
+        "$@"
+}
+
 
 # TODO: try this out
 _complete-vms() {
-    reply=(`vboxmanage list runningvms`);
+    reply=(`vboxmanage list runningvms | awk '{print $1}' | tr -d '"'`);
 }
 compctl -K _complete-vms get-vm-ip
-compctl -K _complete-vms ssh-vm
+compctl -K _complete-vms vm-ssh
 
 
 cd-boron-build () {
