@@ -293,6 +293,7 @@ the line break."
 
 (global-set-key (kbd "C-\\ C-.") (lambda () (interactive) (indent-region-rigidly 4)))
 (global-set-key (kbd "C-\\ C-,") (lambda () (interactive) (indent-region-rigidly -4)))
+(global-set-key (kbd "<backtab>") (lambda () (interactive) (indent-region-rigidly -4)))
 
 (when ds/emacs-up-to-date?
   (global-set-key (kbd "C-<return>") #'rectangle-mark-mode)
