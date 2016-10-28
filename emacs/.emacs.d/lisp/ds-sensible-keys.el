@@ -292,10 +292,13 @@ the line break."
 (defun indent-region-rigidly (distance)
   (indent-rigidly (beginning-of-line-char (region-beginning))
                   (beginning-of-line-char (region-end))
-                  distance))
+                  distance)
+  (setq deactivate-mark nil))
+
 
 (global-set-key (kbd "C-\\ C-.") (lambda () (interactive) (indent-region-rigidly 4)))
 (global-set-key (kbd "C-\\ C-,") (lambda () (interactive) (indent-region-rigidly -4)))
+(global-set-key (kbd "<C-S-iso-lefttab>") (lambda () (interactive) (indent-region-rigidly 4)))
 (global-set-key (kbd "<backtab>") (lambda () (interactive) (indent-region-rigidly -4)))
 
 (when ds/emacs-up-to-date?
