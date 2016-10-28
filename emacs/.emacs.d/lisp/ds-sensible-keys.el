@@ -113,6 +113,9 @@ the line break."
 (global-set-key (kbd "C-v") 'yank)
 (global-set-key (kbd "M-v") 'yank-pop)
 
+;; Undo (see also: undo-tree config)
+(global-set-key (kbd "M-z") (lambda () (interactive) (universal-argument) (undo)))
+
 ;; Commenting
 (global-set-key (kbd "C-;") (lambda () (interactive)
                               (dwim-end-of-line 'comment-or-uncomment-region)))
