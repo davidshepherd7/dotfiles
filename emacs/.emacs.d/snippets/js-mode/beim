@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: beim
+# --
+beforeEach(inject(function($1) {
+jasmine.spyOn($1);
+}));

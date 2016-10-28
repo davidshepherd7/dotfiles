@@ -1,0 +1,4 @@
+THEN("The response is OK")
+{
+REQUIRE(reply.status() == pa::http::reply::ok);
+}

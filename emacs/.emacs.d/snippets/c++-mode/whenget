@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-; require-final-newline: nil -*-
+# key: whenget
+# --
+WHEN("${8:A GET request is made to the url}")
+{
+const auto reply = test::request_with_headers(server, "GET", ${1:url}, "", {auth_header});
+
+$0
+}

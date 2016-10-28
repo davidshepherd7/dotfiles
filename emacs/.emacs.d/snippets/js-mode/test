@@ -1,0 +1,17 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: test
+# --
+(function() {
+'use strict';
+
+describe('${1:`(ds/biosite-path-to-module-label (buffer-file-name))`}', function() {
+beforeEach(angular.mock.module('boron.$1.${2:`(s-dashed-words (ds/buffer-basename))`}'));
+
+const helpers = {};
+beforeEach(function() {injectHelpers(helpers);});
+
+$0
+
+});
+
+})();

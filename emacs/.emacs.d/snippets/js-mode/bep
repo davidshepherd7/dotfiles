@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: bep
+# --
+let $2;
+beforeEach(module(function($provide) {
+$provide.${1:factory}('$2', ['$q', function($q) {
+$2 = jasmine.createSpy('$2');
+return $2;
+}]);
+}));

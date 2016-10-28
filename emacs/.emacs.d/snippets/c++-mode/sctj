@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: sctj
+# --
+std::cout << "$1 " << __LINE__ << ":" << pa::json::encode($1) << std::endl;

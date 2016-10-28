@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-; require-final-newline: nil -*-
+# key: whenpost
+# --
+WHEN("${8:A POST request is made to the url}")
+{
+const auto json_request = pa::json::create(
+$0
+);
+
+const auto reply = test::request_with_headers(server, "POST", url, json_request, {auth_header});
+
+}

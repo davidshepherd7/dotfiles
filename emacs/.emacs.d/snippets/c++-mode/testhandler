@@ -1,0 +1,36 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: testhandler
+# --
+#include "catch/catch.hpp"
+
+#include "${1:`(ds/biosite-test-include-path)`}"
+
+#include "db/test/test_scope.h"
+#include "https/reply.h"
+#include "json/decode.h"
+#include "nowarnings/boost/make_shared.hpp"
+#include "nowarnings/qt/QSqlDatabase"
+#include "rest/server.h"
+#include "shared/db/get_database.h"
+#include "tests/helpers/get_valid_token.h"
+#include "tests/helpers/request_with_headers.h"
+#include "tests/make_test_data/insert/remote_event_server.h"
+#include "tests/make_test_data/insert/user.h"
+
+`(ds/biosite-cpp-namespaces)`
+
+using namespace make_test_data;
+
+TEST_CASE("${2:`(downcase (file-name-base))`}")
+{
+QSqlDatabase dbase = boron::db::get_database();
+pa::db::test::test_scope db_scope("$2", dbase);
+
+pa::rest::server server("/v1/api");
+const auto handler = boost::make_shared<$2>();
+server.install_secure(handler);
+
+const auto auth_header = helper::get_valid_token(dbase).http_header();
+
+$0
+}

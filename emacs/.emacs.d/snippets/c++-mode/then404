@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: then404
+# --
+THEN("The response is not found")
+{
+REQUIRE(reply.status() == pa::http::reply::not_found);
+}
