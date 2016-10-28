@@ -416,7 +416,9 @@ index in STRING."
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
 (load-file "~/.emacs.d/frames-only-mode/frames-only-mode.el")
-(use-package frames-only-mode)
+(use-package frames-only-mode
+  :config
+  (frames-only-mode 1))
 
 (global-set-key (kbd "s-k") #'make-frame)
 
@@ -1634,10 +1636,6 @@ $0")
 
   (validate-setq flycheck-display-errors-delay 0.2)
   (validate-setq flycheck-standard-error-navigation nil)
-
-  ;; Don't pop an errors buffer, it's really annoying
-  (validate-setq flycheck-display-errors-function
-                 (lambda (errors) (message "%s" (mapcar #'flycheck-error-format-message-and-id errors))))
 
   ;; emacs lisp stuff
   (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
