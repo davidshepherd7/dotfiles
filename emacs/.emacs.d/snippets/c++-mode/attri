@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: attri
+# --
+PA_SERIALISE2_ATTRIBUTES_IMPL(${1:`(ds/biosite-make-qualified-class-name (buffer-file-name))`}, "boron_db_${2:`(ds/biosite-path-to-class-name (buffer-file-name))`}");

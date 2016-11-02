@@ -2,13 +2,11 @@
 # key: testcrud
 # --
 #include "catch/catch.hpp"
-
 #include "${1:`(ds/biosite-test-include-path)`}"
 
 #include "nowarnings/qt/QSqlDatabase"
 #include "db/test/driver.h"
 #include "db/test/test_scope.h"
-
 #include "shared/db/get_database.h"
 
 `(ds/biosite-cpp-namespaces)`
