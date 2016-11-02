@@ -135,8 +135,8 @@ install_gem_packages () {
 }
 
 install_npm_packages () {
-    # Update node itself
-    sudo n stable
+    # Update node itself, fixed at 6.9.1 because newer versions break gulp
+    sudo n 6.9.1
 
     # And now the npm packages
     < "$rcdir/npm_package_list" x sudo npm install -g %
