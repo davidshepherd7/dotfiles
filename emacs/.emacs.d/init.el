@@ -1766,3 +1766,10 @@ for a file to visit if current buffer is not visiting a file."
   :init
   (hamburger-menu-mode)
   )
+
+(defun fixup-whitespace-prog-mode-dot()
+  (when (and (derived-mode-p 'prog-mode)
+             (not (nth 8 (syntax-ppss)))
+             (looking-at-p "\\s-*\\."))
+    (delete-horizontal-space)))
+(advice-add #'fixup-whitespace :after #'fixup-whitespace-prog-mode-dot)
