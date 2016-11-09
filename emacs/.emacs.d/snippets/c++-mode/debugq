@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: debugq
+# --
+pa::db::debug_queries::scoped_enable ddd();
+`(flet ((message #'ignore)) (ds/biosite-insert-as-include "db/debug_queries.h"))`
