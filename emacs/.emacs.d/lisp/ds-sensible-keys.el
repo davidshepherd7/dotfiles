@@ -504,20 +504,6 @@ the line break."
 
 
 
-;; File open keybinds
-;; ===============================================================
-(global-set-key (kbd "C-<f12>")
-                '(lambda () (interactive) (find-file "~/.zshrc")))
-(global-set-key (kbd "C-<f11>")
-                '(lambda () (interactive) (find-file "~/.emacs.d/init.el")))
-(global-set-key (kbd "C-<f10>")
-                '(lambda () (interactive) (find-file "~/.emacs.d/skeletons.el")))
-(global-set-key (kbd "C-<f9>")
-                '(lambda () (interactive) (find-file "~/.emacs.d/abbrev_defs")))
-(global-set-key (kbd "C-<f8>")
-                '(lambda () (interactive) (find-file "~/.xmonad/xmonad.hs")))
-
-
 (require 'cc-mode)
 (define-key c-mode-base-map (kbd "C-c") '())
 
