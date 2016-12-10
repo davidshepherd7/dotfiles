@@ -1,4 +1,12 @@
+-- No output while customising
+\set QUIET 1
+
+
 \pset pager always
+
+-- Display something more useful for null
+\pset null '[NULL]'
+
 \setenv PAGER less
 \setenv LESS '-S -F -X -R'
 
@@ -7,3 +15,14 @@
 \set VERBOSITY verbose
 
 \set ON_ERROR_ROLLBACK interactive
+
+\set COMP_KEYWORD_CASE upper
+
+-- colourful prompt
+\set PROMPT1 '%[%033[1;33m%]%n@%M%[%033[0m%]: %[%033[1;37m%]%/%[%033[0m%] %x%R%#\n'
+
+-- no multiline prompt (for easy copy paste)
+\set PROMPT2 ''
+
+
+\unset QUIET
