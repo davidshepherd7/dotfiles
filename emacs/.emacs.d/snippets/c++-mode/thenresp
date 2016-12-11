@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: thenresp
+# --
+const auto result = pa::json::decode<$1>(reply.json_content());
+
+THEN("The reply $2")
+{
+$0
+}

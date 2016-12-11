@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: create
+# --
+template<typename ...Args>
+static boost::shared_ptr<${1:`(downcase (file-name-base))`}> create(Args&&... args)
+{
+return boost::shared_ptr<$1>(
+new $1(std::forward<Args>(args)...)
+);
+}

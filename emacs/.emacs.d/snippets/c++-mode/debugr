@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# --
+pa::rest::debug_routes::enable(true);
+`(flet ((message #'ignore)) (ds/biosite-insert-as-include "rest/debug_routes.h"))`

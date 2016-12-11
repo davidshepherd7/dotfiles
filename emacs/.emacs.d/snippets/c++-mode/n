@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: n
+# --
+`(ds/biosite-make-qualified-class-name (buffer-file-name))`::
