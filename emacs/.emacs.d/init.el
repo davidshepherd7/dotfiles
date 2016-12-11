@@ -866,7 +866,7 @@ For magit versions > 2.1.0"
 
   (validate-setq magit-revert-buffers 'silent)
   (validate-setq magit-save-repository-buffers 'dontask)
-  (validate-setq magit-push-always-verify nil)
+  (setq magit-push-always-verify nil) ;; sometimes exists?
   (setq git-commit-major-mode 'markdown-mode)
 
   (validate-setq git-commit-summary-max-length 100)

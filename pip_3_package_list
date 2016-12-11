@@ -4,3 +4,4 @@ scikit-learn
 sympy
 pandas
 flake8
+docker-compose

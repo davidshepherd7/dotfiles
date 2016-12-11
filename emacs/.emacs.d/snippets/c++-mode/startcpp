@@ -5,7 +5,7 @@
 
 `(ds/biosite-cpp-namespaces)`
 
-$2 `(downcase (file-name-base))`()
+$2 `(ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name)))``(downcase (file-name-base))`()
 {
 $0
 }

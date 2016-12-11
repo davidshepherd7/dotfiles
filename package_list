@@ -97,4 +97,5 @@ rlwrap
 chromium-browser
 redshift
 ninja-build
+cppcheck
 git-hub

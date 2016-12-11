@@ -49,6 +49,7 @@
     (find-file (s-concat (s-chop-suffix ".cpp" (buffer-file-name)) ".h")))
    (t (error "Not a .cpp or .h file."))))
 (define-key c++-mode-map (kbd "C-\\ o") #'ds/switch-to-from-header)
+(define-key c++-mode-map (kbd "C-\\ i") #'ds/switch-to-from-header) ;; less rsi-inducing
 (define-key c++-mode-map (kbd "C-\\ C-o") #'ds/switch-to-from-header)
 
 

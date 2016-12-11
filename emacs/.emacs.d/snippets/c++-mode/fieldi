@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: impl
+# key: fieldi
 # --
 PA_SERIALISE2_FIELD_IMPL(${1:`(ds/biosite-make-qualified-class-name (buffer-file-name))`}, $2);
