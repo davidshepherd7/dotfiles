@@ -333,6 +333,11 @@ the line break."
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
 
+;; Align
+(define-key prog-mode-map (kbd "C-M-q") nil)
+(global-set-key (kbd "C-M-q") #'align-current)
+
+
 ;; New keymap for search
 ;; ============================================================
 
