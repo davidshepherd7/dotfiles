@@ -1777,3 +1777,8 @@ for a file to visit if current buffer is not visiting a file."
              (looking-at-p "\\s-*\\."))
     (delete-horizontal-space)))
 (advice-add #'fixup-whitespace :after #'fixup-whitespace-prog-mode-dot)
+
+(use-package dropbox-conflicts
+  :load-path "~/.emacs.d/dropbox-conflicts-el/"
+  :config
+  (dropbox-conflicts-mode))
