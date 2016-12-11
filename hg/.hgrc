@@ -71,7 +71,7 @@ ccommon = commit -m "chore(common): Update common" 'path:common'
 # pretty log graph
 lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
-lp = log -p --color=always -r 'this_branch_simple(.)'
+lp = log -p --color=always -r 'this_branch_simple(.)' --git
 lgs = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'this_branch_simple(.)'
 
 # status including subrepos and with path relative to cwd
