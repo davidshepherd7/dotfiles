@@ -84,6 +84,14 @@ dif() {
 # zmv magic
 alias mmv='noglob zmv -W'
 
+# hg + zmv magic harder
+_private-hg-mmv()
+{
+    zmv -W "$@"
+    hg addremove --similarity 60
+}
+alias hg-mmv='noglob _private-hg-mmv'
+
 # Rename files with .bak appended
 bak()
 {
