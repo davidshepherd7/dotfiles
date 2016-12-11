@@ -1782,3 +1782,10 @@ for a file to visit if current buffer is not visiting a file."
   :load-path "~/.emacs.d/dropbox-conflicts-el/"
   :config
   (dropbox-conflicts-mode))
+
+(defun ds/reload-dir-locals ()
+  (interactive)
+  (let ((enable-local-variables :all))
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (hack-dir-local-variables-non-file-buffer)))))
