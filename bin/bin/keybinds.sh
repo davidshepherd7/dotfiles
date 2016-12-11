@@ -83,3 +83,18 @@ xcape_str=$xcape_str'#64=Shift_L|dollar;'
 
 # Execute all the xcape stuff we just set up:
 xcape -e $xcape_str
+
+
+# Mouse speed stuff
+# ============================================================
+
+# disable the pointing stick, if the stick doesn't exist this does nothing
+xinput -set-prop "DualPoint Stick" "Device Enabled" 0 &
+
+# Slow dooowwwn the mouse
+xset m 1 0
+xinput --list --short |\
+    grep 'pointer' | grep 'Microsoft' | awk '{print $8}' | cut -d'=' -f 2 |\
+    xargs -n1 -I{} xinput --set-prop {} "Device Accel Constant Deceleration" 2
+# Bloody microsoft put a trademark symbol in the device name, so we have grep
+# + awk fun times.
