@@ -276,7 +276,7 @@
   (interactive)
   (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|HACK\\|\\?\\?ds\\)\\>" 1 font-lock-warning-face t))))
 (add-hook 'prog-mode-hook 'highlight-todos)
-(add-hook 'text-mode-hook 'highlight-todos)
+(add-hook 'text-mode-hook (lambda () (when (not (derived-mode-p 'org-mode)) (highlight-todos))))
 
 ;; Save point location in files even between sessions
 (require 'saveplace)
