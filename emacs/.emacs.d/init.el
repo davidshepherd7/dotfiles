@@ -873,13 +873,6 @@ For magit versions > 2.1.0"
 
   :ensure t)
 
-(add-to-list 'auto-mode-alist (cons "gitconfig$" #'conf-mode))
-(add-to-list 'auto-mode-alist (cons "gitignore$" #'conf-mode))
-
-;; mercurial
-(add-to-list 'auto-mode-alist (cons "hgrc$" #'conf-mode))
-
-
 
 ;; Show changes vs VC in sidebar
 (use-package diff-hl
@@ -1766,6 +1759,17 @@ for a file to visit if current buffer is not visiting a file."
   :init
   (hamburger-menu-mode)
   )
+
+
+(use-package conf-mode
+  :ensure t
+  :config
+  (add-hook 'conf-mode-hook #'set-tab)
+
+  (add-to-list 'auto-mode-alist (cons "gitconfig$" #'conf-mode))
+  (add-to-list 'auto-mode-alist (cons "gitignore$" #'conf-mode))
+  (add-to-list 'auto-mode-alist (cons "hgrc$" #'conf-mode)))
+
 
 (defun fixup-whitespace-prog-mode-dot()
   (when (and (derived-mode-p 'prog-mode)
