@@ -34,3 +34,6 @@ lg = !"git lg1"
 # Mercurial commands
 up = checkout
 co = checkout
+
+[include]
+    path = ~/.keys/hub-gitconfig

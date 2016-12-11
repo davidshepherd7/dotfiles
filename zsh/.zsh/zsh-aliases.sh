@@ -197,8 +197,11 @@ alias hra="hg revert --all"
 alias hgplain="HGPLAIN=1 hg"
 
 # Use hub for better github integration, if it exists
-if [ command -v hub > /dev/null 2>&1 ]; then
-    alias git='hub'
+if [ command -v git-hub > /dev/null 2>&1 ]; then
+    alias hub='git-hub'
+
+    # Use completions for hub tool
+    compdef _hub git-hub
 fi
 
 
