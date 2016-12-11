@@ -244,6 +244,9 @@
        ("reporters" "")
        ("helpers" "helper")
 
+       ;; event server
+       ("event_server" "")
+
        ("test" "")
        ("tests" "")
 
@@ -258,6 +261,7 @@
 (defun ds/biosite-path-to-namespaces (path)
   (--> path
        (file-name-directory it)
+       (s-replace "boron/audit/xenon" "xenon" it) ;; hack for now
        (s-split "/" it t)
        (-map #'ds/biosite-dir-to-namespace it)
        (-filter (lambda (ns) (not (equal ns ""))) it)))
@@ -289,15 +293,17 @@
        (s-join "\n" it)))
 
 
-;; serialise2
-;; ============================================================
-
 (defun ds/biosite-make-qualified-class-name (path)
   "Get the fully-qualified class name for path"
   (--> path
        (ds/biosite-get-namespaces it)
        (s-join "::" it)
        (s-concat it "::" (ds/biosite-path-to-class-name path))))
+
+(defun ds/biosite-insert-current-namespace ()
+  "Insert the biosite namespace for the current file"
+  (interactive)
+  (insert (ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name)))))
 
 
 
@@ -315,7 +321,9 @@
 
 (defun ds/biosite-sql-style ()
   (interactive)
-  (set 'indent-tabs-mode t))
+  (set 'indent-tabs-mode t)
+  (require 'sql-indent)
+  (validate-setq sql-indent-offset tab-width))
 (add-hook 'sql-mode-hook #'ds/biosite-sql-style)
 
 
@@ -648,7 +656,8 @@ statement spanning multiple lines; otherwise, return nil."
           (ds/biosite-set-postgres))
 
         (when (derived-mode-p 'c++-mode)
-          (local-set-key (kbd "C-,") #'ds/biosite-include))
+          (local-set-key (kbd "C-,") #'ds/biosite-include)
+          (local-set-key (kbd "C-_") #'ds/biosite-insert-current-namespace))
 
         (setq-local ds/js-indent-chain nil)
 

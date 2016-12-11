@@ -81,3 +81,6 @@ super + F12
 # biosite
 super + f
     urxvt -e psql -U boron_user boron
+
+super + F
+    urxvt -e psql -U xenon_audit_user xenon_audit

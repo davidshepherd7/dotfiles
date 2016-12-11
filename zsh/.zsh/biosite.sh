@@ -54,6 +54,11 @@ burl()
         "${@:2}"
 }
 
+
+picurl() {
+    curl -k "https://192.168.0.250:8100${1}" -H "Authorization: Bearer $BORON_PI_API_TOKEN" "${@:2}"
+}
+
 alias boron_client='$boron_dir/build/bin/boron-client'
 
 # Auto completion for commands which take a vm name
@@ -86,12 +91,30 @@ vm-ssh() {
     shift 1
 
     # StrictHostKeyChecking=no disables warnings about it being a new server.
-    ssh "boron-vm@$(vm-blocking-get-ip "$vm_name")" \
-        -o StrictHostKeyChecking=no \
-        "$@"
+    \ssh "boron-vm@$(vm-blocking-get-ip "$vm_name")" \
+         -o StrictHostKeyChecking=no \
+         "$@"
 }
 compctl -K _complete-vms vm-ssh
 
+vm-scp() {
+    local vm_name="$1"
+    local file_name="$2"
+    shift 1
+
+    # StrictHostKeyChecking=no disables warnings about it being a new server.
+    \scp -o StrictHostKeyChecking=no "$file_name" "boron-vm@$(vm-blocking-get-ip "$vm_name"):~/"
+
+}
+compctl -K _complete-vms vm-scp
+
+vm-psql() {
+    local vm_name="$1"
+    shift 1
+
+    vm-ssh "$vm_name" -t -t 'PGPASSWORD="biosite" psql -U boron_user boron -h localhost'
+}
+compctl -K _complete-vms vm-psql
 
 cd-boron-build () {
     cd "$boron_dir/build"
@@ -169,4 +192,24 @@ send-deb-to-iris-servers() {
     sudo chown -R david:david "$HOME/$version"
     scp "$HOME/$version/boron_$version.deb" iris-boron:~/
     scp "$HOME/$version/boron_$version.deb" iris-postgres:~/
+}
+
+
+copy-experimental-release() {
+    if [[ "$#" -lt 1 ]]; then
+        echo "Usage: $0 [version]" 1>&2
+        return 1
+    fi
+
+    local version="$1"
+
+    mkdir -p ~/boron-releases
+    sudo mount /redist || true
+
+    # Get the complete and master versions for both Ubuntu versions
+    sudo cp "/redist/experimental/boron/installers/${version}/"boron{,_master_server}"_${version}_"ubuntu_*.deb ~/boron-releases
+    sudo chown -R david:david ~/boron-releases
+
+    # In case the nas goes down
+    sudo umount /redist
 }

@@ -2,6 +2,8 @@
 
 [paths]
 review = http://gauss.pa/hg/david/boron-unstable
+review-staging = http://gauss.pa/hg/david/boron-staging-stable
+
 unstable = http://gauss.pa/hg/boron-unstable
 stable = http://gauss.pa/hg/boron-stable
 staging = http://gauss.pa/hg/boron-staging-stable
@@ -21,7 +23,11 @@ ghistedit = !$HG ungulp && $HG he "$@"
 # This is broken, don't know why...
 # rebase = !$HG ungulp && $HG rebase "$@"
 
-pullall = !$HG pull unstable && $HG pull stable && $HG pull staging
+pullall-common = !(cd "$($HG root)" && $HG pull unstable && $HG pull stable)
+pullall-boron = !$HG pull unstable && $HG pull stable && $HG pull staging
+pullall = !$HG pullall-common && $HG pullall-boron
+
+upcommon = !cd "$($HG root)/common" && "$HG" up && cd ../ && "$HG" ccommon
 
 [hooks]
 # pre-commit = "$(hg root)/scripts/pre-commit.sh"
