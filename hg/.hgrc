@@ -60,8 +60,9 @@ emacsclient.args = -c --eval "(emerge-files-with-ancestor nil \""$local"\" \""$o
 #########
 
 # Interact with RhodeCode
-pull-request = !sensible-browser "$(hg paths review)/pull-request/new" &
-pr = !$HG push review -f "$@" && $HG pull-request
+pull-request = !sensible-browser "$(hg paths ${1:-review})/pull-request/new" &
+pr = !$HG push review -f "$@" && $HG pull-request review
+pr-stable = !$HG push review-stable -f "$@" && $HG pull-request review-stable
 
 ccommon = commit -m "chore(common): Update common" 'path:common'
 
