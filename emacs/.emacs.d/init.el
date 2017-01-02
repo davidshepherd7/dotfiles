@@ -1686,6 +1686,7 @@ $0")
   :config
   ;; Include hidden files
   (add-to-list 'ag-arguments "--hidden")
+  (validate-setq ag-group-matches nil)
   )
 
 (use-package scratch
