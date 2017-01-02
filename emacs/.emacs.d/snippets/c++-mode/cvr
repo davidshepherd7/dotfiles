@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: cvr
+# --
+const std::vector<$1>& $0

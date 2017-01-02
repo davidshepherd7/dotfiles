@@ -7,7 +7,7 @@ beforeEach(angular.mock.module('${1:`(ds/biosite-path-to-html-template-path (buf
 let cmpl;
 beforeEach(function() {
 cmpl = helpers.compileTemplate(\`
-            <${2:`(s-dashed-words (ds/chop-web-suffixes (file-name-nondirectory (buffer-file-name))))`}$0>
+			<${2:`(s-dashed-words (ds/chop-web-suffixes (file-name-nondirectory (buffer-file-name))))`}$0>
 			</$2>
 		\`);
 cmpl.scope.$digest();

@@ -1,0 +1,27 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: querydb
+# --
+`(flet ((message #'ignore)) (ds/biosite-insert-as-include "qtlib/stream.h"))`
+{
+    auto prev_position = $1.at();
+
+    $1.seek(-1);
+    auto rec = $1.record();
+    std::cout << __FILE__ << ":" << __LINE__ << ":" << std::endl;
+    std::cout << "Number of rows: " << $1.size() << std::endl;
+    std::cout << "Number of columns: " << rec.count() << std::endl;
+
+    int i = 0;
+    while($1.next())
+    {
+        ++i;
+        std::cout << "row " << i << ":";
+        for(int j=0; j<rec.count(); ++j)
+        {
+            std::cout << "\t" << rec.fieldName(j) << ": " << $1.value(j) << ";";
+        }
+        std::cout << std::endl;
+    }
+    $1.seek(prev_position);
+}
+$0

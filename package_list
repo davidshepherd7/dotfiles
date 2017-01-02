@@ -99,3 +99,13 @@ redshift
 ninja-build
 cppcheck
 git-hub
+xdotool
+p7zip
+nmap
+zathura
+arduino-mk
+xvfb
+jq
+ffmpeg
+postgresql
+git-hub
