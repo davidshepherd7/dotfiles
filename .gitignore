@@ -14,3 +14,4 @@ hg/.hgex
 
 # Dropbox junk
 *conflicted copy*
+/emacs/.emacs.d/vc-packages/projectile/
