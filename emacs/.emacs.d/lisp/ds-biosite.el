@@ -321,9 +321,7 @@
 
 (defun ds/biosite-sql-style ()
   (interactive)
-  (set 'indent-tabs-mode t)
-  (require 'sql-indent)
-  (validate-setq sql-indent-offset tab-width))
+  (set 'indent-tabs-mode t))
 (add-hook 'sql-mode-hook #'ds/biosite-sql-style)
 
 
