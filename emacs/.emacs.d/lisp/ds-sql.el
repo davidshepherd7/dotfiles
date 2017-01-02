@@ -12,3 +12,8 @@
   (add-hook 'sql-mode-hook #'sqlup-mode t))
 
 (add-hook 'sql-mode-hook #'flycheck-mode)
+
+(defun ds/set-product-postgres ()
+  (sql-set-product "postgres"))
+(add-hook 'sql-mode-hook #'ds/set-product-postgres)
+
