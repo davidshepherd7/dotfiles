@@ -15,14 +15,15 @@
       (local-set-key (kbd "C-e") 'nil)
       (local-set-key (kbd "C-t") 'org-todo)
       (local-set-key (kbd "C-.") 'org-time-stamp-inactive)
-      (local-set-key (kbd "C-'") 'nil))
+      (local-set-key (kbd "C-'") 'nil)
+      (local-set-key (kbd "C-a") nil)
+      )
 
     (add-hook 'org-mode-hook 'org-keys)
 
     ;; Pretty indents
     (add-hook 'org-mode-hook 'org-indent-mode)
 
-    (set 'org-agenda-files '("~/Dropbox/org/thesis_plan.org"))
 
     (setq org-link-frame-setup (quote ((vm . vm-visit-folder-other-frame)
                                        (vm-imap . vm-visit-imap-folder-other-frame)

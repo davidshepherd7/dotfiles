@@ -23,9 +23,9 @@ ghistedit = !$HG ungulp && $HG he "$@"
 # This is broken, don't know why...
 # rebase = !$HG ungulp && $HG rebase "$@"
 
-pullall-common = !(cd "$($HG root)" && $HG pull unstable && $HG pull stable)
-pullall-boron = !$HG pull unstable && $HG pull stable && $HG pull staging
-pullall = !$HG pullall-common && $HG pullall-boron
+pulls-common = !(cd "$($HG root)/common" && $HG pull unstable && $HG pull stable)
+pulls-boron = !$HG pull unstable && $HG pull stable && $HG pull staging
+pulls = !$HG pulls-common && $HG pulls-boron
 
 upcommon = !cd "$($HG root)/common" && "$HG" up && cd ../ && "$HG" ccommon
 

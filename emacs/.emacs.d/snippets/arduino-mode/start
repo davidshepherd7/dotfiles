@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: start
+# --
+void setup() {
+$1
+}
+
+void loop() {
+$2
+}
