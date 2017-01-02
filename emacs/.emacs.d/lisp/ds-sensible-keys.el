@@ -114,7 +114,10 @@ the line break."
 (global-set-key (kbd "M-v") 'yank-pop)
 
 ;; Undo (see also: undo-tree config)
-(global-set-key (kbd "M-z") (lambda () (interactive) (universal-argument) (undo)))
+(global-set-key (kbd "M-z") (lambda () (interactive)
+                              (universal-argument)
+                              (undo)
+                              (setq deactivate-mark nil)))
 
 ;; Commenting
 (global-set-key (kbd "C-;") (lambda () (interactive)
