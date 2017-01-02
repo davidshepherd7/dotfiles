@@ -22,6 +22,7 @@ stow_file bin
 stow_file calibre
 stow_file psql
 stow_file ag
+stow_file ccache
 
 # Cases which need dirs creating
 mkdir -p ~/.emacs.d
