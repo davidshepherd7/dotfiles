@@ -23,10 +23,6 @@ ghistedit = !$HG ungulp && $HG he "$@"
 # This is broken, don't know why...
 # rebase = !$HG ungulp && $HG rebase "$@"
 
-pulls-common = !(cd "$($HG root)/common" && $HG pull unstable && $HG pull stable)
-pulls-boron = !$HG pull unstable && $HG pull stable && $HG pull staging
-pulls = !$HG pulls-common && $HG pulls-boron
-
 upcommon = !cd "$($HG root)/common" && "$HG" up && cd ../ && "$HG" ccommon
 
 [hooks]

@@ -17,3 +17,9 @@ CMakeCache\.txt
 future-eslintrc-temp.json
 
 \.Trash-\d+
+.ecukes-failing-scenarios
+
+
+# Build dirs
+^iwyu/
+^build/

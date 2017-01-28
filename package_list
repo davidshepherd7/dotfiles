@@ -100,7 +100,7 @@ ninja-build
 cppcheck
 git-hub
 xdotool
-p7zip
+p7zip-full
 nmap
 zathura
 arduino-mk
@@ -109,3 +109,4 @@ jq
 ffmpeg
 postgresql
 git-hub
+stress

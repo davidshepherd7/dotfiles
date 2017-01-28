@@ -8,7 +8,7 @@ interface = curses
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp
 attend-commit = false
 
 [extensions]
@@ -93,6 +93,9 @@ manifest0 = !$HG manifest | tr '\n' '\0'
 
 # Side by side diff
 sdiff = !$HG diff $@ | cdiff -s
+
+# diff --git gives better file rename info
+diff = diff --git
 
 # "undo" commiting.
 doagain = !hg-do-again.sh
