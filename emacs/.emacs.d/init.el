@@ -1790,3 +1790,9 @@ for a file to visit if current buffer is not visiting a file."
     (dolist (buffer (buffer-list))
       (with-current-buffer buffer
         (hack-dir-local-variables-non-file-buffer)))))
+
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
