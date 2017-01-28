@@ -22,9 +22,11 @@ stow_file bin
 stow_file calibre
 stow_file psql
 stow_file ag
-stow_file ccache
 
 # Cases which need dirs creating
+mkdir -p ~/.ccache
+stow_file ccache
+
 mkdir -p ~/.emacs.d
 stow_file emacs
 
