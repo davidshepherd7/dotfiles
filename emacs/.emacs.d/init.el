@@ -415,8 +415,8 @@ index in STRING."
 
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
-(load-file "~/.emacs.d/frames-only-mode/frames-only-mode.el")
 (use-package frames-only-mode
+  :ensure t
   :config
   (frames-only-mode 1))
 
