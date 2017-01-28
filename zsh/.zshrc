@@ -308,6 +308,7 @@ source ${zshdir}/zsh-classifier-aliases.sh
 source ${zshdir}/emacs-read-stdin/emacs-read-stdin.sh
 
 source ${zshdir}/biosite.sh
+source ${zshdir}/biosite-vms.sh
 source ${zshdir}/xenon.sh
 
 
