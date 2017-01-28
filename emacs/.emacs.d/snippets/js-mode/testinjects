@@ -1,0 +1,16 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: testinjects
+# --
+fdescribe('$1', function() {
+beforeEach(angular.mock.module('boronDelivery.controllers'));
+
+let $1;
+beforeEach(inject(function(_$1_) {
+$1 = _$1_;
+}));
+
+it('injects', function() {
+expect($1).toBeDefined();
+});
+});
+$0

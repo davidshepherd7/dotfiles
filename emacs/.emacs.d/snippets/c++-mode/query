@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: query
+# --
+QSqlQuery q(dbase);
+q.prepare("$0");
+pa::db::exec(q);

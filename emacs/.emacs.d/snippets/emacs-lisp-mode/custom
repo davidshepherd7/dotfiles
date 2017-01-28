@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: custom
+# --
+(defcustom `(file-name-base)`-$1
+${2:default}
+"$0"
+:group '`(file-name-base)`)

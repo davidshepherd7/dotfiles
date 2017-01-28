@@ -1,10 +1,10 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: buildfield
 # --
-user_has_custom_field_builder& $1(${2:$1_type} $1)
+api_test_builder& $1(${2:$1_type} $1)
 {
 m_$1 = $1;
 return *this;
 }
 
-pa::optional<$2> m_$1;
+pa::optional<${2:$(s-trim (s-replace "&" "" yas-text))}> m_$1;

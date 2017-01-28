@@ -1,6 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: then
+# key: fa
 # --
-then(function(result) {
-$0
-})
+<i class="fa fa-$0"> </i>

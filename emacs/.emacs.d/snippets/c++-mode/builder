@@ -1,6 +1,3 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: then
+# key: builder
 # --
-then(function(result) {
-$0
-})
