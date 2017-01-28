@@ -1,5 +1,6 @@
 
 (require 'use-package)
+(require 'sql)
 
 (use-package sqlup-mode
   :ensure t
@@ -10,6 +11,11 @@
   (add-to-list 'sqlup-blacklist "group")
   (add-to-list 'sqlup-blacklist "data")
   (add-hook 'sql-mode-hook #'sqlup-mode t))
+
+(use-package sql-indent
+  :load-path "~/.emacs.d/sql-indent/"
+  :config
+  (add-hook 'sql-mode-hook #'sql-indent-mode))
 
 (add-hook 'sql-mode-hook #'flycheck-mode)
 

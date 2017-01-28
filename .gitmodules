@@ -25,3 +25,6 @@
 [submodule "emacs/.emacs.d/fill-function-arguments"]
 	path = emacs/.emacs.d/fill-function-arguments
 	url = git@github.com:davidshepherd7/fill-function-arguments.git
+[submodule "emacs/.emacs.d/sql-indent"]
+	path = emacs/.emacs.d/sql-indent
+	url = git@github.com:davidshepherd7/sql-indent.git
