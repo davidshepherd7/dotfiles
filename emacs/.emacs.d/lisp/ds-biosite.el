@@ -184,7 +184,8 @@
                                                   (s-ends-with-p ".hpp" filepath))) it)))
          (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
          (file (completing-read "header: " headers nil nil default-input)))
-    (ds/biosite-insert-as-include file)))
+    (ds/biosite-insert-as-include file)
+    (ds/sort-headers)))
 
 
 ;; js template paths
@@ -677,3 +678,79 @@ statement spanning multiple lines; otherwise, return nil."
 
 (defun ds/biosite-set-postgres ()
   (sql-set-product "postgres"))
+
+
+
+
+(defun ds/sort-headers--first-include ()
+  (save-excursion
+    (goto-char (point-min))
+    (search-forward "#include")
+    (point-at-bol)))
+
+(defun ds/sort-headers--last-include ()
+  (save-excursion
+    (goto-char (point-max))
+    (search-backward "#include")
+    (point-at-eol)))
+
+
+(makunbound 'ds/sort-headers-external-libs)
+(defcustom ds/sort-headers-external-libs
+  '("nowarnings/" "boost/" "Q")
+  "")
+
+(makunbound 'ds/sort-headers-internal-libs)
+(defcustom ds/sort-headers-internal-libs
+  '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/" "network/" "ssl/" "crypt/")
+  "")
+
+(makunbound 'ds/sort-headers-local-libs)
+(defcustom ds/sort-headers-local-libs
+  '("boron/" "xenon/" "shared/" "vector" "string" "map" "unordered-map" "set" "algorithm")
+  "")
+
+
+(defun ds/sort-headers--is-this-files-header (header)
+  (-is-suffix? (f-split (f-no-ext header))
+               (f-split (f-no-ext (buffer-file-name)))))
+
+
+(defun ds/sort-headers--classify (header-line)
+  (let ((normalised-header (->> header-line
+                                (s-chop-prefix "#include")
+                                (s-trim)
+                                (s-chop-prefixes '("\"" "<"))
+                                (s-chop-suffixes '("\"" ">")))))
+    (cond
+     ((s-starts-with? "catch" normalised-header) -1)
+     ((ds/sort-headers--is-this-files-header normalised-header) 0)
+     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-external-libs) 1)
+     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-internal-libs) 2)
+     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-local-libs) 3)
+     (t 4))))
+
+(defun ds/sort-headers--internal (header-text)
+  (->> header-text
+       (s-split "\n")
+       (-map #'s-trim)
+       (--filter (not (string-empty-p it)))
+       (-group-by #'ds/sort-headers--classify)
+       (--sort (< (car it) (car other)))
+       (map-values)
+       (--map (-sort #'string-lessp it))
+       (--map (s-join "\n" it))
+       (s-join "\n\n")))
+
+
+(defun ds/sort-headers ()
+  (interactive)
+  (let* ((start (ds/sort-headers--first-include))
+         (end (ds/sort-headers--last-include))
+         (out (ds/sort-headers--internal (buffer-substring start end))))
+    (save-excursion
+      (delete-region start end)
+      (goto-char start)
+      (insert out))))
+
+
