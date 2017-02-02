@@ -1,0 +1,1 @@
+ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(emacs-forward-word)

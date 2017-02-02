@@ -314,6 +314,9 @@ source ${zshdir}/xenon.sh
 
 # plugins
 source "${zshdir}/plugins/safe-paste.sh"
+source "${zshdir}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "${zshdir}/plugins/zsh-autosuggestions-config.zsh"
+source "${zshdir}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 
 # ccache config

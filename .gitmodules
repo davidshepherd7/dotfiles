@@ -28,3 +28,9 @@
 [submodule "emacs/.emacs.d/sql-indent"]
 	path = emacs/.emacs.d/sql-indent
 	url = git@github.com:davidshepherd7/sql-indent.git
+[submodule "zsh/.zsh/plugins/zsh-autosuggestions"]
+	path = zsh/.zsh/plugins/zsh-autosuggestions
+	url = git://github.com/zsh-users/zsh-autosuggestions
+[submodule "zsh/.zsh/plugins/zsh-syntax-highlighting"]
+	path = zsh/.zsh/plugins/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
