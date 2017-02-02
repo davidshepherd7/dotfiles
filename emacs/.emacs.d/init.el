@@ -1796,3 +1796,17 @@ for a file to visit if current buffer is not visiting a file."
   `(let ((time (current-time)))
      ,@body
      (message "%.06f" (float-time (time-since time)))))
+(use-package hideshowvis
+  :load-path "~/.emacs.d/hideshowvis/"
+  :config
+  (set-face-attribute 'hs-face nil :foreground "saddle brown" :background nil)
+  (set-face-attribute 'hs-fringe-face nil :foreground "saddle brown" :background nil)
+  (set-face-attribute 'hideshowvis-hidable-face nil :foreground "grey20" :box nil)
+
+  (validate-setq hideshowvis-hidden-marker " ⬵⤁ ")
+  (validate-setq hideshowvis-fringe-hidden-marker 'right-arrow)
+  (validate-setq hideshowvis-fringe-hideable-marker 'down-arrow)
+  (hideshowvis-symbols)
+
+  ;; Turn on for buffer with (hideshowvis-mode), kinda slow...
+  )
