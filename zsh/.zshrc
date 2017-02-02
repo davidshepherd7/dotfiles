@@ -37,9 +37,10 @@ fpath=(~/.zsh/completion $fpath)
 fpath=(~/.zsh/completion/zsh-completions/src $fpath)
 autoload ~/.zsh/completion/zsh-completions/src/*(:t)
 
-# fix crazy oracle caps for commands in zsh-completions
-compdef _VBoxManage vboxmanage
-compdef _VBoxHeadless vboxheadless
+# Can't get this working with skip_global_compinit=1
+# # fix crazy oracle caps for commands in zsh-completions
+# compdef _VBoxManage vboxmanage
+# compdef _VBoxHeadless vboxheadless
 
 # Add generated python completions
 fpath=(~/.zsh/completion/generated $fpath)
