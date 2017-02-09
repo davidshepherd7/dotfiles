@@ -177,15 +177,16 @@
   (interactive)
   (ds/biosite-insert-as-include (current-kill 0 t)))
 
-(defun ds/biosite-include ()
-  (interactive)
+(defun ds/biosite-include (suppress-sort)
+  (interactive "P")
   (let* ((headers (--> (projectile-current-project-files)
                        (-filter (lambda (filepath) (or (s-ends-with-p ".h" filepath)
                                                   (s-ends-with-p ".hpp" filepath))) it)))
          (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
          (file (completing-read "header: " headers nil nil default-input)))
     (ds/biosite-insert-as-include file)
-    (ds/sort-headers)))
+    (when (not suppress-sort)
+      (ds/sort-headers))))
 
 
 ;; js template paths
