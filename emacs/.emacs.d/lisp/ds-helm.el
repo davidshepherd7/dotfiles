@@ -228,3 +228,6 @@ It is meant to use with `filter-one-by-one' slot."
 (define-key helm-read-file-map (kbd "C-RET") #'helm-maybe-exit-minibuffer)
 
 (require 'helm-help)
+
+(with-eval-after-load 'projectile
+  (validate-setq projectile-completion-system 'helm))

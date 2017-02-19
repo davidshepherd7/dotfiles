@@ -590,7 +590,8 @@ index in STRING."
 ;; Helm or ido. Goes after keybinds so that we can temporarily override
 ;; them with helm keys
 ;; (load-file "~/.emacs.d/lisp/ds-ido.el")
-(load-file "~/.emacs.d/lisp/ds-helm.el")
+;; (load-file "~/.emacs.d/lisp/ds-helm.el")
+(load-file "~/.emacs.d/lisp/ds-ivy.el")
 
 
 
@@ -981,12 +982,9 @@ For magit versions > 2.1.0"
   (defun maybe-projectile-find-file ()
     (interactive)
     (if (projectile-project-p)
-        (helm-projectile-find-file)
-      (call-interactively #'helm-find-files)))
+        (counsel-projectile-find-file)
+      (call-interactively #'counsel-find-file)))
   (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
-
-  (with-eval-after-load 'helm
-    (validate-setq projectile-completion-system 'helm))
 
   ;; Use everywhere
   (projectile-global-mode)
@@ -1263,7 +1261,7 @@ $0")
 (use-package imenu-anywhere
   :ensure t
   :config
-  (global-set-key (kbd "M-,") #'helm-imenu-anywhere)
+  (global-set-key (kbd "M-,") #'imenu-anywhere)
   )
 
 ;; Better help commands
@@ -1344,7 +1342,7 @@ $0")
 
     ;; Documentation
     ("i" info nil)
-    ("n" helm-man-woman nil)
+    ("n" man-woman nil)
     ("h" helm-dash)
 
     ;; Keybinds
