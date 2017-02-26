@@ -137,6 +137,15 @@ function prepend-watch {
 zle -N prepend-watch
 bindkey "\ew" prepend-watch
 
+function prepend-man {
+    if [[ $BUFFER != "man "* ]]; then
+        BUFFER="man $BUFFER"
+        CURSOR+=4
+    fi
+}
+zle -N prepend-man
+bindkey "\em" prepend-man
+
 function append-refresh {
   if [[ $BUFFER != *"refresh-browser.sh" ]]; then
     BUFFER="$BUFFER && refresh-browser.sh"
