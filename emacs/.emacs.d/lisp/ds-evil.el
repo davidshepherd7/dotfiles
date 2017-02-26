@@ -67,7 +67,7 @@
   (define-key evil-insert-state-map (kbd "<menu>")
     (lambda () (interactive)
       (evil-change-to-initial-state)
-      (call-interactively #'helm-M-x)))
+      (call-interactively #'counsel-M-x)))
 
 
   ;; And when running compile
