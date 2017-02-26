@@ -111,6 +111,8 @@ bindkey "\C-p" quote-line
 bindkey "\C-j" accept-line
 bindkey "\e[11~" run-help # f1 key
 
+bindkey "\C-h" push-line-or-edit
+
 # Change case. Theses are C-/ and C-M-/ but there's something odd going on with
 # binding anything containing C-/.
 bindkey  capitalize-word
