@@ -29,9 +29,8 @@
 (define-key sgml-mode-map (kbd "C-M-n") #'sgml-skip-tag-forward)
 (define-key sgml-mode-map (kbd "C-M-e") #'sgml-skip-tag-backward)
 
-
-;; Magic tag insertion
-(define-key sgml-mode-map (kbd "<") #'sgml-tag)
+(define-key sgml-mode-map (kbd "<") nil)
+(define-key sgml-mode-map (kbd "C-<") #'sgml-tag)
 
 ;; Add some custom tags to the magic tag insertion
 (defvar ds/angular-tags
