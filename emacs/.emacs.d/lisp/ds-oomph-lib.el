@@ -59,15 +59,6 @@
 (defun is-whitespace-cleanup-safe ()
   (is-oomph-user-driver-code))
 
-;; oomph-lib safe auto-whitespace cleanup
-;; ============================================================
-(defun whitespace-cleanup-if-not-oomph ()
-  (interactive)
-  (when (and (is-whitespace-cleanup-safe)
-             (not (string= major-mode "makefile-mode")))
-    (delete-trailing-whitespace)))
-(add-hook 'before-save-hook 'whitespace-cleanup-if-not-oomph)
-
 
 ;; Batch formatting function to oomph-lib style
 ;; ============================================================
