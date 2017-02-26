@@ -9,7 +9,10 @@
                (cons (kbd "M-n") nil))
     (lambda (pair) (define-key cider-mode-map (car pair) (cdr pair))))
 
-  (set 'cider-repl-display-help-banner nil))
+  (set 'cider-repl-display-help-banner nil)
+
+  (setq cider-mode-map (make-sparse-keymap))
+  )
 
 (use-package clojure-mode
   :ensure t
