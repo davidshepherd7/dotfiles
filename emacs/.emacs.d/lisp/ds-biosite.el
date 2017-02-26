@@ -17,6 +17,11 @@
 ;; Add any other alignment functions here
 
 
+;; (defun ds/boron-cpp-ctags ()
+;;   (interactive)
+;;   (shell-command "find -name '*.cpp' -o -name '*.h' | xargs ctags-exuberant -e -a --force-language=c++")
+;;   )
+
 
 ;; Highlight spaces for indentation
 (defun ds/highlight-space-indents (activate)
@@ -703,12 +708,41 @@ statement spanning multiple lines; otherwise, return nil."
 
 (makunbound 'ds/sort-headers-internal-libs)
 (defcustom ds/sort-headers-internal-libs
-  '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/" "network/" "ssl/" "crypt/")
+  '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/"
+    "network/" "ssl/" "crypt/" "log/" "io/" "paths/" "options/"
+    "process/" "qtlib/" "auth/"
+    )
   "")
 
 (makunbound 'ds/sort-headers-local-libs)
 (defcustom ds/sort-headers-local-libs
-  '("boron/" "xenon/" "shared/" "vector" "string" "map" "unordered-map" "set" "algorithm")
+  '("boron/" "xenon/" "shared/")
+  "")
+
+(makunbound 'ds/sort-headers-stdlibs)
+(defcustom ds/sort-headers-stdlibs
+  '("cstdlib" "csignal" "csetjmp" "cstdarg" "typeinfo" "typeindex" "type_traits" "bitset"
+    "functional" "utility" "ctime" "chrono" "cstddef" "initializer_list" "tuple" "any"
+    "optional" "variant" "new" "memory" "scoped_allocator" "memory_resource" "climits"
+    "cfloat" "cstdint" "cinttypes" "limits" "exception" "stdexcept" "cassert" "system_error"
+    "cerrno" "cctype" "cwctype" "cstring" "cwchar" "cuchar" "string" "string_view" "array"
+    "vector" "deque" "list" "forward_list" "set" "map" "unordered_set" "unordered_map"
+    "stack" "queue" "algorithm" "execution" "iterator" "cmath" "complex" "valarray"
+    "random" "numeric" "ratio" "cfenv" "iosfwd" "ios" "istream" "ostream" "iostream"
+    "fstream" "sstream" "strstream" "iomanip" "streambuf" "cstdio" "locale" "clocale"
+    "codecvt" "regex" "atomic" "thread" "mutex" "shared_mutex" "future" "condition_variable"
+    "filesystem" "experimental/algorithm" "experimental/any" "experimental/chrono" "experimental/deque"
+    "experimental/execution_policy" "experimental/exception_list" "experimental/filesystem"
+    "experimental/forward_list" "experimental/future" "experimental/list" "experimental/functional"
+    "experimental/map" "experimental/memory" "experimental/memory_resource" "experimental/numeric"
+    "experimental/optional" "experimental/ratio" "experimental/regex" "experimental/set"
+    "experimental/string" "experimental/string_view" "experimental/system_error" "experimental/tuple"
+    "experimental/type_traits" "experimental/unordered_map" "experimental/unordered_set"
+    "experimental/utility" "experimental/vector" "cassert" "cctype" "cerrno" "cfenv" "cfloat"
+    "cinttypes" "climits" "clocale" "cmath" "csetjmp" "csignal" "cstdarg" "cstddef" "cstdint"
+    "cstdio" "cstdlib" "cstring" "ctime" "cuchar" "cwchar" "cwctype" "ccomplex" "complex"
+    "complex" "ctgmath" "complex" "cmath" "ctgmath" "ciso646" "ciso646"
+    "cstdalign" "cstdalign" "cstdbool" "cstdbool")
   "")
 
 
@@ -724,11 +758,12 @@ statement spanning multiple lines; otherwise, return nil."
                                 (s-chop-prefixes '("\"" "<"))
                                 (s-chop-suffixes '("\"" ">")))))
     (cond
-     ((s-starts-with? "catch" normalised-header) -1)
+     ((s-starts-with? "catch" normalised-header) -10)
      ((ds/sort-headers--is-this-files-header normalised-header) 0)
-     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-external-libs) 1)
-     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-internal-libs) 2)
-     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-local-libs) 3)
+     ((--any? (s-equals? it normalised-header) ds/sort-headers-stdlibs) 5)
+     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-external-libs) 10)
+     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-internal-libs) 20)
+     ((--any? (s-starts-with? it normalised-header) ds/sort-headers-local-libs) 30)
      (t 4))))
 
 (defun ds/sort-headers--internal (header-text)

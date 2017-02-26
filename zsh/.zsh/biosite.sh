@@ -25,7 +25,7 @@ bgulpl()
 alias bgulp="bgulpl --nolint"
 alias bgulpr="bgulp --done_command 'refresh-browser.sh'"
 
-alias lbiosite='$boron_dir/scripts/launch-biosite-single-terminal.sh -w ~/gulp_dest/app'
+alias lbiosite='$boron_dir/scripts/launch-biosite-single-terminal.sh -w ~/gulp_dest/app/online'
 
 aburl()
 {
@@ -77,6 +77,9 @@ _boron-test () {
 compctl -K _boron-test boron-test
 alias esfix="eslint -c ~/code/boron-unstable/boron/web_applications/future-eslintrc.json --fix"
 
+boron-cmake() {
+    (cd "$boron_dir/build" && cmake .)
+}
 
 #
 ssh-psql () {

@@ -1794,6 +1794,13 @@ for a file to visit if current buffer is not visiting a file."
   `(let ((time (current-time)))
      ,@body
      (message "%.06f" (float-time (time-since time)))))
+
+(defun ds/add-to-load-path (dir)
+  "Interactively add DIR to the load path."
+  (interactive "D")
+  (add-to-list 'load-path dir))
+
+
 (use-package hideshowvis
   :load-path "~/.emacs.d/hideshowvis/"
   :config

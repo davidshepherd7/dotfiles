@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: diff
+# --
+console.log(JSON.stringify(
+_.reduce($1, function(result, value, key) {
+    return _.isEqual(value, $2[key]) ?
+    result : result.concat({key: [value, $2[key]]});
+}, []), null, 4)
+);

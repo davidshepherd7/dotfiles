@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: where
+# --
+pa::db::Where $1_matches("$1 = :$1");
+$1_matches.bindValue(":$1", $1);
