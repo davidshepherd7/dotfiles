@@ -52,6 +52,7 @@
           ("\\.\\<\\(component\\)\\>" 1 font-lock-keyword-face)
           ("[^_]\\.\\<\\(filter\\)\\>" 1 font-lock-keyword-face)
 
+          ("^\\s-\\(\\.\\)" 1 font-lock-keyword-face)
           ))
   )
 
