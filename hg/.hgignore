@@ -23,3 +23,5 @@ future-eslintrc-temp.json
 # Build dirs
 ^iwyu/
 ^build/
+
+TAGS

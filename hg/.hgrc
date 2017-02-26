@@ -1,3 +1,5 @@
+%include ~/code/pa-config-files/pa-hgrc
+
 [ui]
 username = David Shepherd <david.shepherd@biositesystems.com>
 ignore = ~/.hgignore
@@ -8,7 +10,7 @@ interface = curses
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging
 attend-commit = false
 
 [extensions]
@@ -59,10 +61,11 @@ emacsclient.args = -c --eval "(emerge-files-with-ancestor nil \""$local"\" \""$o
 # Biosite stuff
 #########
 
-# Interact with RhodeCode
-pull-request = !sensible-browser "$(hg paths ${1:-review})/pull-request/new" &
-pr = !$HG push review -f "$@" && $HG pull-request review
-pr-stable = !$HG push review-stable -f "$@" && $HG pull-request review-stable
+# # Interact with RhodeCode
+# pull-request = !sensible-browser "$(hg paths "$1")/pull-request/new" &
+# pr = !$HG push "review"  -f "$@" && $HG pull-request "review"
+# pr-stable = !$HG push review-stable -f "$@" && $HG pull-request review-stable
+# pr-staging = !$HG push review-staging -f "$@" && $HG pull-request review-staging
 
 ccommon = commit -m "chore(common): Update common" 'path:common'
 
