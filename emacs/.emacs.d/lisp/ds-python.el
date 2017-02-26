@@ -183,3 +183,7 @@
 
 (electric-layout-mode 1)
 (add-hook 'python-mode-hook #'ds/setup-python-electric-layout)
+
+
+(eval-after-load 'flycheck
+  (validate-setq flycheck-flake8-maximum-line-length 120))
