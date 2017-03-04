@@ -505,6 +505,9 @@ index in STRING."
 
   (validate-setq company-backends (list ds/global-company-backends))
 
+  (define-key company-active-map (kbd "C-h") #'company-select-next)
+  (define-key company-active-map (kbd "C-i") #'company-select-previous)
+  (define-key company-active-map (kbd "<tab>") #'company-complete)
   )
 
 ;; Undo tree
