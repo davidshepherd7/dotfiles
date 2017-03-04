@@ -172,6 +172,7 @@
   (let ((paren (ds/enclosing-paren)))
     (if (not (or (eq paren ?\{)
                  (eq paren ?\[)
+                 (eq paren ?\()
                  (looking-back "\\blambda\\b.*")))
         'after
       nil)))
