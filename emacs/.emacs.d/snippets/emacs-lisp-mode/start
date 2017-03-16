@@ -1,0 +1,28 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: start
+# --
+;;; `(file-name-base)`.el --- $1 -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2015 Free Software Foundation, Inc.
+
+;; Author: David Shepherd <davidshepherd7@gmail.com>
+;; Version: 0.1
+;; Package-Requires: (TODO)
+;; Keywords: TODO
+;; URL: https://github.com/davidshepherd7/`(file-name-base)`
+
+
+;;; Commentary:
+
+;; TODO
+
+
+;;; Code:
+
+$0
+
+
+(provide '`(file-name-base)`)
+
+
+;;; `(file-name-base)`.el ends here

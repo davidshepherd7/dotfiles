@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: badges
+# --
+[![travis][travis-badge]][travis-link] <!-- [![melpa][melpa-badge]][melpa-link] --> <!-- [![melpa stable badge][melpa-stable-badge]][melpa-stable-link] -->
+
+[travis-link]: https://travis-ci.org/davidshepherd7/${1:`(f-filename (projectile-project-root))`}
+[travis-badge]: https://travis-ci.org/davidshepherd7/$1.svg?branch=master
+[melpa-link]: http://melpa.org/#/$1
+[melpa-badge]: http://melpa.org/packages/$1-badge.svg
+[melpa-stable-link]: https://stable.melpa.org/#/$1
+[melpa-stable-badge]: https://stable.melpa.org/packages/$1-badge.svg

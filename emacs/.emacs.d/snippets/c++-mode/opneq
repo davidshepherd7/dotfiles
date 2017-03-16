@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: opneq
+# --
+inline bool operator!=(const ${1:obj}& lhs, const $1& rhs)
+{
+return !(lhs == rhs);
+}
