@@ -72,7 +72,7 @@
 
 
 ! Nice fonts
-urxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
+URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
 
 ! Scroll bar
 URxvt*scrollBar: false

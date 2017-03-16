@@ -1801,7 +1801,6 @@ for a file to visit if current buffer is not visiting a file."
 (use-package terminal-here
   :load-path "~/.emacs.d/terminal-here"
   :config
-  (validate-setq terminal-here-terminal-command '("urxvt"))
   (global-set-key (kbd "C-<f7>") #'terminal-here-launch)
   (global-set-key (kbd "C-<f6>") #'terminal-here-project-launch)
 
