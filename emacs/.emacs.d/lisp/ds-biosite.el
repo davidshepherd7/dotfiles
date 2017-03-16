@@ -45,6 +45,12 @@
     (beginning-of-line)
     (if (looking-at-p "\\s-+\\*/") 0 '+)))
 
+(defun ds/single-indent-when-nested (langelem)
+  (if (> (length (c-guess-basic-syntax)) 1) 0 '+))
+
+(defun ds/single-unindent-when-nested (langelem)
+  (if (> (length (c-guess-basic-syntax)) 1) 0 '-))
+
 (defun ds/biosite-c-style ()
   (interactive)
 
@@ -56,7 +62,7 @@
   (c-set-offset 'substatement-open '0)
 
   ;; Indent extra function argument line by 1 tab
-  (c-set-offset 'arglist-cont-nonempty '+)
+  (c-set-offset 'arglist-cont-nonempty #'ds/single-indent-when-nested)
   (c-set-offset 'arglist-intro '+)
 
   ;; Don't indent trailing `)` in functions
