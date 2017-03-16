@@ -171,11 +171,14 @@
     (comment-or-uncomment-region beg end))
   (define-key evil-normal-state-map (kbd ";") #'evil-comment)
 
-  (evil-define-operator evil-eval (beg end)
+  (evil-define-operator ds/evil-eval (beg end)
     :move-point nil
     ;; t: print to stdout
-    (eval-region beg end t))
-  (define-key evil-normal-state-map (kbd "#") #'evil-eval)
+    (cond
+     ((derived-mode-p 'emacs-lisp-mode) (eval-region beg end t))
+     ((derived-mode-p 'sql-mode) (sql-send-region beg end))
+     (t (eval-region beg end t))))
+  (define-key evil-normal-state-map (kbd "#") #'ds/evil-eval)
 
   (evil-define-operator evil-mark (beg end)
     (goto-char beg)
