@@ -1157,27 +1157,6 @@ $0")
 
   )
 
-(defun external-shell-in-dir ()
-  "Start urxvt in the current file's dir"
-  (interactive)
-  (start-process "urxvt" nil "urxvt"))
-(global-set-key (kbd "C-<f7>") 'external-shell-in-dir)
-
-
-(defun external-shell-in-project-root ()
-  "Start urxvt in the current project's root"
-  (interactive)
-  (let ((default-directory (projectile-project-root)))
-    (start-process "urxvt" nil "urxvt")))
-(global-set-key (kbd "C-<f6>") 'external-shell-in-project-root)
-
-(defun external-shell-in-project-build ()
-  "Start urxvt in the current project's build directory"
-  (interactive)
-  (let ((default-directory (f-join (projectile-project-root) "build")))
-    (start-process "urxvt" nil "urxvt")))
-(global-set-key (kbd "<M-f6>") 'external-shell-in-project-build)
-
 
 ;; deft (note taking)
 ;; ============================================================
@@ -1818,3 +1797,16 @@ for a file to visit if current buffer is not visiting a file."
 
   ;; Turn on for buffer with (hideshowvis-mode), kinda slow...
   )
+
+(use-package terminal-here
+  :load-path "~/.emacs.d/terminal-here"
+  :config
+  (validate-setq terminal-here-terminal-command '("urxvt"))
+  (global-set-key (kbd "C-<f7>") #'terminal-here-launch)
+  (global-set-key (kbd "C-<f6>") #'terminal-here-project-launch)
+
+  (defun external-shell-in-project-build ()
+    "Start urxvt in the current project's build directory"
+    (interactive)
+    (terminal-here-launch-in-directory (f-join (projectile-project-root) "build")))
+  (global-set-key (kbd "<M-f6>") 'external-shell-in-project-build))

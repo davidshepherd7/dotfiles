@@ -37,3 +37,6 @@
 [submodule "emacs/.emacs.d/hideshowvis"]
 	path = emacs/.emacs.d/hideshowvis
 	url = git@github.com:davidshepherd7/hideshowvis.git
+[submodule "emacs/.emacs.d/terminal-here"]
+	path = emacs/.emacs.d/terminal-here
+	url = git@github.com:davidshepherd7/terminal-here.git
