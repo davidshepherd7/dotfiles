@@ -771,7 +771,7 @@ statement spanning multiple lines; otherwise, return nil."
      ((--any? (s-starts-with? it normalised-header) ds/sort-headers-external-libs) 10)
      ((--any? (s-starts-with? it normalised-header) ds/sort-headers-internal-libs) 20)
      ((--any? (s-starts-with? it normalised-header) ds/sort-headers-local-libs) 30)
-     (t 4))))
+     (t 40))))
 
 (defun ds/sort-headers--internal (header-text)
   (->> header-text
