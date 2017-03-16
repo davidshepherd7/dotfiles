@@ -346,6 +346,8 @@ the line break."
 
 (global-set-key (kbd "C-f") #'isearch-forward)
 (global-set-key (kbd "M-f") (lambda () (interactive) (isearch-forward t)))
+(global-set-key (kbd "C-r") #'isearch-backward)
+(global-set-key (kbd "M-r") (lambda () (interactive) (isearch-backward t)))
 
 ;; Changes for consistency:
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
