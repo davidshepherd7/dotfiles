@@ -38,6 +38,9 @@
 
   (validate-setq ivy-extra-directories nil)
 
+  (validate-setq ivy-re-builders-alist
+                 '((t . ivy--regex-ignore-order)))
+
   )
 
 (use-package ivy-hydra :ensure t)
