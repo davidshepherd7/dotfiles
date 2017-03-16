@@ -19,7 +19,7 @@ bgulpl()
 {
     (
         cd ~/code/boron-unstable/boron/web_applications/
-        gulp watch --silent --reporter=simple --deploy_root ~/gulp_dest "$@"
+        gulp watch --done --silent --reporter=simple --deploy_root ~/gulp_dest "$@"
     )
 }
 alias bgulp="bgulpl --nolint"

@@ -25,6 +25,8 @@ ghistedit = !$HG ungulp && $HG he "$@"
 
 upcommon = !cd "$($HG root)/common" && "$HG" up && cd ../ && "$HG" ccommon
 
+push-as-master = !$HG bookmark -r "$1" master && $HG push -B master unstable
+
 [hooks]
 # pre-commit = "$(hg root)/scripts/pre-commit.sh"
 

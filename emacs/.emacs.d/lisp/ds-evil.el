@@ -377,6 +377,7 @@
   (add-to-list 'evil-insert-state-modes 'makey-key-mode)
   (add-to-list 'evil-insert-state-modes 'git-rebase-mode)
   (add-to-list 'evil-insert-state-modes 'diff-mode)
+  (add-to-list 'evil-insert-state-modes 'special-mode)
 
 
   ;; Square brackets

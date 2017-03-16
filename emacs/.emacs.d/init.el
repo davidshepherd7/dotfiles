@@ -1324,7 +1324,7 @@ $0")
 
     ;; Documentation
     ("i" info nil)
-    ("n" man-woman nil)
+    ("n" man nil)
     ("h" helm-dash)
 
     ;; Keybinds

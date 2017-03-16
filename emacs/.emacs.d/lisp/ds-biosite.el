@@ -260,7 +260,8 @@
        ;; event server
        ("event_server" "")
 
-       ("test" "")
+       ;; ("test" "")
+       ("audit" "")
        ("tests" "")
 
        ("db_types" "db")
