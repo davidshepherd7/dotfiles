@@ -7,7 +7,7 @@
 
 ;; Author: David Shepherd <davidshepherd7@gmail.com>
 ;; Version: 0.1
-;; Package-Requires: (TODO)
+;; Package-Requires: ((emacs "24"))
 ;; Keywords: TODO
 ;; URL: https://github.com/davidshepherd7/`(file-name-base)`
 
@@ -19,8 +19,22 @@
 
 ;;; Code:
 
+
+
+(defgroup `(file-name-base)` nil
+"TODO"
+:group 'TODO
+:prefix "`(file-name-base)`-")
+
 $0
 
+
+
+;;;###autoload
+(defun TODO()
+nil)
+
+
 
 (provide '`(file-name-base)`)
 
