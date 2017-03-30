@@ -433,10 +433,10 @@ index in STRING."
 (validate-setq select-active-regions 'only)
 
 ;; after copy Ctrl+c in X11 apps, you can paste by 'yank' in emacs
-(validate-setq x-select-enable-clipboard t)
+(validate-setq select-enable-clipboard t)
 
 ;; after mouse selection in X11, you can paste by 'yank' in emacs
-(validate-setq x-select-enable-primary t)
+(validate-setq select-enable-primary t)
 
 ;; Middle click pastes at point not at click position (like in term)
 (validate-setq mouse-yank-at-point t)
