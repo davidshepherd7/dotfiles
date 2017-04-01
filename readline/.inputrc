@@ -88,12 +88,9 @@ set show-all-if-ambiguous On
 "\C-l": end-of-line
 
 "\C-n": backward-word
-"\C-o": forward-word
-#"\C-i": previous-history
-"\C-e": previous-history
-
+"\C-e": forward-word
 "\en": backward-char
-"\eo": forward-char
+"\ee": forward-char
 
 "\C-y": shell-backward-kill-word
 "\C-d": shell-kill-word
