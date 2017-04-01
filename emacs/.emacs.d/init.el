@@ -1803,10 +1803,9 @@ for a file to visit if current buffer is not visiting a file."
 
 (use-package terminal-here
   :load-path "~/.emacs.d/terminal-here"
+  :bind (("C-<f7>" . terminal-here-launch)
+         ("C-<f6>" . terminal-here-project-launch))
   :config
-  (global-set-key (kbd "C-<f7>") #'terminal-here-launch)
-  (global-set-key (kbd "C-<f6>") #'terminal-here-project-launch)
-
   (defun external-shell-in-project-build ()
     "Start urxvt in the current project's build directory"
     (interactive)
