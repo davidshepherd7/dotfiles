@@ -925,9 +925,12 @@ For magit versions > 2.1.0"
     (local-set-key [remap my-recompile] 'markdown-preview)
 
     )
-
-
   (add-hook 'markdown-mode-hook 'markdown-mode-keys)
+
+  (defun ds/locally-keep-ws-before-point ()
+    (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
+    (validate-setq ws-butler-keep-whitespace-before-point t))
+  (add-hook 'markdown-mode-hook #'ds/locally-keep-ws-before-point)
   )
 
 ;; Bind goto last change
