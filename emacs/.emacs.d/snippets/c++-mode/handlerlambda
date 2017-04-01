@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: handlerlambda
+# --
+[](
+const pa::rest::request_type&,
+pa::rest::context_type&,
+pa::rest::response_type&
+) {
+$0
+
+return 200;
+}

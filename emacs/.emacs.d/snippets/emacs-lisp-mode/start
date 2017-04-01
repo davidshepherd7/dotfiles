@@ -3,7 +3,7 @@
 # --
 ;;; `(file-name-base)`.el --- $1 -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 Free Software Foundation, Inc.
+;; Copyright © `(let ((calendar-date-display-form '(year))) (calendar-date-string (calendar-current-date)))` David Shepherd
 
 ;; Author: David Shepherd <davidshepherd7@gmail.com>
 ;; Version: 0.1

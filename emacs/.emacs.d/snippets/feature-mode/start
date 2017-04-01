@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: start
+# --
+Feature: `(s-split "-\\|_" (buffer-file-name))`
+
+  Scenario: Do Something
+    Given I have "something"
+    When I have "something"
+    Then I should have "something"
+    And I should have "something"
+    But I should not have "something"

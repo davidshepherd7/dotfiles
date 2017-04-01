@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: start
+# --
+*** Settings ***
+
+$0
+
+*** Test Cases ***
+
+
+*** Keywords ***
