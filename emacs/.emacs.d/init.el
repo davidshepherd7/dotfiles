@@ -1811,3 +1811,9 @@ for a file to visit if current buffer is not visiting a file."
     (interactive)
     (terminal-here-launch-in-directory (f-join (projectile-project-root) "build")))
   (global-set-key (kbd "<M-f6>") 'external-shell-in-project-build))
+(use-package robot-mode
+  :load-path "~/.emacs.d/vc-packages/robot-mode/"
+  :config
+
+  (add-hook 'robot-mode-hook #'ds/robot-multispace-symbol))
+
