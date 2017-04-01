@@ -73,7 +73,7 @@ ccommon = commit -m "chore(common): Update common" 'path:common'
 ##############
 
 # pretty log graph
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'sort(0:tip, topo)' "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
 lg-watch = !/usr/bin/watch -n 0.3 -c -x hg lg --limit 150
 
