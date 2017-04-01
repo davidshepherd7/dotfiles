@@ -40,3 +40,9 @@
 [submodule "emacs/.emacs.d/terminal-here"]
 	path = emacs/.emacs.d/terminal-here
 	url = git@github.com:davidshepherd7/terminal-here.git
+[submodule "emacs/.emacs.d/dropbox-conflicts-el"]
+	path = emacs/.emacs.d/dropbox-conflicts-el
+	url = git@github.com:jezcope/dropbox-conflicts-el.git
+[submodule "emacs/.emacs.d/vc-packages/robot-mode"]
+	path = emacs/.emacs.d/vc-packages/robot-mode
+	url = git@github.com:davidshepherd7/robot-mode.git
