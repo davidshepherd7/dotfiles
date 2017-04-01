@@ -80,9 +80,13 @@
   (let ((future-eslint
          (-find #'f-file?
                 (list (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc.json")
-                      (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc-temp.json")))))
+                      (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc-temp.json"))))
+        (future-eslint-ts
+         (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc-ts.json")))
     (if (and future-eslint ds/use-future-eslintrc)
-        future-eslint
+        (if (derived-mode-p 'typescript-mode)
+            future-eslint-ts
+          future-eslint)
       nil)))
 
 (defun ds/toggle-future-eslintrc ()
@@ -124,5 +128,31 @@
   (-map #'ds/set-json-mode (list ".bowerrc" ".jscsrc"))
   )
 
+(defun ds/search-return-point (string)
+  (save-excursion
+    (search-forward string)
+    (point)))
+
+(defun ds/assign-to-copy ()
+  (interactive)
+  (let ((start (point))
+        (copy-target (buffer-substring (point) (ds/search-return-point "="))))
+    (insert "angular.copy(")
+    (delete-region (point) (ds/search-return-point "= "))
+    (search-forward ";")
+    (delete-char -1)
+    (insert ", ")
+    (insert copy-target)
+    (delete-char -2) ;; assumes that the = is spaced correctly
+    (insert ");")
+
+    ;; Tidy up
+    (forward-char -2)
+    (fill-function-arguments-to-single-line)
+    (fill-function-arguments-to-multi-line)
+    (forward-char 2)
+    (indent-region start (point))
+    )
+  )
 
 (provide 'ds-js)

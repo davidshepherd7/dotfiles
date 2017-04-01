@@ -51,6 +51,7 @@
 
   (global-set-key (kbd "M-\\") #'counsel-M-x)
   (global-set-key (kbd "<menu>") #'counsel-M-x)
+  (global-set-key (kbd "<apps>") #'counsel-M-x)
   (global-set-key (kbd "M-k") #'switch-to-buffer)
   (global-set-key (kbd "C-S-k") #'counsel-find-file)
   (global-set-key (kbd "C-.") #'counsel-mark-ring)

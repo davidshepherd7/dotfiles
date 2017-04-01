@@ -34,6 +34,9 @@ alias ex='atool -x -e' # atool can extract pretty much anything, 7zip can
                        # almost do this but screws up permissions and takes
                        # two runs to extract tar.gz.
 
+
+alias sl='sl -e'
+
 # pdf viewer, disconnect from shell entirely and write stdout/stderr to a
 # temp file (temp files are cleaned on reboot).
 v ()
@@ -278,15 +281,15 @@ hg-rename-function() {
     local new="$2"
 
     # Replace everywhere
-    hg manifest | xargs sed -i "s/${old}/${new}/g"
+    ag -l "${old}" | xargs sed -i "s/${old}/${new}/g" --follow-symlinks
 
     # And uppercase too (for include guards)
     local old_upper="$(echo $old | awk '{print toupper($0)}')"
     local new_upper="$(echo $new | awk '{print toupper($0)}')"
-    hg manifest | xargs sed -i "s/${old_upper}/${new_upper}/g"
+    ag -l "${old_upper}" | xargs sed -i "s/${old_upper}/${new_upper}/g" --follow-symlinks
 
     # Move the files
-    hg manifest | grep "$old" | xargs -I{} -n1 bash -c 'hg mv "$1" "$(dirname $1)/$2.${1##*.}"' "" {} "$new"
+    hg-mmv "$old".* "$new".*
 }
 
 

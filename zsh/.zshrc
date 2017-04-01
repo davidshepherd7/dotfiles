@@ -312,6 +312,9 @@ source ${zshdir}/biosite.sh
 source ${zshdir}/biosite-vms.sh
 source ${zshdir}/xenon.sh
 
+# pip completion helpers
+source ${zshdir}/completion/pip.plugin.zsh
+
 
 # plugins
 source "${zshdir}/plugins/safe-paste.sh"
