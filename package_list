@@ -110,3 +110,4 @@ ffmpeg
 postgresql
 git-hub
 stress
+cgdb

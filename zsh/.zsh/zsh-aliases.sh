@@ -11,9 +11,11 @@ alias fcat='tail -n +1'
 
 # gdb with autorun and --args
 alias gdbr='gdb -ex "run" --args'
+alias cgdbr='cgdb -ex "run" --args'
 
 # gdb with catch-throw, autorun and --args
 alias gdbcr='gdb -ex "catch throw" -ex "run" --args'
+alias cgdbcr='cgdb -ex "catch throw" -ex "run" --args'
 
 # valgrind with debugger
 alias cvalgrind='valgrind --track-origins=yes --db-attach=yes --db-command='\''cgdb -nw %f %p'\'
