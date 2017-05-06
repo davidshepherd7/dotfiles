@@ -15,3 +15,7 @@ hg/.hgex
 # Dropbox junk
 *conflicted copy*
 /emacs/.emacs.d/vc-packages/projectile/
+/emacs/.emacs.d/smex-items
+/emacs/.emacs.d/savehist
+/emacs/.emacs.d/recentf
+/bin/bin/chromedriver
