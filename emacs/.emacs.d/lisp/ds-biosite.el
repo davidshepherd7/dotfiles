@@ -664,6 +664,8 @@ statement spanning multiple lines; otherwise, return nil."
   (if biosite-mode
       (progn
 
+        (setq-local fill-column 100)
+
         (add-hook 'sql-mode-hook #'ds/biosite-set-postgres nil t)
         (when (derived-mode-p 'sql-mode)
           (ds/biosite-set-postgres))
