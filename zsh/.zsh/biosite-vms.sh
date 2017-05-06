@@ -38,7 +38,7 @@ vm-ssh() {
     # StrictHostKeyChecking=no disables warnings about it being a new server.
     \ssh "boron-vm@$(vm-blocking-get-ip "$vm_name")" \
          -o StrictHostKeyChecking=no \
-         "$@"
+         -t -t tmux new-session "$@"
 }
 compctl -K _complete-vms vm-ssh
 
@@ -57,7 +57,7 @@ vm-psql() {
     local vm_name="$1"
     shift 1
 
-    vm-ssh "$vm_name" -t -t 'PGPASSWORD="biosite" psql -U boron_user boron -h localhost'
+    vm-ssh "$vm_name" env PGPASSWORD="biosite" psql -U boron_user boron -h localhost "$@"
 }
 compctl -K _complete-vms vm-psql
 
