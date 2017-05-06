@@ -215,33 +215,9 @@ the line break."
 
 
 ;; case changes
-;; ============================================================
-
-;; dwim functions:
-(defun dwim-word (x function region-function)
-  (if (region-active-p)
-      (funcall region-function (region-beginning) (region-end))
-    (funcall function x)))
-
-(defun capitalize-word-dwim(x)
-  (interactive "P")
-  (let ((y (if (equal current-prefix-arg nil) 1 x)))
-    (dwim-word y 'capitalize-word 'capitalize-region)))
-
-(defun downcase-word-dwim(x)
-  (interactive "P")
-  (let ((y (if (equal current-prefix-arg nil) 1 x)))
-  (dwim-word y 'downcase-word 'downcase-region)))
-
-(defun upcase-word-dwim(x)
-  (interactive "P")
-  (let ((y (if (equal current-prefix-arg nil) 1 x)))
-    (dwim-word y 'upcase-word 'upcase-region)))
-
-;; Bind to /
-(global-set-key (kbd "C-/") 'capitalize-word-dwim)
-(global-set-key (kbd "M-/") 'downcase-word-dwim)
-(global-set-key (kbd "C-M-/") 'upcase-word-dwim)
+(global-set-key (kbd "C-/") 'capitalize-dwim)
+(global-set-key (kbd "M-/") 'downcase-dwim)
+(global-set-key (kbd "C-M-/") 'upcase-dwim)
 
 
 
