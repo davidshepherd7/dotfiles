@@ -1818,3 +1818,13 @@ for a file to visit if current buffer is not visiting a file."
 
   (add-hook 'robot-mode-hook #'ds/robot-multispace-symbol))
 
+
+(use-package php-mode
+  :config
+  (define-key php-mode-map (kbd "M-e") nil)
+  (define-key php-mode-map (kbd "C-e") nil)
+
+  (add-hook 'php-mode-hook (lambda () (flycheck-mode)))
+  (add-hook 'php-mode-hook (lambda () (flycheck-select-checker 'php)))
+
+  )
