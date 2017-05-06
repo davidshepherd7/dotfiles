@@ -5,6 +5,7 @@
 (require 's)
 (require 'f)
 (require 'projectile)
+(require 'sass-mode)
 
 (require 'align)
 (defun ds/disable-tabs-advice (&rest args)
@@ -671,9 +672,12 @@ statement spanning multiple lines; otherwise, return nil."
           (local-set-key (kbd "C-,") #'ds/biosite-include)
           (local-set-key (kbd "C-_") #'ds/biosite-insert-current-namespace))
 
-        (setq-local ds/js-indent-chain nil)
+        (when (derived-mode-p 'js-mode)
+          (setq-local js-switch-indent-offset 0)
+          (setq-local ds/js-indent-chain nil))
 
-        )
+        (when (derived-mode-p 'sass-mode)
+          (setq-local sass-indent-offset 4)))
     (remove-hook 'sql-mode-hook #'ds/biosite-set-postgres t)))
 
 (defun maybe-enable-biosite-mode ()
@@ -688,6 +692,7 @@ statement spanning multiple lines; otherwise, return nil."
 (add-hook 'js-mode-hook #'maybe-enable-biosite-mode)
 (add-hook 'html-mode-hook #'maybe-enable-biosite-mode)
 (add-hook 'css-mode-hook #'maybe-enable-biosite-mode)
+(add-hook 'sass-mode-hook #'maybe-enable-biosite-mode)
 
 (defun ds/biosite-set-postgres ()
   (sql-set-product "postgres"))
