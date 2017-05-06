@@ -1170,6 +1170,7 @@ $0")
   (setq deft-extension "md")
   (setq deft-text-mode 'markdown-mode)
   (setq deft-use-filename-as-title t)
+  (validate-setq deft-auto-save-interval 0.0) ; disable
 
   ;; Kill C-c keys
   (define-key deft-mode-map (kbd "C-c") 'nil)
