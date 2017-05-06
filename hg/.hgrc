@@ -118,9 +118,9 @@ autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG 
 # histedit with default revision the earliest multable revision on this branch
 he = histedit -r 'min((draft() or secret()) and only(.))'
 
-backout-commit = !$HG backout -r "$1" && $HG commit -m "Backed out $1"
-
-multi-backout = !$HG log -r "$1" -T "{node}\n" | xargs -n1 $HG backout-commit
+# Backout a revset of changes
+backout-commit = !$HG backout --no-commit -r "$1" && $HG commit -m "Backed out $1"
+multi-backout = !$HG log -r "sort($1, topo)" -T "{node}\n" | xargs -n1 $HG backout-commit
 
 cmerge = commit -m "Merge"
 
