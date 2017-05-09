@@ -1,0 +1,28 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: args
+# --
+usage() {
+    cat <<EOF >&2
+Usage: `(buffer-file-name)` [ARGS]
+
+
+    --help, -h:    Show this help
+EOF
+}
+
+while [[ "$#" -gt 0 ]]; do
+    case \$1 in
+        -h|--help)
+            usage
+            exit 1
+            ;;
+        *)
+            echo "Unrecognised argument \$1" >&2
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+$0

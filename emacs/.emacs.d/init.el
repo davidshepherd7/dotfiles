@@ -1829,3 +1829,7 @@ for a file to visit if current buffer is not visiting a file."
   (add-hook 'php-mode-hook (lambda () (flycheck-select-checker 'php)))
 
   )
+
+(defun ds/print (&rest args)
+  (-each args (lambda (arg) (prin1 arg) (princ " ")))
+  (terpri))
