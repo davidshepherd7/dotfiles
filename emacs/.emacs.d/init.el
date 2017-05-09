@@ -596,6 +596,7 @@ index in STRING."
 ;; (load-file "~/.emacs.d/lisp/ds-helm.el")
 (load-file "~/.emacs.d/lisp/ds-ivy.el")
 
+(load-file "~/.emacs.d/lisp/ds-anki.el")
 
 
 ;; This needs to go after SML is loaded so that the mode line colours are
