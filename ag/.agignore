@@ -1,8 +1,8 @@
-*.min.js
-*.min.css
-*.css.map
-*.min.js.map
-*.orig
+*\.min.js
+*\.min.css
+*\.css.map
+*\.min.js.map
+*\.orig
 
 build.ninja
 
