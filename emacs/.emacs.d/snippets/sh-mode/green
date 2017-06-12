@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: green
+# --
+\e[32m$0\e[39m

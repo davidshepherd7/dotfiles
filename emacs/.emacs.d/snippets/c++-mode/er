@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: er
+# --
+${1:vec}.erase(std::remove($1.begin(), $1.end(), ${2:filter}), $1.end());
+$0

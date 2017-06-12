@@ -44,7 +44,7 @@ mkdir -p ~/.config/sxhkd
 stow_file sxhkd
 
 mkdir -p ~/.keysnail/
-stow_file keysnail
+# stow_file keysnail
 
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
