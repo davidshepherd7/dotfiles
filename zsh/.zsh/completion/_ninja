@@ -1,6 +1,4 @@
 #compdef ninja
-#autoload
-
 # Copyright 2011 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +22,13 @@ __get_targets() {
   then
     eval dir="${opt_args[-C]}"
   fi
-  targets_command="ninja -C \"${dir}\" -t targets"
-  eval ${targets_command} 2>/dev/null | sed "s/^\(.*\): .*$/\1/" #while read -r a b; do echo $a | cut -d ':' -f1; done;
-
+  file="build.ninja"
+  if [ -n "${opt_args[-f]}" ];
+  then
+    eval file="${opt_args[-f]}"
+  fi
+  targets_command="ninja -f \"${file}\" -C \"${dir}\" -t targets all"
+  eval ${targets_command} 2>/dev/null | cut -d: -f1
 }
 
 __get_tools() {

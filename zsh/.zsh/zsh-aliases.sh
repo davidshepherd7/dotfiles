@@ -18,7 +18,7 @@ alias gdbcr='gdb -ex "catch throw" -ex "run" --args'
 alias cgdbcr='cgdb -ex "catch throw" -ex "run" --args'
 
 # valgrind with debugger
-alias cvalgrind='valgrind --track-origins=yes --db-attach=yes --db-command='\''cgdb -nw %f %p'\'
+# alias cvalgrind='valgrind --track-origins=yes --db-attach=yes --db-command='\''cgdb -nw %f %p'
 
 # ls aliases
 alias ls='ls --color=auto'
@@ -32,9 +32,9 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # archives
-alias ex='atool -x -e' # atool can extract pretty much anything, 7zip can
-                       # almost do this but screws up permissions and takes
-                       # two runs to extract tar.gz.
+alias ex='atool -x -e' # atool can extract pretty much anything, 7zip can almost
+# do this but screws up permissions and takes two runs to
+# extract tar.gz.
 
 
 alias sl='sl -e'
@@ -577,3 +577,4 @@ perf_flame()
 
 # Run locally installed node modules
 alias npm-exec='PATH=$(npm bin):$PATH'
+alias lodash-test='PATH=$(npm bin):$PATH node -e "_ = require(\"lodash\");" -i'

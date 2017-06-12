@@ -73,7 +73,7 @@ boron-test () {
     )
 }
 _boron-test () {
-    reply=(`cd-boron-build && ninja -t targets | awk -F: '{print $1}' | grep 'test'`);
+    reply=(`cd-boron-build && ninja -t targets | awk -F: '{print $1}' | grep 'test-\|test_' | grep -v '/CMakeLists.txt'`);
 }
 compctl -K _boron-test boron-test
 alias esfix="eslint -c ~/code/boron-unstable/boron/web_applications/future-eslintrc.json --fix"
