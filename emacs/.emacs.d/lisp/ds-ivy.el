@@ -7,6 +7,8 @@
   :diminish "ivy"
   :config
 
+  (require 'ivy)
+
   (ivy-mode)
   (global-set-key (kbd "C-|") #'ivy-resume)
 
@@ -41,6 +43,16 @@
   (validate-setq ivy-re-builders-alist
                  '((t . ivy--regex-ignore-order)))
 
+
+  ;; Sort matches by longest match first
+  (defun ds/ivy-sort-by-length (_name candidates)
+    (if (> (length candidates) 200)
+        candidates
+      (cl-sort (copy-sequence candidates)
+               (lambda (f1 f2)
+                 (< (length f1) (length f2))))))
+
+  (setf (alist-get t ivy-sort-matches-functions-alist) #'ds/ivy-sort-by-length)
   )
 
 (use-package ivy-hydra :ensure t)
