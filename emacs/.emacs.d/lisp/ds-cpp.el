@@ -138,3 +138,13 @@ access functions are BAD for class access (too much copying)."
   :ensure t
   :config
   (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode))
+
+
+(defun ds/cmake ()
+  "Run cmake in a way that doesn't interfere with other compiles"
+  (interactive)
+  (let ((default-directory (or (projectile-compilation-dir) (projectile-project-root)))
+        (previous-compile-command compile-command)
+        (compilation-buffer-name-function (lambda (_arg) "*cmake*")))
+    (compile "cmake .")
+    (setq compile-command previous-compile-command)))
