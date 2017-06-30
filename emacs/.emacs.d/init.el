@@ -1499,10 +1499,16 @@ $0")
                         ;; "angular-ui-bootstrap"
                         ))
 
+  (setq ds/html-docsets '(
+                          "CSS"
+                          "HTML"
+                          "Bootstrap 3"
+                          ))
+
   (setq ds/shell-docsets '("Bash"))
 
   (setq ds/docsets
-        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets))
+        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1528,6 +1534,7 @@ $0")
   (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
   (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
   (add-hook 'css-mode-hook (ds/set-docsets-fn '("CSS")))
+  (add-hook 'html-mode-hook (ds/set-docsets-fn ds/html-docsets))
   )
 
 (defun ds/insert-current-date ()
