@@ -1848,3 +1848,19 @@ for a file to visit if current buffer is not visiting a file."
   :config
   (add-to-list 'auto-mode-alist (cons "\.st$" #'smalltalk-mode)))
 
+(use-package midnight
+  :ensure t
+  :config
+  ;; Clean up every hour
+  (validate-setq midnight-period (* 60 60))
+
+  ;; Clean these buffers after an hour
+  (validate-setq clean-buffer-list-delay-special (* 60 60))
+  (add-to-list 'clean-buffer-list-kill-regexps "\\*Help\\*")
+  (add-to-list 'clean-buffer-list-kill-regexps "\\*ag search ")
+  (add-to-list 'clean-buffer-list-kill-regexps "\\*.*[Ee]diff")
+  (add-to-list 'clean-buffer-list-kill-regexps "\\*tramp/sudo ")
+
+  ;; Clean other buffers every day
+  (validate-setq clean-buffer-list-delay-general 1)
+  )
