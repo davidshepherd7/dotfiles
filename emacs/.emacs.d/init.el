@@ -528,6 +528,7 @@ index in STRING."
   ;; For consistency make the keymap itself empty as well
   (setf undo-tree-map (make-sparse-keymap))
 
+  (validate-setq undo-tree-enable-undo-in-region nil)
   )
 
 
