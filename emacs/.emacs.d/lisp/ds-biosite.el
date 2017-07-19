@@ -198,15 +198,16 @@
   (interactive)
   (ds/biosite-insert-as-include (current-kill 0 t)))
 
-(defun ds/biosite-include (suppress-sort)
+(defun ds/biosite-include (insert-here)
   (interactive "P")
   (let* ((headers (--> (projectile-current-project-files)
                        (-filter (lambda (filepath) (or (s-ends-with-p ".h" filepath)
                                                   (s-ends-with-p ".hpp" filepath))) it)))
          (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
          (file (completing-read "header: " headers nil nil default-input)))
-    (ds/biosite-insert-as-include file)
-    (when (not suppress-sort)
+    (if insert-here
+        (insert (ds/biosite-path-to-include file))
+      (ds/biosite-insert-as-include file)
       (ds/sort-headers))))
 
 
@@ -327,7 +328,9 @@
 (defun ds/biosite-insert-current-namespace ()
   "Insert the biosite namespace for the current file"
   (interactive)
-  (insert (ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name)))))
+  (if current-prefix-arg
+      (insert (ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name))))
+    (insert (s-concat (ds/biosite-make-qualified-class-name (buffer-file-name)) "::"))))
 
 
 
