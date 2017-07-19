@@ -52,6 +52,13 @@
 (defun ds/single-unindent-when-nested (langelem)
   (if (> (length (c-guess-basic-syntax)) 1) 0 '-))
 
+(defun ds/template-unindent-trailing-closing-paren (langelem)
+  (save-excursion
+    (beginning-of-line)
+    (if (looking-at-p "\\s-*>")
+        0
+      '+)))
+
 (defun ds/biosite-c-style ()
   (interactive)
 
@@ -77,6 +84,8 @@
 
   ;; Indent comments by one tab normally, or none on closing comment lines.
   (c-set-offset 'c #'ds/comment-offset)
+
+  (c-set-offset 'template-args-cont #'ds/template-unindent-trailing-closing-paren)
   )
 
 (add-hook 'c++-mode-hook #'ds/biosite-c-style)
