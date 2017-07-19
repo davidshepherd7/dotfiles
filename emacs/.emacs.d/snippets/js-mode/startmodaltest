@@ -1,0 +1,34 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# --
+(function() {
+'use strict';
+
+describe('`(s-capitalized-words (file-name-base (file-name-base)))`', function() {
+beforeEach(angular.mock.module('TODO'));
+beforeEach(angular.mock.module('${2:`(ds/biosite-path-to-html-template-path (buffer-file-name))`}'));
+
+let helpers;
+beforeEach(function() {helpers = injectHelpers();});
+
+let cmpl;
+beforeEach(function() {
+	cmpl = helpers.compileTemplate(\`
+<${4:`(s-dashed-words (ds/chop-web-suffixes (file-name-nondirectory (buffer-file-name))))`}
+resolve="resolve"
+modal-instance="modalInstance"
+$0>
+</$4>
+\`);
+cmpl.scope.resolve = {
+
+};
+cmpl.scope.modalInstance = {close: jasmine.createSpy('close')};
+	cmpl.scope.$digest();
+});
+
+it('compiles', function() {
+	expect(cmpl.elem).toShowText(TODO);
+});
+});
+
+})();

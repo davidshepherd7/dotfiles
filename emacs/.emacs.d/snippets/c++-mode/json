@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: json
+# --
+.then_json("$1", [](const pa::json::element& json) {
+const auto rep = pa::json::decode<$2>(json);
+$0
+})

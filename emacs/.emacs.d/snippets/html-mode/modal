@@ -1,0 +1,29 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: modal
+# --
+<article>
+<header class="modal-header">
+<button
+type="button"
+class="close"
+ng-click="$ctrl.modalInstance.dismiss('canceled')"
+aria-hidden="true"
+>
+&times;
+</button>
+<h4 class="modal-title">
+$1
+</h4>
+</header>
+<section class="modal-body">
+$0
+</section>
+<footer class="modal-footer">
+<button
+class="btn btn-default pull-right"
+ng-click="$ctrl.modalInstance.dismiss('canceled')"
+>
+Cancel
+</button>
+</footer>
+</article>

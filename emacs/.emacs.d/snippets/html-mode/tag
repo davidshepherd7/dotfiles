@@ -1,4 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: fa
+# key: <
+# binding: C-<
+# binding: C-,
 # --
-<i class="fa fa-$0"></i> 
+<$1 $2>
+$0
+</$1>

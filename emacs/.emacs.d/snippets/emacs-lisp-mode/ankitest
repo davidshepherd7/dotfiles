@@ -1,0 +1,7 @@
+(ert-deftest test-$1 ()
+  (with-mock
+    (mock (anki-mode-connect 'anki-mode--$1-cb "$2" nil *))
+    (anki-mode-$1))
+
+    (anki-mode--${1}-cb)
+    )

@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: fa
+# key: autoload
 # --
-<i class="fa fa-$0"></i> 
+;;;###autoload

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: var
+# --
+(defvar $1 ${2:default value}
+"${3:documentation}"
+:group $4)

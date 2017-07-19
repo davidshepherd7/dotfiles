@@ -698,7 +698,7 @@ statement spanning multiple lines; otherwise, return nil."
   (interactive)
   (if (-any?
        (lambda (project-regex) (s-match project-regex (projectile-project-name)))
-       '(".*boron.*" ".*caesium.*"))
+       '(".*boron.*" ".*caesium.*" ".*pa-.*" ".*xenon.*"))
       (biosite-mode 1)
     (biosite-mode 0)))
 
@@ -735,8 +735,8 @@ statement spanning multiple lines; otherwise, return nil."
 (makunbound 'ds/sort-headers-internal-libs)
 (defcustom ds/sort-headers-internal-libs
   '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/"
-    "network/" "ssl/" "crypt/" "log/" "io/" "paths/" "options/"
-    "process/" "qtlib/" "auth/" "version/"
+    "network/" "ssl/" "crypt/" "crypt-qt/" "log/" "io/" "paths/" "options/"
+    "process/" "qtlib/" "auth/" "version/" "audit"
     )
   "")
 
