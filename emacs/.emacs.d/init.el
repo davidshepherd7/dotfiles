@@ -1864,3 +1864,13 @@ for a file to visit if current buffer is not visiting a file."
   ;; Clean other buffers every day
   (validate-setq clean-buffer-list-delay-general 1)
   )
+
+
+(use-package visual-regexp
+  :ensure t
+  :config
+
+  (defalias 'visual-regexp-replace #'vr/replace)
+  (defalias 'visual-regexp-query-replace #'vr/query-replace)
+  (defalias 'visual-regexp-mc-mark #'vr/mc-mark)
+  )
