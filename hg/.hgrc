@@ -61,11 +61,11 @@ emacsclient.args = -c --eval "(emerge-files-with-ancestor nil \""$local"\" \""$o
 # Biosite stuff
 #########
 
-# # Interact with RhodeCode
-# pull-request = !sensible-browser "$(hg paths "$1")/pull-request/new" &
-# pr = !$HG push "review"  -f "$@" && $HG pull-request "review"
-# pr-stable = !$HG push review-stable -f "$@" && $HG pull-request review-stable
-# pr-staging = !$HG push review-staging -f "$@" && $HG pull-request review-staging
+# Interact with RhodeCode
+pull-request = !sensible-browser "$(hg paths "$1" | sed 's/^git\+//')/pull-request/new" &
+pr = !$HG push "review"  -f "$@" && $HG pull-request "review"
+pr-stable = !$HG push review-stable -f "$@" && $HG pull-request review-stable
+pr-staging = !$HG push review-staging -f "$@" && $HG pull-request review-staging
 
 ccommon = commit -m "chore(common): Update common" 'path:common'
 
@@ -73,11 +73,11 @@ ccommon = commit -m "chore(common): Update common" 'path:common'
 ##############
 
 # pretty log graph
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'sort(0:tip, topo)' "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
+lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'sort(all(), topo, topo.firstbranch=.)' "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
 lg-watch = !/usr/bin/watch -n 0.3 -c -x hg lg --limit 150
 
-lp = log -p --color=always -r 'this_branch_simple(.)' --git
+lp = log -p -v --color=always -r 'this_branch_simple(.)' --git
 lgs = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'this_branch_simple(.)'
 
 # status including subrepos and with path relative to cwd
@@ -112,7 +112,8 @@ idfull = !$HG --debug id -i "$@"
 # Clean up whitespace, warning: not well tested yet, potentially dangerous
 clean-ws = !hg-clean-whitespace.sh
 
-# Single command bisection
+# Single command bisection, usage: `hg autobisect [GOOD] [BAD] "ninja test-thingy && ./bin/test-thingy"`
+# (you may need `cmake . &&`)
 autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG bisect --bad "$2" && $HG bisect --command "$3"
 
 # histedit with default revision the earliest multable revision on this branch
@@ -133,4 +134,6 @@ cia = ci --amend
 
 multi-released =!$HG log -r "descendants($1) and tag('re:boron-[0-9]+\.[0-9]+\.[0-9]+$')" --template '$1 was released in {tags} on {date|isodate}\n'
 
-push-as = !hg-push-as.py "$@"
+uncommit = !$HG strip -r ${1:-.} --keep
+
+push-as = !hg-push-as.py --mercurial-binary "$HG" "$@"

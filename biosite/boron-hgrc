@@ -32,3 +32,9 @@ push-as-master = !$HG bookmark -f -r "$1" master && $HG push -B master unstable
 
 [phases]
 publish = False
+
+[merge-patterns]
+boron/web_applications/lib/** = internal:local
+
+[extensions]
+merge-master=/home/david/code/boron-unstable/scripts/hooks/merge-master.py

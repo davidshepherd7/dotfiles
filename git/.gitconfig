@@ -30,6 +30,7 @@ lg = log --branches --remotes --tags --color --graph --pretty=format:'%Cred%h%Cr
 
 lg = !"git lg1"
 
+pull-request = "!sensible-browser \"$(git remote get-url \"$1\")/pull-request/new\"" #
 
 # Mercurial commands
 up = checkout

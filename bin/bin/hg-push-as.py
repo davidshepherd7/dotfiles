@@ -2,8 +2,9 @@
 
 import sys
 import argparse
+import re
 
-from subprocess import check_call
+from subprocess import check_call, check_output
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser(description=main.__doc__,
@@ -14,6 +15,7 @@ def parse_arguments(argv):
     parser.add_argument('--rev', '-r', default='.', help = '')
     parser.add_argument('--bookmark', '-B', required=True, help = '')
     parser.add_argument('repo', default=None, help='')
+    parser.add_argument('--mercurial-binary', default='hg', help='Specify the mercurial to use, you may want to use this in aliases as `--mercurial-binary "$HG"` to avoid weirdness from mixing versions')
 
     args = parser.parse_args(argv)
     return args
@@ -26,9 +28,14 @@ def main(argv):
 
     args = parse_arguments(argv)
 
-    check_call(['hg', 'pull', '-B', args.bookmark, args.repo])
-    check_call(['hg', 'bookmark', '-f', '-r', args.rev, args.bookmark])
-    check_call(['hg', 'push', '-B', args.bookmark, args.repo])
+    pulled = check_output([args.mercurial_binary, 'pull', '-B', args.bookmark, args.repo]).decode('ascii')
+
+    print(pulled)
+    if re.match("adding changesets", pulled):
+        print("Unseen changes found on bookmark", args.bookmark, "you should probably rebase first", file=sys.stderr)
+
+    check_call([args.mercurial_binary, 'bookmark', '-f', '-r', args.rev, args.bookmark])
+    check_call([args.mercurial_binary, 'push', '-B', args.bookmark, args.repo])
 
     return 0
 
