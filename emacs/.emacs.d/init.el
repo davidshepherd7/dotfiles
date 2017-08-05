@@ -597,8 +597,6 @@ index in STRING."
 ;; (load-file "~/.emacs.d/lisp/ds-helm.el")
 (load-file "~/.emacs.d/lisp/ds-ivy.el")
 
-(load-file "~/.emacs.d/lisp/ds-anki.el")
-
 
 ;; This needs to go after SML is loaded so that the mode line colours are
 ;; correct.
@@ -1874,3 +1872,5 @@ for a file to visit if current buffer is not visiting a file."
   (defalias 'visual-regexp-query-replace #'vr/query-replace)
   (defalias 'visual-regexp-mc-mark #'vr/mc-mark)
   )
+
+(use-package anki-mode)
