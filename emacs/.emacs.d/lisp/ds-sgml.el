@@ -30,36 +30,6 @@
 (define-key sgml-mode-map (kbd "C-M-e") #'sgml-skip-tag-backward)
 
 (define-key sgml-mode-map (kbd "<") nil)
-(define-key sgml-mode-map (kbd "C-<") #'sgml-tag)
-
-;; Add some custom tags to the magic tag insertion
-(defvar ds/angular-tags
-  '(
-    "ng-app"
-    "ng-bind"
-    "ng-repeat"
-    "ng-view"
-
-    ;; boron tags
-    "edit-form-text"
-    "edit-form-textarea"
-    "edit-form-datepicker"
-    "edit-form-boolean"
-    "edit-form-select"
-    "edit-form-number"
-    "edit-form-time"
-    "edit-form-time-duration"
-    "edit-form-datetime"
-    "edit-form-color"
-    "edit-form-optional"
-    "edit-form-custom"
-    ))
-
-(defun ds/add-angular-tags ()
-  (interactive)
-  (mapc (lambda (x) (add-to-list 'sgml-tag-alist x)) ds/angular-tags))
-(add-hook 'html-mode-hook #'ds/add-angular-tags)
-
 
 (require 'flycheck)
 (add-hook 'html-mode-hook #'flycheck-mode)
