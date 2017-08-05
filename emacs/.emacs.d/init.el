@@ -274,7 +274,7 @@
 ;; Highlight todo etc.
 (defun highlight-todos ()
   (interactive)
-  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|HACK\\|\\?\\?ds\\)\\>" 1 font-lock-warning-face t))))
+  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|TODO9\\|BUG\\|NOTE\\|HACK\\|\\?\\?ds\\)\\>" 1 font-lock-warning-face t))))
 (add-hook 'prog-mode-hook 'highlight-todos)
 (add-hook 'text-mode-hook (lambda () (when (not (derived-mode-p 'org-mode)) (highlight-todos))))
 
@@ -418,6 +418,7 @@ index in STRING."
 (use-package frames-only-mode
   :ensure t
   :config
+  (validate-setq frames-only-mode-reopen-frames-from-hidden-x11-virtual-desktops t)
   (frames-only-mode 1))
 
 (global-set-key (kbd "s-k") #'make-frame)
@@ -1708,6 +1709,29 @@ $0")
   (add-hook 'emerge-startup-hook #'ds/toggle-electricity--disable)
   )
 
+;; (use-package ediff
+;;   :ensure t
+;;   :config
+
+;;   (defun ds/kill-ediff-buffers ()
+;;     (kill-buffer ediff-buffer-A)
+;;     (kill-buffer ediff-buffer-B)
+;;     (kill-buffer ediff-buffer-C)
+;;     (kill-buffer "*ediff-errors*")
+;;     (kill-buffer "*ediff-merge*")
+;;     (kill-buffer "*ediff-diff*")
+;;     (kill-buffer "*Ediff Control Panel*"))
+
+;;   (add-hook 'ediff-quit-hook #'ds/kill-ediff-buffers)
+
+;;   ;; Automatically save back merges when done, always.
+;;   (setq-default ediff-autostore-merges t)
+
+;;   (validate-setq ediff-keep-variants nil)
+;;   (validate-setq ediff-make-buffers-readonly-at-startup t)
+;;   (add-hook 'ediff-prepare-buffer-hook #'ds/toggle-electricity--disable)
+;;   )
+
 (defun sudo-edit (&optional arg)
   "Edit currently visited file as root.
 
@@ -1845,6 +1869,21 @@ for a file to visit if current buffer is not visiting a file."
   :load-path "~/.emacs.d/vc-packages/smalltalk-mode/smalltalk-mode.el"
   :config
   (add-to-list 'auto-mode-alist (cons "\.st$" #'smalltalk-mode)))
+
+
+;; https://github.com/k-talo/volatile-highlights.el
+
+;; (use-package volatile-highlights
+;;   :ensure t
+;;   :config
+;;   (volatile-highlights-mode)
+;;   )
+
+;; (use-package highlight-indentation
+;;   :ensure t
+;;   :config
+;;   (add-hook 'python-mode-hook #'highlight-indentation-mode)
+;;   )
 
 (use-package midnight
   :ensure t

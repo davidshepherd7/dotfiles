@@ -66,3 +66,4 @@
 (add-hook 'css-mode-hook #'flycheck-mode)
 
 (add-to-list 'auto-mode-alist (cons "\\.wxs" #'xml-mode))
+(add-to-list 'auto-mode-alist (cons "\\.mustache$" #'html-mode))

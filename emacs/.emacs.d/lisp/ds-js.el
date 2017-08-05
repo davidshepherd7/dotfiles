@@ -61,7 +61,9 @@
 
 (defun ds/switch-to-html ()
   (interactive)
-  (ds/switch-to-related ".html"))
+  (if (s-contains? ".spec.js" (buffer-file-name))
+      (ds/switch-to-related ".html" (file-name-sans-extension (buffer-file-name)))
+    (ds/switch-to-related ".html")))
 (define-key js-mode-map (kbd "C-\\ o") #'ds/switch-to-html)
 
 (defun ds/js-switch-to-test ()
