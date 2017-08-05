@@ -71,6 +71,15 @@ vm-psql() {
 }
 compctl -K _complete-vms vm-psql
 
+vm-logs() {
+    local vm_name="$1"
+    shift 1
+    vm-ssh "$vm_name" journalctl -f \
+           -u boron-api-server -u boron-job-server -u boron-event-server \
+           -u boron-biometric-node -u boron-cscs-server -u nginx
+}
+compctl -K _complete-vms vm-logs
+
 docker-psql() {
     local docker_name="$1"
     shift 1
