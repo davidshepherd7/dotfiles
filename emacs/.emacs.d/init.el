@@ -61,6 +61,7 @@
 (require 'ert) ; Need this for now...
 (load-library "bind-key")
 (load-library "use-package")
+(require 'use-package)
 
 ;; add some packages for improving package.el
 (use-package package-utils :ensure t)
