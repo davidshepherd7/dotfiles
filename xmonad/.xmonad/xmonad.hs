@@ -77,17 +77,14 @@ myManageHook =
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 
-myLayout = avoidStruts(tiled ||| matlabsucks |||
+myLayout = avoidStruts(tiled ||| fullWidth |||
                        noBorders Full)
   where
     -- Default tiling algorithm: partitions the screen into two panes
-    tiled   = Tall nmaster delta ratio
+    tiled   = Tall 1 delta ratio
 
     -- Layout with roughly even sized windows, for the first few anyway..
-    matlabsucks = Tall 2 delta ratio
-
-    -- The default number of windows in the master pane
-    nmaster = 1
+    fullWidth = Mirror (Tall 1 delta ratio)
 
     -- Default proportion of screen occupied by master pane
     ratio   = 1/2
@@ -176,6 +173,8 @@ myKeys = [
   -- movement
   , ("M-<R>", sendMessage Expand)
   , ("M-<L>", sendMessage Shrink)
+  , ("M-<D>", sendMessage Expand)
+  , ("M-<U>", sendMessage Shrink)
   , ("M-h", windows W.focusUp)
   , ("M-i", windows W.focusUp)
 
