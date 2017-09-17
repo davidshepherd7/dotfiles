@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: t
+# --
+(check-equal? (`(ds/prev-define)` $0))

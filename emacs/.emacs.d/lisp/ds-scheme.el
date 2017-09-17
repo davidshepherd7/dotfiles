@@ -40,4 +40,10 @@
 (add-hook 'scheme-mode-hook #'aggressive-indent-mode)
 
 
+(defun ds/prev-define ()
+  (interactive)
+  (re-search-backward "(define\\s-+\\(\\S-+\\)$")
+  (match-string 1))
+
+
 (provide 'ds/scheme)

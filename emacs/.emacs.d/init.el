@@ -672,6 +672,9 @@ index in STRING."
    ((derived-mode-p 'js-mode)
     "gulp --silent --reporter=simple --nolint && refresh-browser.sh")
 
+
+   ((derived-mode-p 'scheme-mode) (concat "\\racket -t " (file-name-nondirectory (buffer-file-name))))
+
    ;; make is probably a good default for anything else
    (t "make")))
 
