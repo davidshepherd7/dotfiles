@@ -1,4 +1,31 @@
 
+(defun ds//hafnium-path-to-import (path)
+  (interactive)
+  (--> path
+       (s-trim it)
+       (f-join (projectile-project-root) it)
+       (file-relative-name it (projectile-project-root))
+       (s-split-up-to "src/" it 2)
+       (nth 1 it)
+       (s-concat "./" it)
+       (s-chop-suffix ".ts" it)
+       (s-chop-suffix ".js" it)))
+
+(defun ds//select-ts-import ()
+  (let* ((headers (--> (projectile-current-project-files)
+                       (-filter (lambda (filepath) (or (s-ends-with-p ".ts" filepath)
+                                                  (s-ends-with-p ".js" filepath))) it)))
+         (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
+         (file (completing-read "import: " headers nil nil default-input)))
+    (ds//hafnium-path-to-import file)))
+
+(defun ds/ts-import ()
+  (interactive)
+  (goto-char (point-max))
+  (re-search-backward "^import" nil t)
+  (end-of-line)
+  (insert "\n")
+  (yas-expand-snippet (yas-lookup-snippet "import")))
 (use-package typescript-mode
   :ensure t
 
@@ -20,6 +47,7 @@
 
   (define-key typescript-mode-map (kbd "C-\\ o") #'ds/switch-to-html)
   (define-key typescript-mode-map (kbd "C-\\ n") #'ds/js-switch-to-test)
+  (define-key typescript-mode-map (kbd "C-,") #'ds/ts-import)
 
   (defun boron-typings-index ()
     (f-join (projectile-project-root) "boron" "web_applications" "typings" "index.d.ts"))
