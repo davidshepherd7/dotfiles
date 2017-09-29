@@ -1,4 +1,6 @@
 
+(require 'use-package)
+
 (defun ds//hafnium-path-to-import (path)
   (interactive)
   (--> path
@@ -26,11 +28,14 @@
   (end-of-line)
   (insert "\n")
   (yas-expand-snippet (yas-lookup-snippet "import")))
+
+
 (use-package typescript-mode
   :ensure t
 
   :config
 
+  (require 'flycheck)
   (require 'ds-js)
   (require 'typescript-mode)
 
@@ -49,6 +54,9 @@
   (define-key typescript-mode-map (kbd "C-\\ n") #'ds/js-switch-to-test)
   (define-key typescript-mode-map (kbd "C-,") #'ds/ts-import)
 
+  ;; Remove broken function which auto indents on {
+  (define-key typescript-mode-map (kbd "{") nil)
+
   (defun boron-typings-index ()
     (f-join (projectile-project-root) "boron" "web_applications" "typings" "index.d.ts"))
 
@@ -59,10 +67,7 @@
     ((error line-start (file-name) "(" line "," column "): error " (message) line-end))
     :next-checker (typescript-tslint)
     :modes (typescript-mode))
-
   (add-to-list 'flycheck-checkers 'typescript-tsc)
-
-  (add-hook 'typescript-mode-hook #'flycheck-mode)
 
   ;; Parse typescript compiler output
   (require 'compile)
@@ -79,3 +84,28 @@
     (lambda (key) (define-key typescript-mode-map key nil)))
 
   )
+
+
+(use-package tide
+  :ensure t
+  :config
+  (defun setup-tide-mode ()
+    (interactive)
+    (tide-setup)
+
+    (flycheck-mode)
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (tide-hl-identifier-mode)
+
+    ;; Rely on tide for formatting
+    (aggressive-indent-mode 0)
+
+    (local-set-key (kbd "C-,") #'tide-fix))
+
+  ;; aligns annotation to the right hand side
+  (setq company-tooltip-align-annotations t)
+
+  ;; formats the buffer before saving
+  (add-hook 'before-save-hook #'tide-format-before-save)
+
+  (add-hook 'typescript-mode-hook #'setup-tide-mode))
