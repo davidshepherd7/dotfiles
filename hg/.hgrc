@@ -24,7 +24,6 @@ record =
 histedit =
 remotebranches = ~/.hgex/remotebranches/hg_remotebranches.py
 rebase =
-strip =
 transplant =
 hggit =
 
