@@ -4,8 +4,6 @@
 
 (validate-setq js-switch-indent-offset js-indent-level)
 
-(add-to-list 'auto-mode-alist (cons "\\.ts$" #'js-mode))
-
 (defun ds/js-electric-layout-rules ()
   (interactive)
   (add-to-list 'electric-layout-rules (cons ?\; nil))
@@ -68,9 +66,14 @@
 
 (defun ds/js-switch-to-test ()
   (interactive)
-  (if (s-contains? ".spec.js" (buffer-file-name))
-      (ds/switch-to-related ".js" (file-name-sans-extension (buffer-file-name)))
-    (ds/switch-to-related ".spec.js")))
+  (cond ((s-contains? ".spec.js" (buffer-file-name))
+         (ds/switch-to-related ".js" (file-name-sans-extension (buffer-file-name))))
+        ((s-contains? ".spec.ts" (buffer-file-name))
+         (ds/switch-to-related ".ts" (file-name-sans-extension (buffer-file-name))))
+        ((s-contains? ".js" (buffer-file-name))
+         (ds/switch-to-related ".spec.js"))
+        ((s-contains? ".ts" (buffer-file-name))
+         (ds/switch-to-related ".spec.ts"))))
 (define-key js-mode-map (kbd "C-\\ n") #'ds/js-switch-to-test)
 
 ;; flycheck config
