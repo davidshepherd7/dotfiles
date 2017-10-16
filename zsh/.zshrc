@@ -312,6 +312,12 @@ source ${zshdir}/biosite.sh
 source ${zshdir}/biosite-vms.sh
 source ${zshdir}/xenon.sh
 
+if [ -e ~/code/pa-config-files/biosite-vms.bash ]; then
+    autoload bashcompinit
+    bashcompinit
+    source ~/code/pa-config-files/biosite-vms.bash
+fi
+
 # pip completion helpers
 source ${zshdir}/completion/pip.plugin.zsh
 
