@@ -1713,6 +1713,12 @@ $0")
                               (setq-local fill-function-arguments-first-argument-same-line t)
                               (setq-local fill-function-arguments-argument-separator " ")
                               (local-set-key (kbd "M-q") #'fill-function-arguments-dwim)))
+
+  (add-hook 'emacs-lisp-mode-hook (lambda ()
+                                    (setq-local fill-function-arguments-first-argument-same-line t)
+                                    (setq-local fill-function-arguments-second-argument-same-line t)
+                                    (setq-local fill-function-arguments-last-argument-same-line t)
+                                    (setq-local fill-function-arguments-argument-separator " ")))
   )
 
 (use-package emerge
