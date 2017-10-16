@@ -4,6 +4,8 @@
 *\.min.js.map
 *\.orig
 
+dist/*.js
+
 build.ninja
 
 LICENSE
@@ -14,7 +16,6 @@ LICENSE.md
 # Boron stuff
 build/*
 iwyu/*
-app/*
 dev-app/*
 node_modules/*
 lib/*
