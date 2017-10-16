@@ -112,6 +112,15 @@ unbak()
     done
 }
 
+generate-mac ()  {
+    local hexchars="0123456789abcdef"
+    echo -n "ff:ff:ff"
+    for i in {1..3}; do
+        echo -n ":${hexchars:$[RANDOM % 16]:1}${hexchars:$[RANDOM % 16]:1}"
+    done
+    echo
+}
+
 # package manager
 # ============================================================
 
