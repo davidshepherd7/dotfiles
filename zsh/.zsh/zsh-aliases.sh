@@ -587,3 +587,5 @@ perf_flame()
 # Run locally installed node modules
 alias npm-exec='PATH=$(npm bin):$PATH'
 alias lodash-test='PATH=$(npm bin):$PATH node -e "_ = require(\"lodash\");" -i'
+
+alias racket="rlwrap racket"

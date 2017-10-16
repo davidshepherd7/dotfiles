@@ -42,7 +42,7 @@
 
 (defun ds/prev-define ()
   (interactive)
-  (re-search-backward "(define\\s-+\\(\\S-+\\)$")
+  (re-search-backward "(define\\s-*\(\\s-*\\(\\S-+\\)\\s-")
   (match-string 1))
 
 
