@@ -80,14 +80,14 @@ It is meant to use with `filter-one-by-one' slot."
 
 
 
-(use-package helm-projectile
-  :ensure t)
+;; (use-package helm-projectile
+;;   :ensure t)
 
-(require 'helm)
-(require 'helm-config)
+;; (require 'helm)
+;; (require 'helm-config)
 
-(helm-mode 1)
-(diminish 'helm-mode)
+;; (helm-mode 1)
+;; (diminish 'helm-mode)
 
 
 ;; Generic helm settings:
@@ -113,15 +113,15 @@ It is meant to use with `filter-one-by-one' slot."
 
 ;; Disable weird C-backspace behaviour in find files
 (define-key helm-find-files-map (kbd "<C-backspace>") nil)
-(define-key helm-projectile-find-file-map (kbd "<C-backspace>") nil)
+;; (define-key helm-projectile-find-file-map (kbd "<C-backspace>") nil)
 
 
 
-(setq ido-use-virtual-buffers t)
+;; (setq ido-use-virtual-buffers t)
 
-;; increase number of buffers to rememeber
-(require 'recentf)
-(validate-setq recentf-max-saved-items 1000)
+;; ;; increase number of buffers to rememeber
+;; (require 'recentf)
+;; (validate-setq recentf-max-saved-items 1000)
 
 
 (use-package helm-swoop
@@ -134,27 +134,27 @@ It is meant to use with `filter-one-by-one' slot."
 
 
 
-(global-set-key (kbd "M-\\") #'helm-M-x)
-(global-set-key (kbd "<menu>") #'helm-M-x)
+;; (global-set-key (kbd "M-\\") #'helm-M-x)
+;; (global-set-key (kbd "<menu>") #'helm-M-x)
 
-(global-set-key (kbd "M-k") #'helm-mini)
+;; (global-set-key (kbd "M-k") #'helm-mini)
 
-(global-set-key (kbd "C-S-k") #'helm-find-files)
-(global-set-key (kbd "C-M-k") (lambda () (interactive) (find-file-other-window (buffer-file-name))))
+;; (global-set-key (kbd "C-S-k") #'helm-find-files)
+;; (global-set-key (kbd "C-M-k") (lambda () (interactive) (find-file-other-window (buffer-file-name))))
 
-(global-set-key (kbd "C-.") #'helm-all-mark-rings)
+;; (global-set-key (kbd "C-.") #'helm-all-mark-rings)
 
-(global-set-key (kbd "C-S-v") #'helm-show-kill-ring)
+;; (global-set-key (kbd "C-S-v") #'helm-show-kill-ring)
 
 
 
-;; Bookmarks
-;; ============================================================
+;; ;; Bookmarks
+;; ;; ============================================================
 
-(global-set-key (kbd "C-=") #'helm-bookmarks)
+;; (global-set-key (kbd "C-=") #'helm-bookmarks)
 
-;; Set the location for bookmarks
-(validate-setq bookmark-default-file "~/.emacs.d/bookmarks")
+;; ;; Set the location for bookmarks
+;; (validate-setq bookmark-default-file "~/.emacs.d/bookmarks")
 
 
 ;; Keys inside helm
@@ -227,7 +227,7 @@ It is meant to use with `filter-one-by-one' slot."
 (define-key helm-read-file-map (kbd "C-<return>") #'helm-maybe-exit-minibuffer)
 (define-key helm-read-file-map (kbd "C-RET") #'helm-maybe-exit-minibuffer)
 
-(require 'helm-help)
+;; (require 'helm-help)
 
-(with-eval-after-load 'projectile
-  (validate-setq projectile-completion-system 'helm))
+;; (with-eval-after-load 'projectile
+;;   (validate-setq projectile-completion-system 'helm))

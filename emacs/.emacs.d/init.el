@@ -596,7 +596,7 @@ index in STRING."
 ;; Helm or ido. Goes after keybinds so that we can temporarily override
 ;; them with helm keys
 ;; (load-file "~/.emacs.d/lisp/ds-ido.el")
-;; (load-file "~/.emacs.d/lisp/ds-helm.el")
+(load-file "~/.emacs.d/lisp/ds-helm.el")
 (load-file "~/.emacs.d/lisp/ds-ivy.el")
 
 
