@@ -736,7 +736,7 @@ statement spanning multiple lines; otherwise, return nil."
 (defcustom ds/sort-headers-internal-libs
   '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/"
     "network/" "ssl/" "crypt/" "crypt-qt/" "log/" "io/" "paths/" "options/"
-    "process/" "qtlib/" "auth/" "version/" "audit" "smtp"
+    "process/" "qtlib/" "auth/" "version/" "audit/" "smtp/"
     )
   "")
 

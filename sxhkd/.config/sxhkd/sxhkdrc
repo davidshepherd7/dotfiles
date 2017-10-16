@@ -80,7 +80,7 @@ super + f
     urxvt -e psql -U boron_user boron
 
 super + F
-    urxvt -e psql -U xenon_user xenon
+    urxvt -e psql -U hafnium hafnium
 
 XF86AudioPlay
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause

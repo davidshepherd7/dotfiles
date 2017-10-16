@@ -25,7 +25,7 @@ bgulpl()
 alias bgulp="bgulpl --nolint"
 alias bgulpr="bgulp --done_command 'refresh-browser.sh'"
 
-alias lbiosite='$boron_dir/scripts/launch-biosite-single-terminal.sh -w ~/gulp_dest/app/online'
+alias lbiosite='$boron_dir/scripts/launch-biosite-single-terminal.sh -w ~/gulp_dest/app/'
 alias lbiosite_client='$boron_dir/scripts/launch-biosite-single-terminal.sh -w ~/gulp_dest/app/ -c'
 
 aburl()

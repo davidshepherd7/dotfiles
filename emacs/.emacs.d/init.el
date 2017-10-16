@@ -939,6 +939,10 @@ For magit versions > 2.1.0"
     (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
     (validate-setq ws-butler-keep-whitespace-before-point t))
   (add-hook 'markdown-mode-hook #'ds/locally-keep-ws-before-point)
+
+  (defun ds/disable-electric-indent-for-markdown ()
+    (electric-indent-mode 0))
+  (add-hook 'markdown-mode-hook #'ds/disable-electric-indent-for-markdown)
   )
 
 ;; Bind goto last change

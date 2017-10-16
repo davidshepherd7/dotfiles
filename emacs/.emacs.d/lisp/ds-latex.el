@@ -122,6 +122,7 @@ forward instead."
 
   ;; Blocks
   (local-set-key (kbd "M-]") 'LaTeX-close-environment)
+  (define-key LaTeX-mode-map (kbd "C-c /") 'LaTeX-close-environment)
   (local-set-key (kbd "M-[") 'LaTeX-environment)
 
   ;; References
