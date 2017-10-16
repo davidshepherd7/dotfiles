@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: class
+# --
+export class ${1:`(s-upper-camel-case (file-name-base))`} {
+
+constructor() {}
+
+}

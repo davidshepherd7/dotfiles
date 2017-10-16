@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: super
+# --
+namespace detail
+{
+typedef db_collection<
+db::${1:`(file-name-base)`},
+pa::rest::default_installation_policy,
+detail::audit_handler_db_access_policy<db::$1>
+>
+$1_super;
+}

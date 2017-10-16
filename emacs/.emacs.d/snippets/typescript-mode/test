@@ -1,0 +1,10 @@
+import 'jasmine';
+import './`(file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))`';
+
+describe('`(ds/s-space-words (file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))`', () => {
+
+    it('runs tests', () => {
+        expect(true).toBe(false);
+    })
+
+});

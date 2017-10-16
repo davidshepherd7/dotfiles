@@ -1,5 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: f
+# key: s
 # --
-(define ($1 $2)
-$0)
+R"$1($0)$1"

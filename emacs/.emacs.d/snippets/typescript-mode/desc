@@ -1,5 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: f
+# key: desc
 # --
-(define ($1 $2)
-$0)
+describe('$1', () => {
+$0
+});

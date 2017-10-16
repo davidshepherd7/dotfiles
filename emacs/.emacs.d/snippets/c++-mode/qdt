@@ -1,5 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: f
+# key: qdt
 # --
-(define ($1 $2)
-$0)
+QDateTime(QDate($1), QTime(12, 20), Qt::UTC)

@@ -1,5 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: f
+# key: be
 # --
-(define ($1 $2)
-$0)
+beforeEach(() => {
+$0
+});

@@ -1,5 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: f
+# key: p
 # --
-(define ($1 $2)
-$0)
+(princ (format "$1: '%s'\n" $1))

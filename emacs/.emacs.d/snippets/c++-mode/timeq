@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: timeq
+# --
+pa::db::time_queries::scoped_enable ttt;
+`(flet ((message #'ignore)) (ds/biosite-insert-as-include "db/time_queries.h"))`

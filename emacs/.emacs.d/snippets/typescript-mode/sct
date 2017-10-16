@@ -1,5 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: f
+# key: sct
 # --
-(define ($1 $2)
-$0)
+console.log($0);
