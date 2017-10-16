@@ -113,9 +113,9 @@ idfull = !$HG --debug id -i "$@"
 # Clean up whitespace, warning: not well tested yet, potentially dangerous
 clean-ws = !hg-clean-whitespace.sh
 
-# Single command bisection, usage: `hg autobisect [GOOD] [BAD] "ninja test-thingy && ./bin/test-thingy"`
-# (you may need `cmake . &&`)
-autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG bisect --bad "$2" && $HG bisect --command "$3"
+# Single command bisection, usage: `hg autobisect [GOOD] [BAD] [COMPILE COMMAND] [TEST COMMAND]
+# e.g. hg autobisect foo tip "cmake . && ninja test-foo" "./test-foo foos"
+autobisect = !$HG status && $HG bisect --reset && $HG bisect --good "$1" && $HG bisect --bad "$2" && $HG bisect --command "($3) && ($4) || exit 125"
 
 # histedit with default revision the earliest multable revision on this branch
 he = histedit -r 'min((draft() or secret()) and only(.))'
