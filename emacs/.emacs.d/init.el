@@ -672,6 +672,9 @@ index in STRING."
    ((derived-mode-p 'js-mode)
     "gulp --silent --reporter=simple --nolint && refresh-browser.sh")
 
+   ;; For our nodejs typescript project
+   ((derived-mode-p 'typescript-mode)
+    "npm run build")
 
    ((derived-mode-p 'scheme-mode) (concat "\\racket -t " (file-name-nondirectory (buffer-file-name))))
 
@@ -1534,6 +1537,7 @@ $0")
   (add-hook 'emacs-lisp-mode-hook (ds/set-docsets-fn '("Emacs Lisp")))
   (add-hook 'c++-mode-hook (ds/set-docsets-fn' ("C++")))
   (add-hook 'js-mode-hook (ds/set-docsets-fn ds/js-docsets))
+  (add-hook 'typescript-mode-hook (ds/set-docsets-fn ds/js-docsets))
   (add-hook 'cmake-mode-hook (ds/set-docsets-fn '("CMake")))
   (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
   (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
