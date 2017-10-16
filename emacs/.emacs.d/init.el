@@ -510,6 +510,9 @@ index in STRING."
   (define-key company-active-map (kbd "C-h") #'company-select-next)
   (define-key company-active-map (kbd "C-i") #'company-select-previous)
   (define-key company-active-map (kbd "<tab>") #'company-complete)
+
+  ;; Case sensitive simple completions
+  (validate-setq company-dabbrev-downcase nil)
   )
 
 ;; Undo tree
