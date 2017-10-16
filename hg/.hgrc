@@ -10,7 +10,7 @@ interface = curses
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging,lg-watch,import,pulls,pulla,push-as-master
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging,lg-watch,import,pulls,pulla,push-as-master,lg1
 attend-commit = false
 
 [extensions]
@@ -73,7 +73,8 @@ ccommon = commit -m "chore(common): Update common" 'path:common'
 ##############
 
 # pretty log graph
-lg = !$HG log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}" -r 'sort(all(), topo, topo.firstbranch=.)' "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
+lg1 = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks} ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}"
+lg = !$HG lg1 -r 'sort(all(), topo, topo.firstbranch=.)' "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
 lg-watch = !/usr/bin/watch -n 0.3 -c -x hg lg --limit 150
 
