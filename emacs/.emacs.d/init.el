@@ -1928,6 +1928,8 @@ for a file to visit if current buffer is not visiting a file."
   (defalias 'visual-regexp-replace #'vr/replace)
   (defalias 'visual-regexp-query-replace #'vr/query-replace)
   (defalias 'visual-regexp-mc-mark #'vr/mc-mark)
+
+  (global-set-key (kbd "M-'") #'visual-regexp-query-replace)
   )
 
 (use-package anki-mode)
