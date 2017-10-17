@@ -1,0 +1,17 @@
+{
+  "conduit_uri": "https://phabricator.intern.facebook.com/api/",
+  "repository.callsign": "HGEXT",
+  "copyright_holder" : "Facebook",
+  "arc.land.onto.default": "@",
+  "arc.feature.start.default": "@",
+  "base" : "git:HEAD^, hg:.^",
+  "history.immutable" : false,
+  "lint.engine": "ArcanistSingleLintEngine",
+  "lint.engine.single.linter": "ArcanistScriptAndRegexLinter",
+  "linter.scriptandregex.script": "scripts/with-hg-dev ./lint.py",
+  "linter.scriptandregex.regex": "/^(?P<file>[^:]*):(?P<line>\\d+): (?P<severity>WARNING|ERROR):(?P<name>[^:]*): (?P<message>.*)$/m",
+  "load": [
+    ".fbarcanist/"
+  ],
+  "unit.engine": "MercurialTestEngine"
+}

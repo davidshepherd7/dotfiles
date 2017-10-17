@@ -26,6 +26,7 @@ remotebranches = ~/.hgex/hg-remotebranches/hg_remotebranches.py
 rebase =
 transplant =
 hggit =
+absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
 
 [color]
 

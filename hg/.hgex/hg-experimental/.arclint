@@ -1,0 +1,10 @@
+{
+  "linters" : {
+    "main": {
+      "type": "script-and-regex",
+      "include": "(.*)",
+      "script-and-regex.script": "scripts/with-hg-dev ./lint.py",
+      "script-and-regex.regex": "/^(?P<file>[^:]*):(?P<line>\\d+): (?P<severity>WARNING|ERROR):(?P<name>[^:]*): (?P<message>.*)$/m"
+    }
+  }
+}

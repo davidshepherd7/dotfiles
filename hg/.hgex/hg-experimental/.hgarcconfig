@@ -1,0 +1,12 @@
+{
+  "conduit_uri": "https://phab.mercurial-scm.org/api",
+  "repository.callsign": "FBHGX",
+  "copyright_holder" : "Facebook",
+  "arc.land.onto.default": "@",
+  "base" : "git:HEAD^, hg:.^",
+  "history.immutable" : false,
+  "load": [
+    ".hgarcanist/"
+  ],
+  "unit.engine": "MercurialTestEngine"
+}
