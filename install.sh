@@ -46,6 +46,9 @@ stow_file sxhkd
 mkdir -p ~/.keysnail/
 # stow_file keysnail
 
+mkdir -p ~/.config/
+stow_file flake8
+
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
 sudo stow hwdb -t /etc/udev/hwdb.d --ignore=".dropbox.attr"
