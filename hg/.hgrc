@@ -27,6 +27,7 @@ rebase =
 transplant =
 hggit =
 absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
+uncommit =
 
 [color]
 
@@ -134,7 +135,5 @@ ci = commit -i
 cia = ci --amend
 
 multi-released =!$HG log -r "descendants($1) and tag('re:boron-[0-9]+\.[0-9]+\.[0-9]+$')" --template '$1 was released in {tags} on {date|isodate}\n'
-
-uncommit = !$HG strip -r ${1:-.} --keep
 
 push-as = !hg-push-as.py --mercurial-binary "$HG" "$@"
