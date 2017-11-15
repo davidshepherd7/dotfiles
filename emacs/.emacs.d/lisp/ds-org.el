@@ -2,24 +2,21 @@
   :ensure t
   :config
   (progn
+    (require 'org)
 
     ;; Load org mode when opening .org files
     (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
     ;; keys
-    (defun org-keys ()
-      "Clear lots of org mode keys that mess with my keybinds"
-      (interactive)
-      ;; (local-set-key (kbd "C-c") 'nil)
-      (local-set-key (kbd "C-y") 'nil)
-      (local-set-key (kbd "C-e") 'nil)
-      (local-set-key (kbd "C-t") 'org-todo)
-      (local-set-key (kbd "C-.") 'org-time-stamp-inactive)
-      (local-set-key (kbd "C-'") 'nil)
-      (local-set-key (kbd "C-a") nil)
-      )
+    (define-key org-mode-map  (kbd "C-y") nil)
+    (define-key org-mode-map  (kbd "C-e") nil)
+    (define-key org-mode-map  (kbd "C-'") nil)
+    (define-key org-mode-map  (kbd "C-a") nil)
+    (define-key org-mode-map (kbd "M-e") nil)
 
-    (add-hook 'org-mode-hook 'org-keys)
+    (define-key org-mode-map  (kbd "C-t") #'org-todo)
+    (define-key org-mode-map  (kbd "C-.") #'org-time-stamp-inactive)
+
 
     ;; Pretty indents
     (add-hook 'org-mode-hook 'org-indent-mode)
