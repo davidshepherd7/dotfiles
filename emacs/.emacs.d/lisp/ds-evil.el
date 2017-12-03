@@ -315,6 +315,15 @@
   (define-key evil-outer-text-objects-map (kbd "M->") #'evil-a-buffer)
   (define-key evil-outer-text-objects-map (kbd "a") #'evil-a-buffer)
 
+  ;; functions, ripped off from mark-defun
+  (evil-define-text-object ds/evil-a-defun (count &optional beg end type)
+    "Select entire buffer"
+    (save-mark-and-excursion
+     (mark-defun)
+     (evil-range (region-beginning) (region-end))))
+  (define-key evil-outer-text-objects-map (kbd "f") #'ds/evil-a-defun)
+
+
   (use-package evil-args
     :ensure t
     :config
@@ -335,7 +344,6 @@
   (define-key evil-normal-state-map (kbd "M-v") #'evil-paste-pop)
 
   (define-key evil-motion-state-map (kbd "/") #'evil-search-forward)
-  (define-key evil-motion-state-map (kbd "f") #'evil-search-forward)
   (define-key evil-motion-state-map (kbd "?") #'evil-search-backward)
   (define-key evil-motion-state-map (kbd "r") #'evil-search-backward)
 
@@ -418,6 +426,10 @@
   (define-key evil-normal-state-map (kbd "<") #'evil-previous-open-angle-bracket)
   (define-key evil-normal-state-map (kbd ">") #'evil-previous-close-angle-bracket)
 
+  (evil-define-motion ds/evil-end-of-defun (count) (end-of-defun))
+  (define-key evil-motion-state-map (kbd "f") #'ds/evil-end-of-defun)
+  (evil-define-motion ds/evil-beginning-of-defun (count) (beginning-of-defun))
+  (define-key evil-motion-state-map (kbd "F") #'ds/evil-beginning-of-defun)
 
   )
 
