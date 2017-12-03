@@ -162,3 +162,5 @@ copy-experimental-release() {
     # In case the nas goes down
     sudo umount /redist
 }
+
+alias boron-tags="ctags-exuberant -e -R boron/api_server boron/biometric_node boron/client boron/cscs_server boron/event_server boron/fs80_server boron/job_server boron/report_server boron/setup boron/shared boron/tests boron/tools"
