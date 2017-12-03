@@ -1,3 +1,16 @@
 [flake8]
 
-ignore = E501, E303
+ignore =
+       # long lines
+       E501,
+       # too many lines between things
+       E303,
+       # TODO(Name) format
+       H101
+
+exclude =
+    .git,
+    .hg,
+    __pycache__,
+    build,
+    dist
