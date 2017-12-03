@@ -40,7 +40,9 @@
   (require 'typescript-mode)
 
   (add-hook 'typescript-mode-hook #'electric-operator-mode)
-  (add-hook 'typescript-mode-hook #'aggressive-indent-mode)
+
+  ;; tide handles formatting on save
+  (add-hook 'typescript-mode-hook (lambda () (aggressive-indent-mode 0)))
 
   (require 'align)
   (add-to-list 'align-sq-string-modes 'typescript-mode)
