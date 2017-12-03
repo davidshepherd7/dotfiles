@@ -1946,4 +1946,6 @@ for a file to visit if current buffer is not visiting a file."
   (global-set-key (kbd "M-'") #'visual-regexp-query-replace)
   )
 
-(use-package anki-mode)
+(use-package anki-mode
+  :load-path  "~/.emacs.d/vc-packages/anki-mode"
+  )

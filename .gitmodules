@@ -46,3 +46,6 @@
 [submodule "emacs/.emacs.d/vc-packages/robot-mode"]
 	path = emacs/.emacs.d/vc-packages/robot-mode
 	url = git@github.com:davidshepherd7/robot-mode.git
+[submodule "emacs/.emacs.d/vc-packages/anki-mode"]
+	path = emacs/.emacs.d/vc-packages/anki-mode
+	url = git@github.com:davidshepherd7/anki-mode.git
