@@ -1949,3 +1949,9 @@ for a file to visit if current buffer is not visiting a file."
 (use-package anki-mode
   :load-path  "~/.emacs.d/vc-packages/anki-mode"
   )
+
+(use-package nand2tetris
+  :load-path "~/.emacs.d/vc-cackages/nand2tetris.el"
+  :config
+  (add-to-list 'auto-mode-alist (cons "\.hdl$" #'nand2tetris-mode))
+  (validate-setq nand2tetris-core-base-dir "~/Dropbox/education/nand2tetris"))

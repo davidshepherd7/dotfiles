@@ -49,3 +49,6 @@
 [submodule "emacs/.emacs.d/vc-packages/anki-mode"]
 	path = emacs/.emacs.d/vc-packages/anki-mode
 	url = git@github.com:davidshepherd7/anki-mode.git
+[submodule "emacs/.emacs.d/vc-packages/nand2tetris.el"]
+	path = emacs/.emacs.d/vc-packages/nand2tetris.el
+	url = git@github.com:CestDiego/nand2tetris.el.git
