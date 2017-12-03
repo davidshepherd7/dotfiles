@@ -525,7 +525,10 @@ index in STRING."
   :bind (("C-z" . undo-tree-undo)
          ("C-S-z" . undo-tree-redo))
   :config
-  (global-undo-tree-mode)
+
+  ;; Global undo tree mode doesn't work because I've rebound the usual undo keys
+  (add-hook 'text-mode-hook (lambda () (undo-tree-mode 1)))
+  (add-hook 'prog-mode-hook (lambda () (undo-tree-mode 1)))
 
   ;; clean out the undo-tree keymap entry in the keymap list
   (let ((item (assoc 'undo-tree-mode minor-mode-map-alist)))
