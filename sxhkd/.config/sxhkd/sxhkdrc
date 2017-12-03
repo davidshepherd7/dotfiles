@@ -63,7 +63,7 @@ XF86MonBrightnessDown
     xbacklight -20
 
 Print
-    gnome-screenshot
+    gnome-screenshot -a
 
 super + F10
     keybinds.sh pl

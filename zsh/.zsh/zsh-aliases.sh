@@ -431,18 +431,6 @@ fcode()
 }
 
 
-# Fancy recursive grep: with line num, filename, ignore files ignored by
-# git.
-s()
-{
-    if ! git rev-parse > /dev/null 2>&1; then
-        additional_opt="--no-index --exclude-standard"
-    fi
-    git grep --color=auto -n -H -I $(echo "$additional_opt") -E $@
-}
-export s
-exportf s
-
 # grep source code files only
 gcode ()
 {

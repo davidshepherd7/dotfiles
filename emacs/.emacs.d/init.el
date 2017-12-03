@@ -419,7 +419,8 @@ index in STRING."
 (use-package frames-only-mode
   :ensure t
   :config
-  (validate-setq frames-only-mode-reopen-frames-from-hidden-x11-virtual-desktops t)
+  ;; It breaks magit :( TODO: remove
+  (validate-setq frames-only-mode-reopen-frames-from-hidden-x11-virtual-desktops nil)
   (frames-only-mode 1))
 
 (global-set-key (kbd "s-k") #'make-frame)
@@ -882,9 +883,15 @@ For magit versions > 2.1.0"
   (validate-setq magit-revert-buffers 'silent)
   (validate-setq magit-save-repository-buffers 'dontask)
   (setq magit-push-always-verify nil) ;; sometimes exists?
-  (setq git-commit-major-mode 'markdown-mode)
 
+  (setq git-commit-major-mode 'markdown-mode)
   (validate-setq git-commit-summary-max-length 100)
+
+  ;; Move prev/next message commands because the overlap normal keys
+  (define-key git-commit-mode-map (kbd "M-n") nil)
+  (define-key git-commit-mode-map (kbd "M-p") nil)
+  (define-key git-commit-mode-map (kbd "C-c p") #'git-commit-prev-message)
+  (define-key git-commit-mode-map (kbd "C-c n") #'git-commit-next-message)
 
   :ensure t)
 
@@ -930,6 +937,7 @@ For magit versions > 2.1.0"
     (local-set-key (kbd "C-c") nil)
 
     (local-set-key (kbd "M-n") nil)
+    (local-set-key (kbd "C-i") nil)
 
     ;; Compile = preview
     (local-set-key [remap compile] 'markdown-preview)

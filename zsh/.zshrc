@@ -337,6 +337,12 @@ export CCACHE_SLOPPINESS="time_macros"
 
 # Don't use $EDITOR because we always want to wait
 export PSQL_EDITOR="emacsclient -c"
+
+
+# Cows are fun, but not very readable
+export ANSIBLE_NOCOWS=1
+
+
 # Node
 # ============================================================
 function ndb() {
