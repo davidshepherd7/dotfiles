@@ -188,3 +188,20 @@
 
 (eval-after-load 'flycheck
   (validate-setq flycheck-flake8-maximum-line-length 120))
+
+
+(defun ds/shell-to-python ()
+  (interactive)
+  (let ((shellified (-->
+                     (buffer-substring-no-properties (point-at-bol) (point-at-eol))
+                     (s-trim it)
+                     (s-split " " it)
+                     (--map (s-replace "\"" "" it) it)
+                     (-map (lambda (x)
+                             (if (s-matches? "^\\$" x)
+                                 (s-replace "$" "" x)
+                               (s-concat "\"" x "\""))) it)
+                     (s-join ", " it)
+                     (s-concat "subprocess.check_call([" it "])"))))
+    (delete-region (point-at-bol) (point-at-eol))
+    (insert shellified)))
