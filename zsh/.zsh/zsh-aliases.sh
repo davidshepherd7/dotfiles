@@ -577,3 +577,27 @@ alias npm-exec='PATH=$(npm bin):$PATH'
 alias lodash-test='PATH=$(npm bin):$PATH node -e "_ = require(\"lodash\");" -i'
 
 alias racket="rlwrap racket"
+
+
+# Proxying
+# ============================================================
+
+compsoc_proxied_firefox()
+{
+    # Open a socks proxy with ssh
+    ssh -D 9999 compsoc -N &
+
+    # Kill it when we are done
+    ssh_pid="$!"
+    trap "kill $ssh_pid" EXIT
+
+    # Write a config file to connect to that proxy
+    tempfile="$(mktemp tsocks-conf-$USER.XXXXXX --tmpdir)"
+    cat <<EOF > "$tempfile"
+server = 127.0.0.1
+server_port = 9999
+EOF
+
+    # Run a new firefox with "transparent socks" wrapping all its network calls
+    TSOCKS_CONF_FILE="$tempfile" tsocks firefox -no-remote www.whatismyip.com
+}
