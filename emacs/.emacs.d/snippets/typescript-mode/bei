@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: beif
+# --
+let ${1:$(s-lower-camel-case yas-text)}: $1;
+beforeEach(inject([$1], (${1:$(s-lower-camel-case yas-text)}_) => ${1:$(s-lower-camel-case yas-text)} = ${1:$(s-lower-camel-case yas-text)}_));

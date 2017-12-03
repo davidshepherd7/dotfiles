@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: sleep
+# --
+console.log('starting sleep');
+await new Promise((resolve) => setTimeout(resolve, ${1:1000}));
+console.log('sleep done');

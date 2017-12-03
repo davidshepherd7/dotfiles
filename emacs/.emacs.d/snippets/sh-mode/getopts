@@ -3,22 +3,21 @@
 # --
 usage() {
 cat <<EOF 1>&2
-Usage:
+$0
 
+Usage \$0 [options]
 
-
-    -h:          Show this help
+    -h, --help:          Show this help
 EOF
-exit 1
+exit 0
 }
-
-while getopts "h" opt; do
-case "$opt" in
-h)
-usage
-;;
-*)
+while [[ $# -gt 0 ]]
+do
+key="\$1"
+case $key in
+-h|--help)
 usage
 ;;
 esac
+shift
 done

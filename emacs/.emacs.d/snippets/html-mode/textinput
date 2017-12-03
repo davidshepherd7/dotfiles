@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: textinput
+# --
+<label class="col-md-3 col-form-label" for="$1">$1</label>
+<div class="col-md-9">
+<input
+name="$1"
+id="$1"
+type="text"
+class="form-control"
+[(ngModel)]="model.$1"
+>
+</div>

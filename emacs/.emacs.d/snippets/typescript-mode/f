@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: desc
+# key: f
 # --
-describe(\`$1\`, () => {
+function $1($2) {
 $0
-});
+}

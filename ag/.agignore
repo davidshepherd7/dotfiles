@@ -3,6 +3,10 @@
 *\.css.map
 *\.min.js.map
 *\.orig
+vendor.js
+vendor.css
+templates.js
+dist/*
 
 dist/*.js
 
