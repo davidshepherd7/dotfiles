@@ -337,3 +337,21 @@ export CCACHE_SLOPPINESS="time_macros"
 
 # Don't use $EDITOR because we always want to wait
 export PSQL_EDITOR="emacsclient -c"
+# Node
+# ============================================================
+function ndb() {
+    export PATH="$(npm bin):$PATH"
+    if [ $# -gt 0 ]; then
+        target="$1"
+        shift
+    else
+        target="$(npm prefix)/dist/index.js"
+    fi
+
+    if ! ps -aux | grep '[c]hromium-browser' -q; then
+        nohup chromium-browser &
+        echo "browse to chrome://inspect and click open node debugger"
+    fi
+
+    node --inspect "$target" "$@"
+}
