@@ -613,6 +613,9 @@ index in STRING."
 
 (load-file "~/.emacs.d/lisp/ds-toggle-electricity.el")
 
+;; TODO: make this a package?
+(load-file "~/.emacs.d/lisp/s-interactive.el")
+
 ;; Save command history between sessions
 ;; ===============================================================
 
