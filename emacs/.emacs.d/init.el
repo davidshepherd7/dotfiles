@@ -1955,3 +1955,7 @@ for a file to visit if current buffer is not visiting a file."
   :config
   (add-to-list 'auto-mode-alist (cons "\.hdl$" #'nand2tetris-mode))
   (validate-setq nand2tetris-core-base-dir "~/Dropbox/education/nand2tetris"))
+
+(defun ds/insert-uuid ()
+  (interactive)
+  (insert (s-trim (shell-command-to-string "uuidgen"))))
