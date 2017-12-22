@@ -1,0 +1,17 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startunit
+# --
+import '../../test-helpers/unit-test-helpers/unit-test-helper-barrel';
+import { unitTestRootInjector } from '../../test-helpers/unit-test-helpers/unit-test-injector';
+import { ${1:`(s-upper-camel-case (file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))`} } from './`(file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))`';
+
+describe(\` `(ds/s-space-words (file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))` \`, () => {
+
+let service: $1;
+beforeEach(() => {
+service = unitTestRootInjector.get($1);
+});
+
+$0
+
+});

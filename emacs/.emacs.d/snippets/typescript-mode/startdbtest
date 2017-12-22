@@ -1,0 +1,17 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startdbtest
+# --
+import '../../test-helpers/db-test-helpers/db-test-helper-barrel';
+import { dbTestRootInjector } from '../../test-helpers/db-test-helpers/db-test-injector';
+import { ${1:`(s-upper-camel-case (file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))`} } from './`(file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))`';
+
+describe(\` `(ds/s-space-words (file-name-sans-extension (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))` \`, () => {
+
+let service: $1;
+beforeEach(() => {
+service = dbTestRootInjector.get($1);
+});
+
+$0
+
+});

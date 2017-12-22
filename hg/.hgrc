@@ -28,6 +28,7 @@ transplant =
 hggit =
 absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
 uncommit =
+strip =
 
 [color]
 

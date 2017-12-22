@@ -5,7 +5,6 @@
 
 #include "${1:`(ds/biosite-test-include-path)`}"
 
-#include "nowarnings/boost/make_shared.hpp"
 #include "nowarnings/qt/QSqlDatabase"
 
 #include "db/test/test_scope.h"
@@ -31,7 +30,7 @@ pa::rest::server api("/v1/api");
 
 GIVEN("An installed $2")
 {
-api.install(boost::make_shared<boron::api_server::handlers::$2>());
+api.install(std::make_shared<boron::api_server::handlers::$2>());
 
 helper::api_test_builder()
 .server(&api)
