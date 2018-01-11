@@ -1,6 +1,13 @@
 
 (require 'css-mode)
 
+(use-package rainbow-mode
+  :ensure t
+  :config
+  (add-hook 'css-mode-hook #'rainbow-mode)
+  (add-hook 'scss-mode-hook #'rainbow-mode)
+  )
+
 (font-lock-add-keywords
  'css-mode
  '(("\\(\\s-\\|^\\)\\(\\.\\)\\S-" 2 font-lock-keyword-face)))
