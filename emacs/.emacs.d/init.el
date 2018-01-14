@@ -899,6 +899,10 @@ For magit versions > 2.1.0"
   (define-key git-commit-mode-map (kbd "C-c p") #'git-commit-prev-message)
   (define-key git-commit-mode-map (kbd "C-c n") #'git-commit-next-message)
 
+
+  ;; Remove some magit keys that interfere
+  (define-key magit-mode-map (kbd "M-w") nil)
+
   :ensure t)
 
 
@@ -1465,7 +1469,10 @@ $0")
 (use-package yaml-mode
   :ensure t
   :config
-  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode)))
+  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+  (validate-setq yaml-indent-offset 2)
+  (add-hook 'yaml-mode-hook #'set-tab)
+  )
 
 (use-package feature-mode
   :ensure t

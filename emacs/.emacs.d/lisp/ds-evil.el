@@ -358,6 +358,9 @@
   (defvar ds/evil-leader-map (make-sparse-keymap))
   (define-key evil-normal-state-map (kbd "SPC") ds/evil-leader-map)
 
+  (require 'magit-status)
+  (define-key magit-mode-map (kbd "SPC") ds/evil-leader-map)
+
   ;; hydras/keymaps
   (define-key ds/evil-leader-map (kbd "p") #'hydra-projectile/body)
   (define-key ds/evil-leader-map (kbd "h") #'hydra-help/body)

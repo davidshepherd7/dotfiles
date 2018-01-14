@@ -179,13 +179,7 @@ update () {
 
 
 recompile_elisp() {
-    find -L "$HOME/.emacs.d/" -name '*.el' \
-         -type f \
-         -not -path "*/.cask/*" \
-         -not -path '*/elpa/*' \
-         -print0 \
-        | \
-        xargs -0 emacs -Q --batch -f batch-byte-compile
+    emacs -Q --batch -f batch-byte-compile "$HOME/.emacs.d/init.el" "$HOME/.emacs.d/lisp/"*.el
 }
 
 alias pm='sudo pacmatic -S'

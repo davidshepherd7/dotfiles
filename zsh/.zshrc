@@ -284,6 +284,9 @@ export PYTHONPATH="$PYTHONPATH:$HOME/code/google_appengine/lib/webapp2-2.5.1"
 
 export ANT_ARGS='-emacs -logger org.apache.tools.ant.listener.AnsiColorLogger'
 
+# Tell Java what type of window manager XMonad is so that GUI apps work.
+export _JAVA_AWT_WM_NONREPARENTING=1
+
 # Go
 # ============================================================
 
