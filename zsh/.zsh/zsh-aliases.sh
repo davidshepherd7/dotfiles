@@ -595,3 +595,12 @@ EOF
     # Run a new firefox with "transparent socks" wrapping all its network calls
     TSOCKS_CONF_FILE="$tempfile" tsocks firefox -no-remote www.whatismyip.com
 }
+
+
+
+alias whatismyip='curl "icanhazip.com"'
+# This seems to be fast
+# Alt:
+# curl ifconfig.me
+# curl ipecho.net/plain
+# curl ifconfig.co
