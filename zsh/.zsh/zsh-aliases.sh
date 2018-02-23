@@ -157,11 +157,15 @@ install_gem_packages () {
 }
 
 install_npm_packages () {
-    # Update node itself, fixed at 6.9.1 because newer versions break gulp
-    sudo n 6.9.1
+    # Update packages
+    if ! grep -q 'prefix' ~/.npmrc; then
+        echo 'prefix=~/.npm-global' >> ~/.npmrc
+    fi
+    mkdir -p ~/.npm-global
+    < "$rcdir/npm_package_list" x npm install -g %
 
-    # And now the npm packages
-    < "$rcdir/npm_package_list" x sudo npm install -g %
+    # Update node itself (after the packages so that n is installed)
+    sudo ~/.npm-global/bin/n stable
 }
 
 update () {
