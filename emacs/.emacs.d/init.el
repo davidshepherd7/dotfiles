@@ -1972,3 +1972,14 @@ for a file to visit if current buffer is not visiting a file."
 (defun ds/insert-uuid ()
   (interactive)
   (insert (s-trim (shell-command-to-string "uuidgen"))))
+
+;; tla operators
+(apply #'electric-operator-add-rules-for-mode 'tla-mode electric-operator-prog-mode-rules)
+(electric-operator-add-rules-for-mode 'tla-mode
+                                      (cons "/\\" " /\\ ")
+                                      (cons "\\/" " \\/ ")
+                                      (cons "|->" " |-> ")
+                                      (cons "\\in" " \\in ")
+                                      (cons "<<" " << ")
+                                      (cons ">>" " >> ")
+                                      )
