@@ -1626,7 +1626,8 @@ $0")
 (use-package nameless
   :ensure t
   :config
-  (add-hook 'emacs-lisp-mode-hook #'nameless-mode))
+  (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
+  (define-key nameless-mode-map (kbd "C-_") #'nameless-insert-name))
 
 
 (use-package beacon
