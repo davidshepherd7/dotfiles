@@ -74,9 +74,6 @@ setopt rmstarsilent
 # Keep a stack of directories
 setopt autopushd
 
-unset MANPATH
-export MANPATH="$(manpath)"
-
 # History
 # ============================================================
 
@@ -296,12 +293,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 export GOPATH="$HOME/code/go"
 export PATH="$PATH:$HOME/code/go/bin"
 
-
-# npm
-# ============================================================
-
-export PATH="$PATH:$HOME/.npm-global/bin"
-export MANPATH="$MANPATH:$HOME/.npm-global/share/man"
 
 
 # Imports

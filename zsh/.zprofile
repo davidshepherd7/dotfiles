@@ -9,4 +9,10 @@ if [ -z "$DISPLAY" ] && [[ $(tty) == /dev/tty1 ]]; then
     startx
 fi
 
+unset MANPATH
+export MANPATH="$(manpath)"
+
 export PATH="$HOME/.cargo/bin:$PATH"
+
+export PATH="$PATH:$HOME/.npm-global/bin"
+export MANPATH="$MANPATH:$HOME/.npm-global/share/man"
