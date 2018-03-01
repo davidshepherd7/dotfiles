@@ -28,12 +28,11 @@ super + P
 super + equal
     gnome-screensaver-command -l
 
-super + comma
-    emacs --daemon
-
 super + period
     urxvt -e ipython3
 
+super + g
+    emacs-anywhere.sh
 
 # numpad launchers
 KP_End
