@@ -164,3 +164,15 @@ copy-experimental-release() {
 }
 
 alias boron-tags="ctags-exuberant -e -R boron/api_server boron/biometric_node boron/client boron/cscs_server boron/event_server boron/fs80_server boron/job_server boron/report_server boron/setup boron/shared boron/tests boron/tools"
+
+
+firepi-ssh() {
+    sshpass -p "$PI_PASSWORD" ssh pi@mercurypi.pa
+}
+
+
+uburl() {
+    burl "$1" \
+         -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0X3VuYXV0aG9yaXNlZF91c2VyIn0.i8iGLQzs0myh2Bh-WYR4VRPQOelmUTgQ2fHJOLhiRqU" \
+         "${@:2}"
+}

@@ -1,0 +1,10 @@
+import { Injectable } from 'injection-js';
+
+@Injectable()
+export class $1 {
+
+constructor() {
+}
+
+$0
+}

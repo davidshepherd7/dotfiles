@@ -29,3 +29,6 @@ lib-managed/*
 
 # rcfiles stuff
 firefox/.resbackup
+
+
+swagger/*
