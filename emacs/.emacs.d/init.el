@@ -447,6 +447,11 @@ index in STRING."
 ;; Add things copy pasted from other programs to the kill
 (validate-setq save-interprogram-paste-before-kill t)
 
+(defun ds/yank-from-diff ()
+  "As yank, but remove diff symbols from lines"
+  (interactive)
+  (insert (replace-regexp-in-string "^\+" "" (current-kill 0))))
+
 
 ;; Auto complete
 ;;================================================================
@@ -847,19 +852,6 @@ If point was already at that position, move point to beginning of line."
 
 ;; store backups on my computer
 ;; (setq tramp-backup-directory-alist  ??ds
-
-
-;; ;; Auto indent pasted code in programming modes
-;; ;; ============================================================
-;; (dolist (command '(yank yank-pop))
-;;   (eval `(defadvice ,command (after indent-region activate)
-;; 	   (and (not current-prefix-arg)
-;; 		(member major-mode '(emacs-lisp-mode lisp-mode clojure-mode
-;; 						     scheme-mode ruby-mode rspec-mode
-;; 						     c-mode c++-mode objc-mode latex-mode
-;; 						     plain-tex-mode))
-;; 		(let ((mark-even-if-inactive transient-mark-mode))
-;; 		  (indent-region (region-beginning) (region-end) nil))))))
 
 
 ;; version control
