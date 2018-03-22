@@ -574,9 +574,6 @@ index in STRING."
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; Load skeletons
-(load-file "~/.emacs.d/skeletons.el")
-
 ;; Load configs from other files
 (load-file "~/.emacs.d/lisp/ds-cpp.el")
 (load-file "~/.emacs.d/lisp/ds-latex.el")
