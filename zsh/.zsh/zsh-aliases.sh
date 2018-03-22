@@ -124,17 +124,17 @@ generate-mac ()  {
 # package manager
 # ============================================================
 
-alias ai='sudo apt-get install -yq'
-alias arm="sudo apt-get remove -yq"
+alias ai='sudo apt install -yq'
+alias arm="sudo apt remove -yq"
 alias acs="apt-cache search"
 
 rcdir="$HOME/Dropbox/linux_setup/rcfiles"
 
 install_packages ()
 {
-    sudo apt-get update
+    sudo apt update
     package_list="$rcdir/package_list"
-    < $package_list | xargs sudo apt-get install -y -q
+    < $package_list | xargs sudo apt install -y -q
 }
 
 install_pip_3_packages ()
@@ -169,7 +169,7 @@ install_npm_packages () {
 }
 
 update () {
-    sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet &&
+    sudo apt update && sudo apt upgrade --assume-yes --quiet &&
         (
             # Allow failures in subshell
             install_packages

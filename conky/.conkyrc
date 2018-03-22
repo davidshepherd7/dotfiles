@@ -32,7 +32,7 @@ TEXT
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
- apt-get: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
+ apt-get: ${execi 300 apt upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
  layout: ${execi 0.1 keyboard-layout.sh }    \
  ${execi 0.1 ifconfig $(route | grep default | awk '{print $8}') | grep 'inet addr:' | tr ':' ' ' | awk '{print $3}' | head -n 1}    \
  ${battery} \

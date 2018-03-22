@@ -144,10 +144,10 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # package manager
-alias ai='sudo apt-get install'
+alias ai='sudo apt install'
 __apt_install_completion()
 {
-    # copied out of /usr/share/bash-completion/completions/apt-get:_apt_get()
+    # copied out of /usr/share/bash-completion/completions/apt:_apt_get()
 
     # Get information about completion
     local cur prev words cword
@@ -160,11 +160,11 @@ __apt_install_completion()
 } &&
 complete -F __apt_install_completion ai
 
-alias ar="sudo apt-get remove"
+alias ar="sudo apt remove"
 
 __apt_remove_completion()
 {
-    # copied out of /usr/share/bash-completion/completions/apt-get:_apt_get()
+    # copied out of /usr/share/bash-completion/completions/apt:_apt_get()
 
     # Get information about completion
     local cur prev words cword
@@ -181,7 +181,7 @@ __apt_remove_completion()
 } &&
 complete -F __apt_remove_completion ar
 
-alias update='sudo apt-get update && sudo apt-get upgrade --assume-yes --quiet'
+alias update='sudo apt update && sudo apt upgrade --assume-yes --quiet'
 alias pm='sudo pacmatic -S'
 
 # Open location in gnome
