@@ -389,7 +389,7 @@ the line break."
 
 ;; Unbind ctrl-p so that we can use it for the gud prefix command
 (global-unset-key (kbd "C-p"))
-(setq gud-key-prefix "")
+(setq gud-key-prefix "")
 
 
 ;; Org mode

@@ -582,6 +582,7 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-matlab.el")
 (load-file "~/.emacs.d/lisp/ds-org.el")
 (load-file "~/.emacs.d/lisp/ds-python.el")
+(load-file "~/.emacs.d/lisp/ds-cl.el")
 (load-file "~/.emacs.d/lisp/ds-unicode-entry.el")
 (load-file "~/.emacs.d/lisp/ds-haskell.el")
 (load-file "~/.emacs.d/lisp/ds-elisp.el")
