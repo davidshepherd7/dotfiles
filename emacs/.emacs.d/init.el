@@ -450,7 +450,7 @@ index in STRING."
 (defun ds/yank-from-diff ()
   "As yank, but remove diff symbols from lines"
   (interactive)
-  (insert (replace-regexp-in-string "^\+" "" (current-kill 0))))
+  (insert (replace-regexp-in-string "^[+-]" "" (current-kill 0))))
 
 
 ;; Auto complete
@@ -1962,6 +1962,21 @@ for a file to visit if current buffer is not visiting a file."
 (defun ds/insert-uuid ()
   (interactive)
   (insert (s-trim (shell-command-to-string "uuidgen"))))
+
+
+
+(defun ds/table-to-array (begin end)
+  (interactive "r")
+  "Convert a whitespace separated table to [] array"
+  (let ((result (--> (buffer-substring-no-properties begin end)
+                     (s-split "\n" it nil)
+                     (--map (replace-regexp-in-string "\\s-+" ", " it) it)
+                     (--map (s-concat "[" it "]") it)
+                     (s-join ",\n" it)
+                     (s-concat "[" it "]"))))
+    (delete-region begin end)
+    (insert result)))
+
 
 ;; tla operators
 (apply #'electric-operator-add-rules-for-mode 'tla-mode electric-operator-prog-mode-rules)

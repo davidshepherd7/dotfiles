@@ -106,6 +106,11 @@
 
 ;; (yas-advise-indent-function 'py-indent-line)
 
+(defun ds/python-setup-indent ()
+  (setq-local indent-tabs-mode nil)
+  (setq-local python-indent-offset 4))
+(add-hook 'python-mode-hook #'ds/python-setup-indent)
+
 
 ;; Function to toggle true/false
 ;; ============================================================

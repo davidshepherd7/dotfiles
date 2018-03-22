@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: comp
+# --
+@Component({
+template: \`\`
+})
+class $1Component {
+$0
+}

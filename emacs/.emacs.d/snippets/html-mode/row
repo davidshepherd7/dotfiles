@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: row
+# --
+<div class="row">
+$0
+</div>
