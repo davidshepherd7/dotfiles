@@ -80,6 +80,8 @@
 ;; flycheck config
 (require 'flycheck)
 
+(validate-setq flycheck-javascript-eslint-executable "eslint-cli")
+
 (defcustom ds/use-future-eslintrc t "use the eslintrc in boron web_applications?")
 
 (defun ds/maybe-future-eslintrc ()
