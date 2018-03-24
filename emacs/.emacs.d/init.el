@@ -934,9 +934,6 @@ For magit versions > 2.1.0"
   (defun markdown-mode-keys ()
     (interactive)
 
-    ;; get rid of C-c binds
-    (local-set-key (kbd "C-c") nil)
-
     (local-set-key (kbd "M-n") nil)
     (local-set-key (kbd "C-i") nil)
 
@@ -946,6 +943,8 @@ For magit versions > 2.1.0"
 
     )
   (add-hook 'markdown-mode-hook 'markdown-mode-keys)
+
+  (define-key markdown-mode-map (kbd "C-c") nil)
 
   (defun ds/locally-keep-ws-before-point ()
     (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
