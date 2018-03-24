@@ -1894,10 +1894,6 @@ for a file to visit if current buffer is not visiting a file."
 
   )
 
-(defun ds/print (&rest args)
-  (-each args (lambda (arg) (prin1 arg) (princ " ")))
-  (terpri))
-
 
 (use-package smalltalk-mode
   :load-path "~/.emacs.d/vc-packages/smalltalk-mode/smalltalk-mode.el"
