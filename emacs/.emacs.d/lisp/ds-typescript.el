@@ -85,7 +85,9 @@
   (-each (list (kbd ",") (kbd "(") (kbd ")") (kbd ":") (kbd ";"))
     (lambda (key) (define-key typescript-mode-map key nil)))
 
-  )
+  (defun ds/setup-typescript-fill-function-arguments ()
+    (setq-local fill-function-arguments-trailing-separator t))
+  (add-hook 'typescript-mode-hook #'ds/setup-typescript-fill-function-arguments))
 
 
 (use-package tide
