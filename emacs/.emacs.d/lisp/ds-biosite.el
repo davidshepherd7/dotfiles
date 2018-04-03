@@ -346,12 +346,6 @@
                (regexp . ",\\(\\s-*\\)")
                (repeat . t)))
 
-(defun ds/biosite-sql-style ()
-  (interactive)
-  (set 'indent-tabs-mode t))
-(add-hook 'sql-mode-hook #'ds/biosite-sql-style)
-
-
 
 (defun ds/new-boron-sql ()
   (interactive)
