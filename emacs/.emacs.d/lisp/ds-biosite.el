@@ -202,7 +202,9 @@
   (interactive "P")
   (let* ((headers (--> (projectile-current-project-files)
                        (-filter (lambda (filepath) (or (s-ends-with-p ".h" filepath)
-                                                  (s-ends-with-p ".hpp" filepath))) it)))
+                                                  (s-ends-with-p ".hpp" filepath)
+                                                  (s-contains-p "/qt/Q" filepath)))
+                                it)))
          (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
          (file (completing-read "header: " headers nil nil default-input)))
     (if insert-here
