@@ -131,7 +131,7 @@ pull-from-windows-boron () {
 }
 
 replace-db () {
-    "$boron_dir/scripts/replace-boron-db.sh" "$@"
+    "$boron_dir/scripts/replace-boron-db.sh" -ut "$@"
 }
 
 send-deb-to-iris-servers() {
@@ -175,4 +175,9 @@ uburl() {
     burl "$1" \
          -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0X3VuYXV0aG9yaXNlZF91c2VyIn0.i8iGLQzs0myh2Bh-WYR4VRPQOelmUTgQ2fHJOLhiRqU" \
          "${@:2}"
+}
+
+boron-files() {
+    find -name '*.js' -o -name '*.html' -o -name '*.cpp' -o -name '*.h' |\
+        grep -v '\.spec\.js\|./web_applications/lib/\|./web_applications/node_modules/\|./web_applications/app/\|./web_applications/dev-app/\|./web_applications/lib-managed/\|/tests/'
 }

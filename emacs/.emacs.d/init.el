@@ -1974,7 +1974,7 @@ for a file to visit if current buffer is not visiting a file."
 
 
 ;; tla operators
-(apply #'electric-operator-add-rules-for-mode 'tla-mode electric-operator-prog-mode-rules)
+(apply #'electric-operator-add-rules-for-mode 'tla-mode (electric-operator-get-rules-for-mode 'prog-mode))
 (electric-operator-add-rules-for-mode 'tla-mode
                                       (cons "/\\" " /\\ ")
                                       (cons "\\/" " \\/ ")

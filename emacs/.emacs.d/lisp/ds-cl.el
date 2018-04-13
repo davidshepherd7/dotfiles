@@ -25,6 +25,8 @@
     (slime-eval-region beg end))
   (evil-define-key 'normal slime-mode-map (kbd "#") 'ds/slime-evil-eval)
 
+  (require 'slime-repl)
+
   (define-key slime-repl-mode-map (kbd "<up>") #'slime-repl-previous-input)
   (define-key slime-repl-mode-map (kbd "<down>") #'slime-repl-next-input)
   (define-key slime-repl-mode-map (kbd "SPC") #'slime-space)

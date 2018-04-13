@@ -3,38 +3,32 @@
 # --
 #include "catch/catch.hpp"
 
-#include "${1:`(ds/biosite-test-include-path)`}"
+#include "boron/api_server/handlers/`(downcase (file-name-base))`.h"
 
 #include "nowarnings/qt/QSqlDatabase"
 
 #include "db/test/test_scope.h"
 #include "rest/server.h"
 
+#include "boron/api_server/api.h"
 #include "shared/db/get_database.h"
 
 #include "tests/helpers/api_test_builder.h"
-#include "tests/make_test_data/insert/remote_event_server.h"
-#include "tests/make_test_data/insert/user.h"
 
 
-`(ds/biosite-cpp-namespaces)`
-
-using namespace make_test_data;
+using namespace boron;
 
 TEST_CASE("${2:`(downcase (file-name-base))`}")
 {
 QSqlDatabase dbase = boron::db::get_database();
 pa::db::test::test_scope db_scope("$2", dbase);
 
-pa::rest::server api("/v1/api");
+boron::api_server::api api("/v1/api");
 
-GIVEN("An installed $2")
-{
-api.install(std::make_shared<boron::api_server::handlers::$2>());
-
-helper::api_test_builder()
+const auto base = helper::api_test_builder()
 .server(&api)
-.uri("/v1/api/boron_db$0")
+.uri("/v1/api/boron_db$0");
+
+helper::api_test_builder(base)
 .run();
-}
 }
