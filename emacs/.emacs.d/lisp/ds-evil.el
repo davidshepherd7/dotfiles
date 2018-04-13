@@ -402,13 +402,13 @@
   (evil-define-motion evil-previous-open-square-bracket (count)
     "Go to [count] previous unmatched '['."
     :type exclusive
-    (evil-up-paren ?[ ?] (- (or count 1))))
+    (evil-up-paren ?\[ ?\] (- (or count 1))))
 
   (evil-define-motion evil-previous-close-square-bracket (count)
     "go to [count] next unmatched ']'."
     :type exclusive
     (forward-char)
-    (evil-up-paren ?[ ?] (or count 1))
+    (evil-up-paren ?\[ ?\] (or count 1))
     (backward-char))
 
   (define-key evil-normal-state-map (kbd "[") #'evil-previous-open-square-bracket)
