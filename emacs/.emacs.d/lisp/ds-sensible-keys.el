@@ -268,17 +268,17 @@ the line break."
 (defun beginning-of-line-char (char)
   (save-excursion (goto-char char)
                   (point-at-bol)))
-(defun indent-region-rigidly (distance)
-  (indent-rigidly (beginning-of-line-char (region-beginning))
-                  (beginning-of-line-char (region-end))
-                  distance)
+(defun indent-rigidly-dwim (distance)
+  (if (region-active-p)
+      (indent-rigidly (region-beginning) (region-end) distance)
+    ;; else
+    (indent-rigidly (point-at-bol) (point-at-eol) distance))
   (setq deactivate-mark nil))
 
-
-(global-set-key (kbd "C-\\ C-.") (lambda () (interactive) (indent-region-rigidly 4)))
-(global-set-key (kbd "C-\\ C-,") (lambda () (interactive) (indent-region-rigidly -4)))
-(global-set-key (kbd "<C-S-iso-lefttab>") (lambda () (interactive) (indent-region-rigidly 4)))
-(global-set-key (kbd "<backtab>") (lambda () (interactive) (indent-region-rigidly -4)))
+(global-set-key (kbd "C-\\ C-.") (lambda () (interactive) (indent-rigidly-dwim 4)))
+(global-set-key (kbd "C-\\ C-,") (lambda () (interactive) (indent-rigidly-dwim -4)))
+(global-set-key (kbd "<C-S-iso-lefttab>") (lambda () (interactive) (indent-rigidly-dwim 4)))
+(global-set-key (kbd "<backtab>") (lambda () (interactive) (indent-rigidly-dwim -4)))
 
 (when ds/emacs-up-to-date?
   (global-set-key (kbd "C-<return>") #'rectangle-mark-mode)
