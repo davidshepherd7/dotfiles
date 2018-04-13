@@ -1421,12 +1421,36 @@ $0")
               (add-to-list 'electric-layout-rules '( ?\} .  before))
               ))
 
+  ;; ess uses ido by default, turn this off so that I can use my normal
+  ;; completion
+  (validate-setq ess-use-ido nil)
+
   ;; Use rtags to make the tags file
   (add-hook 'ess-mode-hook
             (lambda()
               (make-local-variable 'projectile-tags-command)
               (validate-setq projectile-tags-command
                              "R -e 'rtags(recursive=TRUE,ofile=\"%s\")'")))
+  (require 'evil)
+  (evil-define-operator ds/ess-evil-eval (beg end)
+    :move-point nil
+    (ess-eval-region beg end nil))
+  (evil-define-key 'normal ess-mode-map (kbd "#") 'ds/ess-evil-eval)
+
+  (add-to-list 'evil-insert-state-modes 'inferior-ess-mode)
+
+  ;; my movement keys
+  (define-key inferior-ess-mode-map (kbd "M-n") nil)
+  (define-key inferior-ess-mode-map (kbd "M-i") nil)
+
+  (define-key inferior-ess-mode-map (kbd "<up>") #'comint-previous-input)
+  (define-key inferior-ess-mode-map (kbd "<down>") #'comint-next-input)
+
+  (defun ds/ess-pretty-function ()
+    (add-to-list 'prettify-symbols-alist '("function" . 955)))
+  (add-hook 'ess-mode-hook #'ds/ess-pretty-function)
+  (add-hook 'ess-mode-hook #'prettify-symbols-mode t)
+
   )
 
 

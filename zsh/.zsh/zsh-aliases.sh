@@ -168,6 +168,11 @@ install_npm_packages () {
     sudo ~/.npm-global/bin/n stable
 }
 
+install_r_packages() {
+    # TODO: make it set up an R directory
+    R < "$rcdir/r_packages" --no-save --no-restore
+}
+
 update () {
     sudo apt update && sudo apt upgrade --assume-yes --quiet &&
         (
@@ -177,6 +182,7 @@ update () {
             install_pip_3_packages
             install_gem_packages
             install_npm_packages
+            install_r_packages
             recompile_elisp
         )
 }

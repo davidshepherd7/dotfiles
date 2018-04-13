@@ -23,6 +23,7 @@ stow_file calibre
 stow_file psql
 stow_file ag
 stow_file parallel
+stow_file R
 
 # Cases which need dirs creating
 mkdir -p ~/.ccache

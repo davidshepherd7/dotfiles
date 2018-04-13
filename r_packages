@@ -1,0 +1,14 @@
+
+check.packages <- function(pkg, repos) {
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg))
+        install.packages(new.pkg, repos, dependencies = TRUE)
+}
+
+check.packages(c("coda","mvtnorm","devtools","purrr", "magrittr"))
+## library(devtools)
+
+## Rstan (for rethinking)
+## check.packages("rstan", repos = "https://cloud.r-project.org/")
+## rethinking itself
+## devtools::install_github("rmcelreath/rethinking")
