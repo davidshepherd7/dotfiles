@@ -186,7 +186,10 @@
   :diminish page-break-lines-mode
   :config (global-page-break-lines-mode t))
 
-(global-linum-mode 1)
+(if (>= emacs-major-version 26)
+    ;; validate-setq complains, for some reason
+    (setq-default display-line-numbers t)
+  (global-linum-mode 1))
 
 ;; Show something useful in scratch buffer
 (validate-setq initial-scratch-message (emacs-version))

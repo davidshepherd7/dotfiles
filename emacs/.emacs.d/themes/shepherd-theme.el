@@ -28,6 +28,10 @@
  `(linum ((t (:background "grey2" :foreground "grey20"))))
  `(menu ((t (:background "grey2" :foreground "white"))))
 
+ ;; line numbers
+ `(line-number ((t (:foreground "grey20"))))
+ `(line-number-current-line ((t (:foreground "grey40"))))
+
  ;; un-editable text in minibuffer
  `(minibuffer-prompt ((default (:foreground "grey"))))
 
