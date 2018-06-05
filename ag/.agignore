@@ -1,4 +1,5 @@
 *\.min.js
+*\.bundle.js
 *\.min.css
 *\.css.map
 *\.min.js.map
@@ -32,3 +33,10 @@ firefox/.resbackup
 
 
 swagger/*
+
+e2e/client/log.html
+e2e/client/report.html
+e2e/client/output.xml
+e2e/log.html
+e2e/report.html
+e2e/output.xml

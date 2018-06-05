@@ -26,6 +26,8 @@
 
   (define-key ivy-minibuffer-map (kbd "<C-tab>") #'ivy-insert-current)
 
+  (define-key ivy-minibuffer-map (kbd "M-n") nil)
+
 
   (defun ivy-partial-or-next-line ()
     "Complete the minibuffer text as much as possible.

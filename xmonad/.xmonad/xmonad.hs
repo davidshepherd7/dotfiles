@@ -56,6 +56,10 @@ myManageHook =
   , className =? "Octave"          --> doFloat
   , className =? "Gnuplot"          --> doFloat
 
+  -- Gloss games
+  , title =? "Pong" --> doFloat
+  , title =? "Conway" --> doFloat
+
   , isFullscreen --> doFullFloat
   ]
   <+> manageHook gnomeConfig -- keep gnome/xfce compatability settings

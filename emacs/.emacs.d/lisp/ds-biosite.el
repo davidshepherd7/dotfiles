@@ -86,6 +86,8 @@
   (c-set-offset 'c #'ds/comment-offset)
 
   (c-set-offset 'template-args-cont #'ds/template-unindent-trailing-closing-paren)
+
+  (c-set-offset 'brace-list-intro '+)
   )
 
 (add-hook 'c++-mode-hook #'ds/biosite-c-style)

@@ -38,3 +38,12 @@ docker-client() {
     "$boron_dir/scripts/docker/client.sh" "$@"
 }
 compctl -K _complete-containers docker-client
+
+
+reset-vm() {
+    local vm_name="$1"
+    vboxmanage controlvm "$vm_name" poweroff || true
+    vboxmanage discardstate "$vm_name" || true
+    vboxmanage startvm "$vm_name" --type headless
+}
+compctl -K _complete-vms reset-vm

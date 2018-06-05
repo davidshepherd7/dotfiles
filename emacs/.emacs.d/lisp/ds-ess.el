@@ -6,6 +6,10 @@
   (require 'ess)
   (define-key ess-mode-map (kbd "C-c") nil)
   (define-key ess-mode-map (kbd "C-x") nil)
+  (define-key ess-mode-map (kbd "<C-return>") nil)
+
+  ;; ess-mode doesn't derive from prog mode :(
+  (define-key ess-mode-map (kbd "M-q") #'fill-function-arguments-dwim)
 
   ;; ess-mode tries to do some stupid stuff with '_' and ',',
   ;; disable this.
@@ -31,6 +35,7 @@
   (validate-setq ess-use-ido nil)
 
   (validate-setq ess-ask-for-ess-directory nil)
+  (validate-setq ess-fancy-comments nil)
 
   ;; Use rtags to make the tags file
   (add-hook 'ess-mode-hook
@@ -49,6 +54,8 @@
   ;; my movement keys
   (define-key inferior-ess-mode-map (kbd "M-n") nil)
   (define-key inferior-ess-mode-map (kbd "M-i") nil)
+
+  (define-key inferior-ess-mode-map (kbd "C-y") nil)
 
   (define-key inferior-ess-mode-map (kbd "<up>") #'comint-previous-input)
   (define-key inferior-ess-mode-map (kbd "<down>") #'comint-next-input)

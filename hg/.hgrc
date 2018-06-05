@@ -10,7 +10,7 @@ interface = curses
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging,lg-watch,import,pulls,pulla,push-as-master,lg1,id,sql-version-added
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging,lg-watch,import,pulls,pulla,push-as-master,lg1,id,sql-version-added,unshelve,shelve
 attend-commit = false
 
 [extensions]

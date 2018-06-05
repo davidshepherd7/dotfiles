@@ -164,8 +164,7 @@ install_npm_packages () {
     mkdir -p ~/.npm-global
     < "$rcdir/npm_package_list" x npm install -g %
 
-    # Update node itself (after the packages so that n is installed)
-    sudo ~/.npm-global/bin/n stable
+    sudo ~/.npm-global/bin/n lts
 }
 
 install_r_packages() {
