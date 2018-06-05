@@ -82,32 +82,9 @@
 
 (validate-setq flycheck-javascript-eslint-executable "eslint-cli")
 
-(defcustom ds/use-future-eslintrc t "use the eslintrc in boron web_applications?")
-
-(defun ds/maybe-future-eslintrc ()
-  (let ((future-eslint
-         (-find #'f-file?
-                (list (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc.json")
-                      (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc-temp.json"))))
-        (future-eslint-ts
-         (f-join (projectile-project-root) "boron" "web_applications" "future-eslintrc-ts.json")))
-    (if (and future-eslint ds/use-future-eslintrc)
-        (if (derived-mode-p 'typescript-mode)
-            future-eslint-ts
-          future-eslint)
-      nil)))
-
-(defun ds/toggle-future-eslintrc ()
-  (interactive)
-  (flycheck-mode 0)
-  (setq-local ds/use-future-eslintrc (not ds/use-future-eslintrc))
-  (setq-local flycheck-eslintrc (ds/maybe-future-eslintrc))
-  (flycheck-mode 1))
-
 (defun ds/js-flycheck-setup ()
   (interactive)
   (setq-local flycheck-checker 'javascript-eslint)
-  (setq-local flycheck-eslintrc (ds/maybe-future-eslintrc))
   (add-to-list 'flycheck-disabled-checkers 'javascript-jscs)
   (flycheck-mode))
 (add-hook 'js-mode-hook #'ds/js-flycheck-setup)
