@@ -453,3 +453,16 @@
   (validate-setq evilmi-may-jump-by-percentage nil)
   (evilmi-init-plugins)
   (define-key evil-normal-state-map (kbd "%") #'evilmi-jump-items))
+
+(use-package evil-goggles
+  :ensure t
+  :config
+  (evil-goggles-mode)
+
+  ;; optionally use diff-mode's faces; as a result, deleted text
+  ;; will be highlighed with `diff-removed` face which is typically
+  ;; some red color (as defined by the color theme)
+  ;; other faces such as `diff-added` will be used for other actions
+  (evil-goggles-use-diff-faces)
+
+  (validate-setq evil-goggles-duration 0.1))
