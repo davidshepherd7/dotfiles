@@ -47,6 +47,8 @@
   (validate-setq ivy-re-builders-alist
                  '((t . ivy--regex-ignore-order)))
 
+  (validate-setq ivy-initial-inputs-alist '())
+
 
   ;; Sort matches by longest match first
   (defun ds/ivy-sort-by-length (_name candidates)
