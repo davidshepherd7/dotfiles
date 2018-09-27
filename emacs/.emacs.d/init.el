@@ -105,6 +105,11 @@
 (load-theme 'shepherd t)
 ;; (load-theme 'adwaita t)
 
+(when (>= emacs-major-version 26)
+  (require 'validate)
+  (validate-setq debugger-stack-frame-as-list t)
+  )
+
 
 (defun starting-comment-p ()
   "Are we starting to insert a c/java mode comment?"
@@ -264,6 +269,7 @@
 
 ;; Always revert buffer to file
 (global-auto-revert-mode)
+(validate-setq revert-without-query '(".*"))
 
 ;; Automatically add newlines after certain characters (e.g. '{')
 (electric-layout-mode)
@@ -502,6 +508,7 @@ index in STRING."
 
   (validate-setq company-transformers '(company-sort-by-occurrence))
   (global-set-key (kbd "<C-tab>") #'company-complete)
+  (global-set-key (kbd "M-]") #'company-files)
 
   (defvar ds/global-company-backends)
   (setq ds/global-company-backends
@@ -1422,6 +1429,8 @@ $0")
   (electric-operator-add-rules-for-mode 'c++-mode
                                         (cons "<" nil)
                                         (cons ">" nil))
+
+  (electric-operator-add-rules-for-mode 'ess-mode (cons "^" "^"))
   )
 
 (use-package replace-pairs
@@ -1829,7 +1838,7 @@ for a file to visit if current buffer is not visiting a file."
   (set-face-attribute 'hs-fringe-face nil :foreground "saddle brown" :background nil)
   (set-face-attribute 'hideshowvis-hidable-face nil :foreground "grey20" :box nil)
 
-  (validate-setq hideshowvis-hidden-marker " ⬵⤁ ")
+  (validate-setq hideshowvis-hidden-marker " ⬵ ")
   (validate-setq hideshowvis-fringe-hidden-marker 'right-arrow)
   (validate-setq hideshowvis-fringe-hideable-marker 'down-arrow)
   (hideshowvis-symbols)
@@ -1957,3 +1966,24 @@ for a file to visit if current buffer is not visiting a file."
                                       (cons "<<" " << ")
                                       (cons ">>" " >> ")
                                       )
+
+
+
+
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name))
+         (basename (file-name-nondirectory filename)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))

@@ -93,6 +93,11 @@
 
 (add-to-list 'auto-mode-alist '("\\.jshintrc\\'" . js-mode))
 
+;; Don't try to do normal things in minified files, it doesn't normally work
+(add-to-list 'auto-mode-alist '("\\.min\\.js$" . text-mode))
+(add-to-list 'auto-mode-alist '("\\.min\\.css$" . text-mode))
+(add-to-list 'auto-mode-alist '("\\.min\\.html$" . text-mode))
+
 
 
 (use-package json-mode

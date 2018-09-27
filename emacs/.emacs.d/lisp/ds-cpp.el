@@ -2,6 +2,10 @@
 (require 'cc-mode)
 (require 's)
 
+;; Don't auto align macro newline escapes, it's not always consistent with how
+;; other people write them
+(validate-setq c-auto-align-backslashes nil)
+
 ;; Clear existing keys
 (validate-setq c++-mode-map (make-sparse-keymap))
 

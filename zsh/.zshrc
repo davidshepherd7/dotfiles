@@ -315,6 +315,8 @@ source ${zshdir}/biosite.sh
 source ${zshdir}/biosite-vms.sh
 source ${zshdir}/xenon.sh
 
+source ${zshdir}/zsh-dotnet.sh
+
 if [ -e ~/code/pa-config-files/biosite-vms.bash ]; then
     autoload bashcompinit
     bashcompinit

@@ -20,6 +20,8 @@ LICENSE.md
 
 # Boron stuff
 build/*
+build-opt/*
+build-debug/*
 iwyu/*
 dev-app/*
 node_modules/*
