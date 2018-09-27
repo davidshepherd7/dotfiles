@@ -1,15 +1,15 @@
 %include ../.boron.hgrc
 
 [paths]
-review = http://gauss.pa/hg/david/boron-unstable
-review-staging = http://gauss.pa/hg/david/boron-staging-stable
+review = https://hg.biosite.in/hg/david/boron-unstable
+review-staging = https://hg.biosite.in/hg/david/boron-staging-stable
 
-unstable = http://gauss.pa/hg/boron-unstable
-stable = http://gauss.pa/hg/boron-stable
-staging = http://gauss.pa/hg/boron-staging-stable
+unstable = https://hg.biosite.in/hg/boron-unstable
+stable = https://hg.biosite.in/hg/boron-stable
+staging = https://hg.biosite.in/hg/boron-staging-stable
 
-7review = http://gauss.pa/hg/david/boron-7-stable
-# 7stable = http://gauss.pa/hg/boron-7-stable
+7review = https://hg.biosite.in/hg/david/boron-7-stable
+# 7stable = https://hg.biosite.in/hg/boron-7-stable
 
 
 [alias]
@@ -27,7 +27,7 @@ upcommon = !cd "$($HG root)/common" && "$HG" up && cd ../ && "$HG" ccommon
 
 push-as-master = !$HG bookmark -f -r "$1" master && $HG push -B master unstable
 
-pulls-common = !$HG pull http://gauss.pa/hg/pa-unstable --cwd "$($HG root)/common" && $HG pull http://gauss.pa/hg/pa-stable --cwd "$($HG root)/common"
+pulls-common = !$HG pull https://hg.biosite.in/hg/pa-unstable --cwd "$($HG root)/common" && $HG pull https://hg.biosite.in/hg/pa-stable --cwd "$($HG root)/common"
 
 [hooks]
 # pre-commit = "$(hg root)/scripts/pre-commit.sh"
