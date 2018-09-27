@@ -10,25 +10,25 @@ interface = curses
 [pager]
 pager = less -F -R -X -S
 attend=
-ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging,lg-watch,import,pulls,pulla,push-as-master,lg1,id,sql-version-added,unshelve,shelve
+ignore=crecord,histedit,he,revert,pull,push,commit,update,up,rebase,mv,rm,ungulp,record,merge,rebase,ci,stnw,cia,autobisect,bisect,resolve,clean-ws,cgulp-xenon,cgulp,pr,pr-stable,pr-staging,lg-watch,import,pulls,pulla,push-as-master,lg1,id,sql-version-added,unshelve,shelve,evolve
 attend-commit = false
 
 [extensions]
-pager =
 progress =
-color =
 purge =
 shelve =
 graphlog =
 record =
 histedit =
 remotebranches = ~/.hgex/hg-remotebranches/hg_remotebranches.py
+remotenames =
 rebase =
 transplant =
-hggit =
+# 418171f302d0
 absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
-uncommit =
 strip =
+show =
+evolve =
 
 [color]
 
@@ -37,9 +37,9 @@ custom.bookmark = yellow
 custom.author = blue bold
 custom.time = green
 
-changeset.public=red
-changeset.secret=blue
-changeset.draft=green
+changeset.public = red
+changeset.secret = blue
+changeset.draft = green
 
 [revsetalias]
 
@@ -135,7 +135,8 @@ cia = ci --amend
 multi-released =!$HG log -r "descendants($1) and tag('re:boron-[0-9]+\.[0-9]+\.[0-9]+$')" --template '$1 was released in {tags} on {date|isodate}\n'
 
 push-as = !hg-push-as.py --mercurial-binary "$HG" "$@"
+
 [diff]
 git = true
 showfunc = true
-
+word-diff=true
