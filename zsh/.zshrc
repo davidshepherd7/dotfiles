@@ -364,3 +364,6 @@ function ndb() {
 
     node --inspect "$target" "$@"
 }
+
+export PATH="$HOME/.npm-global/bin:$PATH"
+export MANPATH="$HOME/.npm-global/share/man:$MANPATH"

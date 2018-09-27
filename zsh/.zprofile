@@ -14,5 +14,5 @@ export MANPATH="$(manpath)"
 
 export PATH="$HOME/.cargo/bin:$PATH"
 
-export PATH="$PATH:$HOME/.npm-global/bin"
-export MANPATH="$MANPATH:$HOME/.npm-global/share/man"
+export PATH="$HOME/.npm-global/bin:$PATH"
+export MANPATH="$HOME/.npm-global/share/man:$MANPATH"
