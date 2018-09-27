@@ -16,7 +16,6 @@ Set up server repository
   $ cd server
   $ cat >> .hg/hgrc << EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > remotenames = !
   > [experimental]
@@ -43,7 +42,6 @@ Test that pushing to a remotename gets rebased
   $ cat >> .hg/hgrc << EOF
   > [extensions]
   > remotenames =
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > [remotenames]
   > allownonfastforward=True
@@ -244,7 +242,6 @@ Test force pushes
   $ cd forcepushserver
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > remotenames = !
   > [experimental]
@@ -261,7 +258,6 @@ Test force pushes
   $ cd ../forcepushclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > remotenames =
   > [remotenames]
@@ -285,6 +281,7 @@ Test force pushes
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+  new changesets 86cf3bb05fcf
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg log -G -T '{rev} {desc} {remotebookmarks}'
   o  2 aa
@@ -300,7 +297,6 @@ Test 'hg push' with a tracking bookmark
   $ cd trackingserver
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > remotenames = !
   > [experimental]
@@ -313,7 +309,6 @@ Test 'hg push' with a tracking bookmark
   $ cd trackingclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > remotenames =
   > [remotenames]
@@ -353,7 +348,6 @@ Test push --to to a repo without pushrebase on (i.e. the default remotenames beh
   $ cd oldserver
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > remotenames =
   > [experimental]
   > bundle2-exp=True
@@ -365,7 +359,6 @@ Test push --to to a repo without pushrebase on (i.e. the default remotenames beh
   $ cd newclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > remotenames =
   > [experimental]
@@ -400,7 +393,6 @@ that requires pushrebase.
   $ cd pushrebaseserver
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > remotenames =
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > [experimental]
@@ -415,7 +407,6 @@ that requires pushrebase.
   $ cd remotenamesonlyclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=!
   > remotenames =
   > [experimental]

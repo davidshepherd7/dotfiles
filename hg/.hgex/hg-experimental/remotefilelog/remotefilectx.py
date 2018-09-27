@@ -6,11 +6,35 @@
 # GNU General Public License version 2 or any later version.
 
 import collections
+import time
 from mercurial.i18n import _
 from mercurial.node import bin, hex, nullid, nullrev
-from mercurial import context, util, error, ancestor, phases
+from mercurial import context, util, error, ancestor, phases, extensions
+from . import shallowutil
 
 propertycache = util.propertycache
+conduit = None
+FASTLOG_TIMEOUT_IN_SECS = 0.5
+
+def createconduit(ui):
+    try:
+        conduit = extensions.find("fbconduit")
+    except KeyError:
+        try:
+            from hgext3rd import fbconduit as conduit
+        except ImportError:
+            ui.log('linkrevfixup',
+                   _('unable to find fbconduit extension\n'))
+            return False
+    if not util.safehasattr(conduit, 'conduit_config'):
+        ui.log('linkrevfixup',
+               _('incompatible conduit module; disabling fastlog\n'))
+        return False
+    if not conduit.conduit_config(ui):
+        ui.log('linkrevfixup',
+               _('no conduit host specified in config; disabling fastlog\n'))
+        return False
+    return conduit
 
 class remotefilectx(context.filectx):
     def __init__(self, repo, path, changeid=None, fileid=None,
@@ -27,6 +51,17 @@ class remotefilectx(context.filectx):
         return self._filelog.size(self._filenode)
 
     @propertycache
+    def _conduit(self):
+        global conduit
+        if conduit is None:
+            conduit = createconduit(self._repo.ui)
+        # If createconduit fails, conduit will be set to False. We use this to
+        # avoid calling createconduit multiple times
+        if conduit is False:
+            return None
+        return conduit
+
+    @propertycache
     def _changeid(self):
         if '_changeid' in self.__dict__:
             return self._changeid
@@ -37,7 +72,7 @@ class remotefilectx(context.filectx):
             # descendant, we can (lazily) correct for linkrev aliases
             linknode = self._adjustlinknode(self._path, self._filelog,
                                             self._filenode, self._descendantrev)
-            return self._repo.changelog.rev(linknode)
+            return self._repo.unfiltered().changelog.rev(linknode)
         else:
             return self.linkrev()
 
@@ -52,18 +87,18 @@ class remotefilectx(context.filectx):
 
     @propertycache
     def _linkrev(self):
-        if self._fileid == nullid:
+        if self._filenode == nullid:
             return nullrev
 
         ancestormap = self.ancestormap()
-        p1, p2, linknode, copyfrom = ancestormap[self._fileid]
+        p1, p2, linknode, copyfrom = ancestormap[self._filenode]
         rev = self._repo.changelog.nodemap.get(linknode)
         if rev is not None:
             return rev
 
         # Search all commits for the appropriate linkrev (slow, but uncommon)
         path = self._path
-        fileid = self._fileid
+        fileid = self._filenode
         cl = self._repo.unfiltered().changelog
         mfl = self._repo.manifestlog
 
@@ -156,6 +191,16 @@ class remotefilectx(context.filectx):
 
         return results
 
+    def _nodefromancrev(self, ancrev, cl, mfl, path, fnode):
+        """returns the node for <path> in <ancrev> if content matches <fnode>"""
+        ancctx = cl.read(ancrev) # This avoids object creation.
+        manifestnode, files = ancctx[0], ancctx[3]
+        # If the file was touched in this ancestor, and the content is similar
+        # to the one we are searching for.
+        if path in files and fnode == mfl[manifestnode].readfast().get(path):
+            return cl.node(ancrev)
+        return None
+
     def _adjustlinknode(self, path, filelog, fnode, srcrev, inclusive=False):
         """return the first ancestor of <srcrev> introducing <fnode>
 
@@ -197,80 +242,148 @@ class remotefilectx(context.filectx):
         if self._verifylinknode(revs, linknode):
             return linknode
 
+        commonlogkwargs = {
+            'revs': ' '.join([hex(cl.node(rev)) for rev in revs]),
+            'fnode': hex(fnode),
+            'filepath': path,
+            'user': shallowutil.getusername(repo.ui),
+            'reponame': shallowutil.getreponame(repo.ui),
+        }
+
+        repo.ui.log('linkrevfixup', 'adjusting linknode', **commonlogkwargs)
+
         pc = repo._phasecache
         seenpublic = False
         iteranc = cl.ancestors(revs, inclusive=inclusive)
         for ancrev in iteranc:
             # First, check locally-available history.
-            ancctx = cl.read(ancrev) # This avoids object creation.
-            manifestnode, files = ancctx[0], ancctx[3]
-            if path in files:
-                # The file was touched in this ancestor, so check if the
-                # content is similar to the one we are searching for.
-                if fnode == mfl[manifestnode].readfast().get(path):
-                    return cl.node(ancrev)
+            lnode = self._nodefromancrev(ancrev, cl, mfl, path, fnode)
+            if lnode is not None:
+                return lnode
 
-            # This next part is super non-obvious, so big comment block time!
-            #
-            # It is possible to get extremely bad performance here when a fairly
-            # common set of circumstances occur when this extension is combined
-            # with a server-side commit rewriting extension like pushrebase.
-            #
-            # First, an engineer creates Commit A and pushes it to the server.
-            # While the server's data structure will have the correct linkrev
-            # for the files touched in Commit A, the client will have the
-            # linkrev of the local commit, which is "invalid" because it's not
-            # an ancestor of the main line of development.
-            #
-            # The client will never download the remotefilelog with the correct
-            # linkrev as long as nobody else touches that file, since the file
-            # data and history hasn't changed since Commit A.
-            #
-            # After a long time (or a short time in a heavily used repo), if the
-            # same engineer returns to change the same file, some commands --
-            # such as amends of commits with file moves, logs, diffs, etc  --
-            # can trigger this _adjustlinknode code. In those cases, finding
-            # the correct rev can become quite expensive, as the correct
-            # revision is far back in history and we need to walk back through
-            # history to find it.
-            #
-            # In order to improve this situation, we force a prefetch of the
-            # remotefilelog data blob for the file we were called on. We do this
-            # at most once, when we first see a public commit in the history we
-            # are traversing.
-            #
-            # Forcing the prefetch means we will download the remote blob even
-            # if we have the "correct" blob in the local store. Since the union
-            # store checks the remote store first, this means we are much more
-            # likely to get the correct linkrev at this point.
-            #
-            # In rare circumstances (such as the server having a suboptimal
-            # linkrev for our use case), we will fall back to the old slow path.
-            #
-            # We may want to add additional heuristics here in the future if
-            # the slow path is used too much. One promising possibility is using
-            # obsolescence markers to find a more-likely-correct linkrev.
+            # adjusting linknode can be super-slow. To mitigate the issue
+            # we use two heuristics: calling fastlog and forcing remotefilelog
+            # prefetch
             if not seenpublic and pc.phase(repo, ancrev) == phases.public:
+                # If the commit is public and fastlog is enabled for this repo
+                # then we can try to fetch the right linknode via fastlog.
+                if repo.ui.configbool('fastlog', 'enabled'):
+                    lnode = self._linknodeviafastlog(repo, path, ancrev, fnode,
+                                                     cl, mfl, commonlogkwargs)
+                    if lnode:
+                        return lnode
+                # If fastlog is not enabled and/or failed, let's try
+                # prefetching
+                lnode = self._forceprefetch(repo, path, fnode, revs,
+                                            commonlogkwargs)
+                if lnode:
+                    return lnode
                 seenpublic = True
-                try:
-                    repo.fileservice.prefetch([(path, hex(fnode))], force=True)
-
-                    # Now that we've downloaded a new blob from the server,
-                    # we need to rebuild the ancestor map to recompute the
-                    # linknodes.
-                    self._ancestormap = None
-                    linknode = self.ancestormap()[fnode][2] # 2 is linknode
-                    if self._verifylinknode(revs, linknode):
-                        return linknode
-                except Exception as e:
-                    errormsg = ('warning: failed to prefetch filepath %s ' +
-                                'while adjusting linknode %s (%s)\n(this is ' +
-                                'generally benign but it may make ' +
-                                'this operation take longer to calculate ' +
-                                'things locally)')
-                    repo.ui.warn(_(errormsg) % (path, hex(linknode), e))
 
         return linknode
+
+    def _linknodeviafastlog(self, repo, path, srcrev, fnode, cl, mfl,
+                            commonlogkwargs):
+        start = time.time()
+        reponame = repo.ui.config('fbconduit', 'reponame')
+        logmsg = ''
+        if self._conduit is None:
+            return None
+        try:
+            srchex = repo[srcrev].hex()
+            results = self._conduit.call_conduit(
+                'scmquery.log_v2',
+                timeout=FASTLOG_TIMEOUT_IN_SECS,
+                repo=reponame,
+                scm_type='hg',
+                rev=srchex,
+                file_paths=[path],
+                skip=0,
+            )
+            if results is None:
+                logmsg = 'fastlog returned 0 results'
+                return None
+            for anc in results:
+                ancrev = repo[str(anc['hash'])].rev()
+                lnode = self._nodefromancrev(ancrev, cl, mfl, path, fnode)
+                if lnode is not None:
+                    logmsg = 'fastlog succeded'
+                    return lnode
+            logmsg = 'fastlog succeded but linknode was not found'
+            return None
+        except Exception as e:
+            logmsg = 'fastlog failed (%s)' % e
+            return None
+        finally:
+            elapsed = time.time() - start
+            repo.ui.log('linkrevfixup', logmsg, elapsed=elapsed * 1000,
+                        **commonlogkwargs)
+
+    def _forceprefetch(self, repo, path, fnode, revs,
+                       commonlogkwargs):
+        # This next part is super non-obvious, so big comment block time!
+        #
+        # It is possible to get extremely bad performance here when a fairly
+        # common set of circumstances occur when this extension is combined
+        # with a server-side commit rewriting extension like pushrebase.
+        #
+        # First, an engineer creates Commit A and pushes it to the server.
+        # While the server's data structure will have the correct linkrev
+        # for the files touched in Commit A, the client will have the
+        # linkrev of the local commit, which is "invalid" because it's not
+        # an ancestor of the main line of development.
+        #
+        # The client will never download the remotefilelog with the correct
+        # linkrev as long as nobody else touches that file, since the file
+        # data and history hasn't changed since Commit A.
+        #
+        # After a long time (or a short time in a heavily used repo), if the
+        # same engineer returns to change the same file, some commands --
+        # such as amends of commits with file moves, logs, diffs, etc  --
+        # can trigger this _adjustlinknode code. In those cases, finding
+        # the correct rev can become quite expensive, as the correct
+        # revision is far back in history and we need to walk back through
+        # history to find it.
+        #
+        # In order to improve this situation, we force a prefetch of the
+        # remotefilelog data blob for the file we were called on. We do this
+        # at most once, when we first see a public commit in the history we
+        # are traversing.
+        #
+        # Forcing the prefetch means we will download the remote blob even
+        # if we have the "correct" blob in the local store. Since the union
+        # store checks the remote store first, this means we are much more
+        # likely to get the correct linkrev at this point.
+        #
+        # In rare circumstances (such as the server having a suboptimal
+        # linkrev for our use case), we will fall back to the old slow path.
+        #
+        # We may want to add additional heuristics here in the future if
+        # the slow path is used too much. One promising possibility is using
+        # obsolescence markers to find a more-likely-correct linkrev.
+
+        logmsg = ''
+        start = time.time()
+        try:
+            repo.fileservice.prefetch([(path, hex(fnode))], force=True)
+
+            # Now that we've downloaded a new blob from the server,
+            # we need to rebuild the ancestor map to recompute the
+            # linknodes.
+            self._ancestormap = None
+            linknode = self.ancestormap()[fnode][2] # 2 is linknode
+            if self._verifylinknode(revs, linknode):
+                logmsg = 'remotefilelog prefetching succeeded'
+                return linknode
+            logmsg = 'remotefilelog prefetching not found'
+            return None
+        except Exception as e:
+            logmsg = 'remotefilelog prefetching failed (%s)' % e
+            return None
+        finally:
+            elapsed = time.time() - start
+            repo.ui.log('linkrevfixup', logmsg, elapsed=elapsed * 1000,
+                        **commonlogkwargs)
 
     def _verifylinknode(self, revs, linknode):
         """
@@ -288,7 +401,7 @@ class remotefilectx(context.filectx):
             return False
         try:
             # Use the C fastpath to check if the given linknode is correct.
-            cl = self._repo.changelog
+            cl = self._repo.unfiltered().changelog
             return any(cl.isancestor(linknode, cl.node(r)) for r in revs)
         except error.LookupError:
             # The linknode read from the blob may have been stripped or
@@ -361,23 +474,25 @@ class remotefilectx(context.filectx):
 
         return None
 
-    def annotate(self, follow=False, linenumber=None, skiprevs=None,
-                 diffopts=None, prefetchskip=None):
+    def annotate(self, *args, **kwargs):
         introctx = self
+        prefetchskip = kwargs.pop('prefetchskip', None)
         if prefetchskip:
             # use introrev so prefetchskip can be accurately tested
             introrev = self.introrev()
             if self.rev() != introrev:
                 introctx = remotefilectx(self._repo, self._path,
                                          changeid=introrev,
-                                         fileid=self._fileid,
+                                         fileid=self._filenode,
                                          filelog=self._filelog,
                                          ancestormap=self._ancestormap)
 
         # like self.ancestors, but append to "fetch" and skip visiting parents
         # of nodes in "prefetchskip".
         fetch = []
+        seen = set()
         queue = collections.deque((introctx,))
+        seen.add(introctx.node())
         while queue:
             current = queue.pop()
             if current.filenode() != self.filenode():
@@ -386,15 +501,16 @@ class remotefilectx(context.filectx):
                 fetch.append((current.path(), hex(current.filenode())))
             if prefetchskip and current in prefetchskip:
                 continue
-            map(queue.append, current.parents())
+            for parent in current.parents():
+                if parent.node() not in seen:
+                    seen.add(parent.node())
+                    queue.append(parent)
 
         self._repo.ui.debug('remotefilelog: prefetching %d files '
                             'for annotate\n' % len(fetch))
         if fetch:
             self._repo.fileservice.prefetch(fetch)
-        return super(remotefilectx, self).annotate(follow, linenumber,
-                                                   skiprevs=skiprevs,
-                                                   diffopts=diffopts)
+        return super(remotefilectx, self).annotate(*args, **kwargs)
 
     # Return empty set so that the hg serve and thg don't stack trace
     def children(self):

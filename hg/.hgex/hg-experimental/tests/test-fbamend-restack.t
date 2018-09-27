@@ -6,7 +6,7 @@ Set up test environment.
   > inhibit=$TESTDIR/../hgext3rd/inhibit.py
   > rebase=
   > [experimental]
-  > allowdivergence = True
+  > evolution.allowdivergence = True
   > evolution = createmarkers, allowunstable
   > [fbamend]
   > # do not write preamend bookmarks
@@ -65,7 +65,7 @@ Test basic case of a single amend in a small stack.
   warning: the changeset's children were left behind
   (use 'hg restack' to rebase them)
   $ showgraph
-  @  5 add b
+  @  4 add b
   |
   | o  3 add d
   | |
@@ -78,11 +78,11 @@ Test basic case of a single amend in a small stack.
   rebasing 2:4538525df7e2 "add c"
   rebasing 3:47d2a3944de8 "add d"
   $ showgraph
-  o  7 add d
+  o  6 add d
   |
-  o  6 add c
+  o  5 add c
   |
-  @  5 add b
+  @  4 add b
   |
   o  0 add a
 
@@ -107,7 +107,7 @@ Test multiple amends of same commit.
   $ echo b >> b
   $ hg amend
   $ showgraph
-  @  6 add b
+  @  4 add b
   |
   | o  2 add c
   | |
@@ -117,9 +117,9 @@ Test multiple amends of same commit.
   $ hg rebase --restack
   rebasing 2:4538525df7e2 "add c"
   $ showgraph
-  o  7 add c
+  o  5 add c
   |
-  @  6 add b
+  @  4 add b
   |
   o  0 add a
 
@@ -138,7 +138,7 @@ Test conflict during rebasing.
   warning: the changeset's children were left behind
   (use 'hg restack' to rebase them)
   $ showgraph
-  @  6 add b
+  @  5 add b
   |
   | o  4 add e
   | |
@@ -169,13 +169,13 @@ Test conflict during rebasing.
   rebasing 3:47d2a3944de8 "add d"
   rebasing 4:9d206ffc875e "add e"
   $ showgraph
-  o  9 add e
+  o  8 add e
   |
-  o  8 add d
+  o  7 add d
   |
-  o  7 add c
+  o  6 add c
   |
-  @  6 add b
+  @  5 add b
   |
   o  0 add a
 
@@ -194,7 +194,7 @@ Test finding a stable base commit from within the old stack.
   $ hg up 3
   3 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  5 add b
+  o  4 add b
   |
   | @  3 add d
   | |
@@ -207,11 +207,11 @@ Test finding a stable base commit from within the old stack.
   rebasing 2:4538525df7e2 "add c"
   rebasing 3:47d2a3944de8 "add d"
   $ showgraph
-  @  7 add d
+  @  6 add d
   |
-  o  6 add c
+  o  5 add c
   |
-  o  5 add b
+  o  4 add b
   |
   o  0 add a
 
@@ -229,9 +229,9 @@ Test finding a stable base commit from a new child of the amended commit.
   (use 'hg restack' to rebase them)
   $ mkcommit e
   $ showgraph
-  @  6 add e
+  @  5 add e
   |
-  o  5 add b
+  o  4 add b
   |
   | o  3 add d
   | |
@@ -244,13 +244,13 @@ Test finding a stable base commit from a new child of the amended commit.
   rebasing 2:4538525df7e2 "add c"
   rebasing 3:47d2a3944de8 "add d"
   $ showgraph
-  o  8 add d
+  o  7 add d
   |
-  o  7 add c
+  o  6 add c
   |
-  | @  6 add e
+  | @  5 add e
   |/
-  o  5 add b
+  o  4 add b
   |
   o  0 add a
 
@@ -275,14 +275,14 @@ a commit on top of one of the obsolete intermediate commits.
   $ hg amend
   warning: the changeset's children were left behind
   (use 'hg restack' to rebase them)
-  $ hg up 6
+  $ hg up 5
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  8 add b
+  o  6 add b
   |
-  | @  6 add e
+  | @  5 add e
   | |
-  | x  5 add b
+  | x  4 add b
   |/
   | o  3 add d
   | |
@@ -294,15 +294,15 @@ a commit on top of one of the obsolete intermediate commits.
   $ hg rebase --restack
   rebasing 2:4538525df7e2 "add c"
   rebasing 3:47d2a3944de8 "add d"
-  rebasing 6:c1992d8998fa "add e"
+  rebasing 5:c1992d8998fa "add e"
   $ showgraph
-  @  11 add e
+  @  9 add e
   |
-  | o  10 add d
+  | o  8 add d
   | |
-  | o  9 add c
+  | o  7 add c
   |/
-  o  8 add b
+  o  6 add b
   |
   o  0 add a
 
@@ -329,9 +329,9 @@ behavior is now incorrect -- restack should always fix the whole stack.)
   $ hg up 3
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  7 add c
+  o  5 add c
   |
-  | o  5 add b
+  | o  4 add b
   | |
   | | @  3 add d
   | | |
@@ -341,15 +341,14 @@ behavior is now incorrect -- restack should always fix the whole stack.)
   |/
   o  0 add a
   $ hg rebase --restack
+  rebasing 5:a43fcd08f41f "add c" (tip)
   rebasing 3:47d2a3944de8 "add d"
-  rebasing 7:a43fcd08f41f "add c" (tip)
-  rebasing 8:49b119a57122 "add d"
   $ showgraph
-  @  10 add d
+  @  7 add d
   |
-  o  9 add c
+  o  6 add c
   |
-  o  5 add b
+  o  4 add b
   |
   o  0 add a
 
@@ -375,9 +374,9 @@ below the current commit alone.
   $ hg up 1
   1 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ showgraph
-  o  7 add f
+  o  6 add f
   |
-  | o  6 add d
+  | o  5 add d
   | |
   | | o  4 add e
   | | |
@@ -391,11 +390,11 @@ below the current commit alone.
   $ hg rebase --restack
   rebasing 4:9d206ffc875e "add e"
   $ showgraph
-  o  8 add e
+  o  7 add e
   |
-  | o  7 add f
+  | o  6 add f
   | |
-  o |  6 add d
+  o |  5 add d
   | |
   o |  2 add c
   | |
@@ -421,7 +420,7 @@ Test having an unamended commit.
   $ hg up -C 1
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  4 Amended
+  o  3 Amended
   |
   | o  2 add c
   | |
@@ -432,9 +431,9 @@ Test having an unamended commit.
   rebasing 2:4538525df7e2 "add c"
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  7 add c
+  o  5 add c
   |
-  @  4 Amended
+  @  3 Amended
   |
   | x  1 add b
   |/
@@ -497,7 +496,7 @@ since the successor is obsolete.
   warning: the changeset's children were left behind
   (use 'hg restack' to rebase them)
   $ showgraph
-  @  4 add b
+  @  3 add b
   |
   | o  2 add c
   | |
@@ -511,9 +510,9 @@ since the successor is obsolete.
   warning: the changeset's children were left behind
   (use 'hg restack' to rebase them)
   $ showgraph
-  @  6 add b
+  @  4 add b
   |
-  | o  4 add b
+  | o  3 add b
   |/
   | o  2 add c
   | |
@@ -521,27 +520,21 @@ since the successor is obsolete.
   |/
   o  0 add a
   $ hg unamend
-  $ hg up -C 1
+  $ hg up -C 3
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  4 add b
+  @  3 add b
   |
   | o  2 add c
   | |
-  | @  1 add b
-  |/
-  o  0 add a
-  $ hg rebase --restack
-  rebasing 2:4538525df7e2 "add c"
-  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  $ showgraph
-  o  7 add c
-  |
-  @  4 add b
-  |
   | o  1 add b
   |/
   o  0 add a
+
+Revision 2 "add c" is already stable (not orphaned) so restack does nothing:
+
+  $ hg rebase --restack
+  nothing to rebase - empty destination
 
 Test recursive restacking -- basic case.
   $ reset
@@ -564,9 +557,9 @@ Test recursive restacking -- basic case.
   $ hg up 1
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   $ showgraph
-  o  7 add c
+  o  5 add c
   |
-  | o  5 add b
+  | o  4 add b
   | |
   | | o  3 add d
   | | |
@@ -576,16 +569,15 @@ Test recursive restacking -- basic case.
   |/
   o  0 add a
   $ hg rebase --restack
+  rebasing 5:a43fcd08f41f "add c" (tip)
   rebasing 3:47d2a3944de8 "add d"
-  rebasing 7:a43fcd08f41f "add c" (tip)
-  rebasing 8:49b119a57122 "add d"
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  10 add d
+  o  7 add d
   |
-  o  9 add c
+  o  6 add c
   |
-  @  5 add b
+  @  4 add b
   |
   | x  1 add b
   |/
@@ -633,21 +625,21 @@ stack is lost upon rebasing lower levels.
   $ hg up 1
   0 files updated, 0 files merged, 2 files removed, 0 files unresolved
   $ showgraph
-  o  15 add g
+  o  11 add g
   |
-  | o  13 add h
+  | o  10 add h
   | |
-  | x  12 add g
+  | x  9 add g
   |/
-  o  11 add c
+  o  8 add c
   |
-  | o  9 add e
+  | o  7 add e
   | |
-  | | o  7 add f
+  | | o  6 add f
   | | |
-  | | x  6 add e
+  | | x  5 add e
   | |/
-  | o  5 add b
+  | o  4 add b
   | |
   | | o  3 add d
   | | |
@@ -657,34 +649,32 @@ stack is lost upon rebasing lower levels.
   |/
   o  0 add a
   $ hg rebase --restack
-  rebasing 13:9f2a7cefd4b4 "add h"
-  rebasing 7:2a79e3a98cd6 "add f"
+  rebasing 6:2a79e3a98cd6 "add f"
+  rebasing 8:a43fcd08f41f "add c"
+  rebasing 11:604f34a1983d "add g" (tip)
   rebasing 3:47d2a3944de8 "add d"
-  rebasing 11:a43fcd08f41f "add c"
-  rebasing 15:604f34a1983d "add g" (tip)
-  rebasing 16:e1df23499b99 "add h"
-  rebasing 18:49b119a57122 "add d"
+  rebasing 10:9f2a7cefd4b4 "add h"
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ showgraph
-  o  22 add d
+  o  16 add h
   |
-  | o  21 add h
+  | o  15 add d
   | |
-  | o  20 add g
+  o |  14 add g
   |/
-  o  19 add c
+  o  13 add c
   |
-  | o  17 add f
+  | o  12 add f
   | |
-  | o  9 add e
+  | o  7 add e
   |/
-  @  5 add b
+  @  4 add b
   |
   | x  1 add b
   |/
   o  0 add a
 
-Suboptimal case: restack rebases "D" twice
+Restack does topological sort and only rebases "D" once:
 
   $ reset
   $ hg debugdrawdag<<'EOS'
@@ -717,13 +707,12 @@ Suboptimal case: restack rebases "D" twice
   |/
   o  0 A
   $ hg rebase --restack
-  rebasing 3:f585351a92f8 "D" (D)
   rebasing 5:ca53c8ceb284 "C"
-  rebasing 7:4da953fe10f3 "D"
+  rebasing 3:f585351a92f8 "D" (D)
   $ showgraph
-  o  9 D
+  o  8 D
   |
-  o  8 C
+  o  7 C
   |
   @  6 B3
   |
@@ -734,5 +723,147 @@ Suboptimal case: restack rebases "D" twice
   | x  2 C
   | |
   | x  1 B
+  |/
+  o  0 A
+
+Restack will only restack the "current" stack and leave other stacks untouched.
+
+  $ reset
+  $ hg debugdrawdag<<'EOS'
+  >  D   H   K
+  >  |   |   |
+  >  B C F G J L    # amend: B -> C
+  >  |/  |/  |/     # amend: F -> G
+  >  A   E   I   Z  # amend: J -> L
+  > EOS
+
+  $ hg phase --public -r Z+I+A+E
+
+  $ hg update -q Z
+  $ hg rebase --restack
+  nothing to restack
+  [1]
+
+  $ hg update -q D
+  $ hg rebase --restack
+  rebasing 10:be0ef73c17ad "D" (D)
+
+  $ hg update -q G
+  $ hg rebase --restack
+  rebasing 11:cc209258a732 "H" (H)
+
+  $ hg update -q I
+  $ hg rebase --restack
+  rebasing 12:59760668f0e1 "K" (K)
+
+  $ rm .hg/localtags
+  $ showgraph
+  o  15 K
+  |
+  | o  14 H
+  | |
+  | | o  13 D
+  | | |
+  o | |  9 L
+  | | |
+  | o |  7 G
+  | | |
+  | | o  5 C
+  | | |
+  | | | o  3 Z
+  | | |
+  @ | |  2 I
+   / /
+  o /  1 E
+   /
+  o  0 A
+
+The "prune" cases.
+
+  $ reset
+  $ hg debugdrawdag<<'EOS'
+  > D E
+  > |/
+  > C
+  > |       # amend: F -> F2
+  > B  G H  # prune: A, C, F2
+  > |  |/
+  > A  F F2
+  > EOS
+
+  $ hg update -q B
+  $ hg rebase --restack
+  rebasing 3:112478962961 "B" (B)
+  rebasing 7:f585351a92f8 "D" (D)
+  rebasing 8:78d2dca436b2 "E" (E tip)
+
+  $ hg update -q H
+  $ hg rebase --restack
+  rebasing 4:8fdb2c1feb20 "G" (G)
+  rebasing 5:02ac06fe83b9 "H" (H)
+
+  $ rm .hg/localtags
+  $ showgraph
+  @  13 H
+  
+  o  12 G
+  
+  o  11 E
+  |
+  | o  10 D
+  |/
+  o  9 B
+
+Restack could resume after resolving merge conflicts.
+
+  $ reset
+  $ hg debugdrawdag<<'EOS'
+  >  F   G    # F/C = F # cause conflict
+  >  |   |    # G/E = G # cause conflict
+  >  B C D E  # amend: B -> C
+  >  |/  |/   # amend: D -> E
+  >  |   /
+  >  |  /
+  >  | /
+  >  |/
+  >  A
+  > EOS
+
+  $ hg update -q F
+  $ hg rebase --restack
+  rebasing 5:ed8545a5c22a "F" (F)
+  merging C
+  warning: conflicts while merging C! (edit, then use 'hg resolve --mark')
+  unresolved conflicts (see hg resolve, then hg rebase --continue)
+  [1]
+
+  $ rm .hg/localtags
+
+  $ echo R > C
+  $ hg resolve --mark -q
+  continue: hg rebase --continue
+  $ hg rebase --continue
+  rebasing 5:ed8545a5c22a "F"
+  rebasing 6:4d1ef7d890c5 "G" (tip)
+  merging E
+  warning: conflicts while merging E! (edit, then use 'hg resolve --mark')
+  unresolved conflicts (see hg resolve, then hg rebase --continue)
+  [1]
+
+  $ echo R > E
+  $ hg resolve --mark -q
+  continue: hg rebase --continue
+  $ hg rebase --continue
+  already rebased 5:ed8545a5c22a "F" as 2282fe522d5c
+  rebasing 6:4d1ef7d890c5 "G"
+
+  $ showgraph
+  o  8 G
+  |
+  | @  7 F
+  | |
+  o |  4 E
+  | |
+  | o  2 C
   |/
   o  0 A

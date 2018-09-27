@@ -1,11 +1,14 @@
-// py-cdatapack.h - python extension for cdatapack
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// py-cdatapack.h - python extension for cdatapack
 // no-check-code
+
+#ifndef FBHGEXT_CSTORE_PY_CDATAPACK_H
+#define FBHGEXT_CSTORE_PY_CDATAPACK_H
 
 // The PY_SSIZE_T_CLEAN define must be defined before the Python.h include,
 // as per the documentation.
@@ -15,7 +18,7 @@
 #include <Python.h>
 
 extern "C" {
-#include "cdatapack.h"
+#include "cdatapack/cdatapack.h"
 }
 
 // ====  py_cdatapack PyObject declaration ====
@@ -239,14 +242,8 @@ static int cdatapack_init(py_cdatapack *self, PyObject *args) {
     return -1;
   }
 
-  char* idx_path = (char*)malloc(nodelen + sizeof(INDEXSUFFIX));
-  char* data_path = (char*)malloc(nodelen + sizeof(PACKSUFFIX));
-  if(idx_path == NULL || data_path == NULL) {
-    free(data_path);
-    free(idx_path);
-    PyErr_NoMemory();
-    return -1;
-  }
+  char idx_path[nodelen + sizeof(INDEXSUFFIX)];
+  char data_path[nodelen + sizeof(PACKSUFFIX)];
 
   sprintf(idx_path, "%s%s", node, INDEXSUFFIX);
   sprintf(data_path, "%s%s", node, PACKSUFFIX);
@@ -254,8 +251,6 @@ static int cdatapack_init(py_cdatapack *self, PyObject *args) {
   self->handle = open_datapack(
       idx_path, strlen(idx_path),
       data_path, strlen(data_path));
-  free(data_path);
-  free(idx_path);
 
   if (self->handle == NULL) {
     PyErr_NoMemory();
@@ -268,7 +263,9 @@ static int cdatapack_init(py_cdatapack *self, PyObject *args) {
     PyErr_Format(PyExc_RuntimeError, "Unsupported version");
   } else if (self->handle->status != DATAPACK_HANDLE_OK) {
     PyErr_Format(PyExc_ValueError,
-        "Error setting up datapack (status=%d)", self->handle->status);
+        "Error setting up datapack %s (status=%d)",
+        data_path,
+        self->handle->status);
   }
 
   free(self->handle);
@@ -385,6 +382,155 @@ static PyObject *cdatapack_find(
   return tuple;
 }
 
+PyObject *readpymeta(delta_chain_link_t *link) {
+  /* sync these with remotefilelog.constants */
+  const char METAKEYFLAG = 'f';
+  const char METAKEYSIZE = 's';
+
+  PyObject *pymeta = PyDict_New();
+  if (pymeta == NULL) {
+    return PyErr_NoMemory();
+  }
+
+  if (link->meta == NULL || link->meta_sz == 0) {
+    // no metadata, usually means it's version 0
+    return pymeta;
+  }
+
+  const char *p = (const char *)link->meta;
+  const char *end = p + link->meta_sz;
+
+  while (p + 3 <= end) { /* 3: ensure 1-byte key, 2-byte size exist */
+    const char key[2] = {*p, 0};
+    p += 1;
+
+    const uint16_t entry_size = ntohs(*((uint16_t *) p));
+    p += sizeof(entry_size); /* 2-byte size */
+
+    if (entry_size + p > end) {
+      goto err_cleanup;
+    }
+
+    PyObject *pyv = NULL;
+    switch (key[0]) {
+      case METAKEYFLAG:
+      case METAKEYSIZE:
+        { /* an integer field */
+          unsigned long long v = 0;
+          for (const char *vp = p; vp < p + entry_size; ++vp) {
+            v = (v << 8) | *((uint8_t *) vp);
+          }
+          pyv = PyLong_FromUnsignedLongLong(v);
+        }
+        break;
+      default:
+        { /* treat value as a string field */
+          pyv = PyString_FromStringAndSize(p, entry_size);
+        }
+    }
+    if (pyv == NULL) {
+      goto err_cleanup;
+    }
+    if (PyDict_SetItemString(pymeta, key, pyv) == -1) {
+      Py_XDECREF(pyv);
+      goto err_cleanup;
+    }
+    p += entry_size;
+  }
+  if (p != end) {
+    goto err_cleanup;
+  }
+
+  return pymeta;
+
+err_cleanup:
+  PyErr_Format(PyExc_ValueError, "corrupted datapack metadata");
+  Py_XDECREF(pymeta);
+  return NULL;
+}
+
+/**
+ *  Finds a node and returns its delta entry (delta, deltabasenode,
+ *  meta) tuple if found.
+ */
+static PyObject *cdatapack_getdelta(
+    py_cdatapack *self,
+    PyObject *args) {
+  const char *node;
+  Py_ssize_t node_sz;
+
+  // 1. Parse the args
+  if (!PyArg_ParseTuple(args, "s#", &node, &node_sz)) {
+    return NULL;
+  }
+
+  if (node_sz != NODE_SZ) {
+    PyErr_Format(PyExc_ValueError, "node must be %d bytes long", NODE_SZ);
+    return NULL;
+  }
+
+  // 2. Read the delta chain
+  pack_index_entry_t index_entry;
+
+  if (find(self->handle, (const uint8_t *) node, &index_entry) == false) {
+    PyErr_SetObject(PyExc_KeyError, PyTuple_GET_ITEM(args, 0));
+    return NULL;
+  }
+
+  delta_chain_link_t link;
+
+  get_delta_chain_link_result_t next = getdeltachainlink(
+      self->handle,
+      ((uint8_t *) self->handle->data_mmap) + index_entry.data_offset,
+      &link);
+
+  if (next.code != GET_DELTA_CHAIN_LINK_OK) {
+    PyErr_SetObject(PyExc_KeyError, PyTuple_GET_ITEM(args, 0));
+    return NULL;
+  }
+
+  // Populate the link.delta pointer
+  if (!uncompressdeltachainlink(&link)) {
+    PyErr_Format(PyExc_ValueError, "unable to decompress pack entry");
+    return NULL;
+  }
+
+  // 3. Convert it into python objects
+  PyObject *tuple = NULL;
+  PyObject *delta = NULL, *deltabasenode = NULL, *meta =
+      NULL;
+
+  delta = PyBytes_FromStringAndSize(
+      (const char *) link.delta, (Py_ssize_t) link.delta_sz);
+  deltabasenode = PyBytes_FromStringAndSize(
+      (const char *) link.deltabase_node, NODE_SZ);
+  meta = readpymeta(&link);
+
+  if (deltabasenode != NULL &&
+      delta != NULL &&
+      meta != NULL) {
+    tuple = PyTuple_Pack(3, delta, deltabasenode, meta);
+  }
+
+  Py_XDECREF(delta);
+  Py_XDECREF(deltabasenode);
+  Py_XDECREF(meta);
+
+  if (tuple == NULL) {
+    goto err_cleanup;
+  }
+
+  goto cleanup;
+
+err_cleanup:
+  Py_XDECREF(tuple);
+  tuple = NULL;
+
+cleanup:
+  free((void *)link.delta);
+  return tuple;
+}
+
 /**
  * Finds a node and returns a list of (filename, node, filename, delta base
  * node, delta) tuples if found.
@@ -467,10 +613,6 @@ cleanup:
 }
 
 static PyObject *cdatapack_getmeta(py_cdatapack *self, PyObject *args) {
-  /* sync these with remotefilelog.constants */
-  const char METAKEYFLAG = 'f';
-  const char METAKEYSIZE = 's';
-
   const char *node;
   Py_ssize_t node_sz;
 
@@ -501,66 +643,7 @@ static PyObject *cdatapack_getmeta(py_cdatapack *self, PyObject *args) {
     return NULL;
   }
 
-  PyObject *pymeta = PyDict_New();
-  if (pymeta == NULL) {
-    return PyErr_NoMemory();
-  }
-
-  if (link.meta == NULL || link.meta_sz == 0) {
-    // no metadata, usually means it's version 0
-    return pymeta;
-  }
-
-  const char *p = (const char *)link.meta;
-  const char *end = p + link.meta_sz;
-
-  while (p + 3 <= end) { /* 3: ensure 1-byte key, 2-byte size exist */
-    const char key[2] = {*p, 0};
-    p += 1;
-
-    const uint16_t entry_size = ntohs(*((uint16_t *) p));
-    p += sizeof(entry_size); /* 2-byte size */
-
-    if (entry_size + p > end) {
-      goto err_cleanup;
-    }
-
-    PyObject *pyv = NULL;
-    switch (key[0]) {
-      case METAKEYFLAG:
-      case METAKEYSIZE:
-        { /* an integer field */
-          unsigned long long v = 0;
-          for (const char *vp = p; vp < p + entry_size; ++vp) {
-            v = (v << 8) | *((uint8_t *) vp);
-          }
-          pyv = PyLong_FromUnsignedLongLong(v);
-        }
-        break;
-      default:
-        { /* treat value as a string field */
-          pyv = PyString_FromStringAndSize(p, entry_size);
-        }
-    }
-    if (pyv == NULL) {
-      goto err_cleanup;
-    }
-    if (PyDict_SetItemString(pymeta, key, pyv) == -1) {
-      Py_XDECREF(pyv);
-      goto err_cleanup;
-    }
-    p += entry_size;
-  }
-  if (p != end) {
-    goto err_cleanup;
-  }
-
-  return pymeta;
-
-err_cleanup:
-  PyErr_Format(PyExc_ValueError, "corrupted datapack metadata");
-  Py_XDECREF(pymeta);
-  return NULL;
+  return readpymeta(&link);
 }
 
 // ====  cdatapack ctype declaration ====
@@ -574,6 +657,10 @@ static PyMethodDef cdatapack_methods[] = {
         METH_VARARGS,
         "Finds a node and returns a (node, deltabase index offset, "
             "data offset, data size) tuple if found."},
+    {"getdelta", (PyCFunction)cdatapack_getdelta,
+        METH_VARARGS,
+        "Finds a node and returns its delta entry (delta, deltabasename, "
+            "deltabasenode, meta) tuple if found."},
     {"getdeltachain", (PyCFunction)cdatapack_getdeltachain,
         METH_VARARGS,
         "Finds a node and returns a list of (filename, node, filename, delta "
@@ -623,3 +710,5 @@ static PyTypeObject cdatapack_type = {
   (initproc)cdatapack_init,             /* tp_init */
   0,                                    /* tp_alloc */
 };
+
+#endif /* FBHGEXT_CSTORE_PY_CDATAPACK_H */

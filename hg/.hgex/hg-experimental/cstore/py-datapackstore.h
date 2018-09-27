@@ -1,11 +1,14 @@
-// py-cstore.cpp - c++ implementation of a store
-//
-// Copyright 2017 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// py-cstore.cpp - c++ implementation of a store
 // no-check-code
+
+#ifndef FBHGEXT_CSTORE_PY_DATAPACKSTORE_H
+#define FBHGEXT_CSTORE_PY_DATAPACKSTORE_H
 
 // The PY_SSIZE_T_CLEAN define must be defined before the Python.h include,
 // as per the documentation.
@@ -15,14 +18,17 @@
 #include <string>
 
 extern "C" {
-#include "cdatapack.h"
+#include "cdatapack/cdatapack.h"
 }
 
-#include "pythonutil.h"
-#include "datapackstore.h"
-#include "key.h"
-#include "py-structs.h"
-#include "uniondatapackstore.h"
+#include "cstore/datapackstore.h"
+#include "cstore/datastore.h"
+#include "cstore/key.h"
+#include "cstore/py-structs.h"
+#include "cstore/pythondatastore.h"
+#include "cstore/pythonkeyiterator.h"
+#include "cstore/pythonutil.h"
+#include "cstore/uniondatapackstore.h"
 
 // --------- DatapackStore Implementation ---------
 
@@ -73,15 +79,14 @@ static PyObject *datapackstore_getdeltachain(py_datapackstore *self, PyObject *a
 
     PythonObj resultChain = PyList_New(0);
 
-    delta_chain_link_t *link;
     size_t index = 0;
-    while ((link = chain.next()) != NULL) {
-      PythonObj name = PyString_FromStringAndSize(link->filename, link->filename_sz);
-      PythonObj retnode = PyString_FromStringAndSize((const char *) link->node, NODE_SZ);
+    for (DeltaChainLink link = chain.next(); !link.isdone(); link = chain.next()) {
+      PythonObj name = PyString_FromStringAndSize(link.filename(), link.filenamesz());
+      PythonObj retnode = PyString_FromStringAndSize((const char *) link.node(), NODE_SZ);
       PythonObj deltabasenode = PyString_FromStringAndSize(
-          (const char *) link->deltabase_node, NODE_SZ);
+          (const char *) link.deltabasenode(), NODE_SZ);
       PythonObj delta = PyString_FromStringAndSize(
-          (const char *) link->delta, (Py_ssize_t) link->delta_sz);
+          (const char *) link.delta(), (Py_ssize_t) link.deltasz());
 
       PythonObj tuple = PyTuple_Pack(5, (PyObject*)name, (PyObject*)retnode,
                                         (PyObject*)name, (PyObject*)deltabasenode,
@@ -106,35 +111,6 @@ static PyObject *datapackstore_getdeltachain(py_datapackstore *self, PyObject *a
   }
 }
 
-class PythonKeyIterator : public KeyIterator {
-  private:
-    PythonObj _input;
-    Key _current;
-  public:
-    PythonKeyIterator(PythonObj input) :
-      _input(input) {}
-
-    Key *next() {
-      PyObject *item;
-      while ((item = PyIter_Next((PyObject*)_input)) != NULL) {
-        PythonObj itemObj = item;
-
-        char *name;
-        Py_ssize_t namelen;
-        char *node;
-        Py_ssize_t nodelen;
-        if (!PyArg_ParseTuple(item, "s#s#", &name, &namelen, &node, &nodelen)) {
-          throw pyexception();
-        }
-
-        _current = Key(name, namelen, node, nodelen);
-        return &_current;
-      }
-
-      return NULL;
-    }
-};
-
 static PyObject *datapackstore_getmissing(py_datapackstore *self, PyObject *keys) {
   try {
     PythonObj result = PyList_New(0);
@@ -142,10 +118,10 @@ static PyObject *datapackstore_getmissing(py_datapackstore *self, PyObject *keys
     PythonObj inputIterator = PyObject_GetIter(keys);
     PythonKeyIterator keysIter(inputIterator);
 
-    DatapackStoreKeyIterator missingIter = self->datapackstore.getMissing(keysIter);
+    std::shared_ptr<KeyIterator> missingIter = self->datapackstore.getMissing(keysIter);
 
     Key *key;
-    while ((key = missingIter.next()) != NULL) {
+    while ((key = missingIter->next()) != NULL) {
       PythonObj missingKey = Py_BuildValue("(s#s#)", key->name.c_str(), key->name.size(),
                                                      key->node, 20);
       if (PyList_Append(result, (PyObject*)missingKey)) {
@@ -229,8 +205,9 @@ static int uniondatapackstore_init(py_uniondatapackstore *self, PyObject *args) 
   }
 
   try {
-    std::vector<DatapackStore*> stores;
-    std::vector<PythonObj> pySubStores;
+    std::vector<DataStore*> stores;
+    std::vector<PythonObj> cSubStores;
+    std::vector< std::shared_ptr<PythonDataStore> > pySubStores;
 
     PyObject *item;
     PythonObj inputIterator = PyObject_GetIter(storeList);
@@ -238,26 +215,42 @@ static int uniondatapackstore_init(py_uniondatapackstore *self, PyObject *args) 
       // Record the substore references, so:
       // A) We can decref them in case of an error.
       // B) They don't get GC'd while the uniondatapackstore holds on to them.
-      pySubStores.push_back(PythonObj(item));
+      int iscdatapack = PyObject_IsInstance(item, (PyObject*)&datapackstoreType);
 
-      int isinstance = PyObject_IsInstance(item, (PyObject*)&datapackstoreType);
-      if (isinstance == 0) {
-        PyErr_SetString(PyExc_RuntimeError, "cuniondatapackstore only accepts cdatapackstore");
-        return -1;
-      } else if (isinstance != 1) {
-        // Error
-        return -1;
+      PythonObj store(item);
+      switch (iscdatapack) {
+        case 1:
+          // Store is C datapack
+          {
+            cSubStores.push_back(store);
+            py_datapackstore *subStore = (py_datapackstore*)item;
+            stores.push_back(&subStore->datapackstore);
+          }
+          break;
+        case 0:
+          // Store is PythonDataStore, it's memory management
+          // is performed by py_uniondatapackstore
+          {
+            std::shared_ptr<PythonDataStore> pystore =
+              std::make_shared<PythonDataStore>(store);
+            pySubStores.push_back(pystore);
+            stores.push_back(pystore.get());
+          }
+          break;
+        default:
+          // Error
+          return -1;
       }
-
-      py_datapackstore *pySubStore = (py_datapackstore*)item;
-      stores.push_back(&pySubStore->datapackstore);
     }
 
     // We have to manually call the member constructor, since the provided 'self'
     // is just zerod out memory.
     new(&self->uniondatapackstore) std::shared_ptr<UnionDatapackStore>(new UnionDatapackStore(stores));
-    new(&self->substores) std::vector<PythonObj>();
-    self->substores = pySubStores;
+    new(&self->cstores) std::vector<PythonObj>();
+    new(&self->pystores) std::vector< std::shared_ptr<PythonDataStore> >();
+
+    self->cstores = cSubStores;
+    self->pystores = pySubStores;
   } catch (const std::exception &ex) {
     PyErr_SetString(PyExc_RuntimeError, ex.what());
     return -1;
@@ -268,7 +261,8 @@ static int uniondatapackstore_init(py_uniondatapackstore *self, PyObject *args) 
 
 static void uniondatapackstore_dealloc(py_uniondatapackstore *self) {
   self->uniondatapackstore.~shared_ptr<UnionDatapackStore>();
-  self->substores.~vector<PythonObj>();
+  self->cstores.~vector<PythonObj>();
+  self->pystores.~vector< std::shared_ptr<PythonDataStore> >();
   PyObject_Del(self);
 }
 
@@ -314,14 +308,13 @@ static PyObject *uniondatapackstore_getdeltachain(py_uniondatapackstore *self, P
 
     PythonObj resultChain = PyList_New(0);
 
-    delta_chain_link_t *link;
-    while ((link = chain.next()) != NULL) {
-      PythonObj name = PyString_FromStringAndSize(link->filename, link->filename_sz);
-      PythonObj retnode = PyString_FromStringAndSize((const char *) link->node, NODE_SZ);
+    for (DeltaChainLink link = chain.next(); !link.isdone(); link = chain.next()) {
+      PythonObj name = PyString_FromStringAndSize(link.filename(), link.filenamesz());
+      PythonObj retnode = PyString_FromStringAndSize((const char *) link.node(), NODE_SZ);
       PythonObj deltabasenode = PyString_FromStringAndSize(
-          (const char *) link->deltabase_node, NODE_SZ);
+          (const char *) link.deltabasenode(), NODE_SZ);
       PythonObj delta = PyString_FromStringAndSize(
-          (const char *) link->delta, (Py_ssize_t) link->delta_sz);
+          (const char *) link.delta(), (Py_ssize_t) link.deltasz());
 
       PythonObj tuple = PyTuple_Pack(5, (PyObject*)name, (PyObject*)retnode,
                                         (PyObject*)name, (PyObject*)deltabasenode,
@@ -376,6 +369,10 @@ static PyObject *uniondatapackstore_markforrefresh(py_uniondatapackstore *self) 
   Py_RETURN_NONE;
 }
 
+static PyObject *uniondatapackstore_getmetrics(py_uniondatapackstore *self) {
+  return PyDict_New();
+}
+
 // --------- UnionDatapackStore Declaration ---------
 
 static PyMethodDef uniondatapackstore_methods[] = {
@@ -383,6 +380,7 @@ static PyMethodDef uniondatapackstore_methods[] = {
   {"getdeltachain", (PyCFunction)uniondatapackstore_getdeltachain, METH_VARARGS, ""},
   {"getmissing", (PyCFunction)uniondatapackstore_getmissing, METH_O, ""},
   {"markforrefresh", (PyCFunction)uniondatapackstore_markforrefresh, METH_NOARGS, ""},
+  {"getmetrics", (PyCFunction)uniondatapackstore_getmetrics, METH_NOARGS, ""},
   {NULL, NULL}
 };
 
@@ -426,3 +424,5 @@ static PyTypeObject uniondatapackstoreType = {
   (initproc)uniondatapackstore_init,                /* tp_init */
   0,                                                /* tp_alloc */
 };
+
+#endif /* FBHGEXT_CSTORE_PY_DATAPACKSTORE_H */

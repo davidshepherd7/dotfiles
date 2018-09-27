@@ -1,8 +1,11 @@
+  $ . "$TESTDIR/histedit-helpers.sh"
+
   $ cat >> $HGRCPATH << EOF
   > [extensions]
   > tweakdefaults=$TESTDIR/../hgext3rd/tweakdefaults.py
   > fbamend=$TESTDIR/../hgext3rd/fbamend
   > rebase=
+  > histedit=
   > [experimental]
   > updatecheck=noconflict
   > EOF
@@ -76,6 +79,7 @@ Dirty update allowed to same rev, with no conflicts, and --clean
   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg update ".^"
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+  (hint: use 'hg prev' to move to the parent changeset)
   $ hg update --clean 1
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
@@ -360,9 +364,18 @@ Test amend date when tweakdefaults.amendkeepdate is set
   $ touch new_file
   $ hg commit -d "0 0" -Aqm "commit for amend"
   $ echo x > new_file
-  $ hg commit -q --amend -m "amended message" --config tweakdefaults.amendkeepdate=True
+  $ hg amend -q -m "amended message" --config tweakdefaults.amendkeepdate=True
   $ hg log -l 1 -T "{date} {rev}\n"
   0.00 8
+
+Test amend --to doesn't give a flag error when tweakdefaults.amendkeepdate is set
+  $ echo q > new_file
+  $ hg amend --to 8 --config tweakdefaults.amendkeepdate=False
+  hg: parse error: pick "3903775176ed" changeset was not a candidate
+  (only use listed changesets)
+  [255]
+  $ hg log -l 1 -T "{date} {rev}\n"
+  0.00 9
 
 Test commit --amend date when tweakdefaults.amendkeepdate is set
   $ echo a >> new_file
@@ -370,7 +383,7 @@ Test commit --amend date when tweakdefaults.amendkeepdate is set
   $ echo x > new_file
   $ hg commit -q --amend -m "amended message" --config tweakdefaults.amendkeepdate=True
   $ hg log -l 1 -T "{date} {rev}\n"
-  0.00 9
+  0.00 10
 
 Test commit --amend date when tweakdefaults.amendkeepdate is not set and --date is provided
   $ echo xxx > a
@@ -378,7 +391,7 @@ Test commit --amend date when tweakdefaults.amendkeepdate is not set and --date 
   $ echo x > a
   $ hg commit -q --amend -m "amended message" --date "1 1"
   $ hg log -l 1 -T "{date} {rev}\n"
-  1.01 10
+  1.01 11
 
 Test rebase date when tweakdefaults.rebasekeepdate is not set
   $ echo test_1 > rebase_dest
@@ -390,7 +403,7 @@ Test rebase date when tweakdefaults.rebasekeepdate is not set
   $ hg bookmark rebase_source_test_1
   $ hg rebase -q -s rebase_source_test_1 -d rebase_dest_test_1
   $ hg log -l 1 -T "{rev}\n" -d "yesterday to today"
-  12
+  13
 
 Test rebase date when tweakdefaults.rebasekeepdate is set
   $ echo test_2 > rebase_dest
@@ -402,8 +415,38 @@ Test rebase date when tweakdefaults.rebasekeepdate is set
   $ hg bookmark rebase_source_test_2
   $ hg rebase -q -s rebase_source_test_2 -d rebase_dest_test_2 --config tweakdefaults.rebasekeepdate=True
   $ hg log -l 2 -T "{date} {rev}\n"
+  0.00 15
   0.00 14
-  0.00 13
+
+Test histedit date when tweakdefaults.histeditkeepdate is set
+  $ hg bookmark histedit_test
+  $ echo test_1 > histedit_1
+  $ hg commit -Aqm "commit 1 for histedit"
+  $ echo test_2 > histedit_2
+  $ hg commit -Aqm "commit 2 for histedit"
+  $ echo test_3 > histedit_3
+  $ hg commit -Aqm "commit 3 for histedit"
+  $ hg histedit 16 --commands - --config tweakdefaults.histeditkeepdate=True 2>&1 <<EOF| fixbundle
+  > pick 16
+  > pick 18
+  > pick 17
+  > EOF
+  [1]
+  $ hg log -l 3 -T "{date} {rev} {desc}\n"
+  0.00 18 commit 2 for histedit
+  0.00 17 commit 3 for histedit
+  0.00 16 commit 1 for histedit
+
+Test histedit date when tweakdefaults.histeditkeepdate is not set
+  $ hg histedit 16 --commands - 2>&1 <<EOF| fixbundle
+  > pick 16
+  > pick 18
+  > pick 17
+  > EOF
+  [1]
+  $ hg log -l 2 -T "{rev} {desc}\n" -d "yesterday to today"
+  18 commit 3 for histedit
+  17 commit 2 for histedit
 
 Test reuse message flag by taking message from previous commit
   $ cd ../..
@@ -440,7 +483,7 @@ Test non-remotenames use of pull --rebase and --update requires --dest
   $ cd $TESTTMP
   $ hg clone repo clone
   updating to branch default
-  9 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  12 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd clone
   $ hg pull --rebase
   abort: you must use a bookmark with tracking or manually specify a destination for the rebase
@@ -482,7 +525,7 @@ and allowance of prune rebases
   > [experimental]
   > evolution=createmarkers
   > prunestrip=on
-  > allowdivergence=off
+  > evolution.allowdivergence=off
   > [extensions]
   > strip=
   > fbamend=$TESTDIR/../hgext3rd/fbamend
@@ -509,7 +552,7 @@ and allowance of prune rebases
 Test that we show divergence warning if inhibit is disabled
   $ hg rebase -r 1 -d 3 --hidden
   abort: this rebase will cause divergences from: 09d39afb522a
-  (to force the rebase please set experimental.allowdivergence=True)
+  (to force the rebase please set experimental.evolution.allowdivergence=True)
   [255]
 
 Test that we do not show divergence warning if inhibit is enabled
@@ -521,6 +564,7 @@ Test that we do not show divergence warning if inhibit is enabled
 
 Test that we allow pure prune rebases
   $ hg strip 4
+  advice: 'hg hide' provides a better UI for hiding commits
   0 files updated, 0 files merged, 1 files removed, 0 files unresolved
   working directory now at 1e4be0697311
   1 changesets pruned
@@ -669,6 +713,7 @@ Test bookmark -D
   o  0
   
   $ hg bookmark -D feature1
+  advice: 'hg hide' provides a better UI for hiding commits
   bookmark 'feature1' deleted
   2 changesets pruned
   $ hg log -G -T '{rev} {bookmarks}' -r 'all()' --hidden
@@ -694,43 +739,6 @@ Test bookmark -D
   |
   x  3
   |
-  o  2
-  |
-  o  1 master
-  |
-  o  0
-  
-Test that developer warning is shown whenever ':' is used implicitly or explicitly
-
-  $ hg log -G -T '{rev} {bookmarks}' -r '0:2'
-  devel-warn: use of ':' is deprecated
-   at: *tweakdefaults.py:* (_analyzewrap) (glob)
-  o  2
-  |
-  o  1 master
-  |
-  o  0
-  
-  $ hg log -G -T '{rev} {bookmarks}' -r ':2'
-  devel-warn: use of ':' is deprecated
-   at: *tweakdefaults.py:* (_analyzewrap) (glob)
-  o  2
-  |
-  o  1 master
-  |
-  o  0
-  
-  $ hg log -G -T '{rev} {bookmarks}' -r '0:'
-  devel-warn: use of ':' is deprecated
-   at: *tweakdefaults.py:* (_analyzewrap) (glob)
-  o  2
-  |
-  o  1 master
-  |
-  o  0
-  
-In this testcase warning should not be shown
-  $ hg log -G -T '{rev} {bookmarks}' -r ':'
   o  2
   |
   o  1 master

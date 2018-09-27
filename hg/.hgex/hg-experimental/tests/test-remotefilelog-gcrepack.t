@@ -21,6 +21,15 @@
   $ hgcloneshallow ssh://user@dummy/master shallow -q
   1 files fetched over 1 fetches - (1 misses, 0.00% hit ratio) over *s (glob)
 
+# Set the prefetchdays config to zero so that all commits are prefetched
+# no matter what their creation date is.
+  $ cd shallow
+  $ cat >> .hg/hgrc <<EOF
+  > [remotefilelog]
+  > prefetchdays=0
+  > EOF
+  $ cd ..
+
 # Prefetch all data and repack
 
   $ cd shallow
@@ -42,15 +51,18 @@
 # Ensure that all file versions were prefetched
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/f7a942a6e4673d2c7b697fdd926ca2d153831ca4.datapack
+  $TESTTMP/hgcache/master/packs/f7a942a6e4673d2c7b697fdd926ca2d153831ca4:
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  1406e7411862  000000000000  2             2
   
-  x
-  Node          Delta Base    Delta Length
-  1406e7411862  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  50dbc4572b8e  000000000000  3             3
+  076f5e2225b3  50dbc4572b8e  14            2
   
-  y
-  Node          Delta Base    Delta Length
-  50dbc4572b8e  000000000000  3
-  076f5e2225b3  50dbc4572b8e  14
+  Total:                      17            5         (240.0% bigger)
 
 # Test garbage collection during repack
 
@@ -73,10 +85,12 @@
 # and is old (commit date is 0.0 in tests). Ensure that file 'y' is present as it is in the keepset.
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/05baa499c6b07f2bf0ea3d2c8151da1cb86f5e33.datapack
+  $TESTTMP/hgcache/master/packs/05baa499c6b07f2bf0ea3d2c8151da1cb86f5e33:
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  50dbc4572b8e  000000000000  3             3
   
-  y
-  Node          Delta Base    Delta Length
-  50dbc4572b8e  000000000000  3
+  Total:                      3             3         (0.0% bigger)
 
 # Prefetch all data again and repack for later garbage collection
 
@@ -98,15 +112,18 @@
 # Ensure that all file versions were prefetched
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/f7a942a6e4673d2c7b697fdd926ca2d153831ca4.datapack
+  $TESTTMP/hgcache/master/packs/f7a942a6e4673d2c7b697fdd926ca2d153831ca4:
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  1406e7411862  000000000000  2             2
   
-  x
-  Node          Delta Base    Delta Length
-  1406e7411862  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  50dbc4572b8e  000000000000  3             3
+  076f5e2225b3  50dbc4572b8e  14            2
   
-  y
-  Node          Delta Base    Delta Length
-  50dbc4572b8e  000000000000  3
-  076f5e2225b3  50dbc4572b8e  14
+  Total:                      17            5         (240.0% bigger)
 
 # Test garbage collection during repack. Ensure that new files are not removed even though they are not in the keepset
 # For the purposes of the test the TTL of a file is set to current time + 100 seconds. i.e. all commits in tests have
@@ -129,12 +146,15 @@
 # Ensure that all file versions were prefetched
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/f7a942a6e4673d2c7b697fdd926ca2d153831ca4.datapack
+  $TESTTMP/hgcache/master/packs/f7a942a6e4673d2c7b697fdd926ca2d153831ca4:
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  1406e7411862  000000000000  2             2
   
-  x
-  Node          Delta Base    Delta Length
-  1406e7411862  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  50dbc4572b8e  000000000000  3             3
+  076f5e2225b3  50dbc4572b8e  14            2
   
-  y
-  Node          Delta Base    Delta Length
-  50dbc4572b8e  000000000000  3
-  076f5e2225b3  50dbc4572b8e  14
+  Total:                      17            5         (240.0% bigger)

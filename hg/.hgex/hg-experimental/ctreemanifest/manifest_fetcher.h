@@ -1,22 +1,20 @@
-// manifest_fetcher.h - c++ declarations for a fetcher for manifests
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// manifest_fetcher.h - c++ declarations for a fetcher for manifests
 // no-check-code
 
-#ifndef REMOTEFILELOG_MANIFEST_FETCHER_H
-#define REMOTEFILELOG_MANIFEST_FETCHER_H
+#ifndef FBHGEXT_CTREEMANIFEST_MANIFEST_FETCHER_H
+#define FBHGEXT_CTREEMANIFEST_MANIFEST_FETCHER_H
 
 #include <memory>
 #include <string>
 
-class ManifestFetcher;
-
-#include "manifest.h"
-#include "store.h"
+#include "cstore/store.h"
+#include "ctreemanifest/manifest_ptr.h"
 
 /**
  * Class used to obtain Manifests, given a path and node.
@@ -36,4 +34,4 @@ class ManifestFetcher {
         std::string &node) const;
 };
 
-#endif //REMOTEFILELOG_MANIFEST_FETCHER_H
+#endif // FBHGEXT_CTREEMANIFEST_MANIFEST_FETCHER_H

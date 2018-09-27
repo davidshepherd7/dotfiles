@@ -19,7 +19,6 @@ Test that hg pull creates obsolescence markers for landed diffs
   > strip=
   > rebase=
   > remotenames =
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > pullcreatemarkers= $TESTDIR/../hgext3rd/pullcreatemarkers.py
   > [remotenames]
@@ -136,6 +135,7 @@ the remote
   adding manifests
   adding file changes
   added 3 changesets with 0 changes to 3 files
+  new changesets d446b1b2be43:461a5b25b3dc
   (run 'hg update' to get a working copy)
   obsoleted 3 changesets
   $ hg log -G -T '{rev} "{desc}" {remotebookmarks}'
@@ -163,6 +163,6 @@ changesets
   $ hg rebase -d default/master
   note: not rebasing 2:1a07332e9fa1 "add c", already in destination as 6:d446b1b2be43 "add c"
   note: not rebasing 3:ee96b78ae17d "add d", already in destination as 7:1f539cc6f364 "add d"
-  note: not rebasing 4:d5895ab36037 "add e", already in destination as 8:461a5b25b3dc "add e"
+  note: not rebasing 4:d5895ab36037 "add e", already in destination as 8:461a5b25b3dc "add e" (default/master master default/default)
   rebasing 9:df5f40cb6607 "add k" (tip)
 

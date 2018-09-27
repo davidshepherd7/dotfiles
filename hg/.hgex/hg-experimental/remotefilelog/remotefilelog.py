@@ -14,8 +14,14 @@ from . import (
 )
 import collections, os
 from mercurial.node import bin, nullid
-from mercurial import filelog, revlog, mdiff, ancestor, error
+from mercurial import filelog, revlog, mdiff, ancestor, error, util
 from mercurial.i18n import _
+
+if util.safehasattr(revlog, 'parsemeta'):
+    # Since 0596d274
+    _parsemeta = revlog.parsemeta
+else:
+    _parsemeta = filelog.parsemeta
 
 class remotefilelognodemap(object):
     def __init__(self, filename, store):
@@ -116,7 +122,7 @@ class remotefilelog(object):
         if node is None:
             node = revlog.hash(text, p1, p2)
 
-        meta, metaoffset = filelog.parsemeta(text)
+        meta, metaoffset = _parsemeta(text)
         rawtext, validatehash = self._processflags(text, flags, 'write')
         return self.addrawrevision(rawtext, transaction, linknode, p1, p2,
                                    node, flags, cachedelta,
@@ -136,8 +142,8 @@ class remotefilelog(object):
             # metadata or not (flag processor could replace it), so we just
             # parse it as best-effort.
             # in LFS (flags != 0)'s case, the best way is to call LFS code to
-            # get the meta information, instead of filelog.parsemeta.
-            meta, metaoffset = filelog.parsemeta(rawtext)
+            # get the meta information, instead of _parsemeta.
+            meta, metaoffset = _parsemeta(rawtext)
         if flags != 0:
             # when flags != 0, be conservative and do not mangle rawtext, since
             # a read flag processor expects the text not being mangled at all.

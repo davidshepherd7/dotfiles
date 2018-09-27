@@ -56,7 +56,9 @@
   [
    {
     "command": "merge",
-    "conflicts": [{"base": {"contents": "Unconflicted base, F1\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "Second conflicted version, F1\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "First conflicted version, F1\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: 13124abb51b9 b - test: second version, b\nSecond conflicted version, F1\n=======\nFirst conflicted version, F1\n>>>>>>> merge rev:    6dd692b7db4a a - test: first version, a\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/basic/F1"}, "path": "F1"}, {"base": {"contents": "Unconflicted base, F2\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "Second conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "First conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: 13124abb51b9 b - test: second version, b\nSecond conflicted version, F2\n=======\nFirst conflicted version, F2\n>>>>>>> merge rev:    6dd692b7db4a a - test: first version, a\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/basic/F2"}, "path": "F2"}]
+    "command_details": {"cmd": "merge", "to_abort": "update --clean", "to_continue": "merge --continue"},
+    "conflicts": [{"base": {"contents": "Unconflicted base, F1\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "Second conflicted version, F1\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "First conflicted version, F1\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: 13124abb51b9 b - test: second version, b\nSecond conflicted version, F1\n=======\nFirst conflicted version, F1\n>>>>>>> merge rev:    6dd692b7db4a a - test: first version, a\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/basic/F1"}, "path": "F1"}, {"base": {"contents": "Unconflicted base, F2\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "Second conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "First conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: 13124abb51b9 b - test: second version, b\nSecond conflicted version, F2\n=======\nFirst conflicted version, F2\n>>>>>>> merge rev:    6dd692b7db4a a - test: first version, a\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/basic/F2"}, "path": "F2"}],
+    "pathconflicts": []
    }
   ]
 
@@ -65,7 +67,9 @@
   [
    {
     "command": "merge",
-    "conflicts": [{"base": {"contents": "Unconflicted base, F2\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "Second conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "First conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: 13124abb51b9 b - test: second version, b\nSecond conflicted version, F2\n=======\nFirst conflicted version, F2\n>>>>>>> merge rev:    6dd692b7db4a a - test: first version, a\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/basic/F2"}, "path": "F2"}]
+    "command_details": {"cmd": "merge", "to_abort": "update --clean", "to_continue": "merge --continue"},
+    "conflicts": [{"base": {"contents": "Unconflicted base, F2\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "Second conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "First conflicted version, F2\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: 13124abb51b9 b - test: second version, b\nSecond conflicted version, F2\n=======\nFirst conflicted version, F2\n>>>>>>> merge rev:    6dd692b7db4a a - test: first version, a\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/basic/F2"}, "path": "F2"}],
+    "pathconflicts": []
    }
   ]
 
@@ -151,7 +155,9 @@ tldr: Since we can premerge, the working copy is backed up to an origfile.
   [
    {
     "command": "merge",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "some local changes\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "other change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: fd7d10c36158 - test: dest\nsome local changes\n=======\nother change\n>>>>>>> merge rev:    9b65ba2922f0 - test: source\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "merge", "to_abort": "update --clean", "to_continue": "merge --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "some local changes\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "other change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "<<<<<<< working copy: fd7d10c36158 - test: dest\nsome local changes\n=======\nother change\n>>>>>>> merge rev:    9b65ba2922f0 - test: source\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 
@@ -192,7 +198,9 @@ tldr: Since we couldn't premerge, the working copy is left alone.
   [
    {
     "command": "merge",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "some local changes\n", "exists": true, "isexec": true, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "some local changes\n", "exists": true, "isexec": true, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "merge", "to_abort": "update --clean", "to_continue": "merge --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "some local changes\n", "exists": true, "isexec": true, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "some local changes\n", "exists": true, "isexec": true, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 
@@ -228,7 +236,9 @@ Test case 1: Source deleted, dest changed
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 1b: Like #1 but with a merge, with local changes
@@ -264,7 +274,9 @@ Test case 1b: Like #1 but with a merge, with local changes
   [
    {
     "command": "merge",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "some local changes\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "some local changes\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "merge", "to_abort": "update --clean", "to_continue": "merge --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "some local changes\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "some local changes\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 2: Source changed, dest deleted
@@ -300,7 +312,9 @@ Test case 2: Source changed, dest deleted
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": null, "exists": false, "isexec": null, "issymlink": null, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": null, "exists": false, "isexec": null, "issymlink": null, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 3: Source changed, dest moved
@@ -337,7 +351,8 @@ Test case 3: Source changed, dest moved
   [
    {
     "command": null,
-    "conflicts": []
+    "conflicts": [],
+    "pathconflicts": []
    }
   ]
 Test case 4: Source changed, dest moved (w/o copytracing)
@@ -363,7 +378,7 @@ Test case 4: Source changed, dest moved (w/o copytracing)
      deleted:
   
 
-  $ hg rebase -d 2 -s 1 --config experimental.disablecopytrace=True
+  $ hg rebase -d 2 -s 1 --config experimental.copytrace=off
   rebasing 1:ec87889f5f90 "source"
   other [source] changed file which local [dest] deleted
   use (c)hanged version, leave (d)eleted, or leave (u)nresolved? u
@@ -373,7 +388,9 @@ Test case 4: Source changed, dest moved (w/o copytracing)
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": null, "exists": false, "isexec": null, "issymlink": null, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": null, "exists": false, "isexec": null, "issymlink": null, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 5: Source moved, dest changed
@@ -411,7 +428,8 @@ Test case 5: Source moved, dest changed
   [
    {
     "command": null,
-    "conflicts": []
+    "conflicts": [],
+    "pathconflicts": []
    }
   ]
 Test case 6: Source moved, dest changed (w/o copytracing)
@@ -437,7 +455,7 @@ Test case 6: Source moved, dest changed (w/o copytracing)
      deleted:
   
 
-  $ hg rebase -d 2 -s 1 --config experimental.disablecopytrace=True
+  $ hg rebase -d 2 -s 1 --config experimental.copytrace=off
   rebasing 1:e6e7483a8950 "source"
   local [dest] changed file which other [source] deleted
   use (c)hanged version, (d)elete, or leave (u)nresolved? u
@@ -447,7 +465,9 @@ Test case 6: Source moved, dest changed (w/o copytracing)
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 7: Source is a directory, dest is a file (base is still a file)
@@ -477,15 +497,11 @@ Test case 7: Source is a directory, dest is a file (base is still a file)
 
   $ hg rebase -d 2 -s 1
   rebasing 1:ed93aeac6b3c "source"
-  abort: Not a directory: '$TESTTMP/cornercases/foo/foo/foo/foo/file/subfile'
+  abort:*: '$TESTTMP/cornercases/foo/foo/foo/foo/file' (glob)
   [255]
   $ hg resolve --tool=internal:dumpjson --all
-  [
-   {
-    "command": "update",
-    "conflicts": []
-   }
-  ]
+  [abort:*: $TESTTMP/cornercases/foo/foo/foo/foo/file (glob)
+  [255]
 Test case 8: Source is a file, dest is a directory (base is still a file)
   $ cd ..
   $ reset
@@ -513,13 +529,15 @@ Test case 8: Source is a file, dest is a directory (base is still a file)
 
   $ hg rebase -d 2 -s 1
   rebasing 1:ec87889f5f90 "source"
-  abort: (Is a directory|Operation not permitted): '\$TESTTMP/cornercases/foo/foo/foo/foo/file' (re)
+  abort:*: '$TESTTMP/cornercases/foo/foo/foo/foo/file' (glob)
   [255]
   $ hg resolve --tool=internal:dumpjson --all
   [
    {
     "command": "update",
-    "conflicts": []
+    "command_details": {"cmd": "update", "to_abort": "update --clean", "to_continue": "update"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": null, "exists": false, "isexec": null, "issymlink": null}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": null, "exists": false, "isexec": null, "issymlink": null, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 9: Source is a binary file, dest is a file (base is still a file)
@@ -558,7 +576,9 @@ Test case 9: Source is a binary file, dest is a file (base is still a file)
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "\u0000", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "\u0000", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 10: Source is a file, dest is a binary file (base is still a file)
@@ -597,7 +617,9 @@ Test case 10: Source is a file, dest is a binary file (base is still a file)
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "\u0000", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "\u0000", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "\u0000", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "\u0000", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 11: Source is a symlink, dest is a file (base is still a file)
@@ -637,7 +659,9 @@ Test case 11: Source is a symlink, dest is a file (base is still a file)
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "somepath", "exists": true, "isexec": false, "issymlink": true}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "other": {"contents": "somepath", "exists": true, "isexec": false, "issymlink": true}, "output": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]
 Test case 12: Source is a file, dest is a symlink (base is still a file)
@@ -679,6 +703,8 @@ Test case 12: Source is a file, dest is a symlink (base is still a file)
   [
    {
     "command": "rebase",
-    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "somepath", "exists": true, "isexec": false, "issymlink": true}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "somepath", "exists": true, "isexec": false, "issymlink": true, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}]
+    "command_details": {"cmd": "rebase", "to_abort": "rebase --abort", "to_continue": "rebase --continue"},
+    "conflicts": [{"base": {"contents": "base\n", "exists": true, "isexec": false, "issymlink": false}, "local": {"contents": "somepath", "exists": true, "isexec": false, "issymlink": true}, "other": {"contents": "change\n", "exists": true, "isexec": false, "issymlink": false}, "output": {"contents": "somepath", "exists": true, "isexec": false, "issymlink": true, "path": "$TESTTMP/cornercases/foo/foo/foo/foo/file"}, "path": "file"}],
+    "pathconflicts": []
    }
   ]

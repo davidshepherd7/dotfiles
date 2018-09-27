@@ -54,6 +54,11 @@ testedwith = 'ships-with-fb-hgext'
 cmdtable = {}
 command = registrar.command(cmdtable)
 
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('absorb', 'amendflag', default=None)
+
 colortable = {
     'absorb.node': 'blue bold',
     'absorb.path': 'bold',
@@ -451,7 +456,7 @@ class filefixupstate(object):
                                      for i, _f in visiblefctxs]),
                             self._getline(l)))
         # run editor
-        editedtext = self.ui.edit(editortext, '')
+        editedtext = self.ui.edit(editortext, '', action='absorb')
         if not editedtext:
             raise error.Abort(_('empty editor text'))
         # parse edited result
@@ -610,7 +615,7 @@ class fixupstate(object):
             targetfctx = targetctx[path]
             fctxs, ctx2fctx = getfilestack(self.stack, path, seenfctxs)
             # ignore symbolic links or binary, or unchanged files
-            if any(f.islink() or util.binary(f.data())
+            if any(f.islink() or f.isbinary()
                    for f in [targetfctx] + fctxs
                    if not isinstance(f, emptyfilecontext)):
                 continue
@@ -748,7 +753,14 @@ class fixupstate(object):
         repo._bookmarks.applychanges(repo, tr, changes)
 
     def _moveworkingdirectoryparent(self):
-        ctx = self.repo[self.finalnode]
+        if not self.finalnode:
+            # Find the latest not-{obsoleted,stripped} parent.
+            revs = self.repo.revs('max(::. - %ln)', self.replacemap.keys())
+            ctx = self.repo[revs.first()]
+            self.finalnode = ctx.node()
+        else:
+            ctx = self.repo[self.finalnode]
+
         dirstate = self.repo.dirstate
         # dirstate.rebuild invalidates fsmonitorstate, causing "hg status" to
         # be slow. in absorb's case, no need to invalidate fsmonitorstate.
@@ -803,7 +815,10 @@ class fixupstate(object):
                                                     True):
             extra['absorb_source'] = ctx.hex()
         mctx = overlaycontext(memworkingcopy, ctx, parents, extra=extra)
-        return mctx.commit()
+        # preserve phase
+        with mctx.repo().ui.configoverride({
+            ('phases', 'new-commit'): ctx.phase()}):
+            return mctx.commit()
 
     @util.propertycache
     def _useobsolete(self):
@@ -902,7 +917,8 @@ def absorb(ui, repo, stack=None, targetctx=None, pats=None, opts=None):
         origchunks = patch.parsepatch(diff)
         chunks = cmdutil.recordfilter(ui, origchunks)[0]
         targetctx = overlaydiffcontext(stack[-1], chunks)
-    state.diffwith(targetctx, matcher, showchanges=opts.get('print_changes'))
+    showchanges = (opts.get('print_changes') or opts.get('dry_run'))
+    state.diffwith(targetctx, matcher, showchanges=showchanges)
     if not opts.get('dry_run'):
         state.apply()
         if state.commit():
@@ -1015,4 +1031,4 @@ def _amendcmd(flag, orig, ui, repo, *pats, **opts):
         return 1
 
 def extsetup(ui):
-    _wrapamend(ui.config('absorb', 'amendflag', None))
+    _wrapamend(ui.config('absorb', 'amendflag'))

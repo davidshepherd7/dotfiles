@@ -10,7 +10,13 @@ import os
 import time
 import heapq
 
-from mercurial import manifest, mdiff, revlog, util
+from mercurial import (
+    error,
+    manifest,
+    mdiff,
+    revlog,
+    util,
+)
 import cachemanager
 import cfastmanifest
 from metrics import metricscollector
@@ -43,12 +49,12 @@ class hybridmanifest(object):
         self.__flatmanifest = flat
         self.loadflat = loadflat
 
-        if supportsctree and ui.configbool("fastmanifest", "usetree", False):
+        if supportsctree and ui.configbool("fastmanifest", "usetree"):
             self.__treemanifest = tree
         else:
             self.__treemanifest = False
 
-        if ui.configbool("fastmanifest", "usecache", True):
+        if ui.configbool("fastmanifest", "usecache"):
             self.__cachedmanifest = fast
         else:
             self.__cachedmanifest = False
@@ -140,15 +146,29 @@ class hybridmanifest(object):
                 self.__treemanifest = cstore.treemanifest(store)
             else:
                 store = self.manifestlog.datastore
+                self.ui.pushbuffer()
                 try:
                     store.get('', self.node)
                     self.__treemanifest = cstore.treemanifest(store,
                                                               self.node)
-                except KeyError:
+                    # The buffer is only to eat certain errors, so show
+                    # non-error messages.
+                    output = self.ui.popbuffer()
+                    if output:
+                        self.ui.status(output)
+                except (KeyError, error.Abort):
                     # Record that it doesn't exist, so we don't keep checking
                     # the store.
+                    self.ui.popbuffer()
+                    # Eat the buffer so we don't print a remote: warning
                     self.__treemanifest = False
                     return None
+                except Exception:
+                    # Other errors should be printed
+                    output = self.ui.popbuffer()
+                    if output:
+                        self.ui.status(output)
+                    raise
 
         return self.__treemanifest
 
@@ -803,6 +823,13 @@ class hybridmanifestctx(object):
 
     @propertycache
     def parents(self):
+        if util.safehasattr(self._manifestlog, 'historystore'):
+            store = self._manifestlog.historystore
+            try:
+                p1, p2, linknode, copyfrom = store.getnodeinfo('', self._node)
+                return p1, p2
+            except KeyError:
+                pass
         return self._revlog.parents(self._node)
 
     def read(self):
@@ -822,6 +849,22 @@ class hybridmanifestctx(object):
         return self._hybridmanifest
 
     def readdelta(self, shallow=False):
+        p1, p2 = self.parents
+        mf = self.read()
+        parentmf = self._manifestlog[p1].read()
+
+        treemf = mf._treemanifest()
+        ptreemf = parentmf._treemanifest()
+        if treemf is not None and ptreemf is not None:
+            diff = ptreemf.diff(treemf)
+            result = manifest.manifestdict()
+            for path, ((oldn, oldf), (newn, newf)) in diff.iteritems():
+                if newn is not None:
+                    result[path] = newn
+                    if newf:
+                        result.setflag(path, newf)
+            return mf._converttohybridmanifest(result)
+
         rl = self._revlog
         if rl._usemanifestv2:
             # Need to perform a slow delta
@@ -929,8 +972,8 @@ class manifestfactory(object):
         p1text = None
 
         p1hexnode = revlog.hex(p1)
-        cacheenabled = self.ui.configbool("fastmanifest", "usecache", True)
-        treeenabled = self.ui.configbool("fastmanifest", "usetree", False)
+        cacheenabled = self.ui.configbool("fastmanifest", "usecache")
+        treeenabled = self.ui.configbool("fastmanifest", "usetree")
 
         if (cacheenabled and
             p1hexnode in fastcache and
@@ -973,11 +1016,19 @@ class manifestfactory(object):
         return node
 
     def ctxwrite(self, orig, mfctx, transaction, link, p1, p2, added, removed):
-        node = orig(mfctx, transaction, link, p1, p2, added, removed)
+        mfl = mfctx._manifestlog
+        treeenabled = self.ui.configbool("fastmanifest", "usetree")
+        if (supportsctree and treeenabled and
+            p1 not in mfl._revlog.nodemap and
+            not mfl.datastore.getmissing([('', p1)])):
+            # If p1 is not in the flat manifest but is in the tree store, then
+            # this is a commit on top of a tree only commit and we should then
+            # produce a treeonly commit.
+            node = None
+        else:
+            node = orig(mfctx, transaction, link, p1, p2, added, removed)
 
-        treeenabled = self.ui.configbool("fastmanifest", "usetree", False)
         if supportsctree and treeenabled:
-            mfl = mfctx._manifestlog
             datastore = mfl.datastore
             opener = mfctx._revlog().opener
 
@@ -1017,19 +1068,47 @@ class manifestfactory(object):
                         treemanifestcache.getinstance(opener,
                                                       self.ui).clear()
                         datastore.markforrefresh()
+
+                    def writepending(tr):
+                        finalize(tr)
+                        transaction.treedatapack = datapack.mutabledatapack(
+                                self.ui,
+                                packpath)
+                        transaction.treehistpack = \
+                            historypack.mutablehistorypack(
+                                self.ui,
+                                packpath)
+                        # re-register to write pending changes so that a series
+                        # of writes are correctly flushed to the store.  This
+                        # happens during amend.
+                        tr.addpending('treepack', writepending)
+
                     def abort(tr):
                         tr.treedatapack.abort()
                         tr.treehistpack.abort()
                     transaction.addfinalize('treepack', finalize)
                     transaction.addabort('treepack', abort)
+                    transaction.addpending('treepack', writepending)
 
-                dpack = treemanifest.InterceptedMutableDataPack(
-                        transaction.treedatapack,
-                        node, p1)
-                hpack = treemanifest.InterceptedMutableHistoryPack(
-                        transaction.treehistpack, node, p1)
+                # If the manifest was already committed as a flat manifest, use
+                # its node.
+                if node is not None:
+                    dpack = treemanifest.InterceptedMutableDataPack(
+                            transaction.treedatapack,
+                            node, p1)
+                    hpack = treemanifest.InterceptedMutableHistoryPack(
+                            transaction.treehistpack, node, p1)
+                else:
+                    dpack = transaction.treedatapack
+                    hpack = transaction.treehistpack
+
                 newtreeiter = newtree.finalize(tree)
                 for nname, nnode, ntext, np1text, np1, np2 in newtreeiter:
+                    # If the node wasn't set by a flat manifest, use the tree
+                    # root node.
+                    if node is None and nname == '':
+                        node = nnode
+
                     # Not using deltas, since there aren't any other trees in
                     # this pack it could delta against.
                     dpack.add(nname, nnode, revlog.nullid, ntext)
@@ -1044,4 +1123,3 @@ def _silent_debug(*args, **kwargs):
     """Replacement for ui.debug that silently swallows the arguments.
     Typically enabled when running the mercurial test suite by setting:
     --extra-config-opt=fastmanifest.silent=True"""
-    pass

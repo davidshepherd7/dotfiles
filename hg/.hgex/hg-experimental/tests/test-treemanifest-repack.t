@@ -43,19 +43,21 @@
   >   hg debugdatapack "$i"
   > done
   $TESTTMP/hgcache/master/packs/manifests/65df85879cdd898607ee3f323a0b61edc7de25b8.datapack
+  $TESTTMP/hgcache/master/packs/manifests/65df85879cdd898607ee3f323a0b61edc7de25b8:
+  (empty name):
+  Node          Delta Base    Delta Length  Blob Size
+  a0c8bcbbb45c  000000000000  43            (missing)
   
-  
-  Node          Delta Base    Delta Length
-  a0c8bcbbb45c  000000000000  43
   $TESTTMP/hgcache/master/packs/manifests/bb55d9105672c45d4f82df15bd091a555ef02c79.datapack
+  $TESTTMP/hgcache/master/packs/manifests/bb55d9105672c45d4f82df15bd091a555ef02c79:
+  dir:
+  Node          Delta Base    Delta Length  Blob Size
+  23226e7a252c  000000000000  43            (missing)
   
-  dir
-  Node          Delta Base    Delta Length
-  23226e7a252c  000000000000  43
+  (empty name):
+  Node          Delta Base    Delta Length  Blob Size
+  1832e0765de9  000000000000  89            (missing)
   
-  
-  Node          Delta Base    Delta Length
-  1832e0765de9  000000000000  89
 
 - Verify histpack contents
   $ for i in $CACHEDIR/master/packs/manifests/*.histpack; do
@@ -81,19 +83,22 @@
   $ hg repack
 
   $ ls_l $CACHEDIR/master/packs/manifests | grep pack
+  -r--r--r--     339 56e8c6f0ca2a324b8b5ca1a2730323a1b4d0793a.datapack
   -r--r--r--     262 7535b6084226436bbdff33043969e7fa963e8428.histpack
-  -r--r--r--     327 be1a1ae9828d9bd09ab8ba765db358f99fd09ea7.datapack
 
   $ hg debugdatapack $CACHEDIR/master/packs/manifests/*.datapack
+  $TESTTMP/hgcache/master/packs/manifests/56e8c6f0ca2a324b8b5ca1a2730323a1b4d0793a:
+  (empty name):
+  Node          Delta Base    Delta Length  Blob Size
+  1832e0765de9  000000000000  89            89
+  a0c8bcbbb45c  1832e0765de9  12            43
   
+  Total:                      101           132       (23.5% smaller)
+  dir:
+  Node          Delta Base    Delta Length  Blob Size
+  23226e7a252c  000000000000  43            43
   
-  Node          Delta Base    Delta Length
-  1832e0765de9  000000000000  89
-  a0c8bcbbb45c  1832e0765de9  12
-  
-  dir
-  Node          Delta Base    Delta Length
-  23226e7a252c  000000000000  43
+  Total:                      43            43        (0.0% bigger)
 
   $ hg debughistorypack $CACHEDIR/master/packs/manifests/*.histpack
   
@@ -113,41 +118,57 @@
   $ ls_l .hg/store/packs/manifests | grep datapack
   -r--r--r--     248 5d1716bbef6e7200192de6509055d1ee31a4172c.datapack
   -r--r--r--     146 cffef142da32f3e52c1779490e5d0ddac5f9b82b.datapack
-  $ hg repack
+
+# As we only have packs, also test that --packsonly doesn't prevent packs from
+being repacked
+  $ hg repack --packsonly
   $ ls_l .hg/store/packs/manifests | grep datapack
-  -r--r--r--     374 201094db51b761cd78352c055b3135178aadfec5.datapack
+  -r--r--r--     386 d15c09a9a5a13bb689bd9764455a415a20dc885e.datapack
 
 # Test incremental repacking of trees
   $ echo b >> dir/b && hg commit -Aqm 'modify dir/b'
   $ echo b >> dir/b && hg commit -Aqm 'modify dir/b'
   $ ls_l .hg/store/packs/manifests | grep datapack
-  -r--r--r--     374 201094db51b761cd78352c055b3135178aadfec5.datapack
   -r--r--r--     248 21501384df03b8489b366c5218be639fa08830e4.datapack
+  -r--r--r--     386 d15c09a9a5a13bb689bd9764455a415a20dc885e.datapack
   -r--r--r--     248 d7e689a91ac63385be120a118af9ce8663748f28.datapack
 
 - repack incremental does nothing here because there are so few packs
   $ hg repack --incremental --config remotefilelog.data.generations=300,200 --config remotefilelog.data.repacksizelimit=300
   $ ls_l .hg/store/packs/manifests | grep datapack
-  -r--r--r--     374 201094db51b761cd78352c055b3135178aadfec5.datapack
   -r--r--r--     248 21501384df03b8489b366c5218be639fa08830e4.datapack
+  -r--r--r--     386 d15c09a9a5a13bb689bd9764455a415a20dc885e.datapack
   -r--r--r--     248 d7e689a91ac63385be120a118af9ce8663748f28.datapack
 
   $ echo b >> dir/b && hg commit -Aqm 'modify dir/b'
   $ echo b >> dir/b && hg commit -Aqm 'modify dir/b'
   $ echo b >> dir/b && hg commit -Aqm 'modify dir/b'
   $ ls_l .hg/store/packs/manifests | grep datapack
-  -r--r--r--     374 201094db51b761cd78352c055b3135178aadfec5.datapack
   -r--r--r--     248 21501384df03b8489b366c5218be639fa08830e4.datapack
   -r--r--r--     248 347263bf1efbdb5bf7e1d1565b6b504073fb9093.datapack
   -r--r--r--     248 544a3b46a61732209116ae50847ec333b75e3765.datapack
   -r--r--r--     248 863908ef8149261ab0d891c2344d8e8766c39441.datapack
+  -r--r--r--     386 d15c09a9a5a13bb689bd9764455a415a20dc885e.datapack
   -r--r--r--     248 d7e689a91ac63385be120a118af9ce8663748f28.datapack
+  $ cd .hg/store/packs/manifests
+  $ cp d7e689a91ac63385be120a118af9ce8663748f28.datapack x7e689a91ac63385be120a118af9ce8663748f28.datapack
+  $ cp d7e689a91ac63385be120a118af9ce8663748f28.dataidx x7e689a91ac63385be120a118af9ce8663748f28.dataidx
+  $ cp 21501384df03b8489b366c5218be639fa08830e4.datapack x1501384df03b8489b366c5218be639fa08830e4.datapack
+  $ cp 21501384df03b8489b366c5218be639fa08830e4.dataidx x1501384df03b8489b366c5218be639fa08830e4.dataidx
+  $ cp 347263bf1efbdb5bf7e1d1565b6b504073fb9093.datapack x47263bf1efbdb5bf7e1d1565b6b504073fb9093.datapack
+  $ cp 347263bf1efbdb5bf7e1d1565b6b504073fb9093.dataidx x47263bf1efbdb5bf7e1d1565b6b504073fb9093.dataidx
+  $ cd ../../../../
 
 - repack incremental kicks in once there are a number of packs
-  $ hg repack --incremental --config remotefilelog.data.generations=300,200
-  $ ls_l .hg/store/packs/manifests | grep datapack
-  -r--r--r--     374 201094db51b761cd78352c055b3135178aadfec5.datapack
-  -r--r--r--    1188 785af77b59c45dd43e3e0e63929d77665c505387.datapack
+- (set the repacksizelimit so that we test that we only repack up to 1500 bytes,
+- and it leaves one datapack behind)
+  $ hg repack --incremental --config remotefilelog.data.generations=300,200 --config remotefilelog.data.repacksizelimit=1500B
+  $ ls_l .hg/store/packs/manifests | grep datapack | wc -l
+  .*3 (re)
+  $ ls_l .hg/store/packs/manifests | grep datapack | grep 248
+  -r--r--r--     248 *.datapack (glob)
+- Clean up the pile of packs we made
+  $ hg repack
 
 Test repacking from revlogs to pack files on the server
   $ cd ../master
@@ -167,6 +188,10 @@ Test repacking from revlogs to pack files on the server
   data/dir/b.i
   meta/dir/00manifest.i
 
+--packsonly shouldn't repack anything:
+  $ hg repack --packsonly
+  $ ls .hg/cache/packs/manifests
+
   $ hg repack
   $ ls .hg/cache/packs/manifests
   56e8c6f0ca2a324b8b5ca1a2730323a1b4d0793a.dataidx
@@ -174,15 +199,18 @@ Test repacking from revlogs to pack files on the server
   7535b6084226436bbdff33043969e7fa963e8428.histidx
   7535b6084226436bbdff33043969e7fa963e8428.histpack
   $ hg debugdatapack .hg/cache/packs/manifests/*.datapack
+  .hg/cache/packs/manifests/56e8c6f0ca2a324b8b5ca1a2730323a1b4d0793a:
+  (empty name):
+  Node          Delta Base    Delta Length  Blob Size
+  1832e0765de9  000000000000  89            89
+  a0c8bcbbb45c  1832e0765de9  12            43
   
+  Total:                      101           132       (23.5% smaller)
+  dir:
+  Node          Delta Base    Delta Length  Blob Size
+  23226e7a252c  000000000000  43            43
   
-  Node          Delta Base    Delta Length
-  1832e0765de9  000000000000  89
-  a0c8bcbbb45c  1832e0765de9  12
-  
-  dir
-  Node          Delta Base    Delta Length
-  23226e7a252c  000000000000  43
+  Total:                      43            43        (0.0% bigger)
 
 Test incremental revlog repacking
 # 1. Make commit that we'll need to repack
@@ -213,11 +241,44 @@ Test incremental repack with limited revs only repacks those revs
   $ rm -rf .hg/cache/packs/manifests
   $ hg repack --incremental --config treemanifest.repackstartrev=1 --config treemanifest.repackendrev=1
   $ hg debugdatapack .hg/cache/packs/manifests/*.datapack
+  .hg/cache/packs/manifests/e9093d2d887ff14457d43338fcb3994e92051853:
+  (empty name):
+  Node          Delta Base    Delta Length  Blob Size
+  1832e0765de9  000000000000  89            89
   
+  Total:                      89            89        (0.0% bigger)
+  dir:
+  Node          Delta Base    Delta Length  Blob Size
+  23226e7a252c  000000000000  43            43
   
-  Node          Delta Base    Delta Length
-  1832e0765de9  000000000000  89
-  
-  dir
-  Node          Delta Base    Delta Length
-  23226e7a252c  000000000000  43
+  Total:                      43            43        (0.0% bigger)
+
+Test incremental repack that doesn't take all packs
+  $ ls_l .hg/cache/packs/manifests/ | grep datapack
+  -r--r--r--     264 e9093d2d887ff14457d43338fcb3994e92051853.datapack
+
+- Only one pack, means don't repack it. Only turn revlogs into a pack.
+  $ hg repack --incremental --config remotefilelog.data.generations=300,20
+  $ ls_l .hg/cache/packs/manifests/ | grep datapack
+  -r--r--r--     264 e9093d2d887ff14457d43338fcb3994e92051853.datapack
+  -r--r--r--     154 f9657fdc11d7c9847208da3f1245b38c5981df79.datapack
+
+- Two packs doesn't meet the bar for repack. Only turn revlogs into a pack.
+  $ echo >> a
+  $ hg commit -m 'modify a'
+  $ hg repack --incremental --config remotefilelog.data.generations=300,20
+  $ ls_l .hg/cache/packs/manifests/ | grep datapack
+  -r--r--r--     154 0adbde90bc92c6f23e46180a9d7885c8e2499173.datapack
+  -r--r--r--     264 e9093d2d887ff14457d43338fcb3994e92051853.datapack
+  -r--r--r--     154 f9657fdc11d7c9847208da3f1245b38c5981df79.datapack
+
+- Three packs meets the bar. Repack new revlogs and old pack into one.
+  $ hg repack --incremental --config remotefilelog.data.generations=300,20
+  $ ls_l .hg/cache/packs/manifests/ | grep datapack
+  -r--r--r--     496 bc6c2ebb080844d7a227dacbc847a5b375ec620c.datapack
+
+- Test pruning the manifest cache using packs.maxpackfilecount
+  $ hg repack --incremental --config packs.maxpackfilecount=0
+  $ hg repack --incremental --config packs.maxpackfilecount=1
+  purging shared treemanifest pack cache (4 entries) -- too many files
+  $ ls_l .hg/cache/packs/manifests/

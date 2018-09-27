@@ -1,21 +1,20 @@
-// key.h - c++ declarations for a key to pack data
-//
-// Copyright 2017 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// key.h - c++ declarations for a key to pack data
 // no-check-code
 
-#ifndef KEY_H
-#define KEY_H
+#ifndef FBHGEXT_CSTORE_KEY_H
+#define FBHGEXT_CSTORE_KEY_H
 
 #include <cstring>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
-#include "convert.h"
-#include "convert.h"
+#include "clib/convert.h"
 
 /* Represents a key into the Mercurial store. Each key is a (name, node) pair,
  * though store implementations can choose to ignore the name in some cases. */
@@ -54,4 +53,4 @@ class KeyIterator {
     virtual Key *next() = 0;
 };
 
-#endif //KEY_H
+#endif // FBHGEXT_CSTORE_KEY_H

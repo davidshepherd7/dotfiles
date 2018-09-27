@@ -17,6 +17,15 @@
   $ hgcloneshallow ssh://user@dummy/master shallow -q
   1 files fetched over 1 fetches - (1 misses, 0.00% hit ratio) over *s (glob)
 
+# Set the prefetchdays config to zero so that all commits are prefetched
+# no matter what their creation date is.
+  $ cd shallow
+  $ cat >> .hg/hgrc <<EOF
+  > [remotefilelog]
+  > prefetchdays=0
+  > EOF
+  $ cd ..
+
 # commit a new version of x so we can gc the old one
 
   $ cd master
@@ -85,6 +94,7 @@
   $TESTTMP/hgcache/master/packs/8d3499c65d926e4f107cf03c6b0df833222025b4.histpack
   $TESTTMP/hgcache/master/packs/9c7046f8cad0417c39aa7c03ce13e0ba991306c2.dataidx
   $TESTTMP/hgcache/master/packs/9c7046f8cad0417c39aa7c03ce13e0ba991306c2.datapack
+  $TESTTMP/hgcache/master/packs/repacklock
   $TESTTMP/hgcache/repos
 
 # Test that warning is displayed when there are no valid repos in repofile

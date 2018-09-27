@@ -13,6 +13,19 @@ from mercurial import (
     util,
 )
 
+def retry(num=3, sleeps=.3):
+    def decorator(function):
+        def wrapper(*args, **kwargs):
+            for _try in range(1, num + 1):
+                try:
+                    return function(*args, **kwargs)
+                except Exception:
+                    if _try == num:
+                        raise
+                time.sleep(sleeps)
+        return wrapper
+    return decorator
+
 def decodefilename(f):
     """Perforce saves and returns files that have special characters encoded:
 
@@ -115,6 +128,18 @@ def parse_filelist(client, startcl=None, endcl=None):
         if c:
             yield d
 
+def parse_filelist_at_cl(client, cl=None):
+    cmd = 'p4 --client %s -G files //%s/...@%d' %(
+            util.shellquote(client),
+            util.shellquote(client),
+            cl
+            )
+    stdout = util.popen(cmd, mode='rb')
+    for d in loaditer(stdout):
+        c = d.get('depotFile', None)
+        if c:
+            yield d
+
 def parse_where(client, depotname):
     # TODO: investigate if we replace this with exactly one call to
     # where //clientame/...
@@ -122,9 +147,13 @@ def parse_where(client, depotname):
             util.shellquote(client),
             util.shellquote(depotname))
     try:
-        with retries(num=3, sleeps=0.3):
+        stdout = ''
+        @retry(num=3, sleeps=0.3)
+        def helper():
+            global stdout
             stdout = util.popen(cmd, mode='rb')
             return marshal.load(stdout)
+        return helper()
     except Exception:
         raise P4Exception(stdout)
 
@@ -137,19 +166,35 @@ def get_file(path, rev=None, clnum=None):
         r = '@%d' % clnum
 
     cmd = 'p4 print -q %s%s' % (util.shellquote(path), r)
-    with retries(num=5, sleeps=0.3):
+    @retry(num=5, sleeps=0.3)
+    def helper():
         stdout = util.popen(cmd, mode='rb')
         content = stdout.read()
         return content
+    return helper()
+
+def get_latest_cl(client):
+    cmd = 'p4 --client %s -G changes -m 1 -s submitted' % (
+            util.shellquote(client))
+    stdout = util.popen(cmd, mode='rb')
+    parsed = marshal.load(stdout)
+    cl = parsed.get('change')
+    if cl:
+        return int(cl)
+    return None
 
 def parse_cl(clnum):
     """Returns a description of a change given by the clnum. CLnum can be an
     original CL before renaming"""
     cmd = 'p4 -ztag -G describe -O %d' % clnum
     try:
-        with retries(num=3, sleeps=0.3):
+        stdout = ''
+        @retry(num=3, sleeps=0.3)
+        def helper():
+            global stdout
             stdout = util.popen(cmd, mode='rb')
             return marshal.load(stdout)
+        return helper()
     except Exception:
         raise P4Exception(stdout)
 
@@ -166,9 +211,15 @@ def parse_usermap():
 def parse_client(client):
     cmd = 'p4 -G client -o %s' % util.shellquote(client)
     try:
-        with retries(num=3, sleeps=0.3):
+        stdout = ''
+        clientspec = []
+        @retry(num=3, sleeps=0.3)
+        def helper():
+            global stdout
+            global clientspec
             stdout = util.popen(cmd, mode='rb')
             clientspec = marshal.load(stdout)
+        helper()
     except Exception:
         raise P4Exception(stdout)
 
@@ -178,20 +229,23 @@ def parse_client(client):
             sview, cview = clientspec[client].split()
             # XXX: use a regex for this
             cview = cview.lstrip('/')  # remove leading // from the local path
-            cview = cview[cview.find("/") + 1:] # remove the clientname part
+            cview = cview[cview.find("/") + 1:]  # remove the clientname part
             views[sview] = cview
     return views
 
 def exists_client(client):
     cmd = 'p4 -G clients -e %s' % util.shellquote(client)
     try:
-        with retries(num=3, sleeps=0.3):
+        stdout = ''
+        @retry(num=3, sleeps=0.3)
+        def helper():
             stdout = util.popen(cmd, mode='rb')
             for each in loaditer(stdout):
                 client_name = each.get('client', None)
                 if client_name is not None and client_name == client:
                     return True
             return False
+        return helper()
     except Exception:
         raise P4Exception(stdout)
 
@@ -225,7 +279,7 @@ def parse_filelog(filelist, client, changelists):
             yield cl.cl, json.dumps(fstat)
 
 def parse_filelogs(ui, client, changelists, filelist):
-    # we can probably optimize this by using fstat only in the case-inensitive
+    # we can probably optimize this by using fstat only in the case-insensitive
     # case and only for conflicts.
     filelogs = collections.defaultdict(dict)
     worker = runworker(ui, parse_filelog, (filelist, client), changelists)
@@ -239,10 +293,61 @@ def parse_filelogs(ui, client, changelists, filelist):
     for p4filename, filelog in filelogs.iteritems():
         yield P4Filelog(p4filename, filelog)
 
+def get_filelogs_at_cl(client, clnum):
+    cmd = 'p4 --client %s -G fstat -T ' \
+         '"depotFile,headAction,headType,headRev" ' \
+         '"//%s/..."@%d' % (
+         util.shellquote(client),
+         util.shellquote(client),
+         clnum
+         )
+    stdout = util.popen(cmd, mode='rb')
+    try:
+        result = []
+        for d in loaditer(stdout):
+            if d.get('depotFile'):
+                headaction = d['headAction']
+                if headaction in ACTION_ARCHIVE or headaction in ACTION_DELETE:
+                    continue
+                depotfile = d['depotFile']
+                filelog = {}
+                filelog[clnum] = {
+                    'action': d['headAction'],
+                    'type': d['headType'],
+                }
+                result.append(P4Filelog(depotfile, filelog))
+        return result
+    except Exception:
+        raise P4Exception(stdout)
+
 class P4Filelog(object):
     def __init__(self, depotfile, data):
         self._data = data
         self._depotfile = depotfile
+
+        # used in Perforce prior to 99.1
+        self._keyword_to_typemod = {
+            'text': ('text', ''),
+            'xtext': ('text', 'x'),
+            'ktext': ('text', 'k'),
+            'kxtext': ('text', 'kx'),
+            'binary': ('binary', ''),
+            'xbinary': ('binary', 'x'),
+            'ctext': ('text', 'C'),
+            'cxtext': ('text', 'Cx'),
+            'symlink': ('symlink', ''),
+            'resource': ('resource', ''),
+            'uresource': ('resource', 'F'),
+            'ltext': ('text', 'F'),
+            'xltext': ('text', 'Fx'),
+            'ubinary': ('binary', 'F'),
+            'uxbinary': ('binary', 'Fx'),
+            'tempobj': ('binary', 'FSw'),
+            'ctempobj': ('binary', 'Sw'),
+            'xtempobj': ('binary', 'FSwx'),
+            'xunicode': ('unicode', 'x'),
+            'xutf16': ('utf16', 'x'),
+        }
 
 #    @property
 #    def branchcl(self):
@@ -272,21 +377,33 @@ class P4Filelog(object):
     def revisions(self):
         return sorted(self._data.keys())
 
+    def _get_type_modifiers(self, filetype):
+        try:
+            filetype, modifiers = self._keyword_to_typemod[filetype]
+        except KeyError:
+            filetype, plus, modifiers = filetype.partition('+')
+        return filetype, modifiers
+
+    def _get_type(self, filetype):
+        return self._get_type_modifiers(filetype)[0]
+
+    def _get_modifiers(self, filetype):
+        return self._get_type_modifiers(filetype)[1]
+
     def isdeleted(self, clnum):
         return self._data[clnum]['action'] in ['move/delete', 'delete']
 
     def isexec(self, clnum):
         t = self._data[clnum]['type']
-        return 'xtext' == t or '+x' in t
+        return 'x' in self._get_modifiers(t)
 
     def issymlink(self, clnum):
         t = self._data[clnum]['type']
-        return 'symlink' in t
+        return 'symlink' == self._get_type(t)
 
     def iskeyworded(self, clnum):
         t = self._data[clnum]['type']
-        return (re.compile('kx?text').match(t) or
-            re.compile('\+kx?').search(t)) is not None
+        return 'k' in self._get_modifiers(t)
 
 ACTION_EDIT = ['edit', 'integrate']
 ACTION_ADD = ['add', 'branch', 'move/add']

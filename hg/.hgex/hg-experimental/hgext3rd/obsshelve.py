@@ -57,6 +57,18 @@ from hgext import (
     rebase,
 )
 
+try:
+    # New in hg 4.6
+    from mercurial.utils import dateutil
+    _makedate = dateutil.makedate
+except ImportError:
+    # 4.5 and earlier
+    _makedate = util.makedate
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+configitem('obsshelve', 'maxbackups', default=10)
+
 cmdtable = {}
 command = registrar.command(cmdtable)
 testedwith = 'ships-with-fb-hgext'
@@ -273,7 +285,7 @@ class shelvedstate(object):
         """Cleanup temporary nodes from the repo"""
         if self.obsshelve:
             unfi = repo.unfiltered()
-            relations = [(unfi[n], ()) for n in self.nodestoremove]
+            relations = [(unfi[n or '.'], ()) for n in self.nodestoremove]
             obsolete.createmarkers(repo, relations)
         else:
             repair.strip(ui, repo, self.nodestoremove, backup=False,
@@ -281,7 +293,7 @@ class shelvedstate(object):
 
 def cleanupoldbackups(repo):
     vfs = vfsmod.vfs(repo.vfs.join(backupdir))
-    maxbackups = repo.ui.configint('shelve', 'maxbackups', 10)
+    maxbackups = repo.ui.configint('obsshelve', 'maxbackups')
     hgfiles = [f for f in vfs.listdir()
                if f.endswith('.' + patchextension)]
     hgfiles = sorted([(vfs.stat(f).st_mtime, f) for f in hgfiles])
@@ -411,9 +423,16 @@ def _shelvecreatedcommit(ui, repo, node, name, tr):
     shelvedfile(repo, name, 'oshelve').writeobsshelveinfo({
         'node': nodemod.hex(node)
     })
-    cmdutil.export(repo.unfiltered(), [node],
-                   fp=shelvedfile(repo, name, patchextension).opener('wb'),
-                   opts=mdiff.diffopts(git=True))
+    if util.safehasattr(cmdutil, 'exportfile'):
+        # Mercurial 4.6 and later
+        cmdutil.exportfile(repo.unfiltered(), [node],
+                       shelvedfile(repo, name, patchextension).opener('wb'),
+                       opts=mdiff.diffopts(git=True))
+    else:
+        # Mercurial 4.5 and earlier
+        cmdutil.export(repo.unfiltered(), [node],
+                       fp=shelvedfile(repo, name, patchextension).opener('wb'),
+                       opts=mdiff.diffopts(git=True))
 
 def _includeunknownfiles(repo, pats, opts, extra):
     s = repo.status(match=scmutil.match(repo[None], pats, opts),
@@ -576,7 +595,7 @@ def listcmd(ui, repo, pats, opts):
             continue
         ui.write(' ' * (16 - len(sname)))
         used = 16
-        age = '(%s)' % templatefilters.age(util.makedate(mtime), abbrev=True)
+        age = '(%s)' % templatefilters.age(_makedate(mtime), abbrev=True)
         ui.write(age, label='shelve.age')
         ui.write(' ' * (12 - len(age)))
         used += 12
@@ -906,7 +925,7 @@ def unshelve(ui, repo, *shelved, **opts):
 
     After a successful unshelve, the shelved changes are stored in a
     backup directory. Only the N most recent backups are kept. N
-    defaults to 10 but can be overridden using the ``shelve.maxbackups``
+    defaults to 10 but can be overridden using the ``obsshelve.maxbackups``
     configuration option.
 
     .. container:: verbose
@@ -1136,4 +1155,3 @@ def reposetup(ui, repo):
     order = extensions._order
     if 'shelve' in order:
         raise error.Abort("shelve must be disabled when obsshelve is enabled")
-

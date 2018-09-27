@@ -22,10 +22,14 @@ callsign = E
 
 """
 
-from mercurial import hg
-from mercurial import extensions
-from mercurial import revset, smartset
-from mercurial import error
+from mercurial import (
+    error,
+    extensions,
+    hg,
+    registrar,
+    revset,
+    smartset,
+)
 from mercurial.i18n import _
 
 try:
@@ -38,6 +42,11 @@ import signal
 import json
 import re
 import subprocess
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('phrevset', 'callsign', default=None)
 
 DIFFERENTIAL_REGEX = re.compile(
     'Differential Revision: http.+?/'  # Line start, URL
@@ -244,8 +253,14 @@ def revsetdiff(repo, subset, diffid):
 
         # verify all revisions exist in the current repo; if not, try to
         # find their counterpart by parsing the log
-        for idx, rev in enumerate(revs):
-            if rev not in repo:
+        results = set()
+        for rev in revs:
+            # TODO: This really should be searching in repo.unfiltered(),
+            # and then resolving successors if the commit was hidden.
+            try:
+                node = repo[rev.encode('utf-8')]
+                results.add(node.rev())
+            except error.RepoLookupError:
                 repo.ui.warn(_('Commit not found - doing a linear search\n'))
                 parsed_rev = finddiff(repo, diffid)
 
@@ -253,9 +268,12 @@ def revsetdiff(repo, subset, diffid):
                     raise error.Abort('Could not find diff '
                                        'D%s in changelog' % diffid)
 
-                revs[idx] = parsed_rev
+                results.add(parsed_rev)
 
-        return set(revs)
+        if not results:
+            raise error.Abort('Could not find local commit for D%s' % diffid)
+
+        return set(results)
 
     else:
         if not vcs:
@@ -268,17 +286,16 @@ def revsetdiff(repo, subset, diffid):
             raise error.Abort('Conduit returned unknown '
                                'sourceControlSystem "%s"' % vcs)
 
-def revsetstringset(orig, repo, subset, revstr):
+def revsetstringset(orig, repo, subset, revstr, *args, **kwargs):
     """Wrapper that recognizes revisions starting with 'D'"""
 
     if revstr.startswith('D') and revstr[1:].isdigit():
         return smartset.baseset(revsetdiff(repo, subset, revstr[1:]))
 
-    return orig(repo, subset, revstr)
+    return orig(repo, subset, revstr, *args, **kwargs)
 
 def extsetup(ui):
     extensions.wrapfunction(revset, 'stringset', revsetstringset)
-    revset.symbols['stringset'] = revset.stringset
     revset.methods['string'] = revset.stringset
     revset.methods['symbol'] = revset.stringset
 

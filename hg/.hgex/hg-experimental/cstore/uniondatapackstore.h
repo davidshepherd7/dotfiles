@@ -1,26 +1,26 @@
-// uniondatapackstore.h - c++ declarations for a union datapack store
-//
-// Copyright 2017 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// uniondatapackstore.h - c++ declarations for a union datapack store
 // no-check-code
 
-#ifndef UNIONDATAPACKSTORE_H
-#define UNIONDATAPACKSTORE_H
-
-extern "C" {
-#include "cdatapack.h"
-}
-
-#include "key.h"
-#include "datapackstore.h"
-#include "store.h"
+#ifndef FBHGEXT_CSTORE_UNIONDATAPACKSTORE_H
+#define FBHGEXT_CSTORE_UNIONDATAPACKSTORE_H
 
 #include <cstring>
-#include <vector>
 #include <stdexcept>
+#include <vector>
+
+extern "C" {
+#include "cdatapack/cdatapack.h"
+}
+
+#include "cstore/key.h"
+#include "cstore/datapackstore.h"
+#include "cstore/store.h"
 
 class UnionDatapackStore;
 class UnionDatapackStoreKeyIterator : public KeyIterator {
@@ -33,14 +33,15 @@ class UnionDatapackStoreKeyIterator : public KeyIterator {
       _store(store),
       _missing(missing) {}
 
-    Key *next();
+    Key *next() override;
 };
 
 class UnionDeltaChainIterator: public DeltaChainIterator {
   private:
     UnionDatapackStore &_store;
   protected:
-    delta_chain_t getNextChain(const Key &key);
+    std::shared_ptr<DeltaChain> getNextChain(const Key &key) override;
+
   public:
     UnionDeltaChainIterator(UnionDatapackStore &store, const Key &key) :
       DeltaChainIterator(),
@@ -51,13 +52,13 @@ class UnionDeltaChainIterator: public DeltaChainIterator {
 
 class UnionDatapackStore : public Store {
   public:
-    std::vector<DatapackStore*> _stores;
+    std::vector<DataStore*> _stores;
 
-    UnionDatapackStore(std::vector<DatapackStore*> stores);
+    UnionDatapackStore(std::vector<DataStore*> stores);
 
-    ~UnionDatapackStore();
+    ~UnionDatapackStore() override;
 
-    ConstantStringRef get(const Key &key);
+    ConstantStringRef get(const Key &key) override;
 
     UnionDeltaChainIterator getDeltaChain(const Key &key);
 
@@ -68,4 +69,4 @@ class UnionDatapackStore : public Store {
     void markForRefresh();
 };
 
-#endif //UNIONDATAPACKSTORE_H
+#endif // FBHGEXT_CSTORE_UNIONDATAPACKSTORE_H

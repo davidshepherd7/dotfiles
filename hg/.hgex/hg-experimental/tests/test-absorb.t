@@ -447,3 +447,35 @@ Remove lines may delete changesets:
      +2
      +3
   
+
+Use revert to make the current change and its parent disappear.
+This should move us to the non-obsolete ancestor.
+
+  $ cd ..
+  $ hg init repo5
+  $ cd repo5
+  $ cat > a <<EOF
+  > 1
+  > 2
+  > EOF
+  $ hg commit -m a12 -A a
+  $ hg id
+  bfafb49242db tip
+  $ echo 3 >> a
+  $ hg commit -m a123 a
+  $ echo 4 >> a
+  $ hg commit -m a1234 a
+  $ hg id
+  82dbe7fd19f0 tip
+  $ hg revert -r 0 a
+  $ hg absorb -pn
+  showing changes for a
+          @@ -2,2 +2,0 @@
+  f1c23dd -3
+  82dbe7f -4
+  $ hg absorb --verbose
+  f1c23dd5d08d: became empty and was dropped
+  82dbe7fd19f0: became empty and was dropped
+  a: 1 of 1 chunk(s) applied
+  $ hg id
+  bfafb49242db tip

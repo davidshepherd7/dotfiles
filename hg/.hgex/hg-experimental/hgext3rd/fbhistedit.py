@@ -9,24 +9,32 @@
 Adds a s/stop verb to histedit to stop after a changeset was picked.
 """
 
+import json
 from pipes import quote
 
-from mercurial import cmdutil
-from mercurial import error
-from mercurial import encoding
-from mercurial import extensions
-from mercurial import hg
-from mercurial import lock
-from mercurial import merge as mergemod
-from mercurial import mergeutil
-from mercurial import node
-from mercurial import pycompat
-from mercurial import registrar
-from mercurial import scmutil
 from mercurial.i18n import _
+from mercurial import (
+    cmdutil,
+    error,
+    encoding,
+    extensions,
+    hg,
+    lock,
+    merge as mergemod,
+    mergeutil,
+    node,
+    pycompat,
+    registrar,
+    scmutil,
+)
 
 cmdtable = {}
 command = registrar.command(cmdtable)
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('fbhistedit', 'exec_in_user_shell', default=None)
 
 testedwith = 'ships-with-fb-hgext'
 
@@ -41,7 +49,7 @@ def defineactions():
             self.state.replacements.extend(replacements)
             self.state.write()
             raise error.InterventionRequired(
-                _('Changes commited as %s. You may amend the changeset now.\n'
+                _('Changes committed as %s. You may amend the changeset now.\n'
                   'When you are done, run hg histedit --continue to resume') %
                 parentctx)
 
@@ -141,6 +149,20 @@ def defineactions():
             super(executerelative, self).__init__(state, command)
             self.cwd = pycompat.getcwd()
 
+    @histedit.action(['graft', 'g'],
+                     _('graft a commit from elsewhere'))
+    class graft(histedit.histeditaction):
+        def _verifynodeconstraints(self, prev, expected, seen):
+            if self.node in expected:
+                msg = _('%s "%s" changeset was an edited list candidate')
+                raise error.ParseError(
+                    msg % (self.verb, node.short(self.node)),
+                    hint=_('graft must only use unlisted changesets'))
+
+        def continueclean(self):
+            ctx, replacement = super(graft, self).continueclean()
+            return ctx, []
+
     return stop, execute, executerelative
 
 def extsetup(ui):
@@ -153,21 +175,17 @@ def extsetup(ui):
     defineactions()
     _extend_histedit(ui)
 
-    if ui.config('experimental', 'histeditng'):
-        rebase = extensions.find('rebase')
-        extensions.wrapcommand(rebase.cmdtable, 'rebase', _rebase,
-                               synopsis=' [-i]')
-
-        aliases, entry = cmdutil.findcmd('rebase', rebase.cmdtable)
-        newentry = list(entry)
-        options = newentry[1]
-        # dirty hack because we need to change an existing switch
-        for idx, opt in enumerate(options):
-            if opt[0] == 'i':
-                del options[idx]
-        options.append(('i', 'interactive', False, 'interactive rebase'))
-        rebase.cmdtable['rebase'] = tuple(newentry)
-
+    rebase = extensions.find('rebase')
+    extensions.wrapcommand(rebase.cmdtable, 'rebase', _rebase, synopsis='[-i]')
+    aliases, entry = cmdutil.findcmd('rebase', rebase.cmdtable)
+    newentry = list(entry)
+    options = newentry[1]
+    # dirty hack because we need to change an existing switch
+    for idx, opt in enumerate(options):
+        if opt[0] == 'i':
+            del options[idx]
+    options.append(('i', 'interactive', False, 'interactive rebase'))
+    rebase.cmdtable['rebase'] = tuple(newentry)
 
 def _extend_histedit(ui):
     histedit = extensions.find('histedit')
@@ -179,6 +197,31 @@ def _extend_histedit(ui):
     options.append(('', 'show-plan', False, _('show remaining actions list')))
 
     extensions.wrapfunction(histedit, '_histedit', _histedit)
+    extensions.wrapfunction(histedit, 'parserules', parserules)
+
+def parserules(orig, rules, state):
+    try:
+        rules = _parsejsonrules(rules, state)
+    except ValueError:
+        pass
+    return orig(rules, state)
+
+def _parsejsonrules(rules, state):
+    jsondata = json.loads(rules)
+    parsedrules = ''
+    try:
+        for entry in jsondata['histedit']:
+            if entry['action'] in set(['exec', 'execr']):
+                rest = entry['command']
+            else:
+                rest = entry['node']
+            parsedrules += (entry['action'] + ' ' + rest + '\n')
+    except KeyError:
+        state.repo.ui.status(_("invalid JSON format, falling back "
+                               "to normal parsing\n"))
+        return rules
+
+    return parsedrules
 
 goalretry = 'retry'
 goalshowplan = 'show-plan'

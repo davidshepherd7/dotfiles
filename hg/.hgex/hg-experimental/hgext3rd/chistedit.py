@@ -29,6 +29,7 @@ from hgext import histedit
 from mercurial import (
     cmdutil,
     destutil,
+    logcmdutil,
     node,
     registrar,
     scmutil,
@@ -36,6 +37,7 @@ from mercurial import (
     util,
 )
 from mercurial.i18n import _
+from mercurial.utils import stringutil
 
 import functools
 import os
@@ -321,7 +323,7 @@ def addln(win, y, x, line, color=None):
 def patchcontents(state):
     repo = state['repo']
     rule = state['rules'][state['pos']]
-    displayer = cmdutil.show_changeset(repo.ui, repo, {
+    displayer = logcmdutil.changesetdisplayer(repo.ui, repo, {
         'patch': True, 'verbose': True
     }, buffered=True)
     displayer.show(rule.ctx)
@@ -357,7 +359,7 @@ def main(repo, rules, stdscr):
         line = "changeset: {0}:{1:<12}".format(ctx.rev(), ctx)
         win.addstr(1, 1, line[:length])
 
-        line = "user:      {0}".format(util.shortuser(ctx.user()))
+        line = "user:      {0}".format(stringutil.shortuser(ctx.user()))
         win.addstr(2, 1, line[:length])
 
         bms = repo.nodebookmarks(ctx.node())
@@ -545,7 +547,9 @@ testedwith = 'ships-with-fb-hgext'
     ('r', 'rev', [], _('first revision to be edited'))],
     _("ANCESTOR"))
 def chistedit(ui, repo, *freeargs, **opts):
-    """Provides a ncurses interface to histedit. Press ? in chistedit mode
+    """interactively edit changeset history via a curses interface
+
+    Provides a ncurses interface to histedit. Press ? in chistedit mode
     to see an extensive help. Requires python-curses to be installed."""
 
     if curses is None:

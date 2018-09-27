@@ -1,22 +1,23 @@
-// treemanifest.h - c++ declarations of a tree manifest
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// treemanifest.h - c++ declarations of a tree manifest
 // no-check-code
 
-#ifndef REMOTEFILELOG_TREEMANIFEST_H
-#define REMOTEFILELOG_TREEMANIFEST_H
+#ifndef FBHGEXT_CTREEMANIFEST_TREEMANIFEST_H
+#define FBHGEXT_CTREEMANIFEST_TREEMANIFEST_H
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "manifest.h"
-#include "manifest_fetcher.h"
-#include "match.h"
+#include "cstore/match.h"
+#include "ctreemanifest/manifest.h"
+#include "ctreemanifest/manifest_entry.h"
+#include "ctreemanifest/manifest_fetcher.h"
 
 enum FindResult {
   FIND_PATH_OK,
@@ -349,4 +350,4 @@ extern void treemanifest_diffrecurse(
     bool clean,
     Matcher &matcher);
 
-#endif //REMOTEFILELOG_TREEMANIFEST_H
+#endif // FBHGEXT_CTREEMANIFEST_TREEMANIFEST_H

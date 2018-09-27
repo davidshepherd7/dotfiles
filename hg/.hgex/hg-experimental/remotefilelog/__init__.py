@@ -11,6 +11,9 @@ only download them ondemand as needed.
 Configs:
 
     ``packs.maxchainlen`` specifies the maximum delta chain length in pack files
+    ``packs.maxpacksize`` specifies the maximum pack file size
+    ``packs.maxpackfilecount`` specifies the maximum number of packs in the
+      shared cache (trees only for now)
     ``remotefilelog.backgroundprefetch`` runs prefetch in background when True
     ``remotefilelog.bgprefetchrevs`` specifies revisions to fetch on commit and
       update, and on other commands that use them. Different from pullprefetch.
@@ -18,6 +21,36 @@ Configs:
     ``remotefilelog.nodettl`` specifies maximum TTL of a node in seconds before
       it is garbage collected
     ``remotefilelog.repackonhggc`` runs repack on hg gc when True
+    ``remotefilelog.prefetchdays`` specifies the maximum age of a commit in
+      days after which it is no longer prefetched.
+    ``remotefilelog.prefetchdelay`` specifies delay between background
+      prefetches in seconds after operations that change the working copy parent
+    ``remotefilelog.data.gencountlimit`` constraints the minimum number of data
+      pack files required to be considered part of a generation. In particular,
+      minimum number of packs files > gencountlimit.
+    ``remotefilelog.data.generations`` list for specifying the lower bound of
+      each generation of the data pack files. For example, list ['100MB','1MB']
+      or ['1MB', '100MB'] will lead to three generations: [0, 1MB), [
+      1MB, 100MB) and [100MB, infinity).
+    ``remotefilelog.data.maxrepackpacks`` the maximum number of pack files to
+      include in an incremental data repack.
+    ``remotefilelog.data.repackmaxpacksize`` the maximum size of a pack file for
+      it to be considered for an incremental data repack.
+    ``remotefilelog.data.repacksizelimit`` the maximum total size of pack files
+      to include in an incremental data repack.
+    ``remotefilelog.history.gencountlimit`` constraints the minimum number of
+      history pack files required to be considered part of a generation. In
+      particular, minimum number of packs files > gencountlimit.
+    ``remotefilelog.history.generations`` list for specifying the lower bound of
+      each generation of the history pack files. For example, list [
+      '100MB', '1MB'] or ['1MB', '100MB'] will lead to three generations: [
+      0, 1MB), [1MB, 100MB) and [100MB, infinity).
+    ``remotefilelog.history.maxrepackpacks`` the maximum number of pack files to
+      include in an incremental history repack.
+    ``remotefilelog.history.repackmaxpacksize`` the maximum size of a pack file
+      for it to be considered for an incremental history repack.
+    ``remotefilelog.history.repacksizelimit`` the maximum total size of pack
+      files to include in an incremental history repack.
 """
 
 from . import fileserverclient, remotefilelog, remotefilectx, shallowstore
@@ -44,6 +77,7 @@ from mercurial import (
     localrepo,
     match,
     merge,
+    node as nodemod,
     patch,
     registrar,
     repair,
@@ -57,6 +91,7 @@ from mercurial import (
 )
 
 import os
+import time
 import traceback
 
 # ensures debug commands are registered
@@ -71,6 +106,13 @@ except Exception:
 
 cmdtable = {}
 command = registrar.command(cmdtable)
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('remotefilelog', 'servercachepath', default=None)
+configitem('remotefilelog', 'server', default=None)
+
 testedwith = 'ships-with-fb-hgext'
 
 repoclass = localrepo.localrepository
@@ -115,6 +157,7 @@ def uisetup(ui):
             pass
         if lfsmod:
             lfsmod.wrapfilelog(remotefilelog.remotefilelog)
+            fileserverclient._lfsmod = lfsmod
     extensions.afterloaded('lfs', _lfsloaded)
 
     # debugdata needs remotefilelog.len to work
@@ -150,12 +193,15 @@ def cloneshallow(orig, ui, repo, *args, **opts):
             # Replace remote.stream_out with a version that sends file
             # patterns.
             def stream_out_shallow(orig):
-                if shallowrepo.requirement in remote._capabilities():
+                caps = shallowutil.peercapabilities(remote)
+                if shallowrepo.requirement in caps:
                     opts = {}
                     if repo.includepattern:
                         opts['includepattern'] = '\0'.join(repo.includepattern)
                     if repo.excludepattern:
                         opts['excludepattern'] = '\0'.join(repo.excludepattern)
+                    if repo.ui.configbool("treemanifest", "treeonly"):
+                        opts['noflatmanifest'] = 'True'
                     return remote._callstream('stream_out_shallow', **opts)
                 else:
                     return orig()
@@ -250,16 +296,24 @@ def onetimeclientsetup(ui):
         # Mercurial >= 3.3
         packermap01 = packermap['01']
         packermap02 = packermap['02']
+        packermap03 = packermap['03']
         packermap['01'] = (shallowbundle.shallowcg1packer,
                                        packermap01[1])
         packermap['02'] = (shallowbundle.shallowcg2packer,
                                        packermap02[1])
+        packermap['03'] = (shallowbundle.shallowcg3packer,
+                                       packermap03[1])
     if util.safehasattr(changegroup, '_addchangegroupfiles'):
         fn = '_addchangegroupfiles' # hg >= 3.6
     else:
         fn = 'addchangegroupfiles' # hg <= 3.5
     wrapfunction(changegroup, fn, shallowbundle.addchangegroupfiles)
-    wrapfunction(changegroup, 'getchangegroup', shallowbundle.getchangegroup)
+    if util.safehasattr(changegroup, 'getchangegroup'):
+        wrapfunction(changegroup, 'getchangegroup',
+                     shallowbundle.getchangegroup)
+    else:
+        wrapfunction(changegroup, 'makechangegroup',
+                     shallowbundle.makechangegroup)
 
     def storewrapper(orig, requirements, path, vfstype):
         s = orig(requirements, path, vfstype)
@@ -501,7 +555,14 @@ def onetimeclientsetup(ui):
     wrapfunction(hg, 'verify', _verify)
 
     if util.safehasattr(cmdutil, '_revertprefetch'):
+        # This mechanism was removed in f1f8b655da32, but is more focused than
+        # the _fileprefetchhook mechanism, so we prefer it for now.
         wrapfunction(cmdutil, '_revertprefetch', _revertprefetch)
+    elif util.safehasattr(scmutil, 'fileprefetchhooks'):
+        # This mechanism may overlap some of the other prefetch mechanisms we
+        # established earlier, performing duplicate or extraneous work, but it
+        # works after f1f8b655da32.
+        scmutil.fileprefetchhooks.add('remotefilelog', _fileprefetchhook)
     else:
         wrapfunction(cmdutil, 'revert', revert)
 
@@ -695,7 +756,7 @@ def gcclient(ui, cachepath):
                 repackmod.incrementalrepack(repo)
                 filesrepacked = True
                 continue
-            except IOError:
+            except (IOError, repackmod.RepackAlreadyRunning):
                 # If repack cannot be performed due to not enough disk space
                 # continue doing garbage collection of loose files w/o repack
                 pass
@@ -705,31 +766,9 @@ def gcclient(ui, cachepath):
             sharedcache = repo.sharedstore
 
         # Compute a keepset which is not garbage collected
-        # We want to keep:
-        # 1. Working copy parent
-        # 2. Draft commits
-        # 3. All parents of draft commits
-        # 4. Recent heads in the repo
-        # 5. Pullprefetch and bgprefetchrevs revsets if specified
-        revs = ['.', 'draft()', 'parents(draft())', '(heads(all()) & date(-7))']
-
-        prefetchrevs = repo.ui.config('remotefilelog',
-                                      'pullprefetch', None)
-        if prefetchrevs:
-            revs.append('(%s)' % prefetchrevs)
-        prefetchrevs = repo.ui.config('remotefilelog',
-                                      'bgprefetchrevs', None)
-        if prefetchrevs:
-            revs.append('(%s)' % prefetchrevs)
-
-        keep = scmutil.revrange(repo, ['+'.join(revs)])
-        # TODO: Compute keepkeys more efficiently
-        for r in keep:
-            m = repo[r].manifest()
-            for filename, filenode in m.iteritems():
-                key = fileserverclient.getcachekey(reponame, filename,
-                    hex(filenode))
-                keepkeys.add(key)
+        def keyfn(fname, fnode):
+            return fileserverclient.getcachekey(reponame, fname, hex(fnode))
+        keepkeys = repackmod.keepset(repo, keyfn=keyfn, lastkeepkeys=keepkeys)
 
     ui.progress(_analyzing, None)
 
@@ -779,23 +818,57 @@ def log(orig, ui, repo, *pats, **opts):
 
     return orig(ui, repo, *pats, **opts)
 
+def revdatelimit(ui, revset):
+    """Update revset so that only changesets no older than 'prefetchdays' days
+    are included. The default value is set to 14 days. If 'prefetchdays' is set
+    to zero or negative value then date restriction is not applied.
+    """
+    days = ui.configint('remotefilelog', 'prefetchdays', 14)
+    if days > 0:
+        revset = '(%s) & date(-%s)' % (revset, days)
+    return revset
+
+def readytofetch(repo):
+    """Check that enough time has passed since the last background prefetch.
+    This only relates to prefetches after operations that change the working
+    copy parent. Default delay between background prefetches is 2 minutes.
+    """
+    timeout = repo.ui.configint('remotefilelog', 'prefetchdelay', 120)
+    fname = repo.vfs.join('lastprefetch')
+
+    ready = False
+    with open(fname, 'a'):
+        # the with construct above is used to avoid race conditions
+        modtime = os.path.getmtime(fname)
+        if (time.time() - modtime) > timeout:
+            os.utime(fname, None)
+            ready = True
+
+    return ready
+
 def wcpprefetch(ui, repo, **kwargs):
     """Prefetches in background revisions specified by bgprefetchrevs revset.
     Does background repack if backgroundrepack flag is set in config.
     """
     shallow = shallowrepo.requirement in repo.requirements
     bgprefetchrevs = ui.config('remotefilelog', 'bgprefetchrevs', None)
+    isready = readytofetch(repo)
 
-    if shallow and bgprefetchrevs:
-        bgrepack = repo.ui.configbool('remotefilelog',
-                                      'backgroundrepack', False)
-        def anon():
-            if util.safehasattr(repo, 'ranprefetch') and repo.ranprefetch:
-                return
-            repo.ranprefetch = True
-            repo.backgroundprefetch(bgprefetchrevs, repack=bgrepack)
+    if not (shallow and bgprefetchrevs and isready):
+        return
 
-        repo._afterlock(anon)
+    bgrepack = repo.ui.configbool('remotefilelog',
+                                  'backgroundrepack', False)
+    # update a revset with a date limit
+    bgprefetchrevs = revdatelimit(ui, bgprefetchrevs)
+
+    def anon():
+        if util.safehasattr(repo, 'ranprefetch') and repo.ranprefetch:
+            return
+        repo.ranprefetch = True
+        repo.backgroundprefetch(bgprefetchrevs, repack=bgrepack)
+
+    repo._afterlock(anon)
 
 def pull(orig, ui, repo, *pats, **opts):
     result = orig(ui, repo, *pats, **opts)
@@ -857,7 +930,7 @@ def revert(orig, ui, repo, ctx, parents, *pats, **opts):
 
 def _revertprefetch(orig, repo, ctx, *files):
     # prefetch data that needs to be reverted
-    # used for new mercurial version
+    # used for new mercurial version up until f1f8b655da32
     if shallowrepo.requirement in repo.requirements:
         allfiles = []
         mf = ctx.manifest()
@@ -868,6 +941,23 @@ def _revertprefetch(orig, repo, ctx, *files):
                     allfiles.append((path, hex(mf[path])))
         repo.fileservice.prefetch(allfiles)
     return orig(repo, ctx, *files)
+
+def _fileprefetchhook(repo, revs, match):
+    if shallowrepo.requirement in repo.requirements:
+        allfiles = []
+        for rev in revs:
+            if rev == nodemod.wdirrev or rev is None:
+                continue
+            ctx = repo[rev]
+            mf = ctx.manifest()
+            sparsematch = repo.maybesparsematch(ctx.rev())
+            for path in ctx.walk(match):
+                if path.endswith('/'):
+                    # Tree manifest that's being excluded as part of narrow
+                    continue
+                if (not sparsematch or sparsematch(path)) and path in mf:
+                    allfiles.append((path, hex(mf[path])))
+        repo.fileservice.prefetch(allfiles)
 
 @command('debugremotefilelog', [
     ('d', 'decompress', None, _('decompress the filelog first')),
@@ -884,14 +974,23 @@ def verifyremotefilelog(ui, path, **opts):
 @command('debugdatapack', [
     ('', 'long', None, _('print the long hashes')),
     ('', 'node', '', _('dump the contents of node'), 'NODE'),
-    ], _('hg debugdatapack <path>'), norepo=True)
-def debugdatapack(ui, path, **opts):
-    return debugcommands.debugdatapack(ui, path, **opts)
+    ], _('hg debugdatapack <paths>'), norepo=True)
+def debugdatapack(ui, *paths, **opts):
+    return debugcommands.debugdatapack(ui, *paths, **opts)
 
 @command('debughistorypack', [
     ], _('hg debughistorypack <path>'), norepo=True)
 def debughistorypack(ui, path, **opts):
     return debugcommands.debughistorypack(ui, path)
+
+@command('debugkeepset', [
+    ], _('hg debugkeepset'))
+def debugkeepset(ui, repo, **opts):
+    # The command is used to measure keepset computation time
+    def keyfn(fname, fnode):
+        return fileserverclient.getcachekey(repo.name, fname, hex(fnode))
+    repackmod.keepset(repo, keyfn)
+    return
 
 @command('debugwaitonrepack', [
     ], _('hg debugwaitonrepack'))
@@ -903,9 +1002,32 @@ def debugwaitonrepack(ui, repo, **opts):
 def debugwaitonprefetch(ui, repo, **opts):
     return debugcommands.debugwaitonprefetch(repo)
 
+def resolveprefetchopts(ui, opts):
+    if not opts.get('rev'):
+        revset = ['.', 'draft()']
+
+        prefetchrevset = ui.config('remotefilelog', 'pullprefetch', None)
+        if prefetchrevset:
+            revset.append('(%s)' % prefetchrevset)
+        bgprefetchrevs = ui.config('remotefilelog', 'bgprefetchrevs', None)
+        if bgprefetchrevs:
+            revset.append('(%s)' % bgprefetchrevs)
+        revset = '+'.join(revset)
+
+        # update a revset with a date limit
+        revset = revdatelimit(ui, revset)
+
+        opts['rev'] = [revset]
+
+    if not opts.get('base'):
+        opts['base'] = None
+
+    return opts
+
 @command('prefetch', [
     ('r', 'rev', [], _('prefetch the specified revisions'), _('REV')),
     ('', 'repack', False, _('run repack after prefetch')),
+    ('b', 'base', '', _("rev that is assumed to already be local")),
     ] + commands.walkopts, _('hg prefetch [OPTIONS] [FILE...]'))
 def prefetch(ui, repo, *pats, **opts):
     """prefetch file revisions from the server
@@ -920,32 +1042,33 @@ def prefetch(ui, repo, *pats, **opts):
     if not shallowrepo.requirement in repo.requirements:
         raise error.Abort(_("repo is not shallow"))
 
-    if not opts.get('rev'):
-        revset = ['.', 'draft()']
-
-        prefetchrevset = ui.config('remotefilelog', 'pullprefetch', None)
-        if prefetchrevset:
-            revset.append('(%s)' % prefetchrevset)
-        bgprefetchrevs = ui.config('remotefilelog', 'bgprefetchrevs', None)
-        if bgprefetchrevs:
-            revset.append('(%s)' % bgprefetchrevs)
-
-        opts['rev'] = ['+'.join(revset)]
-
+    opts = resolveprefetchopts(ui, opts)
     revs = scmutil.revrange(repo, opts.get('rev'))
+    repo.prefetch(revs, opts.get('base'), pats, opts)
 
-    repo.prefetch(revs, repack=opts.get('repack'), pats=pats, opts=opts)
+    # Run repack in background
+    if opts.get('repack'):
+        repackmod.backgroundrepack(repo, incremental=True)
 
 @command('repack', [
      ('', 'background', None, _('run in a background process'), None),
      ('', 'incremental', None, _('do an incremental repack'), None),
+     ('', 'packsonly', None, _('only repack packs (skip loose objects)'), None),
     ], _('hg repack [OPTIONS]'))
 def repack(ui, repo, *pats, **opts):
     if opts.get('background'):
-        repackmod.backgroundrepack(repo, incremental=opts.get('incremental'))
+        repackmod.backgroundrepack(repo, incremental=opts.get('incremental'),
+                                   packsonly=opts.get('packsonly', False))
         return
 
-    if opts.get('incremental'):
-        repackmod.incrementalrepack(repo)
-    else:
-        repackmod.fullrepack(repo)
+    options = {'packsonly': opts.get('packsonly')}
+
+    try:
+        if opts.get('incremental'):
+            repackmod.incrementalrepack(repo, options=options)
+        else:
+            repackmod.fullrepack(repo, options=options)
+    except repackmod.RepackAlreadyRunning as ex:
+        # Don't propogate the exception if the repack is already in
+        # progress, since we want the command to exit 0.
+        repo.ui.warn('%s\n' % ex)

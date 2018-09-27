@@ -19,6 +19,8 @@ PATHCOUNTSIZE = struct.calcsize(PATHCOUNTSTRUCT)
 FILEPACK_CATEGORY=""
 TREEPACK_CATEGORY="manifests"
 
+ALL_CATEGORIES = [FILEPACK_CATEGORY, TREEPACK_CATEGORY]
+
 # revision metadata keys. must be a single character.
 METAKEYFLAG = 'f'  # revlog flag
 METAKEYSIZE = 's'  # full rawtext size
@@ -28,3 +30,6 @@ def getunits(category):
         return _("files")
     if category == TREEPACK_CATEGORY:
         return _("trees")
+
+# Repack options passed to ``markledger``.
+OPTION_PACKSONLY = 'packsonly'

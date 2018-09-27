@@ -1,7 +1,9 @@
 from __future__ import absolute_import
 
 import errno, hashlib, mmap, os, struct, time
-from mercurial import policy, util
+
+from collections import defaultdict
+from mercurial import policy, pycompat, util
 from mercurial.i18n import _
 from mercurial import vfs as vfsmod
 
@@ -41,15 +43,72 @@ SMALLFANOUTCUTOFF = 2**16 / 8
 # loaded the pack list.
 REFRESHRATE = 0.1
 
+if pycompat.isposix:
+    # With glibc 2.7+ the 'e' flag uses O_CLOEXEC when opening.
+    # The 'e' flag will be ignored on older versions of glibc.
+    PACKOPENMODE = 'rbe'
+else:
+    PACKOPENMODE = 'rb'
+
+class _cachebackedpacks(object):
+    def __init__(self, packs, cachesize):
+        self._packs = set(packs)
+        self._lrucache = util.lrucachedict(cachesize)
+        self._lastpack = None
+
+        # Avoid cold start of the cache by populating the most recent packs
+        # in the cache.
+        for i in reversed(range(min(cachesize, len(packs)))):
+            self._movetofront(packs[i])
+
+    def _movetofront(self, pack):
+        # This effectively makes pack the first entry in the cache.
+        self._lrucache[pack] = True
+
+    def _registerlastpackusage(self):
+        if self._lastpack is not None:
+            self._movetofront(self._lastpack)
+            self._lastpack = None
+
+    def add(self, pack):
+        self._registerlastpackusage()
+
+        # This method will mostly be called when packs are not in cache.
+        # Therefore, adding pack to the cache.
+        self._movetofront(pack)
+        self._packs.add(pack)
+
+    def __iter__(self):
+        self._registerlastpackusage()
+
+        # Cache iteration is based on LRU.
+        for pack in self._lrucache:
+            self._lastpack = pack
+            yield pack
+
+        cachedpacks = set(pack for pack in self._lrucache)
+        # Yield for paths not in the cache.
+        for pack in self._packs - cachedpacks:
+            self._lastpack = pack
+            yield pack
+
+        # Data not found in any pack.
+        self._lastpack = None
+
 class basepackstore(object):
+    # Default cache size limit for the pack files.
+    DEFAULTCACHESIZE = 100
+
     def __init__(self, ui, path):
+        self.ui = ui
         self.path = path
-        self.packs = []
+
         # lastrefesh is 0 so we'll immediately check for new packs on the first
         # failure.
         self.lastrefresh = 0
 
-        for filepath in self._getavailablepackfiles():
+        packs = []
+        for filepath, __, __ in self._getavailablepackfilessorted():
             try:
                 pack = self.getpack(filepath)
             except Exception as ex:
@@ -62,31 +121,83 @@ class basepackstore(object):
                 # list of paths.
                 if getattr(ex, 'errno', None) != errno.ENOENT:
                     ui.warn(_('unable to load pack %s: %s\n') % (filepath, ex))
-                    pass
                 continue
-            self.packs.append(pack)
+            packs.append(pack)
+
+        self.packs = _cachebackedpacks(packs, self.DEFAULTCACHESIZE)
 
     def _getavailablepackfiles(self):
-        suffixlen = len(self.INDEXSUFFIX)
+        """For each pack file (a index/data file combo), yields:
+          (full path without extension, mtime, size)
 
-        files = []
-        filenames = set()
+        mtime will be the mtime of the index/data file (whichever is newer)
+        size is the combined size of index/data file
+        """
+        indexsuffixlen = len(self.INDEXSUFFIX)
+        packsuffixlen = len(self.PACKSUFFIX)
+
+        ids = set()
+        sizes = defaultdict(lambda: 0)
+        mtimes = defaultdict(lambda: [])
         try:
-            for filename, size, stat in osutil.listdir(self.path, stat=True):
-                files.append((stat.st_mtime, filename))
-                filenames.add(filename)
+            for filename, type, stat in osutil.listdir(self.path, stat=True):
+                id = None
+                if filename[-indexsuffixlen:] == self.INDEXSUFFIX:
+                    id = filename[:-indexsuffixlen]
+                elif filename[-packsuffixlen:] == self.PACKSUFFIX:
+                    id = filename[:-packsuffixlen]
+
+                # Since we expect to have two files corresponding to each ID
+                # (the index file and the pack file), we can yield once we see
+                # it twice.
+                if id:
+                    sizes[id] += stat.st_size # Sum both files' sizes together
+                    mtimes[id].append(stat.st_mtime)
+                    if id in ids:
+                        yield (os.path.join(self.path, id), max(mtimes[id]),
+                            sizes[id])
+                    else:
+                        ids.add(id)
         except OSError as ex:
             if ex.errno != errno.ENOENT:
                 raise
 
-        # Put most recent pack files first since they contain the most recent
-        # info.
+    def _getavailablepackfilessorted(self):
+        """Like `_getavailablepackfiles`, but also sorts the files by mtime,
+        yielding newest files first.
+
+        This is desirable, since it is more likely newer packfiles have more
+        desirable data.
+        """
+        files = []
+        for path, mtime, size in self._getavailablepackfiles():
+            files.append((mtime, size, path))
         files = sorted(files, reverse=True)
-        for mtime, filename in files:
-            packfilename = '%s%s' % (filename[:-suffixlen], self.PACKSUFFIX)
-            if (filename[-suffixlen:] == self.INDEXSUFFIX
-                and packfilename in filenames):
-                yield os.path.join(self.path, filename)[:-suffixlen]
+        for mtime, size, path in files:
+            yield path, mtime, size
+
+    def gettotalsizeandcount(self):
+        """Returns the total disk size (in bytes) of all the pack files in
+        this store, and the count of pack files.
+
+        (This might be smaller than the total size of the ``self.path``
+        directory, since this only considers fuly-writen pack files, and not
+        temporary files or other detritus on the directory.)
+        """
+        totalsize = 0
+        count = 0
+        for __, __, size in self._getavailablepackfiles():
+            totalsize += size
+            count += 1
+        return totalsize, count
+
+    def getmetrics(self):
+        """Returns metrics on the state of this store."""
+        size, count = self.gettotalsizeandcount()
+        return {
+            'numpacks': count,
+            'totalpacksize': size,
+        }
 
     def getpack(self, path):
         raise NotImplemented()
@@ -96,13 +207,18 @@ class basepackstore(object):
         for pack in self.packs:
             missing = pack.getmissing(missing)
 
+            # Ensures better performance of the cache by keeping the most
+            # recently accessed pack at the beginning in subsequent iterations.
+            if not missing:
+                return missing
+
         if missing:
             for pack in self.refresh():
                 missing = pack.getmissing(missing)
 
         return missing
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
         for pack in self.packs:
             pack.markledger(ledger)
 
@@ -125,11 +241,11 @@ class basepackstore(object):
         if now > self.lastrefresh + REFRESHRATE:
             self.lastrefresh = now
             previous = set(p.path for p in self.packs)
-            new = set(self._getavailablepackfiles()) - previous
-
-            for filepath in new:
-                newpacks.append(self.getpack(filepath))
-            self.packs.extend(newpacks)
+            for filepath, __, __ in self._getavailablepackfilessorted():
+                if filepath not in previous:
+                    newpack = self.getpack(filepath)
+                    newpacks.append(newpack)
+                    self.packs.add(newpack)
 
         return newpacks
 
@@ -159,9 +275,6 @@ class basepack(versionmixin):
         self.path = path
         self.packpath = path + self.PACKSUFFIX
         self.indexpath = path + self.INDEXSUFFIX
-        # TODO: use an opener/vfs to access these paths
-        self.indexfp = open(self.indexpath, 'rb')
-        self.datafp = open(self.packpath, 'rb')
 
         self.indexsize = os.stat(self.indexpath).st_size
         self.datasize = os.stat(self.packpath).st_size
@@ -203,7 +316,7 @@ class basepack(versionmixin):
 
     def freememory(self):
         """Unmap and remap the memory to free it up after known expensive
-        operations. Return True if self._data nad self._index were reloaded.
+        operations. Return True if self._data and self._index were reloaded.
         """
         if self._index:
             if self._pagedin < self.MAXPAGEDIN:
@@ -212,18 +325,21 @@ class basepack(versionmixin):
             self._index.close()
             self._data.close()
 
-        # memory-map the file, size 0 means whole file
-        self._index = mmap.mmap(self.indexfp.fileno(), 0,
-                                access=mmap.ACCESS_READ)
-        self._data = mmap.mmap(self.datafp.fileno(), 0,
-                               access=mmap.ACCESS_READ)
+        # TODO: use an opener/vfs to access these paths
+        with open(self.indexpath, PACKOPENMODE) as indexfp:
+            # memory-map the file, size 0 means whole file
+            self._index = mmap.mmap(indexfp.fileno(), 0,
+                                    access=mmap.ACCESS_READ)
+        with open(self.packpath, PACKOPENMODE) as datafp:
+            self._data = mmap.mmap(datafp.fileno(), 0, access=mmap.ACCESS_READ)
+
         self._pagedin = 0
         return True
 
     def getmissing(self, keys):
         raise NotImplemented()
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
         raise NotImplemented()
 
     def cleanup(self, ledger):
@@ -279,11 +395,7 @@ class mutablebasepack(versionmixin):
 
     def abort(self):
         # Unclean exit
-        try:
-            self.opener.unlink(self.packpath)
-            self.opener.unlink(self.idxpath)
-        except Exception:
-            pass
+        self._cleantemppacks()
 
     def writeraw(self, data):
         self.packfp.write(data)
@@ -300,20 +412,24 @@ class mutablebasepack(versionmixin):
 
             if len(self.entries) == 0:
                 # Empty pack
-                self.opener.unlink(self.packpath)
-                self.opener.unlink(self.idxpath)
+                self._cleantemppacks()
                 self._closed = True
                 return None
 
             self.opener.rename(self.packpath, sha + self.PACKSUFFIX)
-            self.opener.rename(self.idxpath, sha + self.INDEXSUFFIX)
-        except Exception:
-            for path in [self.packpath, self.idxpath,
-                         sha + self.PACKSUFFIX, sha + self.INDEXSUFFIX]:
+            try:
+                self.opener.rename(self.idxpath, sha + self.INDEXSUFFIX)
+            except Exception as ex:
                 try:
-                    self.opener.unlink(path)
+                    self.opener.unlink(sha + self.PACKSUFFIX)
                 except Exception:
                     pass
+                # Throw exception 'ex' explicitly since a normal 'raise' would
+                # potentially throw an exception from the unlink cleanup.
+                raise ex
+        except Exception:
+            # Clean up temp packs in all exception cases
+            self._cleantemppacks()
             raise
 
         self._closed = True
@@ -321,6 +437,16 @@ class mutablebasepack(versionmixin):
         if ledger:
             ledger.addcreated(result)
         return result
+
+    def _cleantemppacks(self):
+        try:
+            self.opener.unlink(self.packpath)
+        except Exception:
+            pass
+        try:
+            self.opener.unlink(self.idxpath)
+        except Exception:
+            pass
 
     def writeindex(self):
         rawindex = ''

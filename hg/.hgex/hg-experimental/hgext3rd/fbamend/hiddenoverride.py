@@ -7,25 +7,24 @@
 
 from __future__ import absolute_import
 
-import contextlib
-import os
+from hgext3rd import extutil
 
 from mercurial.node import short
 from mercurial import (
     dispatch,
     error,
     extensions,
-    lock as lockmod,
     obsolete,
     repoview,
+    scmutil,
     util,
-    vfs as vfsmod,
 )
 
 def uisetup(ui):
     extensions.wrapfunction(repoview, 'pinnedrevs', pinnedrevs)
     extensions.wrapfunction(dispatch, 'runcommand', runcommand)
     extensions.wrapfunction(obsolete, 'createmarkers', createmarkers)
+    extensions.wrapfunction(scmutil, 'cleanupnodes', cleanupnodes)
 
 def pinnedrevs(orig, repo):
     revs = orig(repo)
@@ -50,9 +49,7 @@ def loadpinnednodes(repo):
         node = content[offset:offset + 20]
         if not node:
             break
-        # remove unnecessary (non-obsoleted) nodes since pinnedrevs should only
-        # affect obsoleted revs.
-        if node in nodemap and unfi[node].obsolete():
+        if node in nodemap:
             result.append(node)
         offset += 20
     return result
@@ -68,36 +65,12 @@ def shouldpinnodes(repo):
         except Exception:
             pass
         # bookmarks
-        result.update(repo._bookmarks.values())
+        result.update(repo.unfiltered()._bookmarks.values())
     return result
-
-@contextlib.contextmanager
-def flock(lockpath):
-    # best effort lightweight lock
-    try:
-        import fcntl
-        fcntl.flock
-    except ImportError:
-        # fallback to Mercurial lock
-        vfs = vfsmod.vfs(os.path.dirname(lockpath))
-        with lockmod.lock(vfs, os.path.basename(lockpath)):
-            yield
-        return
-    # make sure lock file exists
-    util.makedirs(os.path.dirname(lockpath))
-    with open(lockpath, 'a'):
-        pass
-    lockfd = os.open(lockpath, os.O_RDONLY | os.O_CREAT, 0o664)
-    fcntl.flock(lockfd, fcntl.LOCK_EX)
-    try:
-        yield
-    finally:
-        fcntl.flock(lockfd, fcntl.LOCK_UN)
-        os.close(lockfd)
 
 def savepinnednodes(repo, newpin, newunpin, fullargs):
     # take a narrowed lock so it does not affect repo lock
-    with flock(repo.svfs.join('obsinhibit.lock')):
+    with extutil.flock(repo.svfs.join('obsinhibit.lock'), 'save pinned nodes'):
         orignodes = loadpinnednodes(repo)
         nodes = set(orignodes)
         nodes |= set(newpin)
@@ -123,8 +96,12 @@ def runcommand(orig, lui, repo, cmd, fullargs, *args):
     newunpin = getattr(repo.unfiltered(), '_tounpinnodes', set())
     # filter newpin by obsolte - ex. if newpin is on a non-obsoleted commit,
     # ignore it.
-    unfi = repo.unfiltered()
-    newpin = set(n for n in newpin if unfi[n].obsolete())
+    if newpin:
+        unfi = repo.unfiltered()
+        obsoleted = unfi.revs('obsolete()')
+        nodemap = unfi.changelog.nodemap
+        newpin = set(n for n in newpin
+                     if n in nodemap and nodemap[n] in obsoleted)
     # only do a write if something has changed
     if newpin or newunpin:
         savepinnednodes(repo, newpin, newunpin, fullargs)
@@ -142,3 +119,12 @@ def createmarkers(orig, repo, rels, *args, **kwargs):
             pass
     unfi._tounpinnodes = tounpin
     return orig(repo, rels, *args, **kwargs)
+
+def cleanupnodes(orig, repo, mapping, *args, **kwargs):
+    # this catches cases where cleanupnodes is called but createmarkers is not
+    # called. unpin nodes from mapping
+    unfi = repo.unfiltered()
+    tounpin = getattr(unfi, '_tounpinnodes', set())
+    tounpin.update(mapping)
+    unfi._tounpinnodes = tounpin
+    return orig(repo, mapping, *args, **kwargs)

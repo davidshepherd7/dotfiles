@@ -1,18 +1,19 @@
-// store.h - c++ declarations for a data store
-//
-// Copyright 2017 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
-// no-check-code
-//
-#ifndef STORE_H
-#define STORE_H
 
-#include "key.h"
-#include <memory>
+// store.h - c++ declarations for a data store
+// no-check-code
+
+#ifndef FBHGEXT_CSTORE_STORE_H
+#define FBHGEXT_CSTORE_STORE_H
+
 #include <cstddef>
+#include <memory>
+
+#include "cstore/key.h"
 
 class ConstantStringRef {
   private:
@@ -52,4 +53,4 @@ class Store {
     virtual ConstantStringRef get(const Key &key) = 0;
 };
 
-#endif //STORE_H
+#endif // FBHGEXT_CSTORE_STORE_H

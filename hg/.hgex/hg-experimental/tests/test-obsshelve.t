@@ -8,7 +8,7 @@
   > [defaults]
   > diff = --nodates --git
   > qnew = --date '0 0'
-  > [shelve]
+  > [obsshelve]
   > maxbackups = 2
   > [experimental]
   > evolution=createmarkers
@@ -352,6 +352,7 @@ Attempt to continue
   [255]
   $ hg unshelve -c --trace
   rebasing 5:32c69314e062 "changes to: [mq]: second.patch"
+  1 new orphan changesets (?)
   unshelve of 'default' complete
 
 Ensure the repo is as we hope
@@ -401,6 +402,7 @@ Set up another conflict between a commit and a shelved change
   $ hg shelve -q
   $ echo x >> a/a
   $ hg ci -m 'create conflict'
+  1 new orphan changesets (?)
   $ hg add foo/foo
 
 If we resolve a conflict while unshelving, the unshelve should succeed
@@ -503,7 +505,7 @@ Shelve should leave dirstate clean (issue4055)
   shelved as default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg rebase -d 1 --config extensions.rebase=
-  rebasing 2:323bfa07f744 "xyz" (tip)
+  rebasing 2:323bfa07f744 "xyz"
   merging x
   $ hg unshelve
   unshelving change 'default'
@@ -914,6 +916,7 @@ Test visibility of in-memory changes inside transaction to external hook
 ------------------------------------------------------------------------
   $ echo xxxx >> x
   $ hg commit -m "changes to invoke rebase"
+  1 new orphan changesets (?)
   $ hg bookmark unshelvedest
 
   $ cat > $TESTTMP/checkvisibility.sh <<EOF
@@ -1049,7 +1052,7 @@ Test .orig files go where the user wants them to
   unresolved conflicts (see 'hg resolve', then 'hg unshelve --continue')
   [1]
   $ ls .hg/origbackups
-  root.orig
+  root
   $ rm -rf .hg/origbackups
 
 Test Abort unshelve always gets user out of the unshelved state

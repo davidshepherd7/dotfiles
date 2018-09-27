@@ -1,19 +1,20 @@
-// datapackstore.cpp - implementation of a datapack store
-//
-// Copyright 2017 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// datapackstore.cpp - implementation of a datapack store
 // no-check-code
 
-#include "datapackstore.h"
-#include "key.h"
+#include "cstore/datapackstore.h"
 
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdexcept>
 #include <stdlib.h>
+
+#include "cstore/key.h"
 
 std::vector<std::string> getAvailablePackFiles(const std::string &path) {
   std::vector<std::string> results;
@@ -100,17 +101,14 @@ DatapackStore::~DatapackStore() {
 }
 
 DeltaChainIterator DatapackStore::getDeltaChain(const Key &key) {
-  delta_chain_t chain = this->getDeltaChainRaw(key);
-  if (chain.code == GET_DELTA_CHAIN_OK) {
+  std::shared_ptr<DeltaChain> chain = this->getDeltaChainRaw(key);
+  if (chain->status() == GET_DELTA_CHAIN_OK) {
     return DeltaChainIterator(chain);
   }
-
-  freedeltachain(chain);
-
   throw MissingKeyError("unable to find delta chain");
 }
 
-delta_chain_t DatapackStore::getDeltaChainRaw(const Key &key) {
+std::shared_ptr<DeltaChain> DatapackStore::getDeltaChainRaw(const Key &key) {
   for(std::vector<datapack_handle_t*>::iterator it = _packs.begin();
       it != _packs.end();
       it++) {
@@ -127,7 +125,8 @@ delta_chain_t DatapackStore::getDeltaChainRaw(const Key &key) {
       continue;
     }
 
-    return chain;
+    // Pass ownership of chain to CDeltaChain
+    return std::make_shared<CDeltaChain>(chain);
   }
 
   // Check if there are new packs available
@@ -148,10 +147,11 @@ delta_chain_t DatapackStore::getDeltaChainRaw(const Key &key) {
       continue;
     }
 
-    return chain;
+    // Pass ownership of chain to CDeltaChain
+    return std::make_shared<CDeltaChain>(chain);
   }
 
-  return COMPOUND_LITERAL(delta_chain_t) { GET_DELTA_CHAIN_NOT_FOUND };
+  return std::make_shared<CDeltaChain>(GET_DELTA_CHAIN_NOT_FOUND);
 }
 
 Key *DatapackStoreKeyIterator::next() {
@@ -193,8 +193,8 @@ bool DatapackStore::contains(const Key &key) {
   return false;
 }
 
-DatapackStoreKeyIterator DatapackStore::getMissing(KeyIterator &missing) {
-  return DatapackStoreKeyIterator(*this, missing);
+std::shared_ptr<KeyIterator> DatapackStore::getMissing(KeyIterator &missing) {
+  return std::make_shared<DatapackStoreKeyIterator>(*this, missing);
 }
 
 std::vector<datapack_handle_t*> DatapackStore::refresh() {

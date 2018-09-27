@@ -21,10 +21,16 @@ from mercurial import (
 from mercurial import pycompat, scmutil
 from hgext import blackbox
 from hgext3rd import (
+    shareutil,
     smartlog,
-    sparse,
+    fbsparse as sparse,
 )
-import os, socket, re, time, traceback
+import os, socket, re, tempfile, time, traceback
+
+from remotefilelog import (
+    constants,
+    shallowutil
+)
 
 cmdtable = {}
 command = registrar.command(cmdtable)
@@ -80,8 +86,9 @@ HG: Feel free to add relevant information.
         ])
     )
     tasknum = shcmd('tasks view ' + taskid).splitlines()[0].split()[0]
-    print('Task created: https://our.intern.facebook.com/intern/tasks/?t=%s'
-          % tasknum)
+    ui.write(
+        _('Task created: https://our.intern.facebook.com/intern/tasks/?t=%s\n')
+        % tasknum)
 
 def which(name):
     """ """
@@ -142,6 +149,43 @@ def rpminfo(ui):
         result.add(shcmd('%s -qf %s' % (rpmbin, path), check=False))
     return ''.join(result)
 
+def infinitepushbackuplogs(ui, repo):
+    """Contents of recent infinitepush log files."""
+    logdir = ui.config('infinitepushbackup', 'logdir')
+    if not logdir:
+        return "infinitepushbackup.logdir not set"
+    try:
+        username = util.shortuser(ui.username())
+    except Exception:
+        username = 'unknown'
+    userlogdir = os.path.join(logdir, username)
+    if not os.path.exists(userlogdir):
+        return "log directory does not exist: %s" % userlogdir
+
+    # Log filenames are the reponame with the date (YYYYMMDD) appended.
+    reponame = os.path.basename(repo.origroot)
+    logfiles = sorted([f for f in os.listdir(userlogdir)
+                       if f[:-8] == reponame])
+    if not logfiles:
+        return "no log files found for %s in %s" % (reponame, userlogdir)
+
+    # Display the last 100 lines from the most recent log files.
+    logs = []
+    linelimit = 100
+    for logfile in reversed(logfiles):
+        loglines = open(os.path.join(userlogdir, logfile)).readlines()
+        linecount = len(loglines)
+        if linecount > linelimit:
+            logcontent = '  '.join(loglines[-linelimit:])
+            logs.append("%s (first %s lines omitted):\n  %s\n"
+                        % (logfile, linecount - linelimit, logcontent))
+            break
+        else:
+            logcontent = '  '.join(loglines)
+            logs.append("%s:\n  %s\n" % (logfile, logcontent))
+            linelimit -= linecount
+    return ''.join(reversed(logs))
+
 @command('^rage', rageopts , _('hg rage'))
 def rage(ui, repo, *pats, **opts):
     """collect useful diagnostics for asking help from the source control team
@@ -151,6 +195,7 @@ def rage(ui, repo, *pats, **opts):
     By default, the information will be uploaded to Phabricator and
     instructions about how to ask for help will be printed.
     """
+    srcrepo = shareutil.getsrcrepo(repo)
 
     def format(pair, basic=True):
         if basic:
@@ -165,8 +210,16 @@ def rage(ui, repo, *pats, **opts):
             _repo = opts['_repo']
             del opts['_repo']
         ui.pushbuffer(error=True)
-        func(ui, _repo, *args, **opts)
-        return ui.popbuffer()
+        try:
+            func(ui, _repo, *args, **opts)
+        finally:
+            return ui.popbuffer()
+
+    def hgsrcrepofile(filename):
+        if srcrepo.vfs.exists(filename):
+            return srcrepo.vfs(filename).read()
+        else:
+            return "File not found: %s" % srcrepo.vfs.join(filename)
 
     if opts.get('oncall') and opts.get('preview'):
         raise error.Abort('--preview and --oncall cannot be used together')
@@ -191,9 +244,11 @@ def rage(ui, repo, *pats, **opts):
         # smartlog as the user sees it
         ('hg sl (filtered)', _failsafe(lambda: hgcmd(
             smartlog.smartlog, template='{hsl}'))),
-        # unfiltered smartlog for recent hidden changesets
+        # unfiltered smartlog for recent hidden changesets, including full
+        # node identity
         ('hg sl (unfiltered)', _failsafe(lambda: hgcmd(
-            smartlog.smartlog, _repo=repo.unfiltered(), template='{hsl}'))),
+            smartlog.smartlog, _repo=repo.unfiltered(),
+            template='{node}\n{hsl}'))),
         ('first 20 lines of "hg status"',
             _failsafe(lambda:
                 '\n'.join(hgcmd(commands.status).splitlines()[:20]))),
@@ -218,8 +273,30 @@ def rage(ui, repo, *pats, **opts):
                           '--getinfo', check=False))),
         ('hg debugobsolete <smartlog>',
             _failsafe(lambda: obsoleteinfo(repo, hgcmd))),
+        ('infinitepush backup state',
+            _failsafe(lambda: hgsrcrepofile('infinitepushbackupstate'))),
+        ('infinitepush backup logs',
+            _failsafe(lambda: infinitepushbackuplogs(ui, repo))),
         ('hg config (all)', _failsafe(lambda: hgcmd(commands.config))),
     ]
+
+    if util.safehasattr(repo, 'name'):
+        # Add the contents of both local and shared pack directories.
+        packlocs = {
+            'local': lambda category: shallowutil.getlocalpackpath(
+                repo.svfs.vfs.base, category),
+            'shared': lambda category: shallowutil.getcachepackpath(repo,
+                category),
+        }
+
+        for loc, getpath in packlocs.iteritems():
+            for category in constants.ALL_CATEGORIES:
+                path = getpath(category)
+                detailed.append((
+                    "%s packs (%s)" % (loc, constants.getunits(category)),
+                    "%s:\n%s" %
+                    (path, _failsafe(lambda: shcmd("ls -lhS %s" % path)))
+                ))
 
     # This is quite slow, so we don't want to do it by default
     if ui.configbool("rage", "fastmanifestcached", False):
@@ -235,14 +312,22 @@ def rage(ui, repo, *pats, **opts):
         msg += '\n' + '\n'.join(_failsafeerrors)
 
     if opts.get('preview'):
-        print(msg)
+        ui.write('%s\n' % msg)
         return
 
-    pasteurl = shcmd('arc paste --lang hgrage', msg).split()[1]
-
-    if opts.get('oncall'):
-        createtask(ui, repo, 'rage info: %s' % pasteurl)
+    fp = util.popen('arc paste --lang hgrage --title hgrage', 'w')
+    fp.write(msg)
+    ret = fp.close()
+    if ret:
+        ui.warn(_('No paste was created.\n'))
+        fd, tmpname = tempfile.mkstemp(prefix='hg-rage-')
+        with os.fdopen(fd, r'w') as tmpfp:
+            tmpfp.write(msg)
+            ui.warn(_('Saved contents to %s\n') % tmpname)
     else:
-        print('Please post your problem and the following link at'
-              ' %s for help:\n%s'
-              % (ui.config('ui', 'supportcontact'), pasteurl))
+        if opts.get('oncall'):
+            createtask(ui, repo, msg)
+        else:
+            ui.write(_('Please post your problem and the above link at'
+                       ' %s for help.\n')
+                     % (ui.config('ui', 'supportcontact'),))

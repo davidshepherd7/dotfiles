@@ -44,6 +44,7 @@ Changing working copy parent pins a node
 Strip/prune unpins a node
 
   $ hg prune 1 -q
+  advice: 'hg hide' provides a better UI for hiding commits
   $ hg log -G -T '{rev} {desc}\n'
   o  2 C
   |
@@ -63,6 +64,7 @@ Bookmark pins nodes even after removed
 Check blackbox logs
 
   $ hg blackbox -l 10000
+  *> init exited 0 after * seconds (glob)
   *> debugdrawdag (glob)
   *> pinnednodes: ['debugdrawdag'] newpin=[] newunpin=['112478962961'] before=[] after=[] (glob)
   *> debugdrawdag exited 0 after * (glob)
@@ -176,4 +178,50 @@ Having a bookmark on a commit, obsolete the commit, remove the bookmark
   o  1 B
   |
   o  0 A
+  
+Uncommit and hiddenoverride. This is uncommon but the last uncommit should make
+"A" invisible:
+
+  $ cat >> $HGRCPATH <<EOF
+  > [extensions]
+  > uncommit =
+  > EOF
+
+  $ hg init $TESTTMP/repo2
+  $ cd $TESTTMP/repo2
+  $ hg debugdrawdag <<'EOS'
+  >   B
+  >   |
+  >   A
+  >   |
+  >   Z
+  > EOS
+
+  $ eval `hg tags -T '{tag}={node}\n'`
+  $ rm .hg/localtags
+
+  $ hg up $A
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg uncommit
+  $ hg log -T '{desc}' -G
+  o  B
+  |
+  x  A
+  |
+  @  Z
+  
+  $ hg up -C $B
+  2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  $ hg uncommit
+  $ hg log -T '{desc}' -G
+  @  A
+  |
+  o  Z
+  
+  $ hg up -C .
+  0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+  $ hg uncommit
+  $ hg log -T '{desc}' -G
+  @  Z
   

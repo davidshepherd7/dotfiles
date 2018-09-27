@@ -12,13 +12,25 @@ import sys
 import termios
 import tty
 
-def clearline():
+from mercurial.i18n import _
+
+from mercurial import (
+    error,
+)
+
+def upline(n=1):
+    w = sys.stdout
+    # ANSI
+    # ESC[#A : up # lines
+    w.write('\033[%dA' % n)
+
+def clearline(n=1):
     w = sys.stdout
     # ANSI
     # ESC[#A : up # lines
     # ESC[K : clear to end of line
-    w.write('\033[1A\033[K')
-    w.flush()
+    for i in range(n):
+        w.write('\033[1A\033[K')
 
 # From:
 # https://github.com/pallets/click/blob/master/click/_termui_impl.py#L534
@@ -92,6 +104,8 @@ class viewframe(object):
         self.ui = ui
         self.repo = repo
         self.index = index
+        ui.disablepager()
+        repo.ui.disablepager()
     def render():
         # returns string to print
         pass
@@ -107,8 +121,13 @@ class viewframe(object):
 
 def view(viewobj):
     done = False
+    if viewobj.ui.pageractive:
+        raise error.Abort(_("interactiveui doesn't work with pager"))
+    # disable line wrapping
+    # this is from curses.tigetstr('rmam')
+    sys.stdout.write('\x1b[?7l')
     s = viewobj.render()
-    print(s)
+    sys.stdout.write(s)
     while not done:
         output = getchar(sys.stdin.fileno())
         if repr(output) == '\'q\'':
@@ -123,7 +142,18 @@ def view(viewobj):
             viewobj.rightarrow()
         if repr(output) == '\'\\x1b[D\'':
             viewobj.leftarrow()
-        for i in range(len(s.split("\n"))):
-            clearline()
+        linecount = s.count('\n')
         s = viewobj.render()
-        print(s)
+        newlinecount = s.count('\n')
+        if newlinecount < linecount:
+            clearline(linecount - newlinecount)
+            upline(newlinecount)
+        else:
+            upline(linecount)
+        slist = s.splitlines(True)
+        sys.stdout.write(''.join('\033[K' + line for line in slist))
+        sys.stdout.flush()
+    # re-enable line wrapping
+    # this is from curses.tigetstr('smam')
+    sys.stdout.write('\x1b[?7h')
+    sys.stdout.flush()

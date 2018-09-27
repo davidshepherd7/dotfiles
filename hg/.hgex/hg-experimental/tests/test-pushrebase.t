@@ -35,7 +35,6 @@ Set up client repository
   $ hg clone ssh://user@dummy/server client -q
   $ cd client
   $ echo "[extensions]" >> .hg/hgrc
-  $ echo "bundle2hooks =" >> .hg/hgrc
   $ echo "pushrebase =" >> .hg/hgrc
 
 Without server extension
@@ -84,7 +83,6 @@ Stack of non-conflicting commits should be accepted
 
   $ cd ../server
   $ echo "[extensions]" >> .hg/hgrc
-  $ echo "bundle2hooks =" >> .hg/hgrc
   $ echo "pushrebase =" >> .hg/hgrc
   $ log
   @  a => bar [draft:add0c792bfce]
@@ -105,8 +103,8 @@ Stack of non-conflicting commits should be accepted
   running * (glob)
   sending hello command
   sending between command
-  remote: 372
-  remote: capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch streamreqs=generaldelta,revlogv1 bundle2=HG20%0Ab2x%253Arebase%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Aerror%3Dabort%2Cunsupportedcontent%2Cpushraced%2Cpushkey%0Ahgtagsfnodes%0Alistkeys%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN
+  remote: 401
+  remote: capabilities: lookup changegroupsubset branchmap pushkey known getbundle unbundlehash batch streamreqs=generaldelta,revlogv1 bundle2=HG20%0Ab2x%253Arebase%0Abookmarks%0Achangegroup%3D01%2C02%0Adigests%3Dmd5%2Csha1%2Csha512%0Aerror%3Dabort%2Cunsupportedcontent%2Cpushraced%2Cpushkey%0Ahgtagsfnodes%0Alistkeys%0Aphases%3Dheads%0Apushkey%0Aremote-changegroup%3Dhttp%2Chttps unbundle=HG10GZ,HG10BZ,HG10UN
   remote: 1
   query 1; heads
   sending batch command
@@ -227,7 +225,7 @@ Stack with conflict in tail should abort
   searching for changes
   remote: conflicting changes in:
       a
-  
+  remote: (pull and rebase your changes locally, then try again)
   abort: push failed on remote
   [255]
 
@@ -261,7 +259,7 @@ Stack with conflict in head should abort
   searching for changes
   remote: conflicting changes in:
       a
-  
+  remote: (pull and rebase your changes locally, then try again)
   abort: push failed on remote
   [255]
 
@@ -531,7 +529,6 @@ Test that the prepushrebase hook can run against the bundle repo
   > [hooks]
   > prepushrebase = $TESTTMP/prerebase.sh
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > [experimental]
   > bundle2lazylocking = True
@@ -546,12 +543,12 @@ Test that the prepushrebase hook can run against the bundle repo
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files
+  new changesets 3903775176ed
   updating to branch default
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ cd prepushrebaseclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ touch b && hg add b && hg commit -qm b
@@ -589,7 +586,6 @@ Test that hooks are fired with the correct variables
   > prepushrebase = python "$RUNTESTDIR/printenv.py" prepushrebase
   > prepushkey = python "$RUNTESTDIR/printenv.py" prepushkey
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ touch file && hg ci -Aqm initial
@@ -608,7 +604,6 @@ Test that hooks are fired with the correct variables
   $ cd hookclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ hg update master
@@ -620,14 +615,13 @@ Test that hooks are fired with the correct variables
   $ hg push --to master -B master
   pushing to $TESTTMP/hookserver (glob)
   searching for changes
-  prepushrebase hook: HG_BUNDLE2=1 HG_HOOKNAME=prepushrebase HG_HOOKTYPE=prepushrebase HG_HOOK_BUNDLEPATH=* HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_NODE_ONTO=e95be919ac60f0c114075e32a0a4301afabadb60 HG_SOURCE=push (glob)
+  prepushrebase hook: HG_BUNDLE2=1 HG_HOOKNAME=prepushrebase HG_HOOKTYPE=prepushrebase HG_HOOK_BUNDLEPATH=* HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_NODE_ONTO=e95be919ac60f0c114075e32a0a4301afabadb60 HG_ONTO=master HG_SOURCE=push (glob)
   prechangegroup hook: HG_BUNDLE2=1 HG_HOOKNAME=prechangegroup HG_HOOKTYPE=prechangegroup HG_SOURCE=push HG_TXNID=TXN:* HG_URL=file:$TESTTMP/hookserver (glob)
   pushing 3 changesets:
       4fcee35c508c  first
       11be4ca7f3f4  second
       a5e72ac0df88  last
   pretxnchangegroup hook: HG_BUNDLE2=1 HG_HOOKNAME=pretxnchangegroup HG_HOOKTYPE=pretxnchangegroup HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_NODE_LAST=a5e72ac0df8881afef34132987e8ae78d2e6cb13 HG_PENDING=$TESTTMP/hookserver HG_SOURCE=push HG_TXNID=TXN:* HG_URL=file:$TESTTMP/hookserver (glob)
-  prepushkey hook: HG_BUNDLE2=1 HG_HOOKNAME=prepushkey HG_HOOKTYPE=prepushkey HG_KEY=a5e72ac0df8881afef34132987e8ae78d2e6cb13 HG_NAMESPACE=phases HG_NEW=0 HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_OLD=1 HG_PENDING=$TESTTMP/hookserver HG_PHASES_MOVED=1 HG_SOURCE=push HG_TXNID=TXN:* HG_URL=file:$TESTTMP/hookserver (glob)
   prepushkey hook: HG_BUNDLE2=1 HG_HOOKNAME=prepushkey HG_HOOKTYPE=prepushkey HG_KEY=master HG_NAMESPACE=bookmarks HG_NEW=a5e72ac0df8881afef34132987e8ae78d2e6cb13 HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_OLD=e95be919ac60f0c114075e32a0a4301afabadb60 HG_PENDING=$TESTTMP/hookserver HG_PHASES_MOVED=1 HG_SOURCE=push HG_TXNID=TXN:* HG_URL=file:$TESTTMP/hookserver (glob)
   pretxnclose hook: HG_BOOKMARK_MOVED=1 HG_BUNDLE2=1 HG_HOOKNAME=pretxnclose HG_HOOKTYPE=pretxnclose HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_PENDING=$TESTTMP/hookserver HG_PHASES_MOVED=1 HG_SOURCE=push HG_TXNID=TXN:* HG_TXNNAME=push HG_URL=file:$TESTTMP/hookserver (glob)
   txnclose hook: HG_BOOKMARK_MOVED=1 HG_BUNDLE2=1 HG_HOOKNAME=txnclose HG_HOOKTYPE=txnclose HG_NODE=4fcee35c508c1019667f72cae9b843efa8908701 HG_PHASES_MOVED=1 HG_SOURCE=push HG_TXNID=TXN:* HG_TXNNAME=push HG_URL=file:$TESTTMP/hookserver (glob)
@@ -646,7 +640,6 @@ Test date rewriting
   $ cd rewritedate
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > [pushrebase]
   > rewritedates = True
@@ -662,7 +655,6 @@ Test date rewriting
   $ cd rewritedateclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ hg up 0
@@ -735,7 +727,6 @@ Test pushrebase on merge commit where master is on the p2 side
   $ cd p2mergeserver
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ echo a >> a && hg commit -Aqm 'add a'
@@ -792,7 +783,6 @@ Test force pushes
   $ cd forcepushserver
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ echo a > a && hg commit -Aqm a
@@ -807,7 +797,6 @@ Test force pushes
   $ cd ../forcepushclient
   $ cat >> .hg/hgrc <<EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
   > EOF
   $ hg up 0
@@ -827,6 +816,7 @@ Test force pushes
   adding manifests
   adding file changes
   added 1 changesets with 1 changes to 1 files (+1 heads)
+  new changesets 86cf3bb05fcf
   (run 'hg heads' to see heads, 'hg merge' to merge)
   $ hg log -G -T '{rev} {desc} {bookmarks}'
   o  2 aa
@@ -845,8 +835,6 @@ Server with obsstore disabled can still send obsmarkers useful to client, and
 phase is updated correctly with the marker information.
 
   $ cat >> $HGRCPATH << EOF
-  > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
   > [experimental]
   > evolution =
   > EOF
@@ -908,3 +896,69 @@ phase is updated correctly with the marker information.
   |
   o  a [public:cb9a9f314b8b]
   
+Push a file-copy changeset and the copy source gets modified by others:
+
+  $ cd $TESTTMP
+  $ hg init server2
+  $ cd server2
+
+  $ cat >> .hg/hgrc <<EOF
+  > [extensions]
+  > pushrebase=$TESTDIR/../hgext3rd/pushrebase.py
+  > EOF
+
+  $ echo 1 > A
+  $ hg commit -m A -A A
+
+  $ cd ..
+  $ cp -R server2 client2
+
+  $ cd client2
+  $ hg cp A B
+  $ hg commit -m 'Copy A to B'
+
+  $ cd ../server2
+  $ echo 2 >> A
+  $ hg commit -m 'Modify A' A
+
+  $ cd ../client2
+  $ cat >> .hg/hgrc <<EOF
+  > [experimental]
+  > evolution = all
+  > [paths]
+  > default = ../server2
+  > EOF
+
+  $ hg push -r . --to default
+  pushing to $TESTTMP/server2 (glob)
+  searching for changes
+  abort: conflicting changes in:
+      A
+  (pull and rebase your changes locally, then try again)
+  [255]
+
+Push an already-public changeset and confirm it is rejected
+
+  $ hg update -q '.^'
+  $ echo 2 > C
+  $ hg commit -m C -A C
+  created new head
+  $ hg phase -r. --public
+  $ hg push -r . --to default
+  pushing to $TESTTMP/server2 (glob)
+  searching for changes
+  abort: cannot rebase public changesets: 3850a85c4706
+  [255]
+
+  $ echo 3 >> C
+  $ hg commit -m C2
+  $ echo 4 >> C
+  $ hg commit -m C3
+  $ echo 5 >> C
+  $ hg commit -m C4
+  $ hg phase -r. --public
+  $ hg push -r . --to default
+  pushing to $TESTTMP/server2 (glob)
+  searching for changes
+  abort: cannot rebase public changesets: 3850a85c4706, 50b1220b7c4e, de211a1843b7, ...
+  [255]

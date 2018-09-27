@@ -23,13 +23,14 @@ EOF
 fi
 
 # sanity check whether hg actually works or not
-if ! hg log -r tip -T '{author}' >/dev/null 2>"$TESTTMP/hg-err-check"; then
-    echo 'skipped: missing working hg'
-    exit 80
+if ! testrepohg log -r tip -T '{author}' >/dev/null 2>"$TESTTMP/hg-err-check";
+then
+    echo 'hg does not work'
+    exit 1
 fi
 
 # hg might work but print "failed to ..." - treat that as an error
 if [ -s "$TESTTMP/hg-err-check" ]; then
-    echo 'skipped: missing working hg'
-    exit 80
+    echo 'hg outputs to stderr: ' `cat "$TESTTMP/hg-err-check"`
+    exit 1
 fi

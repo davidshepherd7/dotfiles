@@ -23,10 +23,12 @@ Config::
     # default destination used by pull --rebase / --update
     defaultdest = ''
 
-    # whether to keep the commit date when doing amend / graft / rebase
+    # whether to keep the commit date when doing amend / graft / rebase /
+    # histedit
     amendkeepdate = False
     graftkeepdate = False
     rebasekeepdate = False
+    histeditkeepdate = False
 
     # whether to allow or disable some commands
     allowbranch = True
@@ -38,6 +40,10 @@ Config::
     # change rebase exit from 1 to 0 if nothing is rebased
     nooprebase = True
 
+    # whether to show a warning or abort on some deprecated usages
+    singlecolonwarn = False
+    singlecolonabort = False
+
     # educational messages
     bmnodesthint = ''
     bmnodestmsg = ''
@@ -47,6 +53,9 @@ Config::
     nodesthint = ''
     nodestmsg = ''
     rollbackhint = ''
+    rollbackmessage = ''
+    singlecolonmsg = ''
+    tagmessage = ''
     tagsmessage = ''
 
     # output new hashes when nodes get updated
@@ -71,6 +80,7 @@ from mercurial import (
     registrar,
     revsetlang,
     scmutil,
+    templatekw,
     templater,
     util,
 )
@@ -78,6 +88,7 @@ from mercurial import (
 from hgext import rebase
 import inspect
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -97,6 +108,52 @@ createmarkersoperation = 'createmarkersoperation'
 logopts = [
     ('', 'all', None, _('shows all changesets in the repo')),
 ]
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('grep', 'command', default='grep')
+configitem(globaldata, createmarkersoperation, default=None)
+
+configitem('tweakdefaults', 'singlecolonabort', default=False)
+configitem('tweakdefaults', 'singlecolonwarn', default=False)
+configitem('tweakdefaults', 'showupdated', default=False)
+configitem('tweakdefaults', 'nooprebase', default=True)
+
+configitem('tweakdefaults', 'amendkeepdate', default=False)
+configitem('tweakdefaults', 'graftkeepdate', default=False)
+configitem('tweakdefaults', 'histeditkeepdate', default=False)
+configitem('tweakdefaults', 'rebasekeepdate', default=False)
+
+configitem('tweakdefaults', 'allowbranch', default=True)
+configitem('tweakdefaults', 'allowfullrepohistgrep', default=False)
+configitem('tweakdefaults', 'allowmerge', default=True)
+configitem('tweakdefaults', 'allowrollback', default=True)
+configitem('tweakdefaults', 'allowtags', default=True)
+
+rebasemsg = _('you must use a bookmark with tracking '
+              'or manually specify a destination for the rebase')
+configitem('tweakdefaults', 'bmnodesthint', default=
+    _('set up tracking with `hg book -t <destination>` '
+      'or manually supply --dest / -d'))
+configitem('tweakdefaults', 'bmnodestmsg', default=rebasemsg)
+configitem('tweakdefaults', 'branchmessage', default=
+    _('new named branches are disabled in this repository'))
+configitem('tweakdefaults', 'branchesmessage', default=None)
+configitem('tweakdefaults', 'mergemessage', default=
+    _('merging is not supported for this repository'))
+configitem('tweakdefaults', 'nodesthint', default=
+    _('set up tracking with `hg book <name> -t <destination>` '
+      'or manually supply --dest / -d'))
+configitem('tweakdefaults', 'nodestmsg', default=rebasemsg)
+configitem('tweakdefaults', 'rollbackmessage', default=
+    _('the use of rollback is disabled'))
+configitem('tweakdefaults', 'rollbackhint', default=None)
+configitem('tweakdefaults', 'singlecolonmsg', default=
+    _("use of ':' is deprecated"))
+configitem('tweakdefaults', 'tagmessage', default=
+    _('new tags are disabled in this repository'))
+configitem('tweakdefaults', 'tagsmessage', default='')
 
 def uisetup(ui):
     tweakorder()
@@ -125,10 +182,11 @@ def extsetup(ui):
         ('d', 'dest', '', _('destination for rebase or update')))
 
     # anonymous function to pass ui object to _analyzewrapper
-    def _analyzewrap(orig, x, order='define'):
-        return _analyzewrapper(orig, x, order, ui)
+    def _analyzewrap(orig, x):
+        return _analyzewrapper(orig, x, ui)
 
     wrapfunction(revsetlang, '_analyze', _analyzewrap)
+
     try:
         rebaseext = extensions.find('rebase')
         # tweakdefaults is already loaded before other extensions
@@ -181,6 +239,11 @@ def extsetup(ui):
         wrapcommand(fbamendmodule.cmdtable, 'amend', opawareamend)
     except KeyError:
         pass
+    try:
+        histeditmodule = extensions.find('histedit')
+        wrapfunction(histeditmodule, 'commitfuncfor', histeditcommitfuncfor)
+    except KeyError:
+        pass
 
     # wrapped createmarkers knows how to write operation-aware
     # metadata (e.g. 'amend', 'rebase' and so forth)
@@ -197,6 +260,7 @@ def extsetup(ui):
             # remotenames is loaded, wrap its wrapper directly
             remotenames = extensions.find('remotenames')
             wrapfunction(remotenames, 'exbookmarks', unfilteredcmd)
+            wrapfunction(remotenames, 'expullcmd', pullrebaseffwd)
         else:
             # otherwise wrap the bookmarks command
             wrapcommand(commands.table, 'bookmarks', unfilteredcmd)
@@ -208,12 +272,23 @@ def extsetup(ui):
         ('', 'per-file-stat-json', None,
          _('show diff stat per file in json (ADVANCED)')))
 
+    pipei_bufsize = ui.configint('experimental', 'winpipebufsize', 4096)
+    if pipei_bufsize != 4096 and os.name == 'nt':
+        wrapfunction(util, 'popen4', get_winpopen4(pipei_bufsize))
+
     # Tweak Behavior
     tweakbehaviors(ui)
     _fixpager(ui)
 
+    # Change manifest template output
+    templatekw.defaulttempl['manifest'] = '{node}'
+
 def reposetup(ui, repo):
     _fixpager(ui)
+    # Allow uncommit on dirty working directory
+    repo.ui.setconfig('experimental', 'uncommitondirtywdir', True)
+    # Allow unbundling of pushvars on server
+    repo.ui.setconfig('push', 'pushvars.server', True)
 
 def tweakorder():
     """
@@ -281,18 +356,12 @@ def pull(orig, ui, repo, *args, **opts):
         raise error.Abort(mess)
 
     if (isrebase or update) and not dest:
-        rebasemsg = _('you must use a bookmark with tracking '
-                      'or manually specify a destination for the rebase')
         if isrebase and bmactive(repo):
-            mess = ui.config('tweakdefaults', 'bmnodestmsg', rebasemsg)
-            hint = ui.config('tweakdefaults', 'bmnodesthint', _(
-                'set up tracking with `hg book -t <destination>` '
-                'or manually supply --dest / -d'))
+            mess = ui.config('tweakdefaults', 'bmnodestmsg')
+            hint = ui.config('tweakdefaults', 'bmnodesthint')
         elif isrebase:
-            mess = ui.config('tweakdefaults', 'nodestmsg', rebasemsg)
-            hint = ui.config('tweakdefaults', 'nodesthint', _(
-                'set up tracking with `hg book <name> -t <destination>` '
-                'or manually supply --dest / -d'))
+            mess = ui.config('tweakdefaults', 'nodestmsg')
+            hint = ui.config('tweakdefaults', 'nodesthint')
         else: # update
             mess = _('you must specify a destination for the update')
             hint = _('use `hg pull --update --dest <destination>`')
@@ -311,10 +380,43 @@ def pull(orig, ui, repo, *args, **opts):
     # NB: we use rebase and not isrebase on the next line because
     # remotenames may have already handled the rebase.
     if dest and rebase:
-        ret = ret or rebasemodule.rebase(ui, repo, dest=dest, tool=tool)
+        ret = ret or rebaseorfastforward(rebasemodule.rebase, ui, repo,
+                                         dest=dest, tool=tool)
     if dest and update:
         ret = ret or commands.update(ui, repo, node=dest, check=True)
 
+    return ret
+
+def rebaseorfastforward(orig, ui, repo, dest, **args):
+    """Wrapper for rebasemodule.rebase that fast-forwards the working directory
+    and any active bookmark to the rebase destination if there is actually
+    nothing to rebase.
+    """
+    prev = repo['.']
+    destrev = scmutil.revsingle(repo, dest)
+    common = destrev.ancestor(prev)
+    if prev == common and destrev != prev:
+        result = hg.update(repo, destrev.node())
+        if bmactive(repo):
+            with repo.wlock():
+                bookmarks.update(repo, [prev.node()], destrev.node())
+        ui.status(_("nothing to rebase - fast-forwarded to %s\n") % dest)
+        return result
+    return orig(ui, repo, dest=dest, **args)
+
+def pullrebaseffwd(orig, rebasefunc, ui, repo, source="default", **opts):
+    # The remotenames module also wraps "pull --rebase", and if it is active, it
+    # is the module that actually performs the rebase.  If it is rebasing, we
+    # need to wrap the rebasemodule.rebase function that it calls to replace it
+    # with our rebaseorfastforward method.
+    rebasing = 'rebase' in opts
+    if rebasing:
+        rebasemodule = extensions.find('rebase')
+        if rebasemodule:
+            wrapfunction(rebasemodule, 'rebase', rebaseorfastforward)
+    ret = orig(rebasefunc, ui, repo, source, **opts)
+    if rebasing and rebasemodule:
+        extensions.unwrapfunction(rebasemodule, 'rebase', rebaseorfastforward)
     return ret
 
 def tweakbehaviors(ui):
@@ -330,7 +432,7 @@ def tweakbehaviors(ui):
     def _nothingtorebase(orig, *args, **kwargs):
         return 0
 
-    if ui.configbool("tweakdefaults", "nooprebase", True):
+    if ui.configbool("tweakdefaults", "nooprebase"):
         try:
             rebase = extensions.find("rebase")
             extensions.wrapfunction(
@@ -342,6 +444,7 @@ def tweakbehaviors(ui):
 def commitcmd(orig, ui, repo, *pats, **opts):
     if (opts.get("amend")
             and not opts.get("date")
+            and not opts.get("to")
             and not ui.configbool('tweakdefaults', 'amendkeepdate')):
         opts["date"] = currentdate()
 
@@ -385,6 +488,11 @@ def update(orig, ui, repo, node=None, rev=None, **kwargs):
 
     if inactive:
         extensions.unwrapfunction(hg, 'updatetotally', _wrapupdatetotally)
+
+    # If the command succeed a message for 'hg update .^' will appear
+    # suggesting to use hg prev
+    if node == '.^':
+        ui.status(_("(hint: use 'hg prev' to move to the parent changeset)\n"))
 
     return result
 
@@ -526,6 +634,10 @@ del commands.table['grep']
      ('E', 'extended-regexp', None, 'use POSIX extended regexps'),
      ('F', 'fixed-strings', None, 'interpret pattern as fixed string'),
      ('P', 'perl-regexp', None, 'use Perl-compatible regexps'),
+     ('I', 'include', [],
+      _('include names matching the given patterns'), _('PATTERN')),
+     ('X', 'exclude', [],
+      _('exclude names matching the given patterns'), _('PATTERN')),
      ], '[OPTION]... PATTERN [FILE]...',
      inferrepo=True)
 def grep(ui, repo, pattern, *pats, **opts):
@@ -536,7 +648,7 @@ def grep(ui, repo, pattern, *pats, **opts):
 
     For the old 'hg grep', see 'histgrep'."""
 
-    grepcommandstr = ui.config('grep', 'command', default='grep')
+    grepcommandstr = ui.config('grep', 'command')
     # Use shlex.split() to split up grepcommandstr into multiple arguments.
     # this allows users to specify a command plus arguments (e.g., "grep -i").
     # We don't use a real shell to execute this, which ensures we won't do
@@ -580,17 +692,24 @@ def grep(ui, repo, pattern, *pats, **opts):
     if colormode == 'ansi':
         cmd.append('--color=always')
 
+    # Copy match specific options
+    match_opts = {}
+    for k in ('include', 'exclude'):
+        if k in opts:
+            match_opts[k] = opts.get(k)
+
     wctx = repo[None]
     if not pats:
         # Search everything in the current directory
-        m = scmutil.match(wctx, ['.'])
+        m = scmutil.match(wctx, ['.'], match_opts)
     else:
         # Search using the specified patterns
-        m = scmutil.match(wctx, pats)
+        m = scmutil.match(wctx, pats, match_opts)
 
     # Add '--' to make sure grep recognizes all remaining arguments
     # (passed in by xargs) as filenames.
     cmd.append('--')
+    ui.pager('grep')
     p = subprocess.Popen(cmd, bufsize=-1, close_fds=util.closefds,
                          stdin=subprocess.PIPE)
 
@@ -633,17 +752,24 @@ def markermetadatawritingcommand(ui, origcmd, operationame):
             return origcmd(*args, **kwargs)
     return cmd
 
-def _analyzewrapper(orig, x, order, ui):
-    """Wraps analyzer to detect the use of colons in the revisions
-    """
-    result = orig(x, order)
+def _analyzewrapper(orig, x, ui):
+    """Wraps analyzer to detect the use of colons in the revisions"""
+    result = orig(x)
 
-    if isinstance(x, tuple) and \
+    warn = ui.configbool('tweakdefaults', 'singlecolonwarn')
+    abort = ui.configbool('tweakdefaults', 'singlecolonabort')
+    enabled = warn or abort
+
+    # The last condition is added so that warnings are not shown if
+    # hg log --follow is invoked w/o arguments
+    if enabled and isinstance(x, tuple) and \
             (x[0] in ('range', 'rangepre', 'rangepost')) and \
             x != ('rangepre', ('symbol', '.')):
-        # The last condition is added so that warnings are not shown if
-        # hg log --follow is invoked w/o arguments
-        ui.develwarn("use of ':' is deprecated\n")
+        msg = ui.config('tweakdefaults', 'singlecolonmsg')
+        if abort:
+            raise error.Abort('%s' % msg)
+        if warn:
+            ui.warn(_('warning: %s\n') % msg)
 
     return result
 
@@ -676,8 +802,12 @@ def _rebase(orig, ui, repo, **opts):
 
     return orig(ui, repo, **opts)
 
-def cleanupnodeswrapper(orig, repo, mapping, operation):
-    if repo.ui.configbool('tweakdefaults', 'showupdated', False):
+# set of commands which define their own formatter and prints the hash changes
+formattercommands = set(['fold'])
+
+def cleanupnodeswrapper(orig, repo, mapping, operation, *args, **kwargs):
+    if (repo.ui.configbool('tweakdefaults', 'showupdated') and
+        operation not in formattercommands):
         maxoutput = 10
         oldnodes = sorted(mapping.keys())
         for i in range(0, min(len(oldnodes), maxoutput)):
@@ -689,7 +819,7 @@ def cleanupnodeswrapper(orig, repo, mapping, operation):
             lastoldnode = oldnodes[-1]
             lastnewnodes = mapping[lastoldnode]
             _printupdatednode(repo, lastoldnode, lastnewnodes)
-    return orig(repo, mapping, operation)
+    return orig(repo, mapping, operation, *args, **kwargs)
 
 def _printupdatednode(repo, oldnode, newnodes):
     # oldnode was not updated if newnodes is an iterable
@@ -706,10 +836,11 @@ def _computeobsoletenotrebasedwrapper(orig, repo, rebaseobsrevs, dest):
     Unlike upstream rebase, we don't want to skip purely pruned commits.
     We also want to explain why some particular commit was skipped."""
     res = orig(repo, rebaseobsrevs, dest)
-    for key in res.keys():
-        if res[key] is None:
+    obsoletenotrebased = res[0]
+    for key in obsoletenotrebased.keys():
+        if obsoletenotrebased[key] is None:
             # key => None is a sign of a pruned commit
-            del res[key]
+            del obsoletenotrebased[key]
     return res
 
 def _checkobsrebasewrapper(orig, repo, ui, *args):
@@ -717,7 +848,7 @@ def _checkobsrebasewrapper(orig, repo, ui, *args):
     try:
         extensions.find('inhibit')
         # if inhibit is enabled, allow divergence
-        overrides[('experimental', 'allowdivergence')] = True
+        overrides[('experimental', 'evolution.allowdivergence')] = True
     except KeyError:
         pass
     with repo.ui.configoverride(overrides, 'tweakdefaults'):
@@ -733,10 +864,19 @@ def graftcmd(orig, ui, repo, *revs, **opts):
     return orig(ui, repo, *revs, **opts)
 
 def amendcmd(orig, ui, repo, *pats, **opts):
-    if not opts.get("date") and not ui.configbool('tweakdefaults',
-                                                  'amendkeepdate'):
+    if (not opts.get("date")
+        and not opts.get("to")
+        and not ui.configbool('tweakdefaults', 'amendkeepdate')):
         opts["date"] = currentdate()
     return orig(ui, repo, *pats, **opts)
+
+def histeditcommitfuncfor(orig, repo, src):
+    origcommitfunc = orig(repo, src)
+    def commitfunc(**kwargs):
+        if not repo.ui.configbool('tweakdefaults', 'histeditkeepdate'):
+            kwargs['date'] = util.makedate(time.time())
+        origcommitfunc(**kwargs)
+    return commitfunc
 
 def log(orig, ui, repo, *pats, **opts):
     # 'hg log' defaults to -f
@@ -747,9 +887,8 @@ def log(orig, ui, repo, *pats, **opts):
     return orig(ui, repo, *pats, **opts)
 
 def branchcmd(orig, ui, repo, label=None, **opts):
-    message = ui.config('tweakdefaults', 'branchmessage',
-            _('new named branches are disabled in this repository'))
-    enabled = ui.configbool('tweakdefaults', 'allowbranch', True)
+    message = ui.config('tweakdefaults', 'branchmessage')
+    enabled = ui.configbool('tweakdefaults', 'allowbranch')
     if (enabled and opts.get('new')) or label is None:
         if 'new' in opts:
             del opts['new']
@@ -771,11 +910,10 @@ def mergecmd(orig, ui, repo, node=None, **opts):
     """
     Allowing to disable merges
     """
-    if ui.configbool('tweakdefaults','allowmerge', True):
+    if ui.configbool('tweakdefaults','allowmerge'):
         return orig(ui, repo, node, **opts)
     else:
-        message = ui.config('tweakdefaults', 'mergemessage',
-            _('merging is not supported for this repository'))
+        message = ui.config('tweakdefaults', 'mergemessage')
         hint = ui.config('tweakdefaults', 'mergehint', _('use rebase instead'))
         raise error.Abort(message, hint=hint)
 
@@ -812,27 +950,25 @@ def rollbackcmd(orig, ui, repo, **opts):
     """
     Allowing to disable the rollback command
     """
-    if ui.configbool('tweakdefaults', 'allowrollback', True):
+    if ui.configbool('tweakdefaults', 'allowrollback'):
         return orig(ui, repo, **opts)
     else:
-        message = ui.config('tweakdefaults', 'rollbackmessage',
-            _('the use of rollback is disabled'))
-        hint = ui.config('tweakdefaults', 'rollbackhint', None)
+        message = ui.config('tweakdefaults', 'rollbackmessage')
+        hint = ui.config('tweakdefaults', 'rollbackhint')
         raise error.Abort(message, hint=hint)
 
 def tagcmd(orig, ui, repo, name1, *names, **opts):
     """
     Allowing to disable tags
     """
-    message = ui.config('tweakdefaults', 'tagmessage',
-            _('new tags are disabled in this repository'))
-    if ui.configbool('tweakdefaults', 'allowtags', True):
+    message = ui.config('tweakdefaults', 'tagmessage')
+    if ui.configbool('tweakdefaults', 'allowtags'):
         return orig(ui, repo, name1, *names, **opts)
     else:
         raise error.Abort(message)
 
 def tagscmd(orig, ui, repo, **opts):
-    message = ui.config('tweakdefaults', 'tagsmessage', '')
+    message = ui.config('tweakdefaults', 'tagsmessage')
     if message:
         ui.warn(message + '\n')
     return orig(ui, repo, **opts)
@@ -894,7 +1030,10 @@ def bmactive(repo):
 
 def _createmarkers(orig, repo, relations, flag=0, date=None, metadata=None,
                    operation=None):
-    operation = repo.ui.config(globaldata, createmarkersoperation, operation)
+    configoperation = repo.ui.config(globaldata, createmarkersoperation)
+    if configoperation is not None:
+        operation = configoperation
+
     if operation is None:
         return orig(repo, relations, flag, date, metadata)
 
@@ -912,3 +1051,23 @@ def _fixpager(ui):
     # automatically.
     if ui.config('pager', 'pager', '').strip() == 'less':
         ui.setconfig('pager', 'pager', 'less -FRQX')
+
+def get_winpopen4(pipei_bufsize):
+    def winpopen4(orig, cmd, env=None, newlines=False, bufsize=-1):
+        """Same as util.popen4, but manually creates an input pipe with a
+        larger than default buffer"""
+        import msvcrt, _subprocess
+        handles = _subprocess.CreatePipe(None, pipei_bufsize)
+        rfd, wfd = [msvcrt.open_osfhandle(h, 0) for h in handles]
+        handles[0].Detach()
+        handles[1].Detach()
+        p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
+                             close_fds=False,
+                             stdin=rfd,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             universal_newlines=newlines,
+                             env=env)
+        p.stdin = os.fdopen(wfd, 'wb', bufsize)
+        return p.stdin, p.stdout, p.stderr, p
+    return winpopen4

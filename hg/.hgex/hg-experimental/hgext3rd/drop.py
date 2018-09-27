@@ -76,7 +76,7 @@ def extsetup(ui):
 
 
 @command('drop',
-         [('r', 'rev', [], _("revisions to drop"))],
+         [('r', 'rev', [], _("revision to drop"))],
          _('hg drop [OPTION] [REV]'))
 def drop(ui, repo, *revs, **opts):
     """drop changeset from stack
@@ -123,4 +123,4 @@ def drop(ui, repo, *revs, **opts):
                                   "'hg rebase --continue', " +
                                   "and then re-run 'hg drop'\n"))
                         raise
-                    scmutil.cleanupnodes(repo, [revid], 'drop')
+                    scmutil.cleanupnodes(repo, [changectx.node()], 'drop')

@@ -15,8 +15,7 @@ from mercurial import (
     commands,
     error,
     hg,
-    lock as lockmod,
-    obsolete,
+    node,
     phases,
     registrar,
     scmutil,
@@ -27,13 +26,15 @@ from . import common
 
 cmdtable = {}
 command = registrar.command(cmdtable)
+hex = node.hex
 
 @command('^fold|squash',
          [('r', 'rev', [], _("revision to fold")),
           ('', 'exact', None, _("only fold specified revisions")),
           ('', 'from', None, _("fold linearly to working copy parent")),
           ('', 'no-rebase', False, _("don't rebase descendants after split")),
-         ] + commands.commitopts + commands.commitopts2,
+         ] + (commands.commitopts + commands.commitopts2 +
+              commands.formatteropts),
          _('hg fold [OPTION]... [-r] REV'))
 def fold(ui, repo, *revs, **opts):
     """fold multiple revisions into a single one
@@ -109,15 +110,11 @@ def fold(ui, repo, *revs, **opts):
         ui.write_err(_('single revision specified, nothing to fold\n'))
         return 1
 
-    wlock = lock = None
-    try:
-        wlock = repo.wlock()
-        lock = repo.lock()
-
+    with repo.wlock(), repo.lock(), ui.formatter('fold', opts) as fm:
+        fm.startitem()
         root, head = _foldcheck(repo, revs)
 
-        tr = repo.transaction('fold')
-        try:
+        with repo.transaction('fold') as tr:
             commitopts = opts.copy()
             allctx = [repo[r] for r in revs]
             targetphase = max(c.phase() for c in allctx)
@@ -137,22 +134,19 @@ def fold(ui, repo, *revs, **opts):
                                                    commitopts=commitopts)
             phases.retractboundary(repo, tr, targetphase, [newid])
 
-            obsolete.createmarkers(repo, [(ctx, (repo[newid],))
-                                   for ctx in allctx], operation='fold')
-
-            ui.status(_('%i changesets folded\n') % len(revs))
+            replacements = {ctx.node(): (newid,) for ctx in allctx}
+            nodechanges = {fm.hexfunc(ctx.node()): [fm.hexfunc(newid)]
+                           for ctx in allctx}
+            fm.data(nodechanges=fm.formatdict(nodechanges))
+            scmutil.cleanupnodes(repo, replacements, 'fold')
+            fm.condwrite(not ui.quiet, 'count',
+                         '%i changesets folded\n', len(revs))
             if repo['.'].rev() in revs:
                 hg.update(repo, newid)
 
             if torebase:
                 folded = repo.revs('allsuccessors(%ld)', revs).last()
                 common.restackonce(ui, repo, folded)
-
-            tr.close()
-        finally:
-            tr.release()
-    finally:
-        lockmod.release(lock, wlock)
 
 def _foldcheck(repo, revs):
     roots = repo.revs('roots(%ld)', revs)

@@ -5,12 +5,25 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
+from __future__ import absolute_import
+
 from mercurial import (
     extensions,
     hg,
     sshpeer,
     util,
 )
+
+from . import (
+    shallowutil,
+)
+
+try:
+    # hg 4.6 and later
+    _sshv1peer = sshpeer.sshpeer
+except AttributeError:
+    # hg 4.5 and earlier
+    _sshv1peer = sshpeer.sshv1peer
 
 class connectionpool(object):
     def __init__(self, repo):
@@ -29,9 +42,11 @@ class connectionpool(object):
                 conn = pathpool.pop()
                 peer = conn.peer
                 # If the connection has died, drop it
-                if (isinstance(peer, sshpeer.sshpeer) and
-                    peer.subprocess.poll() is not None):
-                    conn = None
+                if isinstance(peer, _sshv1peer):
+                    proc = shallowutil.trygetattr(
+                        peer, ('_subprocess', 'subprocess'))
+                    if proc.poll() is not None:
+                        conn = None
             except IndexError:
                 pass
 

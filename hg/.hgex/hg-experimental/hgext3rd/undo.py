@@ -21,6 +21,7 @@ from mercurial import (
     hg,
     localrepo,
     lock as lockmod,
+    merge,
     obsolete,
     obsutil,
     phases,
@@ -41,8 +42,17 @@ from mercurial.node import (
     nullid,
 )
 
+from hgext3rd import (
+    interactiveui,
+)
+
 cmdtable = {}
 command = registrar.command(cmdtable)
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('undo', '_duringundologlock', default=False)
 
 # Setup
 
@@ -55,32 +65,67 @@ def extsetup(ui):
 # Wrappers
 
 def _runcommandwrapper(orig, lui, repo, cmd, fullargs, *args):
-    # This wrapper executes whenever a command is run.
-    # Some commands (eg hg sl) don't actually modify anything
-    # ie can't be undone, but the command doesn't know this.
-    command = fullargs
+    # For chg, do not wrap the "serve" runcommand call. Otherwise everything
+    # will be logged as side effects of a long "hg serve" command, no
+    # individual commands will be logged.
+    if 'CHGINTERNALMARK' in os.environ:
+        return orig(lui, repo, cmd, fullargs, *args)
 
-    # Check wether undolog is consistent
-    # ie check wether the undo ext was
-    # off before this command
-    if '_undologactive' not in os.environ:
-        changes = safelog(repo, [""])
-        if changes:
-            _recordnewgap(repo)
+    # For non-repo command, it's unnecessary to go through the undo logic
+    if repo is None:
+        return orig(lui, repo, cmd, fullargs, *args)
 
-    # prevent nested calls
-    if '_undologactive' not in os.environ:
-        os.environ['_undologactive'] = "active"
-        rootlog = True
-    else:
-        rootlog = False
+    command = [cmd] + fullargs
 
-    result = orig(lui, repo, cmd, fullargs, *args)
+    # Whether something (transaction, or update) has triggered the writing of
+    # the *before* state to undolog or not. Possible values:
+    #  - []: not triggered, should trigger if write operation happens
+    #  - [True]: already triggered by this process, should also log end state
+    #  - [False]: already triggered by a parent process, should skip logging
+    triggered = []
 
-    # record changes to repo
-    if rootlog:
-        safelog(repo, command)
-        del os.environ['_undologactive']
+    # '_undologactive' is set by a parent hg process with before state written
+    # to undolog. In this case, the current process should not write undolog.
+    if '_undologactive' in os.environ:
+        triggered.append(False)
+
+    def log(orig, *args, **kwargs):
+        # trigger a log of the initial state of a repo before a command tries
+        # to modify that state.
+        if not triggered:
+            triggered.append(True)
+            os.environ['_undologactive'] = "active"
+
+            # Check wether undolog is consistent
+            # ie check wether the undo ext was
+            # off before this command
+            changes = safelog(repo, [""])
+            if changes:
+                _recordnewgap(repo)
+
+        return orig(*args, **kwargs)
+
+    # Only write undo log if we know a command is going to do some writes. This
+    # saves time calculating visible heads if the command is read-only (ex.
+    # status).
+    #
+    # To detect a write command, wrap all possible entries:
+    #  - transaction.__init__
+    #  - merge.update
+    w = extensions.wrappedfunction
+    with w(merge, 'update', log), w(transaction.transaction, '__init__', log):
+        try:
+            result = orig(lui, repo, cmd, fullargs, *args)
+        finally:
+            # record changes to repo
+            if triggered and triggered[0]:
+                # invalidatevolatilesets should really be done in Mercurial's
+                # transaction handling code. We workaround it here before that
+                # upstream change.
+                repo.invalidatevolatilesets()
+                safelog(repo, command)
+                del os.environ['_undologactive']
+
     return result
 
 # Write: Log control
@@ -120,9 +165,10 @@ def safelog(repo, command):
         except error.LockUnavailable: # no write permissions
             repo.ui.debug("undolog lacks write permission\n")
         except error.LockHeld: # timeout, not fatal: don't abort actual command
-            # TODO: log to Scuba.  This shouldn't happen too often as it will
+            # This shouldn't happen too often as it would
             # create gaps in the undo log
             repo.ui.debug("undolog lock timeout\n")
+            _logtoscuba(repo.ui, 'undolog lock timeout')
     return changes
 
 def lighttransaction(repo):
@@ -155,6 +201,7 @@ def log(repo, command, tr):
         'bookmarks': _logbookmarks(repo, tr),
         'draftheads': _logdraftheads(repo, tr),
         'workingparent': _logworkingparent(repo, tr),
+        'draftobsolete': _logdraftobsolete(repo, tr),
     }
     try:
         existingnodes = _readindex(repo, 0)
@@ -167,10 +214,18 @@ def log(repo, command, tr):
         newnodes.update({
             'date': _logdate(repo, tr),
             'command': _logcommand(repo, tr, command),
+            'unfinished': unfinished(repo),
         })
         _logindex(repo, tr, newnodes)
         # changes have been recorded
         return True
+
+def unfinished(repo):
+    '''like cmdutil.checkunfinished without raising an Abort'''
+    for f, clearable, allowcommit, msg, hint in cmdutil.unfinishedstates:
+        if repo.vfs.exists(f):
+            return True
+    return False
 
 # Write: Logs
 
@@ -190,6 +245,12 @@ def _logdraftheads(repo, tr):
     hexnodes = tohexnode(repo, spec)
     revstring = "\n".join(sorted(hexnodes))
     return writelog(repo, tr, "draftheads.i", revstring)
+
+def _logdraftobsolete(repo, tr):
+    spec = revsetlang.formatspec('draft() & obsolete()')
+    hexnodes = tohexnode(repo, spec)
+    revstring = "\n".join(sorted(hexnodes))
+    return writelog(repo, tr, "draftobsolete.i", revstring)
 
 def _logcommand(repo, tr, command):
     revstring = "\0".join(command)
@@ -247,16 +308,21 @@ def _readnode(repo, filename, hexnode):
     rlog = _getrevlog(repo, filename)
     return rlog.revision(bin(hexnode))
 
-def _gapcheck(repo, reverseindex):
+def _logtoscuba(ui, message):
+    ui.log('undo', message, undo=message)
+
+def _gapcheck(ui, repo, reverseindex):
     rlog = _getrevlog(repo, 'index.i')
     absoluteindex = _invertindex(rlog, reverseindex)
     path = 'undolog' + '/' + 'gap'
+    result = False
     try:
         result = absoluteindex >= int(repo.vfs.read(path))
     except IOError:
         # recreate file
         repo.ui.debug("failed to read gap file in %s, attempting recreation\n"
                       % path)
+        _logtoscuba(ui, "gap file corruption")
         rlog = _getrevlog(repo, 'index.i')
         i = 0
         while i < (len(rlog)):
@@ -314,6 +380,8 @@ def _debugundolist(ui, repo, offset):
         commandstr = _readnode(repo, 'command.i', nodedict['command'])
         if "" == commandstr:
             commandstr = " -- gap in log -- "
+        else:
+            commandstr = commandstr.split("\0", 1)[1]
         fm.startitem()
         fm.write('undo', '%s', str(i + offset) + ": " + commandstr)
     fm.end()
@@ -327,7 +395,7 @@ def _debugundoindex(ui, repo, reverseindex):
     template = "{tabindent(sub('\0', ' ', content))}\n"
     fm = ui.formatter('debugundohistory', {'template': template})
     cabinet = ('command.i', 'bookmarks.i', 'date.i',
-            'draftheads.i', 'workingparent.i')
+            'draftheads.i', 'draftobsolete.i', 'workingparent.i')
     for filename in cabinet:
         header = filename[:-2] + ":\n"
         rawcontent = _readnode(repo, filename, nodedict[filename[:-2]])
@@ -350,24 +418,43 @@ def _debugundoindex(ui, repo, reverseindex):
                         set(oldheads.split("\n"))
                         - set(rawcontent.split("\n"))
                         ))
-        elif "command.i" == filename and "" == rawcontent:
-            content = "unkown command(s) run, gap in log"
+        elif "command.i" == filename:
+            if "" == rawcontent:
+                content = "unkown command(s) run, gap in log"
+            else:
+                content = rawcontent.split("\0", 1)[1]
         else:
             content = rawcontent
         fm.startitem()
         fm.write('content', '%s', header + content)
+    fm.write('content', '%s', "unfinished:\t" + nodedict['unfinished'])
     fm.end()
 
 # Revset logic
 
 def _getolddrafts(repo, reverseindex):
+    # convert reverseindex to node
+    # this makes cacheing guaranteed correct
+    # bc immutable history
     nodedict = _readindex(repo, reverseindex)
-    olddraftheads = _readnode(repo, "draftheads.i", nodedict["draftheads"])
-    oldheadslist = olddraftheads.split("\n")
-    oldlogrevstring = revsetlang.formatspec('draft() & ancestors(%ls)',
-            oldheadslist)
-    urepo = repo.unfiltered()
-    return urepo.revs(oldlogrevstring)
+    return _cachedgetolddrafts(repo, nodedict["draftheads"],
+                               nodedict["draftobsolete"])
+
+def _cachedgetolddrafts(repo, draftnode, obsnode):
+    if not util.safehasattr(repo, '_undoolddraftcache'):
+        repo._undoolddraftcache = {}
+    cache = repo._undoolddraftcache
+    key = draftnode + obsnode
+    if key not in cache:
+        olddraftheads = _readnode(repo, "draftheads.i", draftnode)
+        oldheadslist = olddraftheads.split("\n")
+        oldobs = _readnode(repo, "draftobsolete.i", obsnode)
+        oldobslist = filter(None, oldobs.split("\n"))
+        oldlogrevstring = revsetlang.formatspec(
+            '(draft() & ancestors(%ls)) - %ls', oldheadslist, oldobslist)
+        urepo = repo.unfiltered()
+        cache[key] = smartset.baseset(urepo.revs(oldlogrevstring))
+    return cache[key]
 
 revsetpredicate = registrar.revsetpredicate()
 
@@ -411,16 +498,48 @@ def _localbranch(repo, subset, x):
         querystring = revsetlang.formatspec('((::%ld) & draft())::', revs)
     return subset & smartset.baseset(repo.revs(querystring))
 
+def _getoldworkingcopyparent(repo, reverseindex):
+    # convert reverseindex to node
+    # this makes cacheing guaranteed correct
+    # bc immutable history
+    nodedict = _readindex(repo, reverseindex)
+    return _cachedgetoldworkingcopyparent(repo, nodedict["workingparent"])
+
+def _cachedgetoldworkingcopyparent(repo, wkpnode):
+    if not util.safehasattr(repo, '_undooldworkingparentcache'):
+        repo._undooldworkingparentcache = {}
+    cache = repo._undooldworkingparentcache
+    key = wkpnode
+    if key not in cache:
+        oldworkingparent = _readnode(repo, "workingparent.i", wkpnode)
+        oldworkingparent = filter(None, oldworkingparent.split("\n"))
+        oldwkprevstring = revsetlang.formatspec('%ls', oldworkingparent)
+        urepo = repo.unfiltered()
+        cache[key] = smartset.baseset(urepo.revs(oldwkprevstring))
+    return cache[key]
+
+@revsetpredicate('oldworkingcopyparent')
+def _oldworkingcopyparent(repo, subset, x):
+    """``oldworkingcopyparent([index])``
+    previous working copy parent
+
+    'index' is how many undoable commands you want to look back.  See 'hg undo'.
+    """
+    args = revset.getargsdict(x, 'oldoworkingcopyrevset', 'reverseindex')
+    reverseindex = revsetlang.getinteger(args.get('reverseindex'),
+                    _('index must be a positive interger'), 1)
+    revs = _getoldworkingcopyparent(repo, reverseindex)
+    return subset & smartset.baseset(revs)
+
 # Templates
 templatefunc = registrar.templatefunc()
 
 def _undonehexnodes(repo, reverseindex):
-    repo = repo.unfiltered()
-    revstring = revsetlang.formatspec('draft() - olddraft(%d)', reverseindex)
+    revstring = revsetlang.formatspec('olddraft(0) - olddraft(%d)',
+                                      reverseindex)
     revs = repo.revs(revstring)
     tonode = repo.changelog.node
-    hexnodes = [repo[tonode(x)] for x in revs]
-    return hexnodes
+    return [tonode(x) for x in revs]
 
 @templatefunc('undonecommits(reverseindex)')
 def showundonecommits(context, mapping, args):
@@ -430,7 +549,7 @@ def showundonecommits(context, mapping, args):
     repo = mapping['ctx']._repo
     ctx = mapping['ctx']
     hexnodes = _undonehexnodes(repo, reverseindex)
-    if ctx in hexnodes:
+    if ctx.node() in hexnodes:
         result = ctx.hex()
     else:
         result = None
@@ -441,8 +560,7 @@ def _donehexnodes(repo, reverseindex):
     revstring = revsetlang.formatspec('olddraft(%d)', reverseindex)
     revs = repo.revs(revstring)
     tonode = repo.changelog.node
-    hexnodes = [repo[tonode(x)] for x in revs]
-    return hexnodes
+    return [tonode(x) for x in revs]
 
 @templatefunc('donecommits(reverseindex)')
 def showdonecommits(context, mapping, args):
@@ -452,7 +570,7 @@ def showdonecommits(context, mapping, args):
     repo = mapping['ctx']._repo
     ctx = mapping['ctx']
     hexnodes = _donehexnodes(repo, reverseindex)
-    if ctx in hexnodes:
+    if ctx.node() in hexnodes:
         result = ctx.hex()
     else:
         result = None
@@ -479,8 +597,9 @@ def showoldbookmarks(context, mapping, args):
     ctx = mapping['ctx']
     oldmarks = _oldmarks(repo, reverseindex)
     bookmarks = []
+    ctxhex = ctx.hex()
     for kv in oldmarks:
-        if repo[kv[1]] == repo[ctx]:
+        if kv[1] == ctxhex:
             bookmarks.append(kv[0])
     active = repo._activebookmark
     makemap = lambda v: {'bookmark': v, 'active': active, 'current': active}
@@ -498,14 +617,33 @@ def removedbookmarks(context, mapping, args):
     currentbookmarks = mapping['ctx'].bookmarks()
     oldmarks = _oldmarks(repo, reverseindex)
     oldbookmarks = []
+    ctxhex = ctx.hex()
     for kv in oldmarks:
-        if repo[kv[1]] == repo[ctx]:
+        if kv[1] == ctxhex:
             oldbookmarks.append(kv[0])
     bookmarks = list(set(currentbookmarks) - set(oldbookmarks))
     active = repo._activebookmark
     makemap = lambda v: {'bookmark': v, 'active': active, 'current': active}
     f = templatekw._showlist('bookmark', bookmarks, mapping)
     return templatekw._hybrid(f, bookmarks, makemap, lambda x: x['bookmark'])
+
+@templatefunc('oldworkingcopyparent(reverseindex)')
+def oldworkingparenttemplate(context, mapping, args):
+    """String. Workingcopyparent reverseindex repo states ago."""
+    reverseindex = templater.evalinteger(context, mapping, args[0],
+                                _('undonecommits needs an integer argument'))
+    repo = mapping['ctx']._repo
+    ctx = mapping['ctx']
+    repo = repo.unfiltered()
+    revstring = revsetlang.formatspec('oldworkingcopyparent(%d)', reverseindex)
+    revs = repo.revs(revstring)
+    tonode = repo.changelog.node
+    nodes = [tonode(x) for x in revs]
+    if ctx.node() in nodes:
+        result = ctx.hex()
+    else:
+        result = None
+    return result
 
 # Undo:
 
@@ -579,29 +717,41 @@ def undo(ui, repo, *args, **opts):
     if branch and reverseindex != 1 and reverseindex != -1:
         raise error.Abort(_("--branch with --index not supported"))
     if relativeundo:
-        reverseindex = _computerelative(repo, reverseindex,
-                                        absolute = not relativeundo,
-                                        branch = branch)
+        try:
+            reverseindex = _computerelative(repo, reverseindex,
+                                            absolute = not relativeundo,
+                                            branch = branch)
+        except IndexError:
+            raise error.Abort(_("cannot undo this far - undo extension was not"
+                                " enabled"))
+
     if branch and preview:
         raise error.Abort(_("--branch with --preview not supported"))
 
     if interactive:
-        try:
-            interactiveui = extensions.find('interactiveui')
-        except KeyError:
-            raise error.Abort(_('undo --interactive requires interactiveui to '
-                                'work'))
-            return
+        cmdutil.checkunfinished(repo)
+        cmdutil.bailifchanged(repo)
 
         class undopreview(interactiveui.viewframe):
-            def init(self, repo, ui, index):
-                self.repo = repo
-                self.ui = ui
-                self.index = index
             def render(self):
                 ui = self.ui
                 ui.pushbuffer()
-                _preview(ui, self.repo, self.index)
+                return_code = _preview(ui, self.repo, self.index)
+                if return_code == 1:
+                    if self.index < 0:
+                        self.index += 1
+                        repo.ui.status(_("Already at newest repo state\a\n"))
+                    elif self.index > 0:
+                        self.index -= 1
+                        repo.ui.status(_("Already at oldest repo state\a\n"))
+                    _preview(ui, self.repo, self.index)
+                text = ui.config('undo', 'interactivehelptext',
+                                 "legend: red - to hide; green - to revive\n")
+                repo.ui.status(text)
+                repo.ui.status(_("<-: newer  "
+                                 "->: older  "
+                                 "q: abort  "
+                                 "enter: confirm\n"))
                 return ui.popbuffer()
             def rightarrow(self):
                 self.index += 1
@@ -624,7 +774,7 @@ def undo(ui, repo, *args, **opts):
     with repo.wlock(), repo.lock(), repo.transaction("undo"):
         cmdutil.checkunfinished(repo)
         cmdutil.bailifchanged(repo)
-        if not (opts.get("force") or _gapcheck(repo, reverseindex)):
+        if not (opts.get("force") or _gapcheck(ui, repo, reverseindex)):
             raise error.Abort(_("attempted risky undo across"
                                 " missing history"))
         _undoto(ui, repo, reverseindex, keep=keep, branch=branch)
@@ -664,11 +814,14 @@ def redo(ui, repo, *args, **opts):
         commandstr = _readnode(repo, 'command.i', nodedict['command'])
         commandlist = commandstr.split("\0")
 
-        if commandlist[0] == "undo":
+        if 'True' == nodedict['unfinished']:
+            # don't want to redo to an interupted state
+            reverseindex += 1
+        elif commandlist[0] == "undo":
             undoopts = {}
-            fancyopts.fancyopts(commandlist[1:],
+            fancyopts.fancyopts(commandlist,
                                 cmdtable['undo'][1] + commands.globalopts,
-                                undoopts)
+                                undoopts, gnu=True)
             if redocount == 0:
                 # want to go to state before the undo (not after)
                 toshift = undoopts['step']
@@ -744,23 +897,23 @@ def _undoto(ui, repo, reverseindex, keep=False, branch=None):
                                   nodedict["workingparent"])
     if not keep:
         if not branchcommits or workingcopyparent in branchcommits:
-            hg.updatetotally(ui, repo, workingcopyparent, workingcopyparent,
-                             clean=False, updatecheck='abort')
+            # bailifchanged is run, so this should be safe
+            hg.clean(repo, workingcopyparent, show_stats=False)
     elif not branchcommits or workingcopyparent in branchcommits:
         # keeps working copy files
-        precnode = bin(workingcopyparent)
-        precctx = repo[precnode]
+        prednode = bin(workingcopyparent)
+        predctx = repo[prednode]
 
         changedfiles = []
         wctx = repo[None]
         wctxmanifest = wctx.manifest()
-        precctxmanifest = precctx.manifest()
+        predctxmanifest = predctx.manifest()
         dirstate = repo.dirstate
-        diff = precctxmanifest.diff(wctxmanifest)
+        diff = predctxmanifest.diff(wctxmanifest)
         changedfiles.extend(diff.iterkeys())
 
         with dirstate.parentchange():
-            dirstate.rebuild(precnode, precctxmanifest, changedfiles)
+            dirstate.rebuild(prednode, predctxmanifest, changedfiles)
             # we want added and removed files to be shown
             # properly, not with ? and ! prefixes
             for filename, data in diff.iteritems():
@@ -788,11 +941,26 @@ def _undoto(ui, repo, reverseindex, keep=False, branch=None):
         smarthide(repo, addedrevs, localremoves, local=True)
         revealcommits(repo, localremoves)
 
+    # informative output
+    time = _readnode(repo, "date.i", nodedict["date"])
+    time = util.datestr([float(x) for x in time.split(" ")])
+
+    nodedict = _readindex(repo, reverseindex - 1)
+    commandstr = _readnode(repo, "command.i", nodedict["command"])
+    commandlist = commandstr.split("\0")[1:]
+    commandstr = " ".join(commandlist)
+    uimessage = _('undone to %s, before %s\n') % (time, commandstr)
+    repo.ui.status((uimessage))
+
 def _computerelative(repo, reverseindex, absolute=False, branch=""):
     # allows for relative undos using
     # redonode storage
     # allows for branch undos using
     # findnextdelta logic
+    if reverseindex != 0:
+        sign = reverseindex / abs(reverseindex)
+    else:
+        sign = None
     if not absolute:
         try: # attempt to get relative shift
             nodebranch = repo.vfs.read("undolog/redonode").split("\0")
@@ -835,6 +1003,16 @@ def _computerelative(repo, reverseindex, absolute=False, branch=""):
             shiftedindex = _findnextdelta(repo, shiftedindex, branch,
                                           direction=sign)
         reverseindex = shiftedindex
+    # skip interupted commands
+    if sign:
+        done = False
+        rlog = _getrevlog(repo, 'index.i')
+        while not done:
+            indexdict = _readindex(repo, reverseindex, rlog)
+            if 'True' == indexdict['unfinished']:
+                reverseindex += sign
+            else:
+                done = True
     return reverseindex
 
 def _findnextdelta(repo, reverseindex, branch, direction):
@@ -874,6 +1052,9 @@ def _findnextdelta(repo, reverseindex, branch, direction):
             nodedict = _readindex(repo, incrementalindex)
         except IndexError:
             raise error.Abort(_("index out of bounds"))
+        # skip interupted commands
+        if 'True' == nodedict['unfinished']:
+            break
         # check wkp, commits, bookmarks
         workingcopyparent = _readnode(repo, "workingparent.i",
                                       nodedict["workingparent"])
@@ -925,10 +1106,11 @@ def smarthide(repo, revhide, revshow, local=False):
     for ctx in hidectxs:
         unfi = repo.unfiltered()
         related = []
-        related = set(obsutil.allprecursors(unfi.obsstore, [ctx.node()]))
+        related = set(obsutil.allpredecessors(unfi.obsstore, [ctx.node()]))
         related.update(obsutil.allsuccessors(unfi.obsstore, [ctx.node()]))
         related.intersection_update(x.node() for x in showctxs)
         destinations = [repo[x] for x in related]
+
         # two primary objectives:
         # 1. correct divergence/nondivergence
         # 2. correct visibility of changesets for the user
@@ -944,6 +1126,7 @@ def smarthide(repo, revhide, revshow, local=False):
         # Solution: provide helpfull ui message for
         # common and easy case (1 to 1), use simplest
         # correct solution for complex edge case
+
         if len(destinations) == 1:
             hidecommits(repo, ctx, destinations)
         elif len(destinations) > 1: # split
@@ -952,8 +1135,8 @@ def smarthide(repo, revhide, revshow, local=False):
             if not local:
                 hidecommits(repo, ctx, [])
 
-def hidecommits(repo, curctx, precctxs):
-    obsolete.createmarkers(repo, [(curctx, precctxs)], operation='undo')
+def hidecommits(repo, curctx, predctxs):
+    obsolete.createmarkers(repo, [(curctx, predctxs)], operation='undo')
 
 def revealcommits(repo, rev):
     try:
@@ -970,9 +1153,12 @@ def _preview(ui, repo, reverseindex):
     #   ui:
     #   repo: mercurial.localrepo
     # Output:
-    #   None
+    #   returns 1 on index error, 0 otherwise
 
     # override "UNDOINDEX" as a variable usable in template
+    if not _gapcheck(ui, repo, reverseindex):
+        repo.ui.status(_("WARN: missing history between present and this"
+                         " state\n"))
     overrides = {
         ('templates', 'UNDOINDEX'): str(reverseindex),
     }
@@ -980,15 +1166,65 @@ def _preview(ui, repo, reverseindex):
     opts = {}
     opts["template"] = "{undopreview}"
     repo = repo.unfiltered()
-    revstring = revsetlang.formatspec("olddraft(%d) + olddraft(0)",
-                                      reverseindex)
+
+    try:
+        nodedict = _readindex(repo, reverseindex)
+        curdict = _readindex(repo, reverseindex)
+    except IndexError:
+        return 1
+
+    bookstring = _readnode(repo, "bookmarks.i", nodedict["bookmarks"])
+    oldmarks = bookstring.split("\n")
+    oldpairs = set()
+    for mark in oldmarks:
+        kv = mark.rsplit(" ", 1)
+        if len(kv) == 2:
+            oldpairs.update(kv)
+    bookstring = _readnode(repo, "bookmarks.i", curdict["bookmarks"])
+    curmarks = bookstring.split("\n")
+    curpairs = set()
+    for mark in curmarks:
+        kv = mark.rsplit(" ", 1)
+        if len(kv) == 2:
+            curpairs.update(kv)
+
+    diffpairs = oldpairs.symmetric_difference(curpairs)
+    # extract hashes from diffpairs
+
+    bookdiffs = []
+    for kv in diffpairs:
+        bookdiffs += kv[0]
+
+    revstring = revsetlang.formatspec(
+        "ancestor(olddraft(0), olddraft(%s)) +"
+        "(draft() & ::((olddraft(0) - olddraft(%s)) + "
+        "(olddraft(%s) - olddraft(0)) + %ls + '.' + "
+        "oldworkingcopyparent(%s)))",
+        reverseindex, reverseindex, reverseindex, bookdiffs, reverseindex)
+
     opts['rev'] = [revstring]
     try:
         with ui.configoverride(overrides):
             cmdutil.graphlog(ui, repo, None, opts)
+        # informative output
+        nodedict = _readindex(repo, reverseindex)
+        time = _readnode(repo, "date.i", nodedict["date"])
+        time = util.datestr([float(x) for x in time.split(" ")])
     except IndexError:
         # don't print anything
-        pass
+        return 1
+
+    try:
+        nodedict = _readindex(repo, reverseindex - 1)
+        commandstr = _readnode(repo, "command.i", nodedict["command"])
+        commandlist = commandstr.split("\0")[1:]
+        commandstr = " ".join(commandlist)
+        uimessage = _('undo to %s, before %s\n') % (time, commandstr)
+        repo.ui.status((uimessage))
+    except IndexError:
+        repo.ui.status(_("most recent state: undoing here won't change"
+                        " anything\n"))
+    return 0
 
 # Tools
 
@@ -1001,8 +1237,8 @@ def _getrevlog(repo, filename):
         return revlog.revlog(repo.vfs, path)
     except error.RevlogError:
         # corruption: for now, we can simply nuke all files
-        # TODO: log to Scuba
         repo.ui.debug("caught revlog error. %s was probably corrupted\n" % path)
+        _logtoscuba(repo.ui, 'revlog error')
         repo.vfs.rmtree('undolog')
         repo.vfs.makedirs('undolog')
         # if we get the error a second time

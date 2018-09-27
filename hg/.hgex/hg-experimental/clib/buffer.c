@@ -1,14 +1,17 @@
-// Copyright 2016-present Facebook. All Rights Reserved.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
+// This software may be used and distributed according to the terms of the
+// GNU General Public License version 2 or any later version.
+
 // buffer.c: implementation for a generic mechanism to expand a heap-allocated
 //           buffer.
-//
 // no-check-code
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "buffer.h"
+#include "clib/buffer.h"
 
 bool buffer_append(
     char **buffer, size_t *buffer_idx, size_t *buffer_sz,

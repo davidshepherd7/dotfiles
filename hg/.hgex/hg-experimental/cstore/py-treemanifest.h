@@ -1,11 +1,14 @@
-// py-treemanifest.cpp - c++ implementation of a tree manifest
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// py-treemanifest.cpp - c++ implementation of a tree manifest
 // no-check-code
+//
+#ifndef FBHGEXT_CSTORE_PY_TREEMANIFEST_H
+#define FBHGEXT_CSTORE_PY_TREEMANIFEST_H
 
 // The PY_SSIZE_T_CLEAN define must be defined before the Python.h include,
 // as per the documentation.
@@ -14,12 +17,12 @@
 #include <memory>
 #include <string>
 
-#include "convert.h"
-#include "manifest.h"
-#include "pythonutil.h"
-#include "treemanifest.h"
-#include "uniondatapackstore.h"
-#include "py-structs.h"
+#include "clib/convert.h"
+#include "cstore/py-structs.h"
+#include "cstore/pythonutil.h"
+#include "cstore/uniondatapackstore.h"
+#include "ctreemanifest/manifest.h"
+#include "ctreemanifest/treemanifest.h"
 
 #define FILENAME_BUFFER_SIZE 16348
 #define FLAG_SIZE 1
@@ -1553,3 +1556,5 @@ static PyTypeObject treemanifestType = {
   (initproc)treemanifest_init,                      /* tp_init */
   0,                                                /* tp_alloc */
 };
+
+#endif /* FBHGEXT_CSTORE_PY_TREEMANIFEST_H */

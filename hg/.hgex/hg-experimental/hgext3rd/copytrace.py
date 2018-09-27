@@ -23,17 +23,28 @@
     # limits the number of heuristically found move candidates to check
     maxmovescandidatestocheck = 5
 
-    # whether to enable fast copytracing during amends (requires fastcopytrace)
-    # to be enabled.
+    # whether to enable fast copytracing during amends (requires fastcopytrace
+    # to be enabled.)
     enableamendcopytrace = True
 
     # how many previous commits to search through when looking for amend
     # copytrace data.
     amendcopytracecommitlimit = 100
 
+    # whether to enable full copytracing on small draft branches.
+    # Disabled by default
+    draftusefullcopytrace = False
+
 '''
 
-from collections import defaultdict
+import anydbm
+import collections
+import json
+import os
+import time
+
+from mercurial.i18n import _
+
 from mercurial import (
     cmdutil,
     commands,
@@ -43,15 +54,21 @@ from mercurial import (
     filemerge,
     node,
     phases,
+    registrar,
+    scmutil,
     util,
 )
-from mercurial.i18n import _
 
-import anydbm
-import json
-import os
-import time
+configtable = {}
+configitem = registrar.configitem(configtable)
 
+configitem('copytrace', 'maxmovescandidatestocheck', default=5)
+configitem('copytrace', 'sourcecommitlimit', default=100)
+configitem('copytrace', 'fastcopytrace', default=False)
+configitem('copytrace', 'enableamendcopytrace', default=True)
+configitem('copytrace', 'amendcopytracecommitlimit', default=100)
+
+defaultdict = collections.defaultdict
 _copytracinghint = ("hint: if this message is due to a moved file, you can " +
                     "ask mercurial to attempt to automatically resolve this " +
                     "change by re-running with the --tracecopies flag, but " +
@@ -66,8 +83,11 @@ def extsetup(ui):
     commands.globalopts.append(
         ("", "tracecopies", None,
          _("enable copytracing. Warning: can be very slow!")))
+    commands.globalopts.append(
+        ("", "drafttrace", None,
+         _("enable copytracing for draft branches.")))
 
-    # With experimental.disablecopytrace=True there can be cryptic merge errors.
+    # With experimental.copytrace=off there can be cryptic merge errors.
     # Let"s change error message to suggest re-running the command with
     # enabled copytracing
     filemerge._localchangedotherdeletedmsg = _(
@@ -86,7 +106,7 @@ def extsetup(ui):
     extensions.wrapfunction(copiesmod, 'mergecopies', _mergecopies)
     extensions.wrapfunction(cmdutil, 'amend', _amend)
 
-def _filemerge(origfunc, premerge, repo, mynode, orig, fcd, fco, fca,
+def _filemerge(origfunc, premerge, repo, wctx, mynode, orig, fcd, fco, fca,
                labels=None, *args, **kwargs):
     if premerge:
         # copytracing worked if files to merge have different file names
@@ -97,10 +117,10 @@ def _filemerge(origfunc, premerge, repo, mynode, orig, fcd, fco, fca,
         # even with disabled copytracing, so we don't want to log it.
         if orig != fco.path() and fco.cmp(fcd):
             # copytracing was in action, let's record it
-            if not repo.ui.configbool("experimental", "disablecopytrace"):
-                msg = "success"
+            if repo.ui.config('experimental', 'copytrace') == 'on':
+                msg = 'success (fastcopytracing)'
             else:
-                msg = "success (fastcopytracing)"
+                msg = 'success'
 
             try:
                 destctx = _getctxfromfctx(fcd)
@@ -115,16 +135,15 @@ def _filemerge(origfunc, premerge, repo, mynode, orig, fcd, fco, fca,
             repo.ui.log("copytrace", msg=msg,
                         reponame=_getreponame(repo, repo.ui))
 
-    return origfunc(premerge, repo, mynode, orig, fcd, fco, fca, labels,
+    return origfunc(premerge, repo, wctx, mynode, orig, fcd, fco, fca, labels,
                 *args, **kwargs)
 
 def _runcommand(orig, lui, repo, cmd, fullargs, ui, *args, **kwargs):
     if "--tracecopies" in fullargs:
-        ui.setconfig("experimental", "disablecopytrace",
-                     False, "--tracecopies")
+        ui.setconfig('experimental', 'copytrace', 'on', '--tracecopies')
     return orig(lui, repo, cmd, fullargs, ui, *args, **kwargs)
 
-def _amend(orig, ui, repo, commitfunc, old, extra, pats, opts):
+def _amend(orig, ui, repo, old, extra, pats, opts):
     """Wraps amend to collect copytrace data on amend
 
     If a file is created in one commit, modified in a subsequent commit, and
@@ -142,50 +161,29 @@ def _amend(orig, ui, repo, commitfunc, old, extra, pats, opts):
     lets rebases onto files that been renamed or copied in an amend commit
     work without conflicts.
 
-    When an amend commit is created, mercurial first creates a temporary
-    intermediate commit that contains the amendments, and then merges these
-    two commits into the single amended commit:
-
-        intermediate_ctx    o
-                            |
-        orig_ctx            o   o    amended_ctx
-                            | /
-                            o        parent of original commit
-
-    This function finds the intermediate commit and stores its copytrace
-    information against the amended commit in a separate dbm file.  Later,
+    This function collects the copytrace information from the working copy and
+    stores it against the amended commit in a separate dbm file. Later,
     in _domergecopies, this information will be merged with the rebase
     copytrace data to incorporate renames and copies made during the amend.
     """
-    node = orig(ui, repo, commitfunc, old, extra, pats, opts)
 
     # Check if amend copytracing has been disabled.
-    if not ui.configbool("copytrace", "enableamendcopytrace", True):
-        return node
+    if not ui.configbool("copytrace", "enableamendcopytrace"):
+        return orig(ui, repo, old, extra, pats, opts)
 
-    # Find the amended commit context and the intermediate context that
-    # was used for the amend.  The two commits were created in sequence, so
-    # the intermediate commit will be the commit with a revision number one
-    # before the amended commit.  This commit is filtered, so look at the
-    # unfiltered view of the repo to access it.
+    # Need to get the amend-copies before calling the command because files from
+    # the working copy will be used during the amend.
+    wctx = repo[None]
+
+    # Find the amend-copies.
+    matcher = scmutil.match(wctx, pats, opts)
+    amend_copies = copiesmod.pathcopies(old, wctx, matcher)
+
+    # Finally, invoke the command.
+    node = orig(ui, repo, old, extra, pats, opts)
     amended_ctx = repo[node]
-    intermediate_ctx = repo.unfiltered()[amended_ctx.rev() - 1]
 
-    # Sanity check that both contexts have a single parent.  The intermediate
-    # context's parent is the original commit, so its parent should be the
-    # same as the amended commit's, and it should have the temporary commit
-    # message that the amend function gave it.  If any of this is not true,
-    # then bail out.  Otherwise, find the original commit.
-    if (len(amended_ctx.parents()) != 1 or
-            len(intermediate_ctx.parents()) != 1 or
-            intermediate_ctx.p1().parents() != amended_ctx.parents() or
-            intermediate_ctx.description() !=
-                    'temporary amend commit for %s' % intermediate_ctx.p1()):
-        return node
-    orig_ctx = intermediate_ctx.p1()
-
-    # Find the amend-copies, and store them against the amended context.
-    amend_copies = copiesmod.pathcopies(orig_ctx, intermediate_ctx)
+    # Store the amend-copies against the amended context.
     if amend_copies:
         path = repo.vfs.join('amendcopytrace')
         try:
@@ -198,12 +196,13 @@ def _amend(orig, ui, repo, commitfunc, old, extra, pats, opts):
 
         # Merge in any existing amend copies from any previous amends.
         try:
-            orig_data = db.get(orig_ctx.node(), '{}')
+            orig_data = db.get(old.node(), '{}')
         except anydbm.error as e:
             ui.log('copytrace',
                    'Failed to read key %s from amendcopytrace db: %s' %
-                   (orig_ctx.hex(), e))
+                   (old.hex(), e))
             return node
+
         orig_encoded = json.loads(orig_data)
         orig_amend_copies = dict((k.decode('base64'), v.decode('base64'))
                 for (k, v) in orig_encoded.iteritems())
@@ -247,7 +246,7 @@ def _getamendcopies(repo, dest, ancestor):
     try:
         ctx = dest
         count = 0
-        limit = repo.ui.configint('copytrace', 'amendcopytracecommitlimit', 100)
+        limit = repo.ui.configint('copytrace', 'amendcopytracecommitlimit')
 
         # Search for the ancestor commit that has amend copytrace data.  This
         # will be the most recent amend commit if we are rebasing onto an
@@ -337,15 +336,26 @@ def _domergecopies(orig, repo, cdst, csrc, base):
 
     """
 
-    if not repo.ui.configbool("experimental", "disablecopytrace"):
+    if repo.ui.config('experimental', 'copytrace') == 'on':
         # user explicitly enabled copytracing - use it
         return orig(repo, cdst, csrc, base)
 
     if not _fastcopytraceenabled(repo.ui):
         return orig(repo, cdst, csrc, base)
 
-    if not cdst or not csrc or cdst == csrc:
-        return {}, {}, {}, {}, {}
+    # If base, source and destination are all draft branches, let's use full
+    # copytrace for increased capabilities since it will work fast enough
+    if _isfullcopytraceable(repo.ui, cdst, base):
+        configoverrides = {('experimental', 'copytrace'): 'on'}
+        with repo.ui.configoverride(configoverrides, 'mergecopies'):
+            result = orig(repo, cdst, csrc, base)
+            if repo.ui.configbool("copytrace", "enableamendcopytrace"):
+                # Look for additional amend-copies
+                amend_copies = _getamendcopies(repo, cdst, base.p1())
+                # update result[0] dict w/ amend_copies
+                result[0].update(amend_copies)
+
+        return result
 
     # avoid silly behavior for parent -> working dir
     if csrc.node() is None and cdst.node() == repo.dirstate.p1():
@@ -361,7 +371,7 @@ def _domergecopies(orig, repo, cdst, csrc, base):
     ctx = csrc
     changedfiles = set()
     sourcecommitnum = 0
-    sourcecommitlimit = repo.ui.configint('copytrace', 'sourcecommitlimit', 100)
+    sourcecommitlimit = repo.ui.configint('copytrace', 'sourcecommitlimit')
     mdst = cdst.manifest()
     while ctx != base:
         if len(ctx.parents()) == 2:
@@ -398,7 +408,7 @@ def _domergecopies(orig, repo, cdst, csrc, base):
             dirnametofilename[dirname].append(f)
 
         maxmovecandidatestocheck = repo.ui.configint(
-            'copytrace', 'maxmovescandidatestocheck', 5)
+            'copytrace', 'maxmovescandidatestocheck')
         # in case of a rebase/graft, base may not be a common ancestor
         anc = cdst.ancestor(csrc)
         for f in missingfiles:
@@ -422,7 +432,7 @@ def _domergecopies(orig, repo, cdst, csrc, base):
                 repo.ui.log("copytrace", msg=msg,
                             reponame=_getreponame(repo, repo.ui))
 
-    if repo.ui.configbool("copytrace", "enableamendcopytrace", True):
+    if repo.ui.configbool("copytrace", "enableamendcopytrace"):
         # Look for additional amend-copies.
         amend_copies = _getamendcopies(repo, cdst, base.p1())
         if amend_copies:
@@ -434,7 +444,7 @@ def _domergecopies(orig, repo, cdst, csrc, base):
     return copies, {}, {}, {}, {}
 
 def _fastcopytraceenabled(ui):
-    return ui.configbool("copytrace", "fastcopytrace", False)
+    return ui.configbool("copytrace", "fastcopytrace")
 
 def _getreponame(repo, ui):
     reporoot = repo.origroot if util.safehasattr(repo, 'origroot') else ''
@@ -452,3 +462,16 @@ def _getctxfromfctx(fctx):
 def _gethex(ctx):
     # for workingctx return p1 hex
     return ctx.hex() if ctx.hex() != node.wdirhex else ctx.p1().hex()
+
+def _isfullcopytraceable(ui, cdst, base):
+    if not ui.configbool("copytrace", "draftusefullcopytrace", False):
+        return False
+    if cdst.phase() == phases.draft and base.phase() == phases.draft:
+        # draft branch: Use traditional copytracing if < 100 commits
+        ctx = cdst
+        commits = 0
+        sourcecommitlimit = ui.configint('copytrace', 'sourcecommitlimit')
+        while ctx != base and commits != sourcecommitlimit:
+            ctx = ctx.p1()
+            commits += 1
+        return commits < sourcecommitlimit

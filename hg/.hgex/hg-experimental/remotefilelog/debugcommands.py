@@ -9,13 +9,16 @@ from __future__ import absolute_import
 from mercurial import error, filelog, revlog
 from mercurial.node import bin, hex, nullid, short
 from mercurial.i18n import _
+from hgext3rd import extutil
 from . import (
+    constants,
     datapack,
     fileserverclient,
     historypack,
     shallowrepo,
     shallowutil,
 )
+from .repack import repacklockvfs
 from .lz4wrapper import lz4decompress
 import hashlib, os
 
@@ -196,35 +199,123 @@ def parsefileblob(path, decompress):
 
     return size, firstnode, mapping
 
-def debugdatapack(ui, path, **opts):
-    if '.data' in path:
-        path = path[:path.index('.data')]
-    dpack = datapack.datapack(path)
+def debugdatapack(ui, *paths, **opts):
+    for path in paths:
+        if '.data' in path:
+            path = path[:path.index('.data')]
+        ui.write("%s:\n" % path)
+        dpack = datapack.datapack(path)
+        node = opts.get('node')
+        if node:
+            deltachain = dpack.getdeltachain('', bin(node))
+            dumpdeltachain(ui, deltachain, **opts)
+            return
 
-    node = opts.get('node')
-    if node:
-        deltachain = dpack.getdeltachain('', bin(node))
-        dumpdeltachain(ui, deltachain, **opts)
-        return
+        if opts.get('long'):
+            hashformatter = hex
+            hashlen = 42
+        else:
+            hashformatter = short
+            hashlen = 14
 
-    if opts.get('long'):
-        hashformatter = hex
-        hashlen = 42
-    else:
-        hashformatter = short
-        hashlen = 14
+        lastfilename = None
+        totaldeltasize = 0
+        totalblobsize = 0
+        def printtotals():
+            if lastfilename is not None:
+                ui.write("\n")
+            if not totaldeltasize or not totalblobsize:
+                return
+            difference = totalblobsize - totaldeltasize
+            deltastr = "%0.1f%% %s" % (
+                (100.0 * abs(difference) / totalblobsize),
+                ("smaller" if difference > 0 else "bigger"))
 
-    lastfilename = None
-    for filename, node, deltabase, deltalen in dpack.iterentries():
-        if filename != lastfilename:
-            ui.write("\n%s\n" % filename)
-            ui.write("%s%s%s\n" % (
-                "Node".ljust(hashlen),
-                "Delta Base".ljust(hashlen),
-                "Delta Length".ljust(6)))
-            lastfilename = filename
-        ui.write("%s  %s  %s\n" % (
-            hashformatter(node), hashformatter(deltabase), deltalen))
+            ui.write(("Total:%s%s  %s (%s)\n") % (
+                "".ljust(2 * hashlen - len("Total:")),
+                str(totaldeltasize).ljust(12),
+                str(totalblobsize).ljust(9),
+                deltastr
+            ))
+
+        bases = {}
+        nodes = set()
+        failures = 0
+        for filename, node, deltabase, deltalen in dpack.iterentries():
+            bases[node] = deltabase
+            if node in nodes:
+                ui.write(("Bad entry: %s appears twice\n" % short(node)))
+                failures += 1
+            nodes.add(node)
+            if filename != lastfilename:
+                printtotals()
+                name = '(empty name)' if filename == '' else filename
+                ui.write("%s:\n" % name)
+                ui.write("%s%s%s%s\n" % (
+                    "Node".ljust(hashlen),
+                    "Delta Base".ljust(hashlen),
+                    "Delta Length".ljust(14),
+                    "Blob Size".ljust(9)))
+                lastfilename = filename
+                totalblobsize = 0
+                totaldeltasize = 0
+
+            # Metadata could be missing, in which case it will be an empty dict.
+            meta = dpack.getmeta(filename, node)
+            if constants.METAKEYSIZE in meta:
+                blobsize = meta[constants.METAKEYSIZE]
+                totaldeltasize += deltalen
+                totalblobsize += blobsize
+            else:
+                blobsize = "(missing)"
+            ui.write("%s  %s  %s%s\n" % (
+                hashformatter(node),
+                hashformatter(deltabase),
+                str(deltalen).ljust(14),
+                blobsize))
+
+        if filename is not None:
+            printtotals()
+
+        failures += _sanitycheck(ui, set(nodes), bases)
+        if failures > 1:
+            ui.warn(("%d failures\n" % failures))
+            return 1
+
+def _sanitycheck(ui, nodes, bases):
+    """
+    Does some basic sanity checking on a packfiles with ``nodes`` ``bases`` (a
+    mapping of node->base):
+
+    - Each deltabase must itself be a node elsewhere in the pack
+    - There must be no cycles
+    """
+    failures = 0
+    for node in nodes:
+        seen = set()
+        current = node
+        deltabase = bases[current]
+
+        while deltabase != nullid:
+            if deltabase not in nodes:
+                ui.warn(("Bad entry: %s has an unknown deltabase (%s)\n" %
+                        (short(node), short(deltabase))))
+                failures += 1
+                break
+
+            if deltabase in seen:
+                ui.warn(("Bad entry: %s has a cycle (at %s)\n" %
+                        (short(node), short(deltabase))))
+                failures += 1
+                break
+
+            current = deltabase
+            seen.add(current)
+            deltabase = bases[current]
+        # Since ``node`` begins a valid chain, reset/memoize its base to nullid
+        # so we don't traverse it again.
+        bases[node] = nullid
+    return failures
 
 def dumpdeltachain(ui, deltachain, **opts):
     hashformatter = hex
@@ -269,9 +360,8 @@ def debughistorypack(ui, path):
             short(p2node), short(linknode), copyfrom))
 
 def debugwaitonrepack(repo):
-    with repo._lock(repo.svfs, "repacklock", True, None,
-                         None, _('repacking %s') % repo.origroot):
-        pass
+    with extutil.flock(repacklockvfs(repo).join('repacklock'), ''):
+        return
 
 def debugwaitonprefetch(repo):
     with repo._lock(repo.svfs, "prefetchlock", True, None,

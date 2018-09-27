@@ -17,9 +17,14 @@ Check if:
 foreignexts = set(['remotenames'])
 foreignextre = re.compile(r'(%s)' % '|'.join(foreignexts))
 
+# pattern for rust extensions
+rustextre = re.compile(r'^hgext3rd\.rust\..*')
+
 # extensions in this repo
 repoexts = set(os.path.basename(p).split('.')[0]
-               for p in glob('hgext3rd/*.py*') if '__' not in p)
+               for p in glob('hgext3rd/*.py') if '__' not in p)
+repoexts.update(os.path.basename(p).split('.')[0]
+                for p in glob('hgext3rd/*.pyx'))
 repoexts.update(os.path.basename(os.path.dirname(p))
                 for p in glob('hgext3rd/*/__init__.py'))
 repoexts.update(os.path.basename(os.path.dirname(p))
@@ -56,6 +61,8 @@ def checkfile(path):
                 requiredexts = set(m.group(1).split())
                 unknownexts = requiredexts - foreignexts
                 for e in unknownexts:
+                    if rustextre.match(e):
+                        continue
                     if e in repoexts:
                         msg = 'do not require non-foreign extension %s'
                     else:

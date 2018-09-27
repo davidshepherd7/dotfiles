@@ -24,10 +24,10 @@ def uisetup(ui):
     class edrecordui(ui.__class__):
         def interface(self, feature):
             if feature == "chunkselector":
-                if (self.config("ui", "interface.%s" % feature, None) ==
-                    "editor"):
+                configvalue = self.config("ui", "interface.%s" % feature)
+                if configvalue == "editor":
                     return "editor"
-                elif self.config("ui", "interface.%s" % feature, None) is None:
+                elif configvalue is None:
                     if self.config("ui", "interface") == "editor":
                         return "editor"
             return super(edrecordui, self).interface(feature)
@@ -85,14 +85,14 @@ def recordfilter(ui, headers, operation=None):
             for hunk in header.hunks:
                 hunk.write(patch)
 
-    patcheditor = ui.config('ui', 'editor.chunkselector', None)
+    patcheditor = ui.config('ui', 'editor.chunkselector')
     if patcheditor is not None:
         override = {('ui', 'editor'): patcheditor}
     else:
         override = {}
 
     with ui.configoverride(override):
-        patch = ui.edit(patch.getvalue(), "", extra={'suffix': '.diff'})
+        patch = ui.edit(patch.getvalue(), "", action=(operation or 'edit'))
 
     # remove comments from patch
     # if there's an empty line, add a space to it

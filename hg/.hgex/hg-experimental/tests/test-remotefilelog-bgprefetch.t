@@ -22,7 +22,7 @@
 
   $ cd ..
 
-# prefetch a revision
+# clone the repo
 
   $ hgcloneshallow ssh://user@dummy/master shallow --noupdate
   streaming all changes
@@ -30,6 +30,19 @@
   transferred 776 bytes in * seconds (*/sec) (glob)
   searching for changes
   no changes found
+
+# Set the prefetchdays config to zero so that all commits are prefetched
+# no matter what their creation date is. Also set prefetchdelay config
+# to zero so that there is no delay between prefetches.
+  $ cd shallow
+  $ cat >> .hg/hgrc <<EOF
+  > [remotefilelog]
+  > prefetchdays=0
+  > prefetchdelay=0
+  > EOF
+  $ cd ..
+
+# prefetch a revision
   $ cd shallow
 
   $ hg prefetch -r 0
@@ -57,6 +70,7 @@
   adding file changes
   added 1 changesets with 0 changes to 0 files
   updating bookmark foo
+  new changesets 6b4b6f66ef8c
   (run 'hg update' to get a working copy)
   prefetching file contents
   $ sleep 0.5
@@ -85,6 +99,7 @@
   adding file changes
   added 1 changesets with 0 changes to 0 files
   updating bookmark foo
+  new changesets 6b4b6f66ef8c
   (run 'hg update' to get a working copy)
   prefetching file contents
   $ sleep 0.5
@@ -96,6 +111,7 @@
   $TESTTMP/hgcache/master/packs/94d53eef9e622533aec1fc6d8053cb086e785d21.histpack
   $TESTTMP/hgcache/master/packs/f3644bc7773e8289deda7f765138120c838f4e6e.dataidx
   $TESTTMP/hgcache/master/packs/f3644bc7773e8289deda7f765138120c838f4e6e.datapack
+  $TESTTMP/hgcache/master/packs/repacklock
   $TESTTMP/hgcache/repos
 
 # background prefetch with repack on update when wcprevset configured
@@ -131,29 +147,35 @@
   $TESTTMP/hgcache/master/packs/27c52c105a1ddf8c75143a6b279b04c24b1f4bee.histpack
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.dataidx
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/repacklock
   $TESTTMP/hgcache/repos
 
 # Ensure that file 'w' was prefetched - it was not part of the update operation and therefore
 # could only be downloaded by the background prefetch
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0:
+  w:
+  Node          Delta Base    Delta Length  Blob Size
+  bb6ccd5dceaa  000000000000  2             2
   
-  w
-  Node          Delta Base    Delta Length
-  bb6ccd5dceaa  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  ef95c5376f34  000000000000  3             3
+  1406e7411862  ef95c5376f34  14            2
   
-  x
-  Node          Delta Base    Delta Length
-  ef95c5376f34  000000000000  3
-  1406e7411862  ef95c5376f34  14
+  Total:                      17            5         (240.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  076f5e2225b3  000000000000  2             2
   
-  y
-  Node          Delta Base    Delta Length
-  076f5e2225b3  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  z:
+  Node          Delta Base    Delta Length  Blob Size
+  69a1b6752270  000000000000  2             2
   
-  z
-  Node          Delta Base    Delta Length
-  69a1b6752270  000000000000  2
+  Total:                      2             2         (0.0% bigger)
 
 # background prefetch with repack on commit when wcprevset configured
 
@@ -177,29 +199,35 @@
   $TESTTMP/hgcache/master/packs/27c52c105a1ddf8c75143a6b279b04c24b1f4bee.histpack
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.dataidx
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/repacklock
   $TESTTMP/hgcache/repos
 
 # Ensure that file 'w' was prefetched - it was not part of the commit operation and therefore
 # could only be downloaded by the background prefetch
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0:
+  w:
+  Node          Delta Base    Delta Length  Blob Size
+  bb6ccd5dceaa  000000000000  2             2
   
-  w
-  Node          Delta Base    Delta Length
-  bb6ccd5dceaa  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  ef95c5376f34  000000000000  3             3
+  1406e7411862  ef95c5376f34  14            2
   
-  x
-  Node          Delta Base    Delta Length
-  ef95c5376f34  000000000000  3
-  1406e7411862  ef95c5376f34  14
+  Total:                      17            5         (240.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  076f5e2225b3  000000000000  2             2
   
-  y
-  Node          Delta Base    Delta Length
-  076f5e2225b3  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  z:
+  Node          Delta Base    Delta Length  Blob Size
+  69a1b6752270  000000000000  2             2
   
-  z
-  Node          Delta Base    Delta Length
-  69a1b6752270  000000000000  2
+  Total:                      2             2         (0.0% bigger)
 
 # background prefetch with repack on rebase when wcprevset configured
 
@@ -209,7 +237,7 @@
   $ clearcache
   $ find $CACHEDIR -type f | sort
   $ hg rebase -s temporary -d foo
-  rebasing 3:58147a5b5242 "b" (tip temporary)
+  rebasing 3:58147a5b5242 "b" (temporary tip)
   saved backup bundle to $TESTTMP/shallow/.hg/strip-backup/58147a5b5242-c3678817-rebase.hg (glob)
   3 files fetched over 1 fetches - (3 misses, 0.00% hit ratio) over *s (glob)
   $ sleep 1
@@ -221,23 +249,28 @@
 # could only be downloaded by the background prefetch
 
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0:
+  w:
+  Node          Delta Base    Delta Length  Blob Size
+  bb6ccd5dceaa  000000000000  2             2
   
-  w
-  Node          Delta Base    Delta Length
-  bb6ccd5dceaa  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  ef95c5376f34  000000000000  3             3
+  1406e7411862  ef95c5376f34  14            2
   
-  x
-  Node          Delta Base    Delta Length
-  ef95c5376f34  000000000000  3
-  1406e7411862  ef95c5376f34  14
+  Total:                      17            5         (240.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  076f5e2225b3  000000000000  2             2
   
-  y
-  Node          Delta Base    Delta Length
-  076f5e2225b3  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  z:
+  Node          Delta Base    Delta Length  Blob Size
+  69a1b6752270  000000000000  2             2
   
-  z
-  Node          Delta Base    Delta Length
-  69a1b6752270  000000000000  2
+  Total:                      2             2         (0.0% bigger)
 
 # Check that foregound prefetch with no arguments blocks until background prefetches finish
 
@@ -245,9 +278,11 @@
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ clearcache
   $ hg prefetch --repack
-  waiting for lock on prefetching in $TESTTMP/shallow held by process * on host * (glob)
-  got lock after 1 seconds
+  waiting for lock on prefetching in $TESTTMP/shallow held by process * on host * (glob) (?)
+  got lock after * seconds (glob) (?)
   (running background incremental repack)
+  * files fetched over 1 fetches - (* misses, 0.00% hit ratio) over *s (glob) (?)
+
   $ sleep 0.5
   $ hg debugwaitonrepack >/dev/null 2>%1
 
@@ -256,34 +291,42 @@
   $TESTTMP/hgcache/master/packs/27c52c105a1ddf8c75143a6b279b04c24b1f4bee.histpack
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.dataidx
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/repacklock
   $TESTTMP/hgcache/repos
 
 # Ensure that files were prefetched
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0:
+  w:
+  Node          Delta Base    Delta Length  Blob Size
+  bb6ccd5dceaa  000000000000  2             2
   
-  w
-  Node          Delta Base    Delta Length
-  bb6ccd5dceaa  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  ef95c5376f34  000000000000  3             3
+  1406e7411862  ef95c5376f34  14            2
   
-  x
-  Node          Delta Base    Delta Length
-  ef95c5376f34  000000000000  3
-  1406e7411862  ef95c5376f34  14
+  Total:                      17            5         (240.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  076f5e2225b3  000000000000  2             2
   
-  y
-  Node          Delta Base    Delta Length
-  076f5e2225b3  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  z:
+  Node          Delta Base    Delta Length  Blob Size
+  69a1b6752270  000000000000  2             2
   
-  z
-  Node          Delta Base    Delta Length
-  69a1b6752270  000000000000  2
+  Total:                      2             2         (0.0% bigger)
 
 # Check that foreground prefetch fetches revs specified by '. + draft() + bgprefetchrevs + pullprefetch'
 
   $ clearcache
   $ hg prefetch --repack
+  waiting for lock on prefetching in $TESTTMP/shallow held by process * on host * (glob) (?)
+  got lock after * seconds (glob) (?)
   (running background incremental repack)
-  5 files fetched over 1 fetches - (5 misses, 0.00% hit ratio) over *s (glob)
+  * files fetched over 1 fetches - (* misses, 0.00% hit ratio) over *s (glob) (?)
   $ sleep 0.5
   $ hg debugwaitonrepack >/dev/null 2>%1
 
@@ -292,27 +335,33 @@
   $TESTTMP/hgcache/master/packs/27c52c105a1ddf8c75143a6b279b04c24b1f4bee.histpack
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.dataidx
   $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/repacklock
   $TESTTMP/hgcache/repos
 
 # Ensure that files were prefetched
   $ hg debugdatapack $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0.datapack
+  $TESTTMP/hgcache/master/packs/8299d5a1030f073f4adbb3b6bd2ad3bdcc276df0:
+  w:
+  Node          Delta Base    Delta Length  Blob Size
+  bb6ccd5dceaa  000000000000  2             2
   
-  w
-  Node          Delta Base    Delta Length
-  bb6ccd5dceaa  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  x:
+  Node          Delta Base    Delta Length  Blob Size
+  ef95c5376f34  000000000000  3             3
+  1406e7411862  ef95c5376f34  14            2
   
-  x
-  Node          Delta Base    Delta Length
-  ef95c5376f34  000000000000  3
-  1406e7411862  ef95c5376f34  14
+  Total:                      17            5         (240.0% bigger)
+  y:
+  Node          Delta Base    Delta Length  Blob Size
+  076f5e2225b3  000000000000  2             2
   
-  y
-  Node          Delta Base    Delta Length
-  076f5e2225b3  000000000000  2
+  Total:                      2             2         (0.0% bigger)
+  z:
+  Node          Delta Base    Delta Length  Blob Size
+  69a1b6752270  000000000000  2             2
   
-  z
-  Node          Delta Base    Delta Length
-  69a1b6752270  000000000000  2
+  Total:                      2             2         (0.0% bigger)
 
 # Test that if data was prefetched and repacked we dont need to prefetch it again
 # It ensures that Mercurial looks not only in loose files but in packs as well

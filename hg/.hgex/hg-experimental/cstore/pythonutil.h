@@ -1,14 +1,14 @@
-// pythonutil.h - utilities to glue C++ code to python
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// pythonutil.h - utilities to glue C++ code to python
 // no-check-code
 
-#ifndef REMOTEFILELOG_PYTHONOBJ_H
-#define REMOTEFILELOG_PYTHONOBJ_H
+#ifndef FBHGEXT_CSTORE_PYTHONUTIL_H
+#define FBHGEXT_CSTORE_PYTHONUTIL_H
 
 // The PY_SSIZE_T_CLEAN define must be defined before the Python.h include,
 // as per the documentation.
@@ -20,10 +20,10 @@
 // Py_BuildValue treats NULL as NONE, so we have to have a non-null pointer.
 #define MAGIC_EMPTY_STRING ""
 
-#include "store.h"
-#include "key.h"
-#include "match.h"
-#include "treemanifest.h"
+#include "cstore/key.h"
+#include "cstore/match.h"
+#include "cstore/store.h"
+#include "ctreemanifest/treemanifest.h"
 
 /**
  * C++ exception that represents an issue at the python C api level.
@@ -126,4 +126,4 @@ class PythonDiffResult : public DiffResult {
       return this->_diff;
     }
 };
-#endif //REMOTEFILELOG_PYTHONOBJ_H
+#endif // FBHGEXT_CSTORE_PYTHONUTIL_H

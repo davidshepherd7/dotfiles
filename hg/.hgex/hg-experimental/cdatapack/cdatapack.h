@@ -1,18 +1,21 @@
-// Copyright 2016-present Facebook. All Rights Reserved.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
+// This software may be used and distributed according to the terms of the
+// GNU General Public License version 2 or any later version.
+
 // cdatapack:
-//
 // no-check-code
 
-#ifndef CDATAPACK_CDATAPACK_H
-#define CDATAPACK_CDATAPACK_H
+#ifndef FBHGEXT_CDATAPACK_CDATAPACK_H
+#define FBHGEXT_CDATAPACK_CDATAPACK_H
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <sys/types.h>
 
-#include "portability/portability.h"
+#include "clib/portability/portability.h"
 
 #define NODE_SZ 20
 
@@ -26,7 +29,6 @@ typedef uint32_t index_offset_t;
 #define FULLTEXTINDEXMARK ((index_offset_t) -1)
 #define NOBASEINDEXMARK   ((index_offset_t) -2)
 typedef uint64_t data_offset_t;
-#define ntoh_data_offset ntohll
 
 struct _disk_index_entry_t;
 struct _fanout_table_entry_t;
@@ -61,8 +63,6 @@ typedef enum {
 typedef struct _datapack_handle_t {
   datapack_handle_status_t status;
 
-  int indexfd;
-  int datafd;
   void* index_mmap;
   void* data_mmap;
   off_t index_file_sz;
@@ -172,4 +172,4 @@ extern const get_delta_chain_link_result_t getdeltachainlink(
 // caller is responsible for freeing link->delta.
 extern bool uncompressdeltachainlink(delta_chain_link_t *link);
 
-#endif //CDATAPACK_CDATAPACK_H
+#endif // FBHGEXT_CDATAPACK_CDATAPACK_H

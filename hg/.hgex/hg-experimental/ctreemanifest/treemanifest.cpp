@@ -1,13 +1,14 @@
-// treemanifest.cpp - c++ implementation of a tree manifest
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// treemanifest.cpp - c++ implementation of a tree manifest
 // no-check-code
 
-#include "treemanifest.h"
+#include "ctreemanifest/treemanifest.h"
+
 #include <cassert>
 
 /**
@@ -300,10 +301,11 @@ struct GetResult {
 };
 
 static FindResult get_callback(
-    Manifest *manifest,
-    const char *filename, size_t filenamelen,
-    FindContext *context,
-    ManifestPtr *resultManifest) {
+    Manifest* manifest,
+    const char* filename,
+    size_t filenamelen,
+    FindContext* context,
+    ManifestPtr* /*resultManifest*/) {
   GetResult *result = (GetResult *) context->extras;
 
   // position the iterator at the right location

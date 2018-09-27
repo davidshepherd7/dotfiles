@@ -1,14 +1,17 @@
-// manifest_entry.cpp - c++ implementation of a single manifest entry
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// manifest_entry.cpp - c++ implementation of a single manifest entry
 // no-check-code
 
-#include "manifest_entry.h"
+#include "ctreemanifest/manifest_entry.h"
+
 #include <cassert>
+
+#include "ctreemanifest/manifest.h"
 
 ManifestEntry::ManifestEntry()
     : filename(NULL), filenamelen(0), node(NULL), flag(NULL),

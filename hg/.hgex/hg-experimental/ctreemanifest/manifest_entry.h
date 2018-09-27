@@ -1,24 +1,22 @@
-// manifest_entry.h - c++ declaration for a single manifest entry
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// manifest_entry.h - c++ declaration for a single manifest entry
 // no-check-code
 
-#ifndef REMOTEFILELOG_MANIFEST_ENTRY_H
-#define REMOTEFILELOG_MANIFEST_ENTRY_H
+#ifndef FBHGEXT_CTREEMANIFEST_MANIFEST_ENTRY_H
+#define FBHGEXT_CTREEMANIFEST_MANIFEST_ENTRY_H
 
 #include <cstddef>
 #include <cstring>
 #include <string>
 
-class ManifestEntry;
-
-#include "convert.h"
-#include "manifest.h"
-#include "manifest_fetcher.h"
+#include "clib/convert.h"
+#include "ctreemanifest/manifest_fetcher.h"
+#include "ctreemanifest/manifest_ptr.h"
 
 #define MANIFEST_DIRECTORY_FLAG 't'
 #define MANIFEST_DIRECTORY_FLAGPTR (&"t"[0])
@@ -81,4 +79,4 @@ class ManifestEntry {
     static int compareName(ManifestEntry *left, ManifestEntry *right);
 };
 
-#endif //REMOTEFILELOG_MANIFEST_ENTRY_H
+#endif // FBHGEXT_CTREEMANIFEST_MANIFEST_ENTRY_H

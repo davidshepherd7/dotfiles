@@ -23,6 +23,7 @@ Set up the repository.
   |
   o  0
   
+
   $ hg up 3
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
 
@@ -52,13 +53,13 @@ Updates to other branches should fail without --merge.
 
 Certain flags shouldn't work together.
   $ hg up --check --merge 3
-  abort: can only specify one of -C/--clean, -c/--check, or -m/merge
+  abort: can only specify one of -C/--clean, -c/--check, or -m/--merge
   [255]
   $ hg up --check --clean 3
-  abort: can only specify one of -C/--clean, -c/--check, or -m/merge
+  abort: can only specify one of -C/--clean, -c/--check, or -m/--merge
   [255]
   $ hg up --clean --merge 3
-  abort: can only specify one of -C/--clean, -c/--check, or -m/merge
+  abort: can only specify one of -C/--clean, -c/--check, or -m/--merge
   [255]
 
 --clean should work as expected.
@@ -68,3 +69,6 @@ Certain flags shouldn't work together.
   1 files updated, 0 files merged, 0 files removed, 0 files unresolved
   $ hg st
   ? foo
+  $ hg update ".^"
+  1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+  (hint: use 'hg prev' to move to the parent changeset)

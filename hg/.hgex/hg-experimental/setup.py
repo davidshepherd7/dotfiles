@@ -2,6 +2,7 @@ from distutils.version import LooseVersion
 from distutils.cmd import Command
 from distutils.core import setup, Extension
 import distutils
+from distutils_rust import RustExtension, BuildRustExt
 import fnmatch
 from glob import glob
 
@@ -16,9 +17,33 @@ STDCPP0X = "" if iswindows else "-std=c++0x"
 WEXTRA = "" if iswindows else "-Wextra"
 WCONVERSION = "" if iswindows else "-Wconversion"
 PEDANTIC = "" if iswindows else "-pedantic"
+SHA1LIB_DEFINE = "/DSHA1_USE_SHA1DC" if iswindows else "-DSHA1_USE_SHA1DC"
+SHA1_LIBRARY = "sha1detectcoll"
 NOOPTIMIZATION = "/Od" if iswindows else "-O0"
 OPTIMIZATION = "" if iswindows else "-O2"
 PRODUCEDEBUGSYMBOLS = "/DEBUG:FULL" if iswindows else "-g"
+
+if 'USERUST' in os.environ:
+    USERUST = int(os.environ['USERUST'])
+else:
+    import subprocess
+    USERUST = False
+    try:
+        cargo_version = subprocess.check_output(
+                ['cargo', '--version']).split()[1]
+    except Exception:
+        sys.stderr.write(
+                "not compiling Rust extensions: cargo is not available\n")
+    else:
+        required_cargo_version = '0.21'
+        if (LooseVersion(cargo_version) >=
+                LooseVersion(required_cargo_version)):
+            USERUST = True
+        else:
+            sys.stderr.write(
+                    "not compiling Rust extensions: cargo is too old " +
+                    "(found %s, need %s or higher)\n"
+                    % (cargo_version, required_cargo_version))
 
 # whether to use Cython to recompile .pyx to .c/.cpp at build time.
 # if False, fallback to .c/.cpp in the repo and .pyx files are ignored.
@@ -52,7 +77,7 @@ for i, arg in enumerate(sys.argv):
 
 sys.argv = args
 
-cflags = []
+cflags = [SHA1LIB_DEFINE]
 
 # if this is set, compile all C extensions with -O0 -g for easy debugging.  note
 # that this is not manifested in any way in the Makefile dependencies.
@@ -159,17 +184,21 @@ else:
     availablelibraries = {
         'datapack': {
             "sources" : ["cdatapack/cdatapack.c"],
-            "include_dirs" : ["clib"] + include_dirs,
-            "libraries" : ["lz4", "sha1"],
+            "include_dirs" : ["."] + include_dirs,
+            "libraries" : ["lz4", SHA1_LIBRARY],
             "extra_args" : filter(None,
                 [STDC99, WALL, WERROR, WSTRICTPROTOTYPES] + cflags),
         },
         'mpatch': {
-            'sources': ['cstore/mpatch.c']
+            "sources": ["cstore/mpatch.c"],
+            "include_dirs" : ["."] + include_dirs,
         },
-        "sha1": {
-            "sources" : ["clib/sha1/sha1.c", "clib/sha1/ubc_check.c"],
-            "include_dirs" : ["clib/sha1"] + include_dirs,
+        "sha1detectcoll": {
+            "sources" : [
+                "third-party/sha1dc/sha1.c",
+                "third-party/sha1dc/ubc_check.c",
+            ],
+            "include_dirs" : ["third-party"] + include_dirs,
             "extra_args" : filter(None,
                 [STDC99, WALL, WERROR, WSTRICTPROTOTYPES] + cflags),
         },
@@ -177,23 +206,21 @@ else:
 
 # modules that are single files in hgext3rd
 hgext3rd = [
-    p[:-3].replace('/', '.')
+    p[:-3].replace('\\', '/').replace('/', '.')
     for p in glob('hgext3rd/*.py')
     if p != 'hgext3rd/__init__.py'
 ]
 
 # packages that are directories in hgext3rd
 hgext3rdpkgs = [
-    p[:-12].replace('/', '.')
+    p[:-12].replace('\\', '/').replace('/', '.')
     for p in glob('hgext3rd/*/__init__.py')
 ]
 
 availablepymodules = hgext3rd
 
 availablepackages = hgext3rdpkgs + [
-    'infinitepush',
     'phabricator',
-    'sqldirstate',
     'remotefilelog',
 ]
 
@@ -233,19 +260,20 @@ else:
             Extension('cstore',
                 sources=[
                     'cstore/datapackstore.cpp',
+                    'cstore/deltachain.cpp',
                     'cstore/py-cstore.cpp',
                     'cstore/pythonutil.cpp',
+                    'cstore/pythondatastore.cpp',
                     'cstore/uniondatapackstore.cpp',
                     'ctreemanifest/manifest.cpp',
                     'ctreemanifest/manifest_entry.cpp',
                     'ctreemanifest/manifest_fetcher.cpp',
+                    'ctreemanifest/manifest_ptr.cpp',
                     'ctreemanifest/treemanifest.cpp',
                 ],
                 include_dirs=[
-                    'ctreemanifest',
-                    'cdatapack',
-                    'clib',
-                    'cstore',
+                    '.',
+                    'third-party',
                 ] + include_dirs,
                 library_dirs=[
                     'build/' + distutils_dir_name('lib'),
@@ -254,7 +282,7 @@ else:
                     'datapack',
                     'lz4',
                     'mpatch',
-                    'sha1',
+                    SHA1_LIBRARY,
                 ],
                 extra_compile_args=filter(None, [STDCPP0X, WALL] + cflags),
             ),
@@ -276,16 +304,27 @@ else:
                          'cfastmanifest/tree_path.c',
                 ],
                 include_dirs=[
+                    '.',
                     'cfastmanifest',
                     'clib',
+                    'third-party',
                 ] + include_dirs,
                 library_dirs=library_dirs,
-                libraries=['sha1'],
+                libraries=[SHA1_LIBRARY],
                 extra_compile_args=filter(None, [
                     STDC99,
                     WALL,
                     WSTRICTPROTOTYPES,
                 ] + cflags),
+            ),
+        ],
+        'clindex': [
+            Extension('hgext3rd.clindex',
+                sources=['hgext3rd/clindex.pyx'],
+                include_dirs=['hgext3rd'],
+                extra_compile_args=filter(None, [
+                    STDC99, WALL, WEXTRA, WCONVERSION, PEDANTIC,
+                ]),
             ),
         ],
         'linelog' : [
@@ -307,13 +346,13 @@ else:
         'traceprof': [
             Extension('hgext3rd.traceprof',
                 sources=['hgext3rd/traceprof.pyx'],
-                include_dirs=['hgext3rd/'],
+                include_dirs=['hgext3rd'],
                 extra_compile_args=filter(None, [
                     OPTIMIZATION, STDCPP0X, WALL, WEXTRA, WCONVERSION, PEDANTIC,
                     PRODUCEDEBUGSYMBOLS
                 ]),
             ),
-        ]
+        ],
     }
 
 allnames = availablepackages + availableextmodules.keys() + availablepymodules
@@ -326,7 +365,6 @@ dependencies = {
     'absorb' : ['linelog'],
     'cstore' : ['ctreemanifest', 'cdatapack'],
     'fastannotate' : ['linelog'],
-    'infinitepush' : ['extutil'],
     'remotefilelog' : ['cstore', 'extutil'],
     'treemanifest' : ['cstore'],
 }
@@ -346,6 +384,7 @@ if iswindows:
     cythonmodules = ['linelog']
 else:
     cythonmodules = [
+        'clindex',
         'linelog',
         'patchrmdir',
         'traceprof',
@@ -417,6 +456,8 @@ requires = []
 requireslz4 = ['remotefilelog', 'cdatapack']
 if any(c for c in components if c in requireslz4):
     requires.append('lz4')
+if 'phabricator' in components:
+    requires.append('urllib3')
 
 py_modules = []
 for module in availablepymodules:
@@ -476,6 +517,19 @@ class CleanExtCommand(Command):
             for name in fnmatch.filter(files, patten):
                 yield os.path.join(dirname, name)
 
+rust_ext_modules = []
+if USERUST:
+    rust_ext_modules.extend([
+        RustExtension('indexes',
+            package='hgext3rd.rust',
+            manifest='rust/indexes/Cargo.toml',
+        ),
+        RustExtension('treedirstate',
+            package='hgext3rd.rust',
+            manifest='rust/treedirstate/Cargo.toml',
+        ),
+    ])
+
 setup(
     name='fbhgext',
     version='1.0',
@@ -490,9 +544,11 @@ setup(
     packages=packages,
     install_requires=requires,
     py_modules=py_modules,
-    ext_modules = ext_modules,
+    ext_modules=ext_modules,
     libraries=libraries,
+    rust_ext_modules=rust_ext_modules,
     cmdclass={
         'clean_ext': CleanExtCommand,
+        'build_rust_ext': BuildRustExt,
     }
 )

@@ -1,48 +1,26 @@
-// manifest.h - c++ declarations for a single manifest
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// manifest.h - c++ declarations for a single manifest
 // no-check-code
 
-#ifndef REMOTEFILELOG_MANIFEST_H
-#define REMOTEFILELOG_MANIFEST_H
+#ifndef FBHGEXT_CTREEMANIFEST_MANIFEST_H
+#define FBHGEXT_CTREEMANIFEST_MANIFEST_H
 
 #include <cstring>
 #include <list>
 #include <stdexcept>
 
-#include "convert.h"
+#include "clib/convert.h"
+#include "cstore/store.h"
+#include "ctreemanifest/manifest_entry.h"
+#include "ctreemanifest/manifest_ptr.h"
 
-class Manifest;
 class ManifestIterator;
 class SortedManifestIterator;
-
-class ManifestPtr {
-  private:
-    Manifest *manifest;
-  public:
-    ManifestPtr();
-
-    ManifestPtr(Manifest *manifest);
-
-    ManifestPtr(const ManifestPtr &other);
-
-    ~ManifestPtr();
-
-    ManifestPtr& operator= (const ManifestPtr& other);
-
-    operator Manifest* () const;
-
-    Manifest *operator-> ();
-
-    bool isnull() const;
-};
-
-#include "manifest_entry.h"
-#include "store.h"
 
 enum FindResultType {
   RESULT_FILE,
@@ -213,4 +191,4 @@ class SortedManifestIterator {
     bool isfinished() const;
 };
 
-#endif //REMOTEFILELOG_MANIFEST_H
+#endif // FBHGEXT_CTREEMANIFEST_MANIFEST_H

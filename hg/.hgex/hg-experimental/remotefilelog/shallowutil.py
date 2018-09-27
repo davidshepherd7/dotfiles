@@ -7,10 +7,20 @@
 from __future__ import absolute_import
 
 import errno, hashlib, os, stat, struct, tempfile
+
+from collections import defaultdict
 from mercurial import filelog, revlog, util, error
 from mercurial.i18n import _
 
 from . import constants
+
+if util.safehasattr(revlog, 'parsemeta'):
+    # Since 0596d274
+    _parsemeta = revlog.parsemeta
+    _packmeta = revlog.packmeta
+else:
+    _parsemeta = filelog.parsemeta
+    _packmeta = filelog.packmeta
 
 if os.name != 'nt':
     import grp
@@ -81,17 +91,41 @@ def createrevlogtext(text, copyfrom=None, copyrev=None):
         if copyfrom:
             meta['copy'] = copyfrom
             meta['copyrev'] = copyrev
-        text = filelog.packmeta(meta, text)
+        text = _packmeta(meta, text)
 
     return text
 
 def parsemeta(text):
     """parse mercurial filelog metadata"""
-    meta, size = filelog.parsemeta(text)
+    meta, size = _parsemeta(text)
     if text.startswith('\1\n'):
         s = text.index('\1\n', 2)
         text = text[s + 2:]
     return meta or {}, text
+
+def sumdicts(*dicts):
+    """Adds all the values of *dicts together into one dictionary. This assumes
+    the values in *dicts are all summable.
+
+    e.g. [{'a': 4', 'b': 2}, {'b': 3, 'c': 1}] -> {'a': 4, 'b': 5, 'c': 1}
+    """
+    result = defaultdict(lambda: 0)
+    for dict in dicts:
+        for k, v in dict.iteritems():
+            result[k] += v
+    return result
+
+def prefixkeys(dict, prefix):
+    """Returns ``dict`` with ``prefix`` prepended to all its keys."""
+    result = {}
+    for k, v in dict.iteritems():
+        result[prefix + k] = v
+    return result
+
+def reportpackmetrics(ui, prefix, *stores):
+    dicts = [s.getmetrics() for s in stores]
+    dict = prefixkeys(sumdicts(*dicts), prefix + '_')
+    ui.log(prefix + "_packsizes", "", **dict)
 
 def _parsepackmeta(metabuf):
     """parse datapack meta, bytes (<metadata-list>) -> dict
@@ -457,9 +491,43 @@ def mkstickygroupdir(ui, path):
             path = os.path.dirname(path)
 
         for path in reversed(missingdirs):
-            os.mkdir(path)
+            try:
+                os.mkdir(path)
+            except OSError as ex:
+                if ex.errno != errno.EEXIST:
+                    raise
 
         for path in missingdirs:
             setstickygroupdir(path, gid, ui.warn)
     finally:
         os.umask(oldumask)
+
+def trygetattr(obj, names):
+    """try different attribute names, return the first matched attribute,
+    or raise if no names are matched.
+    """
+    for name in names:
+        result = getattr(obj, name, None)
+        if result is not None:
+            return result
+    raise AttributeError
+
+def peercapabilities(peer):
+    """return capabilities of a peer"""
+    return trygetattr(peer, ('_capabilities', 'capabilities'))()
+
+def getusername(ui):
+    try:
+        from mercurial.utils.stringutil import shortuser
+    except (ImportError, AttributeError):
+        from mercurial.util import shortuser
+    try:
+        return shortuser(ui.username())
+    except Exception:
+        return 'unknown'
+
+def getreponame(ui):
+    reponame = ui.config('paths', 'default')
+    if reponame:
+        return os.path.basename(reponame)
+    return "unknown"

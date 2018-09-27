@@ -6,15 +6,14 @@ Setup
   $ export PYTHONPATH
 
   $ cat > $TESTTMP/pretxnchangegroup.sh << EOF
-  > #!/bin/bash
+  > #!/bin/sh
   > env | grep -E "^HG_USERVAR"
   > exit 0
   > EOF
   $ chmod +x $TESTTMP/pretxnchangegroup.sh
   $ cat >> $HGRCPATH << EOF
   > [extensions]
-  > bundle2hooks=$TESTDIR/../hgext3rd/bundle2hooks.py
-  > pushvars=$TESTDIR/../hgext3rd/pushvars.py
+  > tweakdefaults=$TESTDIR/../hgext3rd/tweakdefaults.py
   > remotenames=
   > [hooks]
   > pretxnchangegroup = $TESTTMP/pretxnchangegroup.sh

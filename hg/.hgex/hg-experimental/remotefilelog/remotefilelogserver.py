@@ -6,10 +6,11 @@
 # GNU General Public License version 2 or any later version.
 from __future__ import absolute_import
 
-from mercurial import wireproto, changegroup, match, util, changelog, context
-from mercurial import exchange, sshserver, store, error
+from mercurial import ancestor
+from mercurial import changegroup, match, util, changelog, context
+from mercurial import store, error
+from mercurial import streamclone
 from mercurial.extensions import wrapfunction
-from mercurial.hgweb import protocol as httpprotocol
 from mercurial.node import bin, hex, nullid, nullrev
 from mercurial.i18n import _
 from .  import (
@@ -22,11 +23,35 @@ from .  import (
 import errno, stat, os, time
 
 try:
-    from mercurial import streamclone
-    streamclone._walkstreamfiles
-    hasstreamclone = True
-except Exception:
-    hasstreamclone = False
+    from mercurial import sshserver
+    _sshv1server = sshserver.sshserver
+except ImportError:
+    from mercurial import wireprotoserver
+    _sshv1server = wireprotoserver.sshv1protocolhandler
+
+try:
+    # hg 4.6 and later
+    from mercurial import wireprotoserver as httpprotocol
+    httpprotocol.HTTP_OK # force demandimport
+except ImportError:
+    # hg 4.5 and earlier
+    from mercurial.hgweb import protocol as httpprotocol
+    httpprotocol.decodevaluefromheaders
+
+
+try:
+    from mercurial import wireprototypes
+    wireprototypes.streamres # force demandimport
+except ImportError:
+    # Before b4d85bc1 (4.6)
+    from mercurial import wireproto as wireprototypes
+
+try:
+    from mercurial import wireprotov1server
+    wireprotov1server.commands # force demandimport
+except ImportError:
+    # Before b4d85bc1 (4.6)
+    from mercurial import wireproto as wireprotov1server
 
 def setupserver(ui, repo):
     """Sets up a normal Mercurial repo so it can serve files to shallow repos.
@@ -66,14 +91,15 @@ def onetimesetup(ui):
     onetime = True
 
     # support file content requests
-    wireproto.commands['getflogheads'] = (getflogheads, 'path')
-    wireproto.commands['getfiles'] = (getfiles, '')
-    wireproto.commands['getfile'] = (getfile, 'file node')
-    wireproto.commands['getpackv1'] = (getpack, '*')
+    wireprotov1server.commands['getflogheads'] = (getflogheads, 'path')
+    wireprotov1server.commands['getfiles'] = (getfiles, '')
+    wireprotov1server.commands['getfile'] = (getfile, 'file node')
+    wireprotov1server.commands['getpackv1'] = (getpack, '*')
 
     class streamstate(object):
         match = None
         shallowremote = False
+        noflatmf = False
     state = streamstate()
 
     def stream_out_shallow(repo, proto, other):
@@ -88,13 +114,15 @@ def onetimesetup(ui):
 
         oldshallow = state.shallowremote
         oldmatch = state.match
+        oldnoflatmf = state.noflatmf
         try:
             state.shallowremote = True
             state.match = match.always(repo.root, '')
+            state.noflatmf = other.get('noflatmanifest') == 'True'
             if includepattern or excludepattern:
                 state.match = match.match(repo.root, '', None,
                     includepattern, excludepattern)
-            streamres = wireproto.stream(repo, proto)
+            streamres = wireprotov1server.stream(repo, proto)
 
             # Force the first value to execute, so the file list is computed
             # within the try/finally scope
@@ -105,12 +133,13 @@ def onetimesetup(ui):
                 yield second
                 for value in streamres.gen:
                     yield value
-            return wireproto.streamres(gen())
+            return wireprototypes.streamres(gen())
         finally:
             state.shallowremote = oldshallow
             state.match = oldmatch
+            state.noflatmf = oldnoflatmf
 
-    wireproto.commands['stream_out_shallow'] = (stream_out_shallow, '*')
+    wireprotov1server.commands['stream_out_shallow'] = (stream_out_shallow, '*')
 
     # don't clone filelogs to shallow clients
     def _walkstreamfiles(orig, repo):
@@ -150,6 +179,8 @@ def onetimesetup(ui):
             for x in repo.store.topfiles():
                 if shallowtrees and x[0][:15] == '00manifesttree.':
                     continue
+                if state.noflatmf and x[0][:11] == '00manifest.':
+                    continue
                 yield x
 
         elif shallowrepo.requirement in repo.requirements:
@@ -162,13 +193,7 @@ def onetimesetup(ui):
             for x in orig(repo):
                 yield x
 
-    # This function moved in Mercurial 3.5 and 3.6
-    if hasstreamclone:
-        wrapfunction(streamclone, '_walkstreamfiles', _walkstreamfiles)
-    elif util.safehasattr(wireproto, '_walkstreamfiles'):
-        wrapfunction(wireproto, '_walkstreamfiles', _walkstreamfiles)
-    else:
-        wrapfunction(exchange, '_walkstreamfiles', _walkstreamfiles)
+    wrapfunction(streamclone, '_walkstreamfiles', _walkstreamfiles)
 
     # We no longer use getbundle_shallow commands, but we must still
     # support it for migration purposes
@@ -178,22 +203,25 @@ def onetimesetup(ui):
         bundlecaps.add('remotefilelog')
         others['bundlecaps'] = ','.join(bundlecaps)
 
-        return wireproto.commands["getbundle"][0](repo, proto, others)
+        return wireprotov1server.commands["getbundle"][0](repo, proto, others)
 
-    wireproto.commands["getbundle_shallow"] = (getbundleshallow, '*')
+    wireprotov1server.commands["getbundle_shallow"] = (getbundleshallow, '*')
 
     # expose remotefilelog capabilities
     def _capabilities(orig, repo, proto):
         caps = orig(repo, proto)
         if ((shallowrepo.requirement in repo.requirements or
             ui.configbool('remotefilelog', 'server'))):
-            if isinstance(proto, sshserver.sshserver):
+            if isinstance(proto, _sshv1server):
                 # legacy getfiles method which only works over ssh
                 caps.append(shallowrepo.requirement)
             caps.append('getflogheads')
             caps.append('getfile')
         return caps
-    wrapfunction(wireproto, '_capabilities', _capabilities)
+    if util.safehasattr(wireprotov1server, '_capabilities'):
+        wrapfunction(wireprotov1server, '_capabilities', _capabilities)
+    else:
+        wrapfunction(wireprotov1server, 'capabilities', _capabilities)
 
     def _adjustlinkrev(orig, self, *args, **kwargs):
         # When generating file blobs, taking the real path is too slow on large
@@ -283,11 +311,16 @@ def getfiles(repo, proto):
     """
     if shallowrepo.requirement in repo.requirements:
         raise error.Abort(_('cannot fetch remote files from shallow repo'))
-    if not isinstance(proto, sshserver.sshserver):
+    if not isinstance(proto, _sshv1server):
         raise error.Abort(_('cannot fetch remote files over non-ssh protocol'))
 
     def streamer():
-        fin = proto.fin
+        try:
+            # hg 4.6 and later
+            fin = proto._fin
+        except AttributeError:
+            # hg 4.5 and earlier
+            fin = proto.fin
 
         cachepath = repo.ui.config("remotefilelog", "servercachepath")
         if not cachepath:
@@ -311,8 +344,13 @@ def getfiles(repo, proto):
 
             # it would be better to only flush after processing a whole batch
             # but currently we don't know if there are more requests coming
-            proto.fout.flush()
-    return wireproto.streamres(streamer())
+            try:
+                # hg 4.6 and later
+                proto._fout.flush()
+            except AttributeError:
+                # hg 4.5 and earlier
+                proto.fout.flush()
+    return wireprototypes.streamres(streamer())
 
 def createfileblob(filectx):
     """
@@ -412,7 +450,7 @@ def getpack(repo, proto, args):
     """
     if shallowrepo.requirement in repo.requirements:
         raise error.Abort(_('cannot fetch remote files from shallow repo'))
-    if not isinstance(proto, sshserver.sshserver):
+    if not isinstance(proto, _sshv1server):
         raise error.Abort(_('cannot fetch remote files over non-ssh protocol'))
 
     def streamer():
@@ -432,7 +470,13 @@ def getpack(repo, proto, args):
         deltaentry = <node: 20 byte><deltabase: 20 byte>
                      <delta len: 8 byte><delta>
         """
-        files = _receivepackrequest(proto.fin)
+        try:
+            # hg 4.6 and later
+            fin = proto._fin
+        except AttributeError:
+            # hg 4.5 and earlier
+            fin = proto.fin
+        files = _receivepackrequest(fin)
 
         # Sort the files by name, so we provide deterministic results
         for filename, nodes in sorted(files.iteritems()):
@@ -440,8 +484,9 @@ def getpack(repo, proto, args):
 
             # Compute history
             history = []
-            for rev in fl.ancestors(list(fl.rev(n) for n in nodes),
-                                    inclusive=True):
+            for rev in ancestor.lazyancestors(fl.parentrevs,
+                                              [fl.rev(n) for n in nodes],
+                                              inclusive=True):
                 x, x, x, x, linkrev, p1, p2, node = fl.index[rev]
                 copyfrom = ''
                 p1node = fl.node(p1)
@@ -462,9 +507,14 @@ def getpack(repo, proto, args):
                 yield chunk
 
         yield wirepack.closepart()
-        proto.fout.flush()
+        try:
+            # hg 4.6 and later
+            proto._fout.flush()
+        except AttributeError:
+            # hg 4.5 and earlier
+            proto.fout.flush()
 
-    return wireproto.streamres(streamer())
+    return wireprototypes.streamres(streamer())
 
 def _receivepackrequest(stream):
     files = {}

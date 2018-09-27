@@ -44,6 +44,20 @@ def shallowgroup(cls, self, nodelist, rlog, lookup, units=None, reorder=None):
 
     yield self.close()
 
+def _cansendflat(repo, mfnodes):
+    if not util.safehasattr(repo.manifestlog, '_revlog'):
+        return False
+
+    if repo.ui.configbool('treemanifest', 'treeonly'):
+        return False
+
+    revlog = repo.manifestlog._revlog
+    for mfnode in mfnodes:
+        if mfnode not in revlog.nodemap:
+            return False
+
+    return True
+
 @shallowutil.interposeclass(changegroup, 'cg1packer')
 class shallowcg1packer(changegroup.cg1packer):
     def generate(self, commonrevs, clnodes, fastpathlinkrev, source):
@@ -58,21 +72,49 @@ class shallowcg1packer(changegroup.cg1packer):
                             units=units)
 
     def generatemanifests(self, commonrevs, clrevorder, fastpathlinkrev,
-                          mfs, fnodes):
-        sendmanifests = self._repo.ui.configbool('treemanifest', 'sendflat',
-                                                 True)
-        chunks = super(shallowcg1packer, self).generatemanifests(commonrevs,
-                                                                clrevorder,
-                                                                fastpathlinkrev,
-                                                                mfs,
-                                                                fnodes)
-        # If sendmanifests is false, we still need to consume the generator,
-        # since it populates the list of files we need to send.
-        for val in chunks:
-            if sendmanifests:
-                yield val
+                          mfs, fnodes, *args, **kwargs):
+        """
+        - `commonrevs` is the set of known commits on both sides
+        - `clrevorder` is a mapping from cl node to rev number, used for
+                       determining which commit is newer.
+        - `mfs` is the potential manifest nodes to send,
+                with maps to their linknodes
+                { manifest root node -> link node }
+        - `fnodes` is a mapping of { filepath -> { node -> clnode } }
+                If fastpathlinkrev is false, we are responsible for populating
+                fnodes.
+        - `args` and `kwargs` are extra arguments that will be passed to the
+                core generatemanifests method, whose length depends on the
+                version of core Hg.
+        """
+        if _cansendflat(self._repo, mfs.keys()):
+            # In this code path, generating the manifests populates fnodes for
+            # us.
+            chunks = super(shallowcg1packer, self).generatemanifests(
+                commonrevs,
+                clrevorder,
+                fastpathlinkrev,
+                mfs,
+                fnodes,
+                *args, **kwargs)
+            for chunk in chunks:
+                yield chunk
+        else:
+            # If not using the fast path, we need to discover what files to send
+            if not fastpathlinkrev:
+                mflog = self._repo.manifestlog
+                for mfnode, clnode in mfs.iteritems():
+                    mfctx = mflog[mfnode]
+                    p1node = mfctx.parents[0]
+                    p1ctx = mflog[p1node]
+                    diff = p1ctx.read().diff(mfctx.read()).iteritems()
+                    for filename, ((anode, aflag), (bnode, bflag)) in diff:
+                        if bnode is not None:
+                            fclnodes = fnodes.setdefault(filename, {})
+                            fclnode = fclnodes.setdefault(bnode, clnode)
+                            if clrevorder[clnode] < clrevorder[fclnode]:
+                                fclnodes[bnode] = clnode
 
-        if not sendmanifests:
             yield self.close()
 
     def generatefiles(self, changedfiles, linknodes, commonrevs, source):
@@ -84,7 +126,7 @@ class shallowcg1packer(changegroup.cg1packer):
                 # the user use unbundle instead.
                 # Force load the filelog data.
                 bundlerepo.bundlerepository.file(repo, 'foo')
-                if repo.bundlefilespos:
+                if repo._cgfilespos:
                     raise error.Abort("cannot pull from full bundles",
                                       hint="use `hg unbundle` instead")
                 return []
@@ -196,9 +238,38 @@ if util.safehasattr(changegroup, 'cg2packer'):
             return shallowgroup(shallowcg2packer, self, nodelist, rlog, lookup,
                                 units=units)
 
-def getchangegroup(orig, repo, source, *args, **kwargs):
+if util.safehasattr(changegroup, 'cg3packer'):
+    @shallowutil.interposeclass(changegroup, 'cg3packer')
+    class shallowcg3packer(changegroup.cg3packer):
+        def generatemanifests(self, commonrevs, clrevorder, fastpathlinkrev,
+                              mfs, fnodes, *args, **kwargs):
+            chunks = super(shallowcg3packer, self).generatemanifests(
+                commonrevs,
+                clrevorder,
+                fastpathlinkrev,
+                mfs,
+                fnodes,
+                *args, **kwargs)
+            for chunk in chunks:
+                yield chunk
+
+            # If we're not sending flat manifests, then the subclass
+            # generatemanifests call did not add the appropriate closing chunk
+            # for a changegroup3.
+            if not _cansendflat(self._repo, mfs.keys()):
+                yield self._manifestsdone()
+
+# Unused except in older versions of Mercurial
+def getchangegroup(orig, repo, source, outgoing, bundlecaps=None, version='01'):
+    def origmakechangegroup(repo, outgoing, version, source):
+        return orig(repo, source, outgoing, bundlecaps=bundlecaps,
+                    version=version)
+
+    return makechangegroup(origmakechangegroup, repo, outgoing, version, source)
+
+def makechangegroup(orig, repo, outgoing, version, source, *args, **kwargs):
     if not requirement in repo.requirements:
-        return orig(repo, source, *args, **kwargs)
+        return orig(repo, outgoing, version, source, *args, **kwargs)
 
     original = repo.shallowmatch
     try:
@@ -221,7 +292,7 @@ def getchangegroup(orig, repo, source, *args, **kwargs):
                     includepattern, excludepattern)
             else:
                 repo.shallowmatch = match.always(repo.root, '')
-        return orig(repo, source, *args, **kwargs)
+        return orig(repo, outgoing, version, source, *args, **kwargs)
     finally:
         repo.shallowmatch = original
 
@@ -253,16 +324,18 @@ def addchangegroupfiles(orig, repo, source, revmap, trp, expectedfiles, *args):
 
         if not repo.shallowmatch(f):
             fl = repo.file(f)
-            fl.addgroup(source, revmap, trp)
+            deltas = source.deltaiter()
+            fl.addgroup(deltas, revmap, trp)
             continue
 
         chain = None
         while True:
+            # returns: (node, p1, p2, cs, deltabase, delta, flags) or None
             revisiondata = source.deltachunk(chain)
             if not revisiondata:
                 break
 
-            chain = revisiondata['node']
+            chain = revisiondata[0]
 
             revisiondatas[(f, chain)] = revisiondata
             queue.append((f, chain))
@@ -294,8 +367,8 @@ def addchangegroupfiles(orig, repo, source, revmap, trp, expectedfiles, *args):
     prefetchfiles = []
     for f, node in queue:
         revisiondata = revisiondatas[(f, node)]
-        dependents = [revisiondata['p1'], revisiondata['p2'],
-                      revisiondata['deltabase']]
+        # revisiondata: (node, p1, p2, cs, deltabase, delta, flags)
+        dependents = [revisiondata[1], revisiondata[2], revisiondata[4]]
 
         for dependent in dependents:
             if dependent == nullid or (f, dependent) in revisiondatas:
@@ -318,11 +391,8 @@ def addchangegroupfiles(orig, repo, source, revmap, trp, expectedfiles, *args):
         fl = repo.file(f)
 
         revisiondata = revisiondatas[(f, node)]
-        p1 = revisiondata['p1']
-        p2 = revisiondata['p2']
-        linknode = revisiondata['cs']
-        deltabase = revisiondata['deltabase']
-        delta = revisiondata['delta']
+        # revisiondata: (node, p1, p2, cs, deltabase, delta, flags)
+        node, p1, p2, linknode, deltabase, delta, flags = revisiondata
 
         if not available(f, node, f, deltabase):
             continue

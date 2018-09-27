@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import threading
+
 from . import (
     basestore,
     constants,
@@ -26,8 +28,10 @@ class ChainIndicies(object):
     # The actual delta or full text data.
     DATA = 4
 
-class unioncontentstore(object):
+class unioncontentstore(basestore.baseunionstore):
     def __init__(self, *args, **kwargs):
+        super(unioncontentstore, self).__init__(*args, **kwargs)
+
         self.stores = args
         self.writestore = kwargs.get('writestore')
 
@@ -60,6 +64,18 @@ class unioncontentstore(object):
 
         return text
 
+    @basestore.baseunionstore.retriable
+    def getdelta(self, name, node):
+        """Return the single delta entry for the given name/node pair.
+        """
+        for store in self.stores:
+            try:
+                return store.getdelta(name, node)
+            except KeyError:
+                pass
+
+        raise KeyError((name, hex(node)))
+
     def getdeltachain(self, name, node):
         """Returns the deltachain for the given name/node pair.
 
@@ -84,6 +100,7 @@ class unioncontentstore(object):
 
         return chain
 
+    @basestore.baseunionstore.retriable
     def getmeta(self, name, node):
         """Returns the metadata dict for given node."""
         for store in self.stores:
@@ -93,6 +110,11 @@ class unioncontentstore(object):
                 pass
         raise KeyError((name, hex(node)))
 
+    def getmetrics(self):
+        metrics = [s.getmetrics() for s in self.stores]
+        return shallowutil.sumdicts(*metrics)
+
+    @basestore.baseunionstore.retriable
     def _getpartialchain(self, name, node):
         """Returns a partial delta chain for the given name/node pair.
 
@@ -123,19 +145,14 @@ class unioncontentstore(object):
         else:
             raise RuntimeError("no writable store configured")
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
         for store in self.stores:
-            store.markledger(ledger)
-
-    def markforrefresh(self):
-        for store in self.stores:
-            if util.safehasattr(store, 'markforrefresh'):
-                store.markforrefresh()
+            store.markledger(ledger, options)
 
 class remotefilelogcontentstore(basestore.basestore):
     def __init__(self, *args, **kwargs):
         super(remotefilelogcontentstore, self).__init__(*args, **kwargs)
-        self._metacache = (None, None) # (node, meta)
+        self._threaddata = threading.local()
 
     def get(self, name, node):
         # return raw revision text
@@ -159,6 +176,12 @@ class remotefilelogcontentstore(basestore.basestore):
         revision = shallowutil.createrevlogtext(content, copyfrom, copyrev)
         return revision
 
+    def getdelta(self, name, node):
+        # Since remotefilelog content stores only contain full texts, just
+        # return that.
+        revision = self.get(name, node)
+        return revision, name, nullid, self.getmeta(name, node)
+
     def getdeltachain(self, name, node):
         # Since remotefilelog content stores just contain full texts, we return
         # a fake delta chain that just consists of a single full text revision.
@@ -168,22 +191,29 @@ class remotefilelogcontentstore(basestore.basestore):
         return [(name, node, None, nullid, revision)]
 
     def getmeta(self, name, node):
-        if node != self._metacache[0]:
+        self._sanitizemetacache()
+        if node != self._threaddata.metacache[0]:
             data = self._getdata(name, node)
             offset, size, flags = shallowutil.parsesizeflags(data)
             self._updatemetacache(node, size, flags)
-        return self._metacache[1]
+        return self._threaddata.metacache[1]
 
     def add(self, name, node, data):
         raise RuntimeError("cannot add content only to remotefilelog "
                            "contentstore")
 
+    def _sanitizemetacache(self):
+        metacache = getattr(self._threaddata, 'metacache', None)
+        if metacache is None:
+            self._threaddata.metacache = (None, None) # (node, meta)
+
     def _updatemetacache(self, node, size, flags):
-        if node == self._metacache[0]:
+        self._sanitizemetacache()
+        if node == self._threaddata.metacache[0]:
             return
         meta = {constants.METAKEYFLAG: flags,
                 constants.METAKEYSIZE: size}
-        self._metacache = (node, meta)
+        self._threaddata.metacache = (node, meta)
 
 class remotecontentstore(object):
     def __init__(self, ui, fileservice, shared):
@@ -195,6 +225,10 @@ class remotecontentstore(object):
         self._fileservice.prefetch([(name, hex(node))], force=True,
                                    fetchdata=True)
         return self._shared.get(name, node)
+
+    def getdelta(self, name, node):
+        revision = self.get(name, node)
+        return revision, name, nullid, self._shared.getmeta(name, node)
 
     def getdeltachain(self, name, node):
         # Since our remote content stores just contain full texts, we return a
@@ -215,7 +249,7 @@ class remotecontentstore(object):
     def getmissing(self, keys):
         return keys
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
         pass
 
 class manifestrevlogstore(object):
@@ -228,6 +262,10 @@ class manifestrevlogstore(object):
 
     def get(self, name, node):
         return self._revlog(name).revision(node, raw=True)
+
+    def getdelta(self, name, node):
+        revision = self.get(name, node)
+        return revision, name, nullid, self.getmeta(name, node)
 
     def getdeltachain(self, name, node):
         revision = self.get(name, node)
@@ -297,7 +335,9 @@ class manifestrevlogstore(object):
         self._repackstartlinkrev = startrev
         self._repackendlinkrev = endrev
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
+        if options and options.get(constants.OPTION_PACKSONLY):
+            return
         treename = ''
         rl = revlog.revlog(self._svfs, '00manifesttree.i')
         startlinkrev = self._repackstartlinkrev

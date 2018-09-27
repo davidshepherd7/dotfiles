@@ -1,15 +1,15 @@
-// manifest.cpp - c++ implementation of a single manifest
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// manifest.cpp - c++ implementation of a single manifest
 // no-check-code
 
-#include "sha1/sha1.h"
+#include "ctreemanifest/manifest.h"
 
-#include "manifest.h"
+#include "clib/sha1.h"
 
 Manifest::Manifest(ConstantStringRef &rawobj, const char *node) :
     _rawobj(rawobj),
@@ -232,67 +232,19 @@ void Manifest::computeNode(const char *p1, const char *p2, char *result) {
   std::string content;
   this->serialize(content);
 
-  SHA1_CTX ctx;
-  SHA1DCInit(&ctx);
+  fbhg_sha1_ctx_t ctx;
+  fbhg_sha1_init(&ctx);
 
   if (memcmp(p1, p2, BIN_NODE_SIZE) == -1) {
-    SHA1DCUpdate(&ctx, (const unsigned char *) p1, BIN_NODE_SIZE);
-    SHA1DCUpdate(&ctx, (const unsigned char *) p2, BIN_NODE_SIZE);
+    fbhg_sha1_update(&ctx, p1, BIN_NODE_SIZE);
+    fbhg_sha1_update(&ctx, p2, BIN_NODE_SIZE);
   } else {
-    SHA1DCUpdate(&ctx, (const unsigned char *)p2, BIN_NODE_SIZE);
-    SHA1DCUpdate(&ctx, (const unsigned char *)p1, BIN_NODE_SIZE);
+    fbhg_sha1_update(&ctx, p2, BIN_NODE_SIZE);
+    fbhg_sha1_update(&ctx, p1, BIN_NODE_SIZE);
   }
-  SHA1DCUpdate(&ctx, (const unsigned char *)content.c_str(), content.size());
+  fbhg_sha1_update(&ctx, content.c_str(), content.size());
 
-  SHA1DCFinal((unsigned char*)result, &ctx);
-}
-
-ManifestPtr::ManifestPtr() :
-  manifest(NULL) {
-}
-
-ManifestPtr::ManifestPtr(Manifest *manifest) :
-  manifest(manifest) {
-  if (!manifest) {
-    throw std::logic_error("passed NULL manifest pointer");
-  }
-  this->manifest->incref();
-}
-
-ManifestPtr::ManifestPtr(const ManifestPtr &other) :
-  manifest(other.manifest) {
-  if (this->manifest) {
-    this->manifest->incref();
-  }
-}
-
-ManifestPtr::~ManifestPtr() {
-  if (this->manifest && this->manifest->decref() == 0) {
-    delete(this->manifest);
-  }
-}
-
-ManifestPtr& ManifestPtr::operator= (const ManifestPtr& other) {
-  if (this->manifest) {
-    this->manifest->decref();
-  }
-  this->manifest = other.manifest;
-  if (this->manifest) {
-    this->manifest->incref();
-  }
-  return *this;
-}
-
-ManifestPtr::operator Manifest* () const {
-  return this->manifest;
-}
-
-Manifest *ManifestPtr::operator-> () {
-  return this->manifest;
-}
-
-bool ManifestPtr::isnull() const {
-  return this->manifest == NULL;
+  fbhg_sha1_final((unsigned char*)result, &ctx);
 }
 
 void Manifest::incref() {

@@ -14,9 +14,14 @@
 # - If the file cannot be created or accessed, fails silently
 #
 # The configuration details can be found in the documentation of ui.log below
-from mercurial import encoding, util
+from mercurial import encoding, registrar, util
 
 import json, os
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('sampling', 'filepath', default='')
 
 def _parentfolderexists(f):
     return (f is not None and
@@ -25,7 +30,7 @@ def _parentfolderexists(f):
 def _getcandidatelocation(ui):
     for candidatelocation in (
             encoding.environ.get("SCM_SAMPLING_FILEPATH", None),
-            ui.config("sampling", "filepath", "")):
+            ui.config("sampling", "filepath")):
         if _parentfolderexists(candidatelocation):
             return candidatelocation
     return None
@@ -77,6 +82,14 @@ def uisetup(ui):
                 self.samplingfilters = logtofile.computesamplingfilters(self)
             if event not in self.samplingfilters:
                 return super(logtofile, self).log(event, *msg, **opts)
+
+            # special case: remove less interesting blocked fields starting
+            # with "unknown_" or "alias_".
+            if event == 'uiblocked':
+                opts = {k: v
+                        for k, v in opts.items()
+                        if (not k.startswith('alias_') and not
+                            k.startswith('unknown_'))}
 
             ref = self.samplingfilters[event]
             script = _getcandidatelocation(ui)

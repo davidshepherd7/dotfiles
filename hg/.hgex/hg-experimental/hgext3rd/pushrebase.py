@@ -39,7 +39,7 @@ from mercurial import (
     hg,
     manifest,
     obsolete,
-    phases,
+    phases as phasesmod,
     pushkey,
     registrar,
     revsetlang,
@@ -62,6 +62,11 @@ testedwith = 'ships-with-fb-hgext'
 
 cmdtable = {}
 command = registrar.command(cmdtable)
+
+configtable = {}
+configitem = registrar.configitem(configtable)
+
+configitem('pushrebase', 'blocknonpushrebase', default=False)
 
 rebaseparttype = 'b2x:rebase'
 rebasepackparttype = 'b2x:rebasepackpart'
@@ -104,6 +109,11 @@ def extsetup(ui):
 
     partorder.insert(0, partorder.pop(partorder.index(commonheadsparttype)))
 
+    if 'check-bookmarks' in partorder:
+        # check-bookmarks is intended for non-pushrebase scenarios when
+        # we can't push to a bookmark if it's changed in the meantime
+        partorder.pop(partorder.index('check-bookmarks'))
+
     wrapfunction(discovery, 'checkheads', _checkheads)
     # we want to disable the heads check because in pushrebase repos, we
     # expect the heads to change during the push and we should not abort.
@@ -122,6 +132,12 @@ def extsetup(ui):
     bundle2.parthandlermapping['pushkey'] = newpushkeyhandler
     bundle2.parthandlermapping['b2x:pushkey'] = newpushkeyhandler
 
+    origphaseheadshandler = bundle2.parthandlermapping['phase-heads']
+    newphaseheadshandler = lambda *args, **kwargs: \
+        bundle2phaseheads(origphaseheadshandler, *args, **kwargs)
+    newphaseheadshandler.params = origphaseheadshandler.params
+    bundle2.parthandlermapping['phase-heads'] = newphaseheadshandler
+
     wrapfunction(exchange, 'unbundle', unbundle)
 
     wrapfunction(hg, '_peerorrepo', _peerorrepo)
@@ -130,6 +146,15 @@ def reposetup(ui, repo):
     if repo.ui.configbool('pushrebase', 'blocknonpushrebase'):
         repo.ui.setconfig('hooks', 'prechangegroup.blocknonpushrebase',
                           blocknonpushrebase)
+
+    # https://www.mercurial-scm.org/repo/hg/rev/a1e70c1dbec0
+    # and related commits added a new way to pushing bookmarks
+    # Since pushrebase for now uses pushkey, we want to set this config
+    # (T24314128 tracks this)
+    legexc = repo.ui.configlist('devel', 'legacy.exchange', [])
+    if 'bookmarks' not in legexc:
+        legexc.append('bookmarks')
+    repo.ui.setconfig('devel', 'legacy.exchange', legexc, 'pushrebase')
 
 def blocknonpushrebase(ui, repo, **kwargs):
     if not repo.ui.configbool('pushrebase', pushrebasemarker):
@@ -185,8 +210,16 @@ def validaterevset(repo, revset):
     if not repo.revs(revset):
         raise error.Abort(_('nothing to rebase'))
 
-    if repo.revs('%r and public()', revset):
-        raise error.Abort(_('cannot rebase public changesets'))
+    revs = repo.revs('%r and public()', revset)
+    if revs:
+        nodes = []
+        for count, rev in enumerate(revs):
+            if count >= 3:
+                nodes.append('...')
+                break
+            nodes.append(str(repo[rev]))
+        revstring = ', '.join(nodes)
+        raise error.Abort(_('cannot rebase public changesets: %s') % revstring)
 
     if repo.revs('%r and obsolete()', revset):
         raise error.Abort(_('cannot rebase obsolete changesets'))
@@ -200,8 +233,15 @@ def validaterevset(repo, revset):
 def getrebaseparts(repo, peer, outgoing, onto, newhead):
     parts = []
     if (util.safehasattr(repo.manifestlog, 'datastore') and
-        repo.ui.configbool("treemanifest", "sendtrees")):
-        parts.append(createtreepackpart(repo, outgoing))
+        repo.ui.configbool('treemanifest', 'sendtrees')):
+        mfnodes = []
+        for node in outgoing.missing:
+            mfnodes.append(('', repo[node].manifestnode()))
+
+        # Only add trees if we already have them
+        if not repo.manifestlog.datastore.getmissing(mfnodes):
+            parts.append(createtreepackpart(repo, outgoing))
+
     parts.append(createrebasepart(repo, peer, outgoing, onto, newhead))
     return parts
 
@@ -218,7 +258,7 @@ def createrebasepart(repo, peer, outgoing, onto, newhead):
 
     validaterevset(repo, revsetlang.formatspec('%ln', outgoing.missing))
 
-    cg = changegroup.getlocalchangegroupraw(repo, 'push', outgoing)
+    cg = changegroup.makestream(repo, outgoing, '01', 'push')
 
     # Explicitly notify the server what obsmarker versions the client supports
     # so the client could receive marker from the server.
@@ -344,7 +384,7 @@ def _mergemarkers(orig, self, transaction, data):
                 self._pushrebasereplaces[prec] = sucs[0]
     return orig(self, transaction, data)
 
-def _phasemove(orig, pushop, nodes, phase=phases.public):
+def _phasemove(orig, pushop, nodes, phase=phasesmod.public):
     """prevent original changesets from being marked public
 
     When marking changesets as public, we need to mark the replaced nodes
@@ -381,7 +421,7 @@ def _phasemove(orig, pushop, nodes, phase=phases.public):
     # is not enabled locally.
     mapping = getattr(pushop.repo.obsstore, '_pushrebasereplaces', {})
     nodes = [mapping.get(n, n) for n in nodes]
-    if phase == phases.public:
+    if phase == phasesmod.public:
         # only allow new nodes to become public
         allowednodes = set(mapping.values())
         nodes = [n for n in nodes if n in allowednodes]
@@ -496,7 +536,19 @@ def _makebundlefile(part):
 
     return bundlefile
 
-def _getrevs(bundle, onto):
+def _getrenamesrcs(op, rev):
+    '''get all rename sources in a revision'''
+    srcs = set()
+    revmf = _getmanifest(op, rev)
+    for f in rev.files():
+        if f in revmf:
+            fctx = _getfilectx(rev, revmf, f)
+            renamed = fctx.renamed()
+            if renamed:
+                srcs.add(renamed[0])
+    return srcs
+
+def _getrevs(op, bundle, onto, renamesrccache):
     'extracts and validates the revs to be imported'
     validaterevset(bundle, 'bundle()')
     revs = [bundle[r] for r in bundle.revs('sort(bundle())')]
@@ -526,6 +578,13 @@ def _getrevs(bundle, onto):
         for bundlerev in revs:
             bundlefiles.update(bundlerev.files())
 
+            # Also include sources of renames.
+            bundlerevnode = bundlerev.node()
+            if bundlerevnode in renamesrccache:
+                bundlefiles.update(renamesrccache[bundlerevnode])
+            else:
+                bundlefiles.update(_getrenamesrcs(op, bundlerev))
+
         def findconflicts():
             # Returns all the files touched in the bundle that are also touched
             # between the old onto (ex: our old bookmark location) and the new
@@ -552,41 +611,53 @@ def _getrevs(bundle, onto):
             conflicts = findconflictsfast()
 
         if conflicts:
-            raise error.Abort(_('conflicting changes in:\n%s') %
-                             ''.join('    %s\n' % f for f in sorted(conflicts)))
+            msg = (_('conflicting changes in:\n%s\n') %
+                    ''.join('    %s\n' % f for f in sorted(conflicts))).strip()
+            hint = _('pull and rebase your changes locally, then try again')
+            raise error.Abort(msg, hint=hint)
 
     return revs, oldonto
 
-def _graft(repo, rev, mapping, lastdestnode):
-    '''duplicate changeset "rev" with parents from "mapping"'''
-    oldp1 = rev.p1().node()
-    oldp2 = rev.p2().node()
-    newp1 = mapping.get(oldp1, oldp1)
-    newp2 = mapping.get(oldp2, oldp2)
-
-    if not repo.ui.configbool("pushrebase", "forcetreereceive"):
+def _getmanifest(op, rev):
+    repo = rev._repo
+    if (not op.records[treepackrecords] and
+        not repo.ui.configbool("pushrebase", "forcetreereceive")):
         m = rev.manifest()
     else:
-        store = rev._repo.manifestlog.datastore
+        store = repo.manifestlog.datastore
         import cstore
         m = cstore.treemanifest(store, rev.manifestnode())
         if store.getmissing([('', rev.manifestnode())]):
             raise error.Abort(_('error: pushes must contain tree manifests '
                                 'when the server has '
                                 'pushrebase.forcetreereceive enabled'))
+    return m
+
+def _getfilectx(rev, mf, path):
+    fileid = mf.get(path)
+    return context.filectx(rev._repo, path, fileid=fileid,
+                           changectx=rev)
+
+def _graft(op, rev, mapping, lastdestnode):
+    '''duplicate changeset "rev" with parents from "mapping"'''
+    repo = op.repo
+    oldp1 = rev.p1().node()
+    oldp2 = rev.p2().node()
+    newp1 = mapping.get(oldp1, oldp1)
+    newp2 = mapping.get(oldp2, oldp2)
+
+    m = _getmanifest(op, rev)
 
     def getfilectx(repo, memctx, path):
         if path in m:
             # We can't use the normal rev[path] accessor here since it will try
             # to go through the flat manifest, which may not exist.
-            fileid = m.get(path)
-            fctx = context.filectx(rev._repo, path, fileid=fileid,
-                                   changectx=rev)
+            fctx = _getfilectx(rev, m, path)
             flags = m.flags(path)
             copied = fctx.renamed()
             if copied:
                 copied = copied[0]
-            return context.memfilectx(repo, fctx.path(), fctx.data(),
+            return context.memfilectx(repo, memctx, fctx.path(), fctx.data(),
                               islink='l' in flags,
                               isexec='x' in flags,
                               copied=copied)
@@ -668,10 +739,10 @@ def _addpushbackchangegroup(repo, reply, outgoing):
         cgversions.add('01')
     version = max(cgversions & set(changegroup.supportedoutgoingversions(repo)))
 
-    cg = changegroup.getlocalchangegroupraw(repo,
-                                            'rebase:reply',
-                                            outgoing,
-                                            version = version)
+    cg = changegroup.makestream(repo,
+                                outgoing,
+                                version,
+                                'rebase:reply')
 
     cgpart = reply.newpart('CHANGEGROUP', data=cg)
     if version != '01':
@@ -793,6 +864,10 @@ def bundle2rebase(op, part):
 
         bundlerepocache, preontocache = prefetchcaches(op, params, bundle)
 
+        # Create a cache of rename sources while we don't have the lock.
+        renamesrccache = {bundle[r].node(): _getrenamesrcs(op, bundle[r])
+                          for r in bundle.revs('bundle()')}
+
         # Opening the transaction takes the lock, so do it after prepushrebase
         # and after we've fetched all the cache information we'll need.
         tr = op.gettransaction()
@@ -808,7 +883,7 @@ def bundle2rebase(op, part):
 
         onto = getontotarget(op, params, bundle)
 
-        revs, oldonto = _getrevs(bundle, onto)
+        revs, oldonto = _getrevs(op, bundle, onto, renamesrccache)
 
         op.repo.hook("prechangegroup", **hookargs)
 
@@ -838,7 +913,7 @@ def bundle2rebase(op, part):
     # Move public phase forward
     publishing = op.repo.ui.configbool('phases', 'publish', untrusted=True)
     if publishing:
-        phases.advanceboundary(op.repo, tr, phases.public, [added[-1]])
+        phasesmod.advanceboundary(op.repo, tr, phasesmod.public, [added[-1]])
 
     addfinalhooks(op, tr, hookargs, added)
 
@@ -855,8 +930,8 @@ def bundle2rebase(op, part):
     return 1
 
 def prepushrebasehooks(op, params, bundle, bundlefile):
-    prelockonto = resolveonto(op.repo,
-                              params.get('onto', donotrebasemarker))
+    onto = params.get('onto')
+    prelockonto = resolveonto(op.repo, onto or donotrebasemarker)
     prelockontonode = prelockonto.hex() if prelockonto else None
 
     # Allow running hooks on the new commits before we take the lock
@@ -866,6 +941,8 @@ def prepushrebasehooks(op, params, bundle, bundlefile):
     prelockrebaseargs['node'] = scmutil.revsingle(bundle,
                                                   'min(bundle())').hex()
     prelockrebaseargs['node_onto'] = prelockontonode
+    if onto:
+        prelockrebaseargs['onto'] = onto
     prelockrebaseargs['hook_bundlepath'] = bundlefile
 
     for path in op.records[treepackrecords]:
@@ -879,7 +956,7 @@ def prepushrebasehooks(op, params, bundle, bundlefile):
 def prefetchcaches(op, params, bundle):
     bundlerepocache = {}
     # No need to cache trees from the bundle since they are already fast
-    if not op.repo.ui.configbool("pushrebase", "forcetreereceive"):
+    if not op.records[treepackrecords]:
         # We will need the bundle revs after the lock is taken, so let's
         # precache all the bundle rev manifests.
         bundlectxs = list(bundle.set('bundle()'))
@@ -914,14 +991,14 @@ def prefillcaches(op, bundle, bundlerepocache):
     for dir, dircache in op.repo.manifestlog._dirmancache.iteritems():
         for mfnode in dircache:
             mfctx = dircache[mfnode]
-            newmfctx = manifest.manifestctx(bundle, mfnode)
+            newmfctx = manifest.manifestctx(bundle.manifestlog, mfnode)
             if (util.safehasattr(mfctx, '_data') and
                 util.safehasattr(newmfctx, '_data')):
                     newmfctx._data = mfctx._data
                     newdirmancache[dir][mfnode] = newmfctx
 
     for mfnode, mfdict in bundlerepocache.iteritems():
-        newmfctx = manifest.manifestctx(bundle, mfnode)
+        newmfctx = manifest.manifestctx(bundle.manifestlog, mfnode)
         newmfctx._data = mfdict
         newdirmancache[""][mfnode] = newmfctx
 
@@ -967,7 +1044,7 @@ def runrebase(op, revs, oldonto, onto):
 
     lastdestnode = None
     for rev in revs:
-        newrev = _graft(op.repo, rev, mapping, lastdestnode)
+        newrev = _graft(op, rev, mapping, lastdestnode)
 
         new = op.repo[newrev]
         oldnode = rev.node()
@@ -1004,6 +1081,8 @@ def addfinalhooks(op, tr, hookargs, added):
                     lambda tr: op.repo._afterlock(runhooks))
 
 def bundle2pushkey(orig, op, part):
+    # Merges many dicts into one. First it converts them to list of pairs,
+    # then concatenates them (using sum), and then creates a diff out of them.
     replacements = dict(sum([record.items()
                              for record
                              in op.records[rebaseparttype]],
@@ -1033,4 +1112,25 @@ def bundle2pushkey(orig, op, part):
                 # This forbids moving bookmarks backwards from clients.
                 part.params['old'] = pushkey.encode(hex(serverbin))
 
+    return orig(op, part)
+
+def bundle2phaseheads(orig, op, part):
+    # Merges many dicts into one. First it converts them to list of pairs,
+    # then concatenates them (using sum), and then creates a diff out of them.
+    replacements = dict(sum([record.items()
+                             for record
+                             in op.records[rebaseparttype]],
+                            []))
+
+    decodedphases = phasesmod.binarydecode(part)
+
+    replacedphases = []
+    for phasetype in decodedphases:
+        replacedphases.append(
+            [replacements.get(node, node) for node in phasetype])
+    # Since we've just read the bundle part, then `orig()` won't be able to
+    # read it again. Let's replace payload stream with new stream of replaced
+    # nodes.
+    part._payloadstream = util.chunkbuffer(
+        [phasesmod.binaryencode(replacedphases)])
     return orig(op, part)

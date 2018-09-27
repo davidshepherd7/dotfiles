@@ -55,7 +55,7 @@ Test basic repo behaviors
 
 Test rebase
   $ cmd hg rebase -d 775bfdd --config "extensions.rebase="
-  rebasing 2:4b6cc7d5194b "c3" (tip active)
+  rebasing 2:4b6cc7d5194b "c3" (active tip)
   merging b
   warning: conflicts while merging b! (edit, then use 'hg resolve --mark')
   unresolved conflicts (see hg resolve, then hg rebase --continue)
@@ -156,7 +156,7 @@ Test remotenames
   4b6cc7d5194bd5dbf63970015ec75f8fd1de6dba
   $ echo 4b6cc7d5194bd5dbf63970015ec75f8fd1de6dba bookmarks remote/@ > .hg/remotenames
   $ cmd
-  (4b6cc7d|remote/@...)
+  (4b6cc7d|remote/@)
 
 Test shared bookmarks
   $ cmd cd ..
@@ -190,7 +190,7 @@ Test branches
   $ cmd hg branch blah
   marked working directory as branch blah
   (branches are permanent and global, did you want a bookmark?)
-  (4b6cc7d|remote/@...|blah)
+  (4b6cc7d|remote/@|blah)
   $ cmd hg commit -m blah
   (a742469|blah)
   $ cmd hg up -q default
@@ -231,6 +231,16 @@ Test formatting options
   $ _scm_prompt ':%s:'
   :97af35b: (no-eol)
 
+Test locked repo states (generally due to concurrency so tests are kinda fake)
+  $ cmd ln -s "${HOSTNAME}:12345" .hg/wlock
+  (97af35b|WDIR-LOCKED)
+  $ cmd ln -s "${HOSTNAME}:12345" .hg/store/lock
+  (97af35b|STORE-LOCKED)
+  $ cmd rm .hg/wlock
+  (97af35b|STORE-LOCKED)
+  $ cmd rm .hg/store/lock
+  (97af35b)
+
 Test many remotenames
   $ hg log -r . -T '{node}\n'
   97af35b3648c0098cbd8114ae1b1bafab997ac20
@@ -248,7 +258,7 @@ Test many remotenames
 
 Test eden snapshots
   $ mkdir -p .eden/client/
-  $ echo "deadbeefcafeface000000000000000000000000" > .eden/client/SNAPSHOT
+  $ python -c 'print("eden\x00\x00\x00\x01\xde\xad\xbe\xef\xca\xfe\xfa\xce\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")' > .eden/client/SNAPSHOT
   $ rm .hg/dirstate
   $ cmd
   (deadbee)

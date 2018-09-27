@@ -2,8 +2,9 @@
 
   $ cat >> $HGRCPATH <<EOF
   > [extensions]
-  > histedit=
   > fbhistedit=$TESTDIR/../hgext3rd/fbhistedit.py
+  > histedit=
+  > rebase=
   > EOF
 
   $ initrepo ()
@@ -398,8 +399,6 @@ Test continue a stopped histedit
   $ hg log -G --hidden -T '{node|short} {desc|firstline}\n'
   @  8800a5180f91 d
   |
-  | x  640ef1d53e8f temporary amend commit for 883a5225844a
-  | |
   | x  883a5225844a d
   |/
   o  d8249471110a e
@@ -422,8 +421,6 @@ Test continue a stopped histedit
   |
   o  8800a5180f91 d
   |
-  | x  640ef1d53e8f temporary amend commit for 883a5225844a
-  | |
   | x  883a5225844a d
   |/
   o  d8249471110a e
@@ -449,7 +446,7 @@ Test abort a stopped histedit with obsmarkers
   > exec false
   > pick 0d9a4961b100 f
   > EOF
-  Changes commited as 1d7ed205640e. You may amend the changeset now.
+  Changes committed as 1d7ed205640e. You may amend the changeset now.
   When you are done, run hg histedit --continue to resume
   [1]
   $ hg histedit --edit-plan
@@ -461,14 +458,12 @@ Test abort a stopped histedit with obsmarkers
   $ hg commit --amend -m e
   $ hg histedit --abort --traceback
   2 files updated, 0 files merged, 0 files removed, 0 files unresolved
-  saved backup bundle to $TESTTMP/r/.hg/strip-backup/abce911bf7cf-8dbdf3a3-backup.hg (glob)
+  saved backup bundle to $TESTTMP/r/.hg/strip-backup/abce911bf7cf-fc24e0a4-backup.hg (glob)
   $ hg log -G --hidden -T '{node|short} {desc|firstline}\n'
   @  0d9a4961b100 f
   |
   o  8800a5180f91 d
   |
-  | x  640ef1d53e8f temporary amend commit for 883a5225844a
-  | |
   | x  883a5225844a d
   |/
   o  d8249471110a e

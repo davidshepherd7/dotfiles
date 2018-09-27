@@ -1,12 +1,15 @@
-// Copyright 2016-present Facebook. All Rights Reserved.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
+// This software may be used and distributed according to the terms of the
+// GNU General Public License version 2 or any later version.
+
 // buffer.c: declarations for a generic mechanism to expand a heap-allocated
 //           buffer.  this is for internal use only.
-//
 // no-check-code
 
-#ifndef __FASTMANIFEST_BUFFER_H__
-#define __FASTMANIFEST_BUFFER_H__
+#ifndef FBHGEXT_CLIB_BUFFER_H
+#define FBHGEXT_CLIB_BUFFER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -51,4 +54,4 @@ extern bool buffer_append(
     const size_t min_increment,
     const size_t max_increment);
 
-#endif /* __FASTMANIFEST_BUFFER_H__ */
+#endif /* FBHGEXT_CLIB_BUFFER_H */

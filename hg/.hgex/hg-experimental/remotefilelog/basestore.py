@@ -1,12 +1,16 @@
 from __future__ import absolute_import
 
-import errno, hashlib, heapq, os, shutil, time
+import errno, hashlib, os, shutil, stat, time
 
 from . import (
+    constants,
     shallowutil,
 )
 
-from mercurial import error
+from mercurial import (
+    error,
+    util,
+)
 from mercurial.i18n import _
 from mercurial.node import bin, hex
 
@@ -55,7 +59,9 @@ class basestore(object):
 
     # BELOW THIS ARE IMPLEMENTATIONS OF REPACK SOURCE
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
+        if options and options.get(constants.OPTION_PACKSONLY):
+            return
         if self._shared:
             for filename, nodes in self._getfiles():
                 for node in nodes:
@@ -66,40 +72,53 @@ class basestore(object):
         ui = self.ui
         entries = ledger.sources.get(self, [])
         count = 0
-        directories = set()
         for entry in entries:
             if entry.gced or (entry.datarepacked and entry.historyrepacked):
                 ui.progress(_("cleaning up"), count, unit="files",
                             total=len(entries))
                 path = self._getfilepath(entry.filename, entry.node)
-                dirpath = os.path.dirname(path)
-                directories.add((-len(dirpath), dirpath))
-                try:
-                    os.remove(path)
-                except OSError as ex:
-                    # If the file is already gone, no big deal
-                    if ex.errno != errno.ENOENT:
-                        raise
+                util.tryunlink(path)
             count += 1
         ui.progress(_("cleaning up"), None)
 
-        # Clean up directories
-        cachepath = shallowutil.getcachepath(ui)
-        dirheap = list(directories)
-        heapq.heapify(dirheap)
-        seen = set([cachepath])
-        while dirheap:
-            length, dirpath = heapq.heappop(dirheap)
-            try:
-                os.rmdir(dirpath)
-                parent = os.path.dirname(dirpath)
-                if parent not in seen:
-                    seen.add(parent)
-                    heapq.heappush(dirheap, (-len(parent), parent))
-            except OSError:
-                pass
+        # Clean up the repo cache directory.
+        self._cleanupdirectory(self._getrepocachepath())
 
     # BELOW THIS ARE NON-STANDARD APIS
+
+    def _cleanupdirectory(self, rootdir):
+        """Removes the empty directories and unnecessary files within the root
+        directory recursively. Note that this method does not remove the root
+        directory itself. """
+
+        oldfiles = set()
+        otherfiles = set()
+        # osutil.listdir returns stat information which saves some rmdir/listdir
+        # syscalls.
+        for name, mode in util.osutil.listdir(rootdir):
+            if stat.S_ISDIR(mode):
+                dirpath = os.path.join(rootdir, name)
+                self._cleanupdirectory(dirpath)
+
+                # Now that the directory specified by dirpath is potentially
+                # empty, try and remove it.
+                try:
+                    os.rmdir(dirpath)
+                except OSError:
+                    pass
+
+            elif stat.S_ISREG(mode):
+                if name.endswith('_old'):
+                    oldfiles.add(name[:-4])
+                else:
+                    otherfiles.add(name)
+
+        # Remove the files which end with suffix '_old' and have no
+        # corresponding file without the suffix '_old'. See addremotefilelognode
+        # method for the generation/purpose of files with '_old' suffix.
+        for filename in oldfiles - otherfiles:
+            filepath = os.path.join(rootdir, filename + '_old')
+            util.tryunlink(filepath)
 
     def _getfiles(self):
         """Return a list of (filename, [node,...]) for all the revisions that
@@ -152,17 +171,17 @@ class basestore(object):
 
         return filenames
 
+    def _getrepocachepath(self):
+        return os.path.join(
+            self._path, self._reponame) if self._shared else self._path
+
     def _listkeys(self):
         """List all the remotefilelog keys that exist in the store.
 
         Returns a iterator of (filename hash, filecontent hash) tuples.
         """
-        if self._shared:
-            path = os.path.join(self._path, self._reponame)
-        else:
-            path = self._path
 
-        for root, dirs, files in os.walk(path):
+        for root, dirs, files in os.walk(self._getrepocachepath()):
             for filename in files:
                 if len(filename) != 40:
                     continue
@@ -361,3 +380,39 @@ class basestore(object):
                   % (removed, count,
                      float(originalsize) / 1024.0 / 1024.0 / 1024.0,
                      float(size) / 1024.0 / 1024.0 / 1024.0))
+
+class baseunionstore(object):
+    def __init__(self, *args, **kwargs):
+        # If one of the functions that iterates all of the stores is about to
+        # throw a KeyError, try this many times with a full refresh between
+        # attempts. A repack operation may have moved data from one store to
+        # another while we were running.
+        self.numattempts = kwargs.get('numretries', 0) + 1
+        # If not-None, call this function on every retry and if the attempts are
+        # exhausted.
+        self.retrylog = kwargs.get('retrylog', None)
+
+    def markforrefresh(self):
+        for store in self.stores:
+            if util.safehasattr(store, 'markforrefresh'):
+                store.markforrefresh()
+
+    @staticmethod
+    def retriable(fn):
+        def noop(*args):
+            pass
+        def wrapped(self, *args, **kwargs):
+            retrylog = self.retrylog or noop
+            funcname = fn.__name__
+            for i in xrange(self.numattempts):
+                if i > 0:
+                    retrylog('re-attempting (n=%d) %s\n' % (i, funcname))
+                    self.markforrefresh()
+                try:
+                    return fn(self, *args, **kwargs)
+                except KeyError:
+                    pass
+            # retries exhausted
+            retrylog('retries exhausted in %s, raising KeyError\n' % funcname)
+            raise
+        return wrapped

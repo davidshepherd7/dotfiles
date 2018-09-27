@@ -121,6 +121,13 @@ def prune(ui, repo, *revs, **opts):
     prune multiple changesets with a single successor, you must pass the
     ``--fold`` option.
     """
+    if opts.get('keep', False):
+        advice = "'hg uncommit' provides a better UI for undoing commits " \
+                 "while keeping the changes\n"
+    else:
+        advice = "'hg hide' provides a better UI for hiding commits\n"
+    ui.warn(_("advice: %s") % advice)
+
     revs = scmutil.revrange(repo, list(revs) + opts.get('rev', []))
     succs = opts.get('succ', [])
     bookmarks = set(opts.get('bookmark', ()))
@@ -281,5 +288,5 @@ def wrapstrip(loaded):
 
 def uisetup(ui):
     # developer config: fbamend.safestrip
-    if ui.configbool('fbamend', 'safestrip', True):
+    if ui.configbool('fbamend', 'safestrip'):
         extensions.afterloaded('strip', wrapstrip)

@@ -24,6 +24,7 @@ conduit_path = None
 conduit_protocol = None
 connection = None
 
+DEFAULT_TIMEOUT = 60
 MAX_CONNECT_RETRIES = 3
 
 class ConduitError(Exception):
@@ -43,7 +44,6 @@ def extsetup(ui):
 
     revset.symbols['gitnode'] = gitnode
     extensions.wrapfunction(revset, 'stringset', overridestringset)
-    revset.symbols['stringset'] = revset.stringset
     revset.methods['string'] = revset.stringset
     revset.methods['symbol'] = revset.stringset
 
@@ -60,16 +60,16 @@ def conduit_config(ui, host=None, path=None, protocol=None):
 
     return True
 
-def call_conduit(method, **kwargs):
+def call_conduit(method, timeout=DEFAULT_TIMEOUT, **kwargs):
     global connection, conduit_host, conduit_path, conduit_protocol
 
     # start connection
     # TODO: move to python-requests
     if connection is None:
         if conduit_protocol == 'https':
-            connection = httplib.HTTPSConnection(conduit_host)
+            connection = httplib.HTTPSConnection(conduit_host, timeout=timeout)
         elif conduit_protocol == 'http':
-            connection = httplib.HTTPConnection(conduit_host)
+            connection = httplib.HTTPConnection(conduit_host, timeout=timeout)
 
     # send request
     path = conduit_path + method
@@ -224,7 +224,7 @@ def gitnode(repo, subset, x):
     rn = repo[node.bin(hghash)].rev()
     return subset.filter(lambda r: r == rn)
 
-def overridestringset(orig, repo, subset, x):
+def overridestringset(orig, repo, subset, x, *args, **kwargs):
     # Is the given revset a phabricator hg hash (ie: rHGEXTaaacb34aacb34aa)
     phabmatch = phabhashre.match(x)
     if phabmatch:
@@ -235,7 +235,7 @@ def overridestringset(orig, repo, subset, x):
             return overridestringset(orig, repo, subset, 'g%s' % phabhash)
 
         if phabhash in repo:
-            return orig(repo, subset, phabhash)
+            return orig(repo, subset, phabhash, *args, **kwargs)
 
     # Is the given revset a phabricator svn revision (rO11223232323232)?
     svnrev = fbsvnhash.match(x)
@@ -262,4 +262,4 @@ def overridestringset(orig, repo, subset, x):
             return gitnode(repo, subset, ('string', githash))
         else:
             raise error.Abort('git hash must be 40 characters')
-    return orig(repo, subset, x)
+    return orig(repo, subset, x, *args, **kwargs)

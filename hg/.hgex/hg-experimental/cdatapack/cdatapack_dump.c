@@ -1,16 +1,20 @@
-// Copyright 2016-present Facebook. All Rights Reserved.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
+// This software may be used and distributed according to the terms of the
+// GNU General Public License version 2 or any later version.
+
 // cdatapack_dump.c: Dump the entire contents of a datapack file by walking
 //                   the datapack file.
-//
 // no-check-code
 
+#include <inttypes.h>
 #include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
-#include "convert.h"
-#include "cdatapack.h"
+
+#include "cdatapack/cdatapack.h"
+#include "clib/convert.h"
 
 #define DATAIDX_EXT  ".dataidx"
 #define DATAPACK_EXT ".datapack"

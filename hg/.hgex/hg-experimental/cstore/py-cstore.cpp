@@ -1,10 +1,10 @@
-// py-cstore.cpp - C++ implementation of a store
-//
-// Copyright 2016 Facebook, Inc.
+// Copyright (c) 2004-present, Facebook, Inc.
+// All Rights Reserved.
 //
 // This software may be used and distributed according to the terms of the
 // GNU General Public License version 2 or any later version.
-//
+
+// py-cstore.cpp - C++ implementation of a store
 // no-check-code
 
 // The PY_SSIZE_T_CLEAN define must be defined before the Python.h include,
@@ -13,9 +13,9 @@
 
 #include <Python.h>
 
-#include "py-cdatapack.h"
-#include "py-datapackstore.h"
-#include "py-treemanifest.h"
+#include "cstore/py-cdatapack.h"
+#include "cstore/py-datapackstore.h"
+#include "cstore/py-treemanifest.h"
 
 static PyMethodDef mod_methods[] = {
   {NULL, NULL}

@@ -9,8 +9,13 @@ from hgext3rd.extutil import runshellcommand
 from mercurial.i18n import _
 from mercurial.node import hex, nullid, nullrev
 from mercurial import error, localrepo, util, match, scmutil
-from . import remotefilelog, remotefilectx, fileserverclient
-import repack as repackmod
+from mercurial.utils import procutil
+from . import (
+    connectionpool,
+    fileserverclient,
+    remotefilelog,
+    remotefilectx,
+)
 import constants, shallowutil
 from contentstore import remotefilelogcontentstore, unioncontentstore
 from contentstore import remotecontentstore
@@ -20,6 +25,13 @@ from datapack import datapackstore
 from historypack import historypackstore
 
 import os
+
+if util.safehasattr(util, '_hgexecutable'):
+    # Before 5be286db
+    _hgexecutable = util.hgexecutable
+else:
+    from mercurial.utils import procutil
+    _hgexecutable = procutil.hgexecutable
 
 requirement = "remotefilelog"
 _prefetching = _('prefetching')
@@ -77,7 +89,8 @@ def makepackstores(repo):
 
     repo.shareddatastores.append(packcontentstore)
     repo.sharedhistorystores.append(packmetadatastore)
-
+    shallowutil.reportpackmetrics(repo.ui, 'filestore', packcontentstore,
+        packmetadatastore)
     return packcontentstore, packmetadatastore
 
 def makeunionstores(repo):
@@ -98,12 +111,14 @@ def makeunionstores(repo):
             localmetadata, remotemetadata, writestore=localmetadata)
 
     fileservicedatawrite = cachecontent
-    fileservicehistorywrite = cachecontent
+    fileservicehistorywrite = cachemetadata
     if repo.ui.configbool('remotefilelog', 'fetchpacks'):
         fileservicedatawrite = packcontentstore
         fileservicehistorywrite = packmetadatastore
     repo.fileservice.setstore(repo.contentstore, repo.metadatastore,
                               fileservicedatawrite, fileservicehistorywrite)
+    shallowutil.reportpackmetrics(repo.ui, 'filestore',
+        packcontentstore, packmetadatastore)
 
 def wraprepo(repo):
     class shallowrepository(repo.__class__):
@@ -143,12 +158,12 @@ def wraprepo(repo):
             else:
                 return super(shallowrepository, self).file(f)
 
-        def filectx(self, path, changeid=None, fileid=None):
+        def filectx(self, path, *args, **kwargs):
             if self.shallowmatch(path):
-                return remotefilectx.remotefilectx(self, path, changeid, fileid)
+                return remotefilectx.remotefilectx(self, path, *args, **kwargs)
             else:
-                return super(shallowrepository, self).filectx(path, changeid,
-                                                              fileid)
+                return super(shallowrepository, self).filectx(path, *args,
+                                                              **kwargs)
 
         @localrepo.unfilteredmethod
         def commitctx(self, ctx, error=False):
@@ -175,29 +190,24 @@ def wraprepo(repo):
                                opts=None):
             """Runs prefetch in background with optional repack
             """
-            cmd = util.hgcmd() + ['-R', repo.origroot, 'prefetch']
+            cmd = [_hgexecutable(), '-R', repo.origroot, 'prefetch']
             if repack:
                 cmd.append('--repack')
             if revs:
                 cmd += ['-r', revs]
-            cmd = ' '.join(map(util.shellquote, cmd))
+            cmd = ' '.join(map(procutil.shellquote, cmd))
 
             runshellcommand(cmd, os.environ)
 
-        def prefetch(self, revs, base=None, repack=False, pats=None, opts=None):
+        def prefetch(self, revs, base=None, pats=None, opts=None):
             """Prefetches all the necessary file revisions for the given revs
             Optionally runs repack in background
             """
             with repo._lock(repo.svfs, 'prefetchlock', True, None, None,
                             _('prefetching in %s') % repo.origroot):
-                self._prefetch(revs, base, repack, pats, opts)
+                self._prefetch(revs, base, pats, opts)
 
-            # Run repack in background
-            if repack:
-                repackmod.backgroundrepack(repo, incremental=True)
-
-        def _prefetch(self, revs, base=None, repack=False, pats=None,
-                      opts=None):
+        def _prefetch(self, revs, base=None, pats=None, opts=None):
             fallbackpath = self.fallbackpath
             if fallbackpath:
                 # If we know a rev is on the server, we should fetch the server
@@ -274,6 +284,10 @@ def wraprepo(repo):
                 results = [(path, hex(fnode)) for (path, fnode) in files]
                 repo.fileservice.prefetch(results)
 
+        def close(self):
+            super(shallowrepository, self).close()
+            self.connectionpool.close()
+
     repo.__class__ = shallowrepository
 
     repo.shallowmatch = match.always(repo.root, '')
@@ -284,6 +298,9 @@ def wraprepo(repo):
                                              None)
     repo.excludepattern = repo.ui.configlist("remotefilelog", "excludepattern",
                                              None)
+    if not util.safehasattr(repo, 'connectionpool'):
+        repo.connectionpool = connectionpool.connectionpool(repo)
+
     if repo.includepattern or repo.excludepattern:
         repo.shallowmatch = match.match(repo.root, '', None,
             repo.includepattern, repo.excludepattern)

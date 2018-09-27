@@ -1,8 +1,10 @@
 import basestore, shallowutil
 from mercurial.node import hex, nullid
 
-class unionmetadatastore(object):
+class unionmetadatastore(basestore.baseunionstore):
     def __init__(self, *args, **kwargs):
+        super(unionmetadatastore, self).__init__(*args, **kwargs)
+
         self.stores = args
         self.writestore = kwargs.get('writestore')
 
@@ -67,6 +69,7 @@ class unionmetadatastore(object):
         # TODO: ancestors should probably be (name, node) -> (value)
         return ancestors
 
+    @basestore.baseunionstore.retriable
     def _getpartialancestors(self, name, node, known=None):
         for store in self.stores:
             try:
@@ -76,6 +79,7 @@ class unionmetadatastore(object):
 
         raise KeyError((name, hex(node)))
 
+    @basestore.baseunionstore.retriable
     def getnodeinfo(self, name, node):
         for store in self.stores:
             try:
@@ -96,9 +100,13 @@ class unionmetadatastore(object):
                 missing = store.getmissing(missing)
         return missing
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
         for store in self.stores:
-            store.markledger(ledger)
+            store.markledger(ledger, options)
+
+    def getmetrics(self):
+        metrics = [s.getmetrics() for s in self.stores]
+        return shallowutil.sumdicts(*metrics)
 
 class remotefilelogmetadatastore(basestore.basestore):
     def getancestors(self, name, node, known=None):
@@ -139,5 +147,5 @@ class remotemetadatastore(object):
     def getmissing(self, keys):
         return keys
 
-    def markledger(self, ledger):
+    def markledger(self, ledger, options=None):
         pass

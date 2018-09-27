@@ -18,6 +18,8 @@ from mercurial import hg, exchange, obsolete, registrar
 from mercurial import bundle2, registrar
 from mercurial import lock as lockmod
 from mercurial import pycompat
+from mercurial import scmutil
+from mercurial import util
 from hgext import pager
 from mercurial.node import nullid, short
 from mercurial.i18n import _
@@ -63,8 +65,18 @@ def backups(ui, repo, *pats, **opts):
     opts['bundle'] = ''
     opts['force'] = None
 
+    if util.safehasattr(cmdutil, 'loglimit'):
+        # legacy case
+        loglimit = cmdutil.loglimit
+        show_changeset = cmdutil.show_changeset
+    else:
+        # since core commit c8e2d6ed1f9e
+        from mercurial import logcmdutil
+        loglimit = logcmdutil.getlimit
+        show_changeset = logcmdutil.changesetdisplayer
+
     def display(other, chlist, displayer):
-        limit = cmdutil.loglimit(opts)
+        limit = loglimit(opts)
         if opts.get('newest_first'):
             chlist.reverse()
         count = 0
@@ -79,7 +91,7 @@ def backups(ui, repo, *pats, **opts):
 
     recovernode = opts.get('recover')
     if recovernode:
-        if recovernode in repo:
+        if scmutil.isrevsymbol(repo, recovernode):
             ui.warn(_("%s already exists in the repo\n") % recovernode)
             return
     else:
@@ -123,7 +135,7 @@ def backups(ui, repo, *pats, **opts):
                     tr = lock = None
                     try:
                         lock = repo.lock()
-                        if recovernode in other:
+                        if scmutil.isrevsymbol(other, recovernode):
                             ui.status(_("Unbundling %s\n") % (recovernode))
                             f = hg.openpath(ui, source)
                             gen = exchange.readbundle(ui, f, source)
@@ -147,7 +159,7 @@ def backups(ui, repo, *pats, **opts):
                         opts['template'] = verbosetemplate
                     else:
                         ui.status("%s%s\n" % ("bundle:".ljust(13), source))
-                    displayer = cmdutil.show_changeset(ui, other, opts, False)
+                    displayer = show_changeset(ui, other, opts, False)
                     display(other, chlist, displayer)
                     displayer.close()
         finally:

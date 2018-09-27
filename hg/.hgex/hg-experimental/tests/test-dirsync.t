@@ -104,6 +104,8 @@ Test conflicting edits
 Test non-conflicting edits
   $ echo a > dir2/subdir/a
   $ hg commit -Am "add non-conflicting changes"
+  adding dir1/a
+  adding dir2/subdir/a
   not mirroring 'dir1/a' to 'dir2/subdir/a'; it already matches
   not mirroring 'dir2/subdir/a' to 'dir1/a'; it already matches
   committing files:
@@ -198,26 +200,20 @@ Test syncing a edit + rename
 Test amending a change where there has already been a sync before
   $ echo c > dir1/b
   $ hg commit --amend -m "amend b in dir1"
-  amending changeset a6e4f018e982
   mirrored changes in 'dir1/b' to 'dir2/subdir/b'
+  amending changeset a6e4f018e982
   committing files:
   dir1/b
   dir2/subdir/b
   committing manifest
   committing changelog
-  copying changeset 32cbac0ffaa1 to 4cc69952853e
-  committing files:
-  dir1/b
-  dir2/subdir/b
-  committing manifest
-  committing changelog
-  2 changesets found
+  1 changesets found
   uncompressed size of bundle content:
-       468 (changelog)
-       442 (manifests)
-       317  dir1/b
-       331  dir2/subdir/b
-  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/a6e4f018e982-f4dc39cf-amend.hg (glob)
+       241 (changelog)
+       223 (manifests)
+       199  dir1/b
+       213  dir2/subdir/b
+  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/a6e4f018e982-44b76a2e-amend.hg (glob)
   1 changesets found
   uncompressed size of bundle content:
        282 (changelog)
@@ -378,11 +374,10 @@ Test committing part of the working copy
    2 files changed, 2 insertions(+), 0 deletions(-)
   
 
-
   $ echo a >> dir2/a
   $ hg commit --amend -m "add dir1/a" dir2/a
   mirrored changes in 'dir2/a' to 'dir1/a'
-  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/9eb46ceb8af3-2c09d2e4-amend.hg (glob)
+  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/9eb46ceb8af3-c2e9da44-amend.hg (glob)
   $ hg status
   A dir1/b
   $ hg log -r . --stat
@@ -397,7 +392,6 @@ Test committing part of the working copy
    2 files changed, 4 insertions(+), 0 deletions(-)
   
 
-
   $ echo a >> dir1/a
   $ hg commit --amend -m "add dir1/a" dir2/a
   nothing changed
@@ -406,7 +400,7 @@ Test committing part of the working copy
   $ hg commit --amend -m "add dir1/a"
   mirrored adding 'dir1/b' to 'dir2/b'
   mirrored changes in 'dir1/a' to 'dir2/a'
-  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/50bf2325c501-ac54e4d9-amend.hg (glob)
+  saved backup bundle to $TESTTMP/repo/.hg/strip-backup/50bf2325c501-d4070811-amend.hg (glob)
   $ hg status
   $ hg log -r . --stat
   changeset:   0:5245011388b8
@@ -681,3 +675,33 @@ Only the ".hgdirsync" at the top of the repo is effective
   mirrored changes in 'dir1/c' to 'dir7/c'
 
   $ cd ../..
+
+Rule order matters. Only the first one gets executed.
+
+  $ hg init $TESTTMP/repo-order1
+  $ cd $TESTTMP/repo-order1
+  $ cat >> .hgdirsync <<'EOF'
+  > a.dir1 = a/
+  > a.dir2 = b/
+  > c.dir1 = a/c/
+  > c.dir2 = c/
+  > EOF
+  $ mkdir -p a/c
+  $ echo 1 > a/c/1
+  $ hg commit -m 'order test' -A a
+  adding a/c/1
+  mirrored adding 'a/c/1' to 'b/c/1'
+
+  $ hg init $TESTTMP/repo-order2
+  $ cd $TESTTMP/repo-order2
+  $ cat >> .hgdirsync <<'EOF'
+  > c.dir1 = a/c/
+  > c.dir2 = c/
+  > a.dir1 = a/
+  > a.dir2 = b/
+  > EOF
+  $ mkdir -p a/c
+  $ echo 1 > a/c/1
+  $ hg commit -m 'order test' -A a
+  adding a/c/1
+  mirrored adding 'a/c/1' to 'c/1'

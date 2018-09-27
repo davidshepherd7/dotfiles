@@ -27,6 +27,7 @@ from mercurial import (
     extensions,
     fancyopts,
     registrar,
+    scmutil,
     util,
 )
 from hgext import pager
@@ -201,7 +202,7 @@ def apply(ui, repo, *args, **kwargs):
     ]
     args, opts = parseoptions(ui, cmdoptions, args)
 
-    cmd = Command('import')
+    cmd = Command('import --no-commit')
     if (opts.get('p')):
         cmd['-p'] = opts.get('p')
     cmd.extend(args)
@@ -273,7 +274,7 @@ def ispath(repo, string):
     too many ways to spell revisions in git for us to reasonably catch all of
     them, so let's be conservative.
     """
-    if string in repo:
+    if scmutil.isrevsymbol(repo, string):
         # if it's definitely a revision let's not even check if a file of the
         # same name exists.
         return False
