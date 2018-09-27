@@ -131,7 +131,7 @@ pull-from-windows-boron () {
 }
 
 replace-db () {
-    "$boron_dir/scripts/replace-boron-db.sh" -ut "$@"
+    "$boron_dir/scripts/replace-boron-db.sh" "$@" -ut -P ~/data/postcode_positions.csv
 }
 
 send-deb-to-iris-servers() {

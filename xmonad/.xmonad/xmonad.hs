@@ -55,10 +55,15 @@ myManageHook =
   , className =? "Tk" --> doFloat
   , className =? "Octave"          --> doFloat
   , className =? "Gnuplot"          --> doFloat
+  -- Virtual box is currently completely broken if you don't allow it to resize
+  , className =? "VirtualBox" --> doFloat
 
   -- Gloss games
   , title =? "Pong" --> doFloat
   , title =? "Conway" --> doFloat
+
+  -- Robot framework dialogs
+  , className =? "Toplevel" --> doFloat
 
   , isFullscreen --> doFullFloat
   ]

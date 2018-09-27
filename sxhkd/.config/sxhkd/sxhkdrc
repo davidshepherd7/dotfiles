@@ -5,10 +5,7 @@ super + d
     urxvt -e "$SHELL" -c 'cd "$HOME/code/boron-unstable" && exec $SHELL'
 
 super + D
-    urxvt -e "$SHELL" -c 'cd "$HOME/code/boron-unstable/boron/web_applications/applications/online-v2" && exec $SHELL'
-
-# urxvt -e "$SHELL" -c 'cd "$HOME/code/hafnium-unstable" && exec $SHELL'
-
+    urxvt -e "$SHELL" -c 'cd "$HOME/code/hafnium-unstable" && exec $SHELL'
 
 super + r
     sensible-browser

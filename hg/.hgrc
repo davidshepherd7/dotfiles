@@ -64,8 +64,8 @@ emacsclient.args = -c --eval "(emerge-files-with-ancestor nil \""$local"\" \""$o
 #########
 
 # Interact with RhodeCode
-pull-request = !sensible-browser "$(hg paths "$1" | sed 's/^git\+//')/pull-request/new" &
-pr = !$HG push "review"  -f "$@" && $HG pull-request "review"
+pull-request = !sensible-browser "$(hg paths "$1" | sed 's/^git\+//')/pull-request/new?bookmark=$2" &
+pr = !$HG push "review"  -f -B "$1"; $HG pull-request "review" "$1"
 pr-stable = !$HG push review-stable -f "$@" && $HG pull-request review-stable
 pr-staging = !$HG push review-staging -f "$@" && $HG pull-request review-staging
 

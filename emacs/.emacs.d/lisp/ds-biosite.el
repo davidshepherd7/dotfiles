@@ -102,12 +102,12 @@
 (add-hook 'sgml-mode-hook #'ds/biosite-sgml-style)
 
 
-(defun ds/biosite-js-style ()
-  (interactive)
-  (setq indent-tabs-mode t)
-  (setq js-indent-level tab-width))
-(add-hook 'js-mode-hook #'ds/biosite-js-style)
-(add-hook 'typescript-mode-hook #'ds/biosite-js-style)
+;; (defun ds/biosite-js-style ()
+;;   (interactive)
+;;   (setq indent-tabs-mode t)
+;;   (setq js-indent-level tab-width))
+;; (add-hook 'js-mode-hook #'ds/biosite-js-style)
+;; (add-hook 'typescript-mode-hook #'ds/biosite-js-style)
 
 
 (require 'cmake-mode)
@@ -186,10 +186,16 @@
        (s-chop-prefix "common/" it)
        (s-concat "#include \"" it "\"")))
 
-(defun ds/biosite-insert-as-include (filepath)
+(defun ds/biosite-pick-include-location ()
   (save-excursion
     (goto-char (point-min))
-    (forward-line 4) ; Should get us past any initial stuff
+    (re-search-forward "#include\\|namespace\\|class\\|struct")
+    (forward-line -1)
+    (point)))
+
+(defun ds/biosite-insert-as-include (filepath)
+  (save-excursion
+    (goto-char (ds/biosite-pick-include-location))
     (end-of-line)
     (insert "\n")
     (let ((include-line (ds/biosite-path-to-include filepath)))
@@ -207,10 +213,11 @@
                                                   (s-ends-with-p ".hpp" filepath)
                                                   (s-contains-p "/qt/Q" filepath)))
                                 it)))
-         (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
+         (default-input (when (symbol-at-point) (s-downcase (symbol-name (symbol-at-point)))))
          (file (completing-read "header: " headers nil nil default-input)))
     (if insert-here
-        (insert (ds/biosite-path-to-include file))
+        (progn (insert "\n")
+               (insert (ds/biosite-path-to-include file)))
       (ds/biosite-insert-as-include file)
       (ds/sort-headers))))
 
@@ -734,7 +741,7 @@ statement spanning multiple lines; otherwise, return nil."
 (defcustom ds/sort-headers-internal-libs
   '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/"
     "network/" "ssl/" "crypt/" "crypt-qt/" "log/" "io/" "paths/" "options/"
-    "process/" "qtlib/" "auth/" "version/" "audit/" "smtp/"
+    "process/" "qtlib/" "auth/" "version/" "audit/" "smtp/" "filesystem/" "thread/"
     )
   "")
 
@@ -795,6 +802,7 @@ statement spanning multiple lines; otherwise, return nil."
        (s-split "\n")
        (-map #'s-trim)
        (--filter (not (string-empty-p it)))
+       (-uniq)
        (-group-by #'ds/sort-headers--classify)
        (--sort (< (car it) (car other)))
        (map-values)

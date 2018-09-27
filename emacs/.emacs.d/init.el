@@ -1929,6 +1929,9 @@ for a file to visit if current buffer is not visiting a file."
   (interactive)
   (insert (s-trim (shell-command-to-string "uuidgen"))))
 
+(defun ds/insert-nil-uuid ()
+  (interactive)
+  (insert "00000000-0000-0000-0000-000000000000"))
 
 
 (defun ds/table-to-array (begin end)
