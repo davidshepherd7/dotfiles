@@ -89,3 +89,6 @@ XF86AudioPrev
 
 XF86AudioNext
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+
+Pause
+    desktop-pause.sh -s
