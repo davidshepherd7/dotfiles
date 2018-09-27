@@ -2,5 +2,5 @@
 # key: it
 # --
 it('$1', function() {
-$0
+${0:expect(true).toEqual(false);}
 });

@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: component
+# --
+import { Component } from '@angular/core';
+
+@Component({
+    selector: '$1',
+    templateUrl: './$2.html',
+})
+export class $3 {
+    constructor($0) {
+    }
+}

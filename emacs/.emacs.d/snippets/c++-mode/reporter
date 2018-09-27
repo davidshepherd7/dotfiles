@@ -1,0 +1,38 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: reporter
+# --
+#ifndef ${1:`(upcase (replace-regexp-in-string "[.-/]" "_" (file-relative-name (buffer-file-name) (projectile-project-root))))`_INCLUDED}
+#define $1
+
+#include "auth/user_id_type.h"
+
+#include "shared/reports/${2:`(downcase (file-name-base))`}_options.h"
+
+#include "report_server/handlers/html_report_generator.h"
+
+namespace boron
+{
+	namespace reports
+	{
+		class $2 : public html_report_generator<$2_options>
+		{
+		public:
+
+			explicit $2(
+				const boost::filesystem::path& output_directory,
+				pa::tickets::ticket_queue& queue
+			);
+
+			void make_report(
+				const pa::rest::request_type&,
+				pa::rest::context_type&,
+				const options_type& options,
+				pa::tickets::ticket_writer& ticket,
+				boron::reports::rd::report& report
+			) override;
+		};
+
+	} // namespace reports
+} // namespace boron
+
+#endif // $1

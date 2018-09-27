@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: sctl
+# --
+Console.WriteLine("[" + String.Join(", ", $1) + "]");$0

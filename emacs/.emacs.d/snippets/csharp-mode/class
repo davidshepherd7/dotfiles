@@ -1,6 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: it
+# key: class
 # --
-it(\`$1\`, () => {
+public class $1
+{
 $0
-});
+}

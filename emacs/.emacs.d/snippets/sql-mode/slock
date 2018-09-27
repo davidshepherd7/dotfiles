@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: slock
+# --
+
+CREATE UNIQUE INDEX $1_single_row_lock
+	ON $1 ((TRUE));

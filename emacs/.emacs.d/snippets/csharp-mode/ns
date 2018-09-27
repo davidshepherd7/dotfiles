@@ -1,6 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: it
+# key: ns
 # --
-it(\`$1\`, () => {
+namespace $1
+{
 $0
-});
+}

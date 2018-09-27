@@ -4,4 +4,5 @@
 (defcustom `(file-name-base)`-$1
 ${2:default}
 "$0"
-:group '`(file-name-base)`)
+:group '`(file-name-base)`
+:type 'foo)

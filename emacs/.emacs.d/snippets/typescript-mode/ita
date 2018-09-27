@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: ita
 # --
-it(\`$1\`, async(async () => {
+it(\`$1\`, async () => {
 $0
-}));
+});

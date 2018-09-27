@@ -1,8 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # --
-(function() {
-'use strict';
-
 describe('`(s-capitalized-words (file-name-base (file-name-base)))`', function() {
 beforeEach(angular.mock.module('TODO'));
 beforeEach(angular.mock.module('${2:`(ds/biosite-path-to-html-template-path (buffer-file-name))`}'));
@@ -13,9 +10,9 @@ beforeEach(function() {helpers = injectHelpers();});
 let cmpl;
 beforeEach(function() {
 	cmpl = helpers.compileTemplate(\`
-<${4:`(s-dashed-words (ds/chop-web-suffixes (file-name-nondirectory (buffer-file-name))))`}$0>
-</$4>
-\`);
+			<${4:`(s-dashed-words (ds/chop-web-suffixes (file-name-nondirectory (buffer-file-name))))`}$0>
+			</$4>
+		\`);
 	cmpl.scope.$digest();
 });
 
@@ -23,5 +20,3 @@ it('compiles', function() {
 	expect(cmpl.elem).toShowText(TODO);
 });
 });
-
-})();

@@ -1,6 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: it
+# key: sct
 # --
-it(\`$1\`, () => {
-$0
-});
+Console.WriteLine($0);

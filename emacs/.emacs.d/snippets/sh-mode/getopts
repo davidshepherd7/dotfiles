@@ -3,8 +3,6 @@
 # --
 usage() {
 cat <<EOF 1>&2
-$0
-
 Usage \$0 [options]
 
     -h, --help:          Show this help
@@ -17,6 +15,11 @@ key="\$1"
 case $key in
 -h|--help)
 usage
+;;
+$0
+*)
+usage
+exit 1
 ;;
 esac
 shift

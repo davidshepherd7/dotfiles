@@ -1,6 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: it
+# key: x
 # --
-it(\`$1\`, () => {
-$0
-});
+|| initial.$1 != updated.$1

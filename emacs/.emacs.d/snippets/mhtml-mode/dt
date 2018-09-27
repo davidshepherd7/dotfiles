@@ -1,6 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: it
+# key: dt
 # --
-it(\`$1\`, () => {
-$0
-});
+<dt>$1</dt>
+<dd>$0</dd>
