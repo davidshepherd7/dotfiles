@@ -1889,11 +1889,15 @@ for a file to visit if current buffer is not visiting a file."
 ;;   (volatile-highlights-mode)
 ;;   )
 
-;; (use-package highlight-indentation
-;;   :ensure t
-;;   :config
-;;   (add-hook 'python-mode-hook #'highlight-indentation-mode)
-;;   )
+(use-package highlight-indentation
+  :ensure t
+  :config
+  (add-hook 'python-mode-hook #'highlight-indentation-mode)
+  (add-hook 'yaml-mode-hook #'highlight-indentation-mode)
+
+  (set-face-background 'highlight-indentation-face "gray15")
+  (set-face-background 'highlight-indentation-current-column-face "gray28")
+  )
 
 (use-package midnight
   :ensure t
