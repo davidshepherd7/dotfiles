@@ -936,7 +936,8 @@ For magit versions > 2.1.0"
 ;; ============================================================
 
 (use-package markdown-mode
-  :ensure t
+  :load-path "~/.emacs.d/vc-packages/markdown-mode"
+  ;; :ensure t
   :config
   ;; run markdown-mode on files ending in .md
   (validate-setq auto-mode-alist

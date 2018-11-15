@@ -60,6 +60,13 @@ picurl() {
     curl -k "https://192.168.0.250:8100${1}" -H "Authorization: Bearer $BORON_PI_API_TOKEN" "${@:2}"
 }
 
+dcurl() {
+    curl "https://api.digitalocean.com/v2${1}" \
+         -H "Authorization: Bearer $SOFTWARE_DO_API_TOKEN" \
+         -H "Content-Type: application/json" \
+         "${@:2}"
+}
+
 alias boron_client='$boron_dir/build/bin/boron-client'
 
 cd-boron-build () {

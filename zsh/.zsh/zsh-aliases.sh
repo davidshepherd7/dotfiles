@@ -613,3 +613,7 @@ alias whatismyip='curl "icanhazip.com"'
 # curl ifconfig.me
 # curl ipecho.net/plain
 # curl ifconfig.co
+
+
+
+alias ansibleinit='mkdir -p tasks/ handlers/ vars/ templates/ && touch tasks/main.yml handlers/main.yml vars/main.yml'

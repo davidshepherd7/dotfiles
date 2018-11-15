@@ -400,6 +400,8 @@
   (add-to-list 'evil-insert-state-modes 'git-rebase-mode)
   (add-to-list 'evil-insert-state-modes 'diff-mode)
   (add-to-list 'evil-insert-state-modes 'special-mode)
+  (add-to-list 'evil-insert-state-modes 'anki-mode)
+  (add-to-list 'evil-insert-state-modes 'anki-mode-menu-mode)
 
 
   ;; Square brackets

@@ -531,6 +531,8 @@ LCON is the lexical context, if any."
 (defvar ds/js-non-indented-line-regexs '("^\\s-*(function\\s-*()\\s-*{")
   "Lines matching this regex set the current indentation level to zero.")
 
+(setq ds/js-non-indented-line-regexs nil)
+
 (defun non-indented-line (line)
   (-any (lambda (reg) (string-match-p reg line))
         ds/js-non-indented-line-regexs))
