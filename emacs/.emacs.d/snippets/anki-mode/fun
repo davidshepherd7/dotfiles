@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: bv
+# key: fun
 # --
-q.bindValue(":$1", $1);
+[$]$1: $2 \rightarrow $3[/$]

@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: bv
+# key: bi
 # --
-q.bindValue(":$1", $1);
+business-intelligence

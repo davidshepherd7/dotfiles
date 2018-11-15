@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: bv
+# key: sct
 # --
-q.bindValue(":$1", $1);
+fmt.Println("$1")
