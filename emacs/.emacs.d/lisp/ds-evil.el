@@ -171,6 +171,14 @@
     (comment-or-uncomment-region beg end))
   (define-key evil-normal-state-map (kbd ";") #'evil-comment)
 
+  (evil-define-operator ds/evil-copy-and-comment (beg end)
+    :move-point nil
+    (copy-region-as-kill beg end)
+    (goto-char end)
+    (comment-or-uncomment-region beg end)
+    (yank))
+  (define-key evil-normal-state-map (kbd ":") #'ds/evil-copy-and-comment)
+
   (evil-define-operator ds/evil-eval (beg end)
     :move-point nil
     ;; t: print to stdout
@@ -466,3 +474,11 @@
   (evil-goggles-use-diff-faces)
 
   (validate-setq evil-goggles-duration 0.1))
+
+
+;; Just for the comment text objects
+(use-package evil-nerd-commenter
+  :ensure t
+  :config
+  (define-key evil-inner-text-objects-map (kbd ";") #'evilnc-inner-comment)
+  (define-key evil-outer-text-objects-map (kbd ";") #'evilnc-outer-commenter))
