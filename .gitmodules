@@ -52,3 +52,6 @@
 [submodule "emacs/.emacs.d/vc-packages/nand2tetris.el"]
 	path = emacs/.emacs.d/vc-packages/nand2tetris.el
 	url = git@github.com:CestDiego/nand2tetris.el.git
+[submodule "emacs/.emacs.d/vc-packages/markdown-mode"]
+	path = emacs/.emacs.d/vc-packages/markdown-mode
+	url = git@github.com:davidshepherd7/markdown-mode.git
