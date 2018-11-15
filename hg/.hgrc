@@ -1,5 +1,7 @@
 %include ~/code/pa-config-files/pa-hgrc
 
+%include ~/.keys/hg-keys
+
 [ui]
 username = David Shepherd <david.shepherd@biositesystems.com>
 ignore = ~/.hgignore
