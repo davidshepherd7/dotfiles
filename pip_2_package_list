@@ -1,4 +1,4 @@
-mercurial
+mercurial==4.7
 hg-git
 cython
 hg-evolve
