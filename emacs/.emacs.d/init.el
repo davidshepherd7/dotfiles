@@ -528,6 +528,7 @@ index in STRING."
   (define-key company-active-map (kbd "<tab>") #'company-complete)
 
   ;; Case sensitive simple completions
+  (require 'company-dabbrev)
   (validate-setq company-dabbrev-downcase nil)
   )
 
