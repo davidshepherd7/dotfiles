@@ -77,7 +77,7 @@ ccommon = commit -m "chore(common): Update common" 'path:common'
 ##############
 
 # pretty log graph
-lg1 = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks % '{bookmark}{ifeq(bookmark, active, '*')}'  } ] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}"
+lg1 = log --color=always -G --template "{if(tags, label('custom.tag','[ {tags} ] '))}{if(bookmarks, label('custom.bookmark','[ {bookmarks % '{bookmark}{ifeq(bookmark, active, ' *')} '}] '))}{label('changeset.{phase}', node|short)} {desc|firstline} {label('custom.time',date|age)} {label('custom.author',author|person)}"
 lg = !$HG lg1 -r 'sort(all(), topo, topo.firstbranch=.)' "$@" | sed -e '1i\\' 2>/dev/null | less -FRXS
 
 lg-watch = !/usr/bin/watch -n 0.3 -c -x hg lg --limit 150
