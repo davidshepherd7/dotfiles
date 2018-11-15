@@ -1443,6 +1443,9 @@ $0")
   (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
   (validate-setq yaml-indent-offset 2)
   (add-hook 'yaml-mode-hook #'set-tab)
+
+  (add-hook 'yaml-mode-hook (lambda () (validate-setq indent-tabs-mode nil)))
+  (add-hook 'yaml-mode-hook (lambda () (validate-setq yaml-indent-offset 2)))
   )
 
 (use-package feature-mode
@@ -1513,8 +1516,10 @@ $0")
 
   (setq ds/shell-docsets '("Bash"))
 
+  (setq ds/ansible-docsets '("Ansible"))
+
   (setq ds/docsets
-        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets))
+        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1542,6 +1547,7 @@ $0")
   (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
   (add-hook 'css-mode-hook (ds/set-docsets-fn '("CSS")))
   (add-hook 'html-mode-hook (ds/set-docsets-fn ds/html-docsets))
+  (add-hook 'yaml-mode-hook (ds/set-docsets-fn ds/ansible-docsets))
   )
 
 (defun ds/insert-current-date ()
