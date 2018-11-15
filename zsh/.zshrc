@@ -330,6 +330,7 @@ source ${zshdir}/completion/pip.plugin.zsh
 # plugins
 source "${zshdir}/plugins/safe-paste.sh"
 source "${zshdir}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "${zshdir}/plugins/zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh"
 
 
 # ccache config
