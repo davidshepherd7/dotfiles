@@ -777,6 +777,17 @@ index in STRING."
     (message "String \"%s\" saved to kill ring." buffer-file-name)
     buffer-file-name))
 
+(defun copy-project-file-path ()
+  "Add `buffer-file-name' to the kill ring."
+  (interactive)
+  (if (not (stringp buffer-file-name))
+      (error "Not visiting a file.")
+    (let ((project-relative-path (f-relative buffer-file-name (projectile-project-root))))
+      (kill-new project-relative-path)
+      ;; Give some visual feedback:
+      (message "String \"%s\" saved to kill ring." project-relative-path)
+      project-relative-path)))
+
 
 (defun smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
