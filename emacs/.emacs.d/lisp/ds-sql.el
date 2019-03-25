@@ -10,12 +10,9 @@
   (add-to-list 'sqlup-blacklist "name")
   (add-to-list 'sqlup-blacklist "group")
   (add-to-list 'sqlup-blacklist "data")
+  (add-to-list 'sqlup-blacklist "version")
+  (add-to-list 'sqlup-blacklist "type")
   (add-hook 'sql-mode-hook #'sqlup-mode t))
-
-(use-package sql-indent
-  :load-path "~/.emacs.d/sql-indent/"
-  :config
-  (add-hook 'sql-mode-hook #'sql-indent-mode))
 
 (add-hook 'sql-mode-hook #'flycheck-mode)
 
@@ -23,3 +20,17 @@
   (sql-set-product "postgres"))
 (add-hook 'sql-mode-hook #'ds/set-product-postgres)
 
+
+(use-package sql-indent
+  :ensure t
+  :config
+  (add-hook 'sql-mode-hook #'sql-indent-minor-mode)
+  (setq-default sqlind-indentation-offsets-alist
+                `((select-clause +)
+                  (insert-clause +)
+                  (delete-clause +)
+                  (update-clause +)
+                  (statement-continuation +)
+                  ,@sqlind-default-indentation-offsets-alist))
+  (setq-default sqlind-basic-offset 4)
+  )
