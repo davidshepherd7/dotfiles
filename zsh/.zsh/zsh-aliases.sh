@@ -36,6 +36,8 @@ alias ex='atool -x -e' # atool can extract pretty much anything, 7zip can almost
 # do this but screws up permissions and takes two runs to
 # extract tar.gz.
 
+alias jc='sudo journalctl'
+alias sc='sudo systemctl'
 
 alias sl='sl -e'
 
