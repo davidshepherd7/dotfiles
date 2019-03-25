@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: todoerr
+# --
+// TODO: implement
+volatile int pa_can_return=0; if(pa_can_return) return$0;
+throw std::runtime_error(std::string("TODO Function not yet implemented: ") + __FUNCTION__);

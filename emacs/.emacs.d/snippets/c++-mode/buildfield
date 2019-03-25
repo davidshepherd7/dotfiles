@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: buildfield
 # --
-insert_organisation_builder& $1(${2:$1_type} $1)
+`(downcase (file-name-base))`_builder& $1(const ${2:$1_type}& $1)
 {
 m_$1 = $1;
 return *this;

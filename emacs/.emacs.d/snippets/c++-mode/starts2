@@ -1,0 +1,22 @@
+# key: starts2
+# --
+#ifndef ${1:`(upcase (replace-regexp-in-string "[.-/]" "_" (file-relative-name (buffer-file-name) (projectile-project-root))))`_INCLUDED}
+#define $1
+
+#include "db/database_id.h"
+#include "serialise2/base.h"
+#include "serialise2/pa_serialise2_attributes.h"
+#include "serialise2/pa_serialise2_field_fwd.h"
+
+`(ds/biosite-open-namespaces)`
+struct `(downcase (file-name-base))` : pa::db::serialise2::base<`(downcase (file-name-base))`>
+{
+typedef pa::db::database_id<`(downcase (file-name-base))`> id_type;
+PA_SERIALISE2_ATTRIBUTES_FWD();
+
+PA_SERIALISE2_FIELD_FWD(pa::db::database_id<`(downcase (file-name-base))`>, id);
+$0
+};
+`(ds/biosite-close-namespaces)`
+
+#endif // $1

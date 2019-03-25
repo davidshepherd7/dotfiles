@@ -1,7 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: querydb
 # --
-`(flet ((message #'ignore)) (ds/biosite-insert-as-include "qtlib/stream.h"))`
 {
     auto prev_position = $1.at();
 
@@ -18,7 +17,7 @@
         std::cout << "row " << i << ":";
         for(int j=0; j<rec.count(); ++j)
         {
-            std::cout << "\t" << rec.fieldName(j) << ": " << $1.value(j) << ";";
+            std::cout << "\t" << rec.fieldName(j).toStdString() << ": " << $1.value(j).toString().toStdString() << ";";
         }
         std::cout << std::endl;
     }

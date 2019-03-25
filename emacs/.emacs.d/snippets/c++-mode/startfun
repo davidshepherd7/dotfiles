@@ -1,0 +1,10 @@
+# key: startfun
+# --
+#ifndef ${1:`(upcase (replace-regexp-in-string "[.-/]" "_" (file-relative-name (buffer-file-name) (projectile-project-root))))`_INCLUDED}
+#define $1
+
+`(ds/biosite-open-namespaces)`
+$2 `(downcase (file-name-base))`($0);
+`(ds/biosite-close-namespaces)`
+
+#endif // $1

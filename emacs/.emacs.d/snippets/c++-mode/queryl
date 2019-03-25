@@ -1,6 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: query
+# key: queryl
 # --
 QSqlQuery q(dbase);
-q.prepare(R"SQL($0)SQL");
+q.prepare(R"SQL(
+$0
+)SQL");
 pa::db::exec(q);

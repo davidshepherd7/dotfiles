@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: s2i
 # --
-PA_SERIALISE_ATTRIBUTES_IMPL($1::`(file-name-base (buffer-file-name))`,"`(file-name-base (buffer-file-name))`");
+PA_SERIALISE2_ATTRIBUTES_IMPL($1::`(file-name-base (buffer-file-name))`,"`(file-name-base (buffer-file-name))`");

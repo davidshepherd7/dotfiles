@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: unreach
+# --
+throw std::runtime_error(pa::format("Unreachable code in %1").arg(__FUNCTION__));

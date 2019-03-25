@@ -1,0 +1,19 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: starts2cpp
+# --
+#include "${1:`(cpp-to-h-path (file-name-nondirectory (buffer-file-name)))`}"
+
+#include "common/db/a/column_name.h"
+#include "common/db/a/table_name.h"
+#include "common/serialise2/pa_serialise2_attributes.h"
+#include "common/serialise2/pa_serialise2_field.h"
+
+`(ds/biosite-cpp-namespaces)`
+
+PA_SERIALISE2_ATTRIBUTES_IMPL(`(ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name)))``(downcase (file-name-base))`, "boron_db_`(downcase (file-name-base))`",
+	pa::db::a::table_name("`(downcase (file-name-base))`")
+);
+
+PA_SERIALISE2_FIELD_IMPL(`(ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name)))``(downcase (file-name-base))`, id,
+	pa::db::a::column_name("delivery_booking_id")
+	);

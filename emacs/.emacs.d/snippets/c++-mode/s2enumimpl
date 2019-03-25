@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: s2enumimpl
+# --
+#define IMPLEMENT_${1:$(upcase yas-text)}
+#include "${1:`(file-name-base)`}.h"
+
+PA_SERIALISE2_IMPLEMENT_ENUM(${2:`(ds/biosite-make-qualified-class-name (file-name-directory (buffer-file-name)))`}, $1, ${1:$(upcase yas-text)});

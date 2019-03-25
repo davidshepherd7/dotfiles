@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: f
+# --
+CREATE FUNCTION $1($2) RETURNS $3
+    LANGUAGE plpgsql
+    ${4:IMMUTABLE}
+    AS $fun$
+    BEGIN
+        $0
+    END;
+    $fun$;

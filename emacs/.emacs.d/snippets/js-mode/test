@@ -1,9 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # key: test
 # --
-(function() {
-'use strict';
-
 describe('${1:`(ds/biosite-path-to-module-label (buffer-file-name))`}', function() {
 beforeEach(angular.mock.module('$2'));
 
@@ -13,5 +10,3 @@ beforeEach(function() {injectHelpers(helpers);});
 $0
 
 });
-
-})();
