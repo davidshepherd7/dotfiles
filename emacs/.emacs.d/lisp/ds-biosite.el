@@ -183,7 +183,6 @@
        (f-join (projectile-project-root) it)
        (file-relative-name it (projectile-project-root))
        (s-chop-prefix "boron/" it)
-       (s-chop-prefix "common/" it)
        (s-concat "#include \"" it "\"")))
 
 (defun ds/biosite-pick-include-location ()
@@ -288,6 +287,7 @@
 
        ("db_types" "db")
        ("shared" "")
+       ("common" "pa")
        ))
 
 (defun ds/biosite-dir-to-namespace (dir)
@@ -297,16 +297,22 @@
 (defun ds/biosite-path-to-namespaces (path)
   (--> path
        (file-name-directory it)
-       (s-replace "boron/audit/xenon" "xenon" it) ;; hack for now
        (s-split "/" it t)
        (-map #'ds/biosite-dir-to-namespace it)
        (-filter (lambda (ns) (not (equal ns ""))) it)))
 
+(defun ds/biosite-maybe-add-subrepo-path (path)
+  (if (equal (projectile-project-name) "common")
+      (f-join "common" path)
+    path))
+
 (defun ds/biosite-get-namespaces  (path)
   "Get a space-separated list of namespaces for file at path"
   (interactive)
-  (ds/biosite-path-to-namespaces
-   (file-relative-name path (projectile-project-root))))
+  (--> path
+       (file-relative-name it (projectile-project-root))
+       (ds/biosite-maybe-add-subrepo-path it)
+       (ds/biosite-path-to-namespaces it)))
 
 (defun ds/biosite-open-namespaces ()
   (interactive)
