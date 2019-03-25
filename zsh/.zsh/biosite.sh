@@ -3,6 +3,9 @@
 
 export boron_dir="$HOME/code/boron-unstable"
 
+export PA_TEST_LOGGING=1
+export PA_TEST_LOGGING_LEVEL=warning
+
 bgulpl_once()
 {
     # subshell to avoid changing directory
