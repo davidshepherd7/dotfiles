@@ -31,6 +31,7 @@
 
 
 (add-hook 'python-mode-hook #'page-break-lines-mode)
+(add-hook 'python-mode-hook #'flycheck-mode)
 
 ;; Build/test/check functions
 ;; ============================================================
