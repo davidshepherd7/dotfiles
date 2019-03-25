@@ -1453,7 +1453,12 @@ $0")
   ;; Disable <, > in C++: support isn't good enough yet
   (electric-operator-add-rules-for-mode 'c++-mode
                                         (cons "<" nil)
-                                        (cons ">" nil))
+                                        (cons ">" nil)
+                                        (cons ":" nil)
+                                        (cons "::" nil))
+
+  ;; Doxygen comments
+  (electric-operator-add-rules-for-mode 'c++-mode (cons "///" "/// "))
 
   (electric-operator-add-rules-for-mode 'ess-mode (cons "^" "^"))
   )
@@ -2019,3 +2024,19 @@ for a file to visit if current buffer is not visiting a file."
           (set-buffer-modified-p nil)
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
+
+
+(defun ds/tick-current-test ()
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (kill-word 2)
+    (delete-char 1)
+    (insert ":white_check_mark:")))
+
+(defun ds/tick-first-test ()
+  (interactive)
+  (save-excursion
+    (goto-char 0)
+    (search-forward-regexp "^:arrow_right:")
+    (ds/tick-current-test)))

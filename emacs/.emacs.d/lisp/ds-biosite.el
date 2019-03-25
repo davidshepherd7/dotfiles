@@ -741,7 +741,7 @@ statement spanning multiple lines; otherwise, return nil."
 
 (makunbound 'ds/sort-headers-internal-libs)
 (defcustom ds/sort-headers-internal-libs
-  '("common/" "db/" "json/" "serialise2/" "compiler/" "rest/" "https/"
+  '("common/" "db/" "json/" "serialise/" "serialise2/" "compiler/" "rest/" "https/"
     "network/" "ssl/" "crypt/" "crypt-qt/" "log/" "io/" "paths/" "options/"
     "process/" "qtlib/" "auth/" "version/" "audit/" "smtp/" "filesystem/" "thread/"
     )

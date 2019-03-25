@@ -515,6 +515,7 @@ take-a-break ()
 alias urldecode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote(sys.argv[1]))"'
 alias urlencode='python3 -c "import sys, urllib.parse as ul; print(ul.quote(sys.argv[1]))"'
 
+alias fix_headset='pulseaudio -k'
 
 # Completion generation
 # ============================================================
