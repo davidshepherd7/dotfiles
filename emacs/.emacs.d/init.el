@@ -778,7 +778,7 @@ index in STRING."
     buffer-file-name))
 
 (defun copy-project-file-path ()
-  "Add `buffer-file-name' to the kill ring."
+  "Add path relative to project root to the kill ring."
   (interactive)
   (if (not (stringp buffer-file-name))
       (error "Not visiting a file.")
@@ -787,6 +787,18 @@ index in STRING."
       ;; Give some visual feedback:
       (message "String \"%s\" saved to kill ring." project-relative-path)
       project-relative-path)))
+
+(defun copy-project-file-line ()
+  "Add something like boron/foo/bar.cpp:123 to the kill ring."
+  (interactive)
+  (if (not (stringp buffer-file-name))
+      (error "Not visiting a file.")
+    (let* ((project-relative-path (f-relative buffer-file-name (projectile-project-root)))
+           (copy-string (s-concat project-relative-path ":" (number-to-string (line-number-at-pos)))))
+      (kill-new copy-string)
+      ;; Give some visual feedback:
+      (message "String \"%s\" saved to kill ring." copy-string)
+      copy-string)))
 
 
 (defun smart-beginning-of-line ()
