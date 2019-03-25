@@ -4,17 +4,18 @@
   :ensure t
   :config
   (require 'ess)
-  (define-key ess-mode-map (kbd "C-c") nil)
-  (define-key ess-mode-map (kbd "C-x") nil)
-  (define-key ess-mode-map (kbd "<C-return>") nil)
+  (require 'ess-r-mode)
+  (define-key ess-r-mode-map (kbd "C-c") nil)
+  (define-key ess-r-mode-map (kbd "C-x") nil)
+  (define-key ess-r-mode-map (kbd "<C-return>") nil)
 
   ;; ess-mode doesn't derive from prog mode :(
-  (define-key ess-mode-map (kbd "M-q") #'fill-function-arguments-dwim)
+  (define-key ess-r-mode-map (kbd "M-q") #'fill-function-arguments-dwim)
 
   ;; ess-mode tries to do some stupid stuff with '_' and ',',
   ;; disable this.
-  (define-key ess-mode-map (kbd "_") nil)
-  (define-key ess-mode-map (kbd ",") nil)
+  (define-key ess-r-mode-map (kbd "_") nil)
+  (define-key ess-r-mode-map (kbd ",") nil)
 
   (add-hook 'ess-roxy-mode-hook
             (lambda () (define-key ess-roxy-mode-map (kbd "C-c") nil)))
@@ -38,6 +39,7 @@
   (validate-setq ess-fancy-comments nil)
 
   ;; Use rtags to make the tags file
+  (require 'projectile)
   (add-hook 'ess-mode-hook
             (lambda()
               (make-local-variable 'projectile-tags-command)
@@ -47,18 +49,18 @@
   (evil-define-operator ds/ess-evil-eval (beg end)
     :move-point nil
     (ess-eval-region beg end nil))
-  (evil-define-key 'normal ess-mode-map (kbd "#") 'ds/ess-evil-eval)
+  (evil-define-key 'normal ess-r-mode-map (kbd "#") 'ds/ess-evil-eval)
 
   (add-to-list 'evil-insert-state-modes 'inferior-ess-mode)
 
   ;; my movement keys
-  (define-key inferior-ess-mode-map (kbd "M-n") nil)
-  (define-key inferior-ess-mode-map (kbd "M-i") nil)
+  (define-key inferior-ess-r-mode-map (kbd "M-n") nil)
+  (define-key inferior-ess-r-mode-map (kbd "M-i") nil)
 
-  (define-key inferior-ess-mode-map (kbd "C-y") nil)
+  (define-key inferior-ess-r-mode-map (kbd "C-y") nil)
 
-  (define-key inferior-ess-mode-map (kbd "<up>") #'comint-previous-input)
-  (define-key inferior-ess-mode-map (kbd "<down>") #'comint-next-input)
+  (define-key inferior-ess-r-mode-map (kbd "<up>") #'comint-previous-input)
+  (define-key inferior-ess-r-mode-map (kbd "<down>") #'comint-next-input)
 
   (defun ds/ess-pretty-function ()
     (add-to-list 'prettify-symbols-alist '("function" . 955)))
