@@ -366,25 +366,11 @@
 
 (defun ds/new-boron-sql ()
   (interactive)
-  (let (
-        (next-version (-->
-                       (f-glob (f-join (projectile-project-root) "boron/shared/db/sql/upgrade_*_to_*.sql"))
-                       (-sort (lambda (s1 s2) (not (string-lessp s1 s2))) it)
-                       (car it)
-                       (f-filename it)
-                       (f-base it)
-                       (s-split "_" it)
-                       (nth 3 it)
-                       (string-to-number it)
-                       (+ 1 it)
-                       ))
-        )
+  (let ((label (read-from-minibuffer "file basename: ")))
     (-->
-     (format "upgrade_%03i_to_%03i.sql" (- next-version 1) next-version)
+     (format "%s.pending.sql" label)
      (f-join (projectile-project-root) "boron/shared/db/sql" it)
-     (find-file it))
-
-    (insert (format "UPDATE version SET current = %i;" next-version))))
+     (find-file it))))
 
 
 (defun ds/open-with-qt-designer ()
