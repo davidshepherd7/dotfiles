@@ -17,7 +17,7 @@ super + m
     emacsclient -c -n -e '(new-clean-deft)'
 
 super + a
-    sensible-browser 'inbox.google.com'
+    sensible-browser 'mail.google.com'
 
 super + p
     helm-dmenu.sh
