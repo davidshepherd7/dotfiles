@@ -68,3 +68,7 @@ mkdir -p ~/.ssh/tmp
 
 mkdir -p ~/.docsets/
 stow_file docsets
+
+sudo cp /usr/share/X11/xkb/symbols/pl /usr/share/X11/xkb/symbols/pl.bak
+sudo cat /usr/share/X11/xkb/symbols/pl ./polish-gb-colemak | sudo tee /usr/share/X11/xkb/symbols/pl.temp >/dev/null
+sudo mv /usr/share/X11/xkb/symbols/pl.temp /usr/share/X11/xkb/symbols/pl

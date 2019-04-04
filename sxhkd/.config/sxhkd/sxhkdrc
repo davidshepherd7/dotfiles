@@ -65,7 +65,7 @@ Print
     gnome-screenshot -a
 
 super + F10
-    keybinds.sh pl
+    keybinds.sh pl david-gb-colemak
 
 super + F11
     setxkbmap gb

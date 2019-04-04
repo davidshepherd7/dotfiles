@@ -13,7 +13,7 @@ set -o nounset
 lang="${1:-gb}"
 
 # Reset to standard keyboard layout
-setxkbmap "${lang}" -variant colemak
+setxkbmap "${lang}" -variant "${2:-colemak}"
 killall xcape || true
 
 
