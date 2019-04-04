@@ -2040,3 +2040,9 @@ for a file to visit if current buffer is not visiting a file."
     (goto-char 0)
     (search-forward-regexp "^:arrow_right:")
     (ds/tick-current-test)))
+
+(use-package google-translate
+  :ensure t
+  :config
+  (validate-setq google-translate-default-source-language "Polish")
+  (validate-setq google-translate-default-target-language "English"))
