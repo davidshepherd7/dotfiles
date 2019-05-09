@@ -704,6 +704,8 @@ index in STRING."
 
    ((derived-mode-p 'scheme-mode) (concat "\\racket -t " (file-name-nondirectory (buffer-file-name))))
 
+   ((equal (buffer-name) "sxhkdrc") "killall sxhkd -SIGUSR1")
+
    ;; make is probably a good default for anything else
    (t "make")))
 
