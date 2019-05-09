@@ -30,6 +30,8 @@ absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
 strip =
 show =
 evolve =
+[hooks]
+commit.showuntracked = $HG status --unknown
 
 [color]
 
