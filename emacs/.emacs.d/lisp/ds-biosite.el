@@ -88,6 +88,8 @@
   (c-set-offset 'template-args-cont #'ds/template-unindent-trailing-closing-paren)
 
   (c-set-offset 'brace-list-intro '+)
+
+  (c-set-offset 'cpp-macro 0 nil)
   )
 
 (add-hook 'c++-mode-hook #'ds/biosite-c-style)
