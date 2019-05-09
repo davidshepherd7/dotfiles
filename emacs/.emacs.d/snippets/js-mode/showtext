@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: showtext
+# --
+expect(cmpl.elem).toShowText('$0');

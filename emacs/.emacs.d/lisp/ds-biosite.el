@@ -288,6 +288,12 @@
        ("db_types" "db")
        ("shared" "")
        ("common" "pa")
+
+       ("https" "http")
+
+       ;; inside test directories
+       ("site" "")
+       ("master" "")
        ))
 
 (defun ds/biosite-dir-to-namespace (dir)

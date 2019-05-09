@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: spy
+# --
+let $1Spy;
+beforeEach(function() {
+    angular.mock.module(function($provide) {
+        $provide.factory('$1', function() {
+            $1Spy = jasmine.createSpy('$1')
+            .and.$0;
+            return $1Spy;
+        });
+    });
+});
