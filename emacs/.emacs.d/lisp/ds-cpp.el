@@ -12,6 +12,10 @@
 ;; Set .h files to use c++ mode
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
+;; .ipp is some crazy boost thing for something like .cpp files that they want
+;; to #include
+(add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
+
 (defun indent-buffer ()
   "Re-indent the whole buffer"
   (interactive)
