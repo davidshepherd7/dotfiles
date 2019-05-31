@@ -620,3 +620,21 @@ alias whatismyip='curl "icanhazip.com"'
 
 
 alias ansibleinit='mkdir -p tasks/ handlers/ vars/ templates/ && touch tasks/main.yml handlers/main.yml vars/main.yml'
+
+
+edit-deb()
+{
+    deb_path="$(readlink -f $1)"
+
+    tempfile="$(mktemp -d editable-dpkg-$USER.XXXXXX --tmpdir)"
+    (
+        cd "$tempfile"
+        ar p "$deb_path" control.tar.gz | tar -xz
+
+        echo "Hit ctrl-D once you are done editing the deb package"
+        "$SHELL"
+
+        tar czf control.tar.gz *[!z]
+        ar r "$deb_path" control.tar.gz
+    )
+}
