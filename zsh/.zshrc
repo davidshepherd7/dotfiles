@@ -180,14 +180,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 export PAGER="less"
 export LESS="-F -R -X -S"
 
-# ssh
-# ============================================================
-
-# Smart ssh which runs ssh-add when needed, doesn't work with git though :(
-ssh-add -l >/dev/null || \
-    alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
-
-
 
 # Emacs
 # ============================================================
