@@ -428,8 +428,6 @@ index in STRING."
 (use-package frames-only-mode
   :ensure t
   :config
-  ;; It breaks magit :( TODO: remove
-  (validate-setq frames-only-mode-reopen-frames-from-hidden-x11-virtual-desktops nil)
   (frames-only-mode 1))
 
 (global-set-key (kbd "s-k") #'make-frame)
