@@ -4,3 +4,4 @@ scikit-learn
 sympy
 flake8
 docker-compose
+pipenv

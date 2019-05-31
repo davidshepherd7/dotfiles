@@ -29,7 +29,8 @@ transplant =
 absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
 strip =
 show =
-evolve =
+# evolve =
+
 [hooks]
 commit.showuntracked = $HG status --unknown
 
@@ -139,7 +140,8 @@ multi-released =!$HG log -r "descendants($1) and tag('re:boron-[0-9]+\.[0-9]+\.[
 
 push-as = !hg-push-as.py --mercurial-binary "$HG" "$@"
 
-uncommit = hg strip --keep -r .
+decommit = strip --keep -r .
+
 
 [diff]
 git = true
