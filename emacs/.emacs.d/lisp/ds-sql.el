@@ -24,7 +24,7 @@
 (use-package sql-indent
   :ensure t
   :config
-  (add-hook 'sql-mode-hook #'sql-indent-minor-mode)
+  (add-hook 'sql-mode-hook #'sqlind-minor-mode)
   (setq-default sqlind-indentation-offsets-alist
                 `((select-clause +)
                   (insert-clause +)
