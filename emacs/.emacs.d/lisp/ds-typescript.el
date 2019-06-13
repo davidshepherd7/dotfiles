@@ -87,7 +87,19 @@
 
   (defun ds/setup-typescript-fill-function-arguments ()
     (setq-local fill-function-arguments-trailing-separator t))
-  (add-hook 'typescript-mode-hook #'ds/setup-typescript-fill-function-arguments))
+  (add-hook 'typescript-mode-hook #'ds/setup-typescript-fill-function-arguments)
+
+
+  (defun ds/find-flycheck-checker-node-modules (executable)
+    (let* ((node-modules (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules/"))
+           (exec-path (if node-modules
+                          (cons (f-join node-modules "node_modules" ".bin") exec-path)
+                        exec-path)))
+      (flycheck-default-executable-find executable)))
+  (defun ds/use-find-flycheck-checker-node-modules ()
+    (setq-local flycheck-executable-find #'ds/find-flycheck-checker-node-modules))
+  (add-hook 'typescript-mode-hook #'ds/use-find-flycheck-checker-node-modules)
+  )
 
 
 (use-package tide
