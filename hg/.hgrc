@@ -21,7 +21,6 @@ shelve =
 graphlog =
 record =
 histedit =
-remotebranches = ~/.hgex/hg-remotebranches/hg_remotebranches.py
 remotenames =
 rebase =
 transplant =
