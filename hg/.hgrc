@@ -25,11 +25,9 @@ remotebranches = ~/.hgex/hg-remotebranches/hg_remotebranches.py
 remotenames =
 rebase =
 transplant =
-# 418171f302d0
-absorb = ~/.hgex/hg-experimental/hgext3rd/absorb/__init__.py
+absorb =
 strip =
 show =
-# evolve =
 
 [hooks]
 commit.showuntracked = $HG status --unknown
