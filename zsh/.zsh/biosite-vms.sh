@@ -47,7 +47,7 @@ vm-send-binary() {
     local vm_name="$1"
     local binary_name="$2"
 
-    local binary_basename="$(basename "$binary_name")"
+    local binary_basename="$(basename "$(readlink "$binary_name")")"
     echo "basename: $binary_basename"
 
     scp -o StrictHostKeyChecking=no "$binary_name" "boron-vm@$(vm-blocking-get-ip "$vm_name"):/home/boron-vm/$binary_basename"

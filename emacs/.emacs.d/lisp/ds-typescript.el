@@ -56,9 +56,6 @@
   (define-key typescript-mode-map (kbd "C-\\ n") #'ds/js-switch-to-test)
   (define-key typescript-mode-map (kbd "C-,") #'ds/ts-import)
 
-  ;; Remove broken function which auto indents on {
-  (define-key typescript-mode-map (kbd "{") nil)
-
   (defun boron-typings-index ()
     (f-join (projectile-project-root) "boron" "web_applications" "typings" "index.d.ts"))
 
@@ -81,8 +78,9 @@
                '(node "at [^( ]+ (\\(.*?\\):\\([0-9]*\\):\\([0-9]*\\))" 1 2))
   (add-to-list 'compilation-error-regexp-alist 'node)
 
-  ;; Fuck this failing auto indent shit
-  (-each (list (kbd ",") (kbd "(") (kbd ")") (kbd ":") (kbd ";"))
+  ;; Remove some auto indent stuff (aggressive-indent-mode is enough)
+  (validate-setq typescript-auto-indent-flag nil)
+  (-each (list (kbd ",") (kbd "(") (kbd ")") (kbd ":") (kbd ";") (kbd "{"))
     (lambda (key) (define-key typescript-mode-map key nil)))
 
   (defun ds/setup-typescript-fill-function-arguments ()

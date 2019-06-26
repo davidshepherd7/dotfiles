@@ -140,6 +140,7 @@ push-as = !hg-push-as.py --mercurial-binary "$HG" "$@"
 
 decommit = strip --keep -r .
 
+rename-cpp = !hg mv "$1.h" "$2.h" && hg mv "$1.cpp" "$2.cpp"
 
 [diff]
 git = true

@@ -191,3 +191,7 @@ boron-files() {
     find -name '*.js' -o -name '*.html' -o -name '*.cpp' -o -name '*.h' |\
         grep -v '\.spec\.js\|./web_applications/lib/\|./web_applications/node_modules/\|./web_applications/app/\|./web_applications/dev-app/\|./web_applications/lib-managed/\|/tests/'
 }
+
+clear-firefox-certs() {
+    cd ~/.mozilla/firefox/*.default && killall firefox && mv cert9.db cert9.db.bak && mv cert8.db cert8.db.bak
+}

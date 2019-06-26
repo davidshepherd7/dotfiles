@@ -1581,7 +1581,11 @@ $0")
 
 (defun ds/insert-current-date ()
   (interactive)
-  (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+  (insert (format-time-string "%Y-%m-%d")))
+
+(defun ds/insert-current-date-time ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%dT%H:%M:%SZ")))
 
 
 (use-package multiple-cursors

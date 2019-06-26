@@ -637,4 +637,7 @@ edit-deb()
         tar czf control.tar.gz *[!z]
         ar r "$deb_path" control.tar.gz
     )
+
+    # Delete the temp directory because these things can be very big
+    rm -r "$tempfile"
 }
