@@ -9,7 +9,7 @@
 #include "serialise2/pa_serialise2_field_fwd.h"
 
 `(ds/biosite-open-namespaces)`
-struct `(downcase (file-name-base))` : pa::db::serialise2::base<`(downcase (file-name-base))`>
+struct `(downcase (file-name-base))` : pa::serialise2::base<`(downcase (file-name-base))`>
 {
 typedef pa::db::database_id<`(downcase (file-name-base))`> id_type;
 PA_SERIALISE2_ATTRIBUTES_FWD();

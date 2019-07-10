@@ -639,5 +639,5 @@ edit-deb()
     )
 
     # Delete the temp directory because these things can be very big
-    rm -r "$tempfile"
+    rm -rf "$tempfile"
 }

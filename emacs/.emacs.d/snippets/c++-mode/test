@@ -10,7 +10,7 @@
 
 #include "shared/db/get_database.h"
 
-#include "tests/make_test_data/insert/remote_event_server.h"
+#include "tests/make_test_data/insert/site.h"
 #include "tests/make_test_data/insert/user.h"
 
 
