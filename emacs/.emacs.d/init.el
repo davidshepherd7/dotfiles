@@ -1820,8 +1820,10 @@ for a file to visit if current buffer is not visiting a file."
   (interactive)
   (occur "[^[:ascii:]]"))
 
-(use-package ivy
-  :ensure t)
+(use-package swiper
+  :ensure t
+  :init
+  (global-set-key (kbd "C-S-f") #'swiper))
 
 (use-package hamburger-menu
   :ensure t
