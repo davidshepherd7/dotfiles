@@ -1825,13 +1825,6 @@ for a file to visit if current buffer is not visiting a file."
   :init
   (global-set-key (kbd "C-S-f") #'swiper))
 
-(use-package hamburger-menu
-  :ensure t
-  :init
-  (hamburger-menu-mode)
-  )
-
-
 (use-package conf-mode
   :ensure t
   :config
