@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: typedict
+# --
+$1 = TypedDict("$1", {$0})

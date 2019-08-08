@@ -19,3 +19,4 @@ hg/.hgex
 /emacs/.emacs.d/savehist
 /emacs/.emacs.d/recentf
 /bin/bin/chromedriver
+/parallel/.parallel/tmp/linelen-david-wave

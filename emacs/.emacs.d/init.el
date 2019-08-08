@@ -1303,11 +1303,11 @@ $0")
 ;;   (define-key ggtags-mode-map (kbd "M->") nil))
 
 
-(use-package imenu-anywhere
-  :ensure t
-  :config
-  (global-set-key (kbd "M-,") #'imenu-anywhere)
-  )
+;; (use-package imenu-anywhere
+;;   :ensure t
+;;   :config
+;;   (global-set-key (kbd "M-,") #'imenu-anywhere)
+;;   )
 
 ;; Better help commands
 ;; ============================================================
@@ -1896,15 +1896,15 @@ for a file to visit if current buffer is not visiting a file."
   :load-path "~/.emacs.d/vc-packages/robot-mode/")
 
 
-(use-package php-mode
-  :config
-  (define-key php-mode-map (kbd "M-e") nil)
-  (define-key php-mode-map (kbd "C-e") nil)
+;; (use-package php-mode
+;;   :config
+;;   (define-key php-mode-map (kbd "M-e") nil)
+;;   (define-key php-mode-map (kbd "C-e") nil)
 
-  (add-hook 'php-mode-hook (lambda () (flycheck-mode)))
-  (add-hook 'php-mode-hook (lambda () (flycheck-select-checker 'php)))
+;;   (add-hook 'php-mode-hook (lambda () (flycheck-mode)))
+;;   (add-hook 'php-mode-hook (lambda () (flycheck-select-checker 'php)))
 
-  )
+;;   )
 
 
 (use-package smalltalk-mode
