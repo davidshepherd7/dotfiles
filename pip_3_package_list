@@ -5,3 +5,4 @@ sympy
 flake8
 docker-compose
 pipenv
+black

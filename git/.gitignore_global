@@ -99,3 +99,9 @@ workbench.xmi
 
 # Emacs dev
 .ecukes-failing-scenarios
+
+.dir-locals.el
+
+# Python
+.virtualenv
+.venv

@@ -402,6 +402,7 @@
   (add-to-list 'evil-insert-state-modes 'special-mode)
   (add-to-list 'evil-insert-state-modes 'anki-mode)
   (add-to-list 'evil-insert-state-modes 'anki-mode-menu-mode)
+  (add-to-list 'evil-insert-state-modes 'xref--xref-buffer-mode)
 
 
   ;; Square brackets

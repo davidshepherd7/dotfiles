@@ -9,6 +9,7 @@ vendor.css
 templates.js
 dist/*
 *\.svg
+*\.git/
 
 dist/*.js
 
@@ -19,30 +20,8 @@ LICENSE.txt
 LICENSE.md
 
 
-# Boron stuff
-build/*
-build-opt/*
-build-debug/*
-iwyu/*
-dev-app/*
-node_modules/*
-lib/*
-typings/*
-lib-managed/*
-app/online-v2/main*
-app/site-management/vendor*
-app/user-management/vendor*
-
-
 # rcfiles stuff
 firefox/.resbackup
 
 
 swagger/*
-
-e2e/client/log.html
-e2e/client/report.html
-e2e/client/output.xml
-e2e/log.html
-e2e/report.html
-e2e/output.xml
