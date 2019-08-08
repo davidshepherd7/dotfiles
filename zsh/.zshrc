@@ -303,9 +303,7 @@ source ${zshdir}/zsh-classifier-aliases.sh
 # e function
 source ${zshdir}/emacs-read-stdin/emacs-read-stdin.sh
 
-source ${zshdir}/biosite.sh
-source ${zshdir}/biosite-vms.sh
-source ${zshdir}/xenon.sh
+source ${zshdir}/wave.sh
 
 source ${zshdir}/zsh-dotnet.sh
 
@@ -362,3 +360,8 @@ function ndb() {
 
 export PATH="$HOME/.npm-global/bin:$PATH"
 export MANPATH="$HOME/.npm-global/share/man:$MANPATH"
+
+
+# Python
+
+eval "$(pyenv init -)"

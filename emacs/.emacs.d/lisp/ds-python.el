@@ -1,4 +1,8 @@
 
+(require 'validate)
+(require 'flycheck)
+(require 's)
+(require 'page-break-lines)
 
 ;; Automatically use python mode from "python-mode.el"
 (require 'python)
@@ -6,84 +10,28 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-;; ;; Turn "lambda " into a lambda symbol
-;; (require 'lambda-mode)
-;; (add-hook 'python-mode-hook 'lambda-mode 1)
-;; (setq lambda-regex "lambda ")
-
 (defun prettify-lambda ()
   (add-to-list 'prettify-symbols-alist '("lambda" . 955)))
 
-(when ds/emacs-up-to-date?
-  (add-hook 'python-mode-hook 'prettify-symbols-mode)
-  (add-hook 'python-mode-hook 'prettify-lambda)
-  )
-
-;; Autocompletion
-(use-package anaconda-mode
-  :ensure t
-  :diminish anaconda-mode
-  :config
-  (add-hook 'python-mode-hook #'anaconda-mode)
-  )
-(use-package company-anaconda
-  :ensure t)
-
-
+(add-hook 'python-mode-hook #'prettify-symbols-mode)
+(add-hook 'python-mode-hook #'prettify-lambda)
 (add-hook 'python-mode-hook #'page-break-lines-mode)
 (add-hook 'python-mode-hook #'flycheck-mode)
 
-;; Build/test/check functions
-;; ============================================================
-
-(setq nose-command "nosetests3 -d --all-modules --processes=8")
-
-(defun nose (input-command)
-  "Run nosetests."
-  (interactive (list (read-string "Nose command: " nose-command)))
-  (setq nose-command input-command)
-  (save-buffer)
-  (compilation-start input-command t (lambda (x) "*nose*")))
-
-(defun renose ()
-  "Run nose with previous/default args."
-  (interactive)
-  (nose nose-command))
-
-(setq stored-python-command nil)
-
-(defun python-command-default (buffer-name)
-  ;; Note: we need to run it via bash (and with -l) to get the .bashrc
-  ;; config options such as the correct $PYTHONPATH value.
-  ;; Use ipython classic and no colors to get jump to errors working.
-  (concat "bash -l -c \"ipython --classic --colors='nocolor' "
-          buffer-name "\""))
-
-(defun python-run-file (python-command)
-  "Run a file in python."
-  (interactive (list (read-string "Python command: "
-                                  (python-command-default (buffer-name)))))
-  (save-buffer)
-  (compilation-start python-command t (lambda (x) "*python-run*"))
-  (setq stored-python-command python-command))
-
-
-(defun python-rerun-file ()
-  (interactive)
-  (if (not (eq nil stored-python-command))
-      (python-run-file stored-python-command)
-    (error "No previous python command.")))
+(use-package blacken
+  :ensure t
+  :config
+  (add-hook 'python-mode-hook #'blacken-mode))
 
 ;; Mode hooks
 ;; ============================================================
-(add-hook 'python-mode-hook 'py-keybinds)
+(add-hook 'python-mode-hook 'ds/python-keybinds)
 
-(defun py-keybinds ()
+(defun ds/python-keybinds ()
   (interactive)
   (use-local-map '()) ;; disable all keys
-  (local-set-key (kbd "C-`") 'next-error)
-  (local-set-key (kbd "C-¬") 'previous-error)
-  (local-set-key (kbd "<f6>") 'renose)
+  (local-set-key (kbd "C-`") #'next-error)
+  (local-set-key (kbd "C-¬") #'previous-error)
 
   ;; ;; Some things copied from python mode that were actually useful:
   ;; (local-set-key [remap delete-forward-char] 'py-electric-delete)
@@ -92,20 +40,8 @@
   ;; (local-set-key [remap newline] 'py-newline-and-indent)
   ;; (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
 
-  (local-set-key [tab] 'indent-for-tab-command)
+  (local-set-key [tab] #'indent-for-tab-command)
   )
-
-(defun yas-advise-indent-function (function-symbol)
-  (eval `(defadvice ,function-symbol (around yas-try-expand-first activate)
-           ,(format
-             "Try to expand a snippet before point, then call `%s' as usual"
-             function-symbol)
-           (let ((yas-fallback-behavior nil))
-             (unless (and (called-interactively-p 'any)
-                          (yas-expand))
-               ad-do-it)))))
-
-;; (yas-advise-indent-function 'py-indent-line)
 
 (defun ds/python-setup-indent ()
   (setq-local indent-tabs-mode nil)
@@ -133,19 +69,6 @@
           (insert "False")
         (insert "True")))))
 
-(defun toggle-generate-results ()
-  "Toggle the \"generate_results\" bool. Assumes there is only
-  one in the buffer, if there is more than one the last is
-  toggled."
-  (interactive)
-  (save-excursion
-    (end-of-buffer)
-    (search-backward "generate_results = ")
-    (python-toggle-bool)))
-
-
-;; Auto pep8 buffer
-;; ============================================================
 
 (defun auto-pep8-buffer ()
   "Run autopep8 on the current buffer"
@@ -179,7 +102,7 @@
     (if (not (or (eq paren ?\{)
                  (eq paren ?\[)
                  (eq paren ?\()
-                 (looking-back "\\blambda\\b.*")))
+                 (looking-back "\\blambda\\b.*" nil)))
         'after
       nil)))
 
@@ -190,10 +113,6 @@
 
 (electric-layout-mode 1)
 (add-hook 'python-mode-hook #'ds/setup-python-electric-layout)
-
-
-(eval-after-load 'flycheck
-  (validate-setq flycheck-flake8-maximum-line-length 120))
 
 
 (defun ds/shell-to-python ()
@@ -211,3 +130,42 @@
                      (s-concat "subprocess.check_call([" it "])"))))
     (delete-region (point-at-bol) (point-at-eol))
     (insert shellified)))
+
+
+(validate-setq flycheck-flake8-maximum-line-length 120)
+(validate-setq flycheck-python-pycompile-executable "pyenv-python3")
+
+;; Shut up the warnining about my pycompile checker binary
+(put 'flycheck-python-pycompile-executable 'safe-local-variable (lambda (value) (equal value  "~/.pyenv/versions/3.7.4/bin/python3")))
+
+;; Load lsp, but turn off most features by default (they slow things down and I
+;; don't need them).
+(require 'lsp)
+(validate-setq lsp-enable-completion-at-point nil)
+(validate-setq lsp-enable-symbol-highlighting nil)
+(validate-setq lsp-enable-indentation nil)
+(validate-setq lsp-enable-on-type-formatting nil)
+(validate-setq lsp-enable-xref t)
+(validate-setq lsp-before-save-edits nil)
+(validate-setq lsp-prefer-flymake :none)
+
+
+(require 'lsp-pyls)
+(add-hook 'python-mode-hook #'lsp)
+
+;; HACK: use the correct pyls for Wave money-srv, I should make something more
+;; general...
+(validate-setq lsp-pyls-server-command '("env" "PATH=/home/david/code/monorepo/money-srv/.money-srv-venv/bin:/home/david/.pyenv/versions/3.7.4/bin:$PATH" "pyls"))
+
+;; (validate-setq lsp-pyls-plugins-jedi-completion-enabled t)
+;; (validate-setq lsp-pyls-plugins-jedi-hover-enabled t)
+;; (validate-setq lsp-pyls-plugins-jedi-references-enabled t)
+;; (validate-setq lsp-pyls-plugins-jedi-signature-help-enabled t)
+;; (validate-setq lsp-pyls-plugins-jedi-symbols-enabled t)
+
+;; Disable most of the extra linters etc for pyls (I'm happy with flycheck for now)
+(validate-setq lsp-pyls-plugins-mccabe-enabled nil)
+(validate-setq lsp-pyls-plugins-pylint-enabled nil)
+(validate-setq lsp-pyls-plugins-pycodestyle-enabled nil)
+(validate-setq lsp-pyls-plugins-pyflakes-enabled nil)
+(validate-setq lsp-pyls-plugins-yapf-enabled nil)

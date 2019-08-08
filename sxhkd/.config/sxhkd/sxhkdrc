@@ -2,10 +2,10 @@ super + t
     urxvt
 
 super + d
-    urxvt -e "$SHELL" -c 'cd "$HOME/code/boron-unstable" && exec $SHELL'
+    urxvt -e "$SHELL" -c 'cd "$HOME/code/monorepo" && exec $SHELL'
 
 super + D
-    urxvt -e "$SHELL" -c 'cd "$HOME/code/boron-unstable/common" && exec $SHELL'
+    urxvt -e "$SHELL" -c 'cd "$HOME/code/deliverance" && exec $SHELL'
 
 super + r
     sensible-browser
@@ -73,10 +73,8 @@ super + F11
 super + F12
     keybinds.sh gb
 
-
-# biosite
 super + f
-    urxvt -e psql -U boron_user boron
+    urxvt -e ~/code/monorepo/money-srv/bin/runin local sql
 
 super + F
     urxvt -e psql -U hafnium hafnium

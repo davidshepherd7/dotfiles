@@ -608,7 +608,7 @@ index in STRING."
 (load-file  "~/.emacs.d/lisp/ds-ess.el")
 
 (load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
-(load-file  "~/.emacs.d/lisp/ds-biosite.el")
+(load-file  "~/.emacs.d/lisp/ds-wave.el")
 
 ;; Major changes to keybinds
 ;; Needs to after other file loads so that hooks are in scope

@@ -2,10 +2,9 @@
 # name: start
 # key: start
 # --
-#!/bin/bash
+#!/bin/bash -eu
 
-set -o errexit
-set -o nounset
+set -o pipefail
 
 SCRIPTDIR="\$( cd "\$(dirname "\$(readlink -f "\${BASH_SOURCE[0]}")")" && pwd )"
 cd "$SCRIPTDIR/../"
