@@ -98,3 +98,7 @@ xinput --list --short |\
     xargs -n1 -I{} xinput --set-prop {} "Device Accel Constant Deceleration" 2
 # Bloody microsoft put a trademark symbol in the device name, so we have grep
 # + awk fun times.
+
+# Ubuntu 18.04 is a bit different
+mouse_id="$(xinput --list --short | grep 'Microsoft.*Mouse' | sed -E 's/.*id=([0-9]+).*/\1/')"
+xinput --set-prop "$mouse_id" "libinput Accel Speed" -1
