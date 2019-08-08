@@ -4,10 +4,10 @@ eval $(keychain --eval --agents ssh -Q --quiet)
 # available we need to set this here.
 export ALTERNATE_EDITOR=''
 
-# Startx automatically on tty 1
-if [ -z "$DISPLAY" ] && [[ $(tty) == /dev/tty1 ]]; then
-    startx
-fi
+# # Startx automatically on tty 1
+# if [ -z "$DISPLAY" ] && [[ $(tty) == /dev/tty1 ]]; then
+#     startx
+# fi
 
 unset MANPATH
 export MANPATH="$(manpath)"
