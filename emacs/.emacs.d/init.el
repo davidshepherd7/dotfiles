@@ -2046,6 +2046,13 @@ for a file to visit if current buffer is not visiting a file."
   :config
   (validate-setq google-translate-default-source-language "Polish")
   (validate-setq google-translate-default-target-language "English"))
+(use-package dumb-jump
+  :ensure t
+  :config
+  (validate-setq dumb-jump-selector 'ivy)
+  (global-set-key (kbd "M-.") #'dumb-jump-go)
+  (global-set-key (kbd "M-,") #'dumb-jump-back)
+  )
 (use-package graphql-mode
   :ensure t
   :config
