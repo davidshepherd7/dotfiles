@@ -2046,3 +2046,7 @@ for a file to visit if current buffer is not visiting a file."
   :config
   (validate-setq google-translate-default-source-language "Polish")
   (validate-setq google-translate-default-target-language "English"))
+(use-package graphql-mode
+  :ensure t
+  :config
+  (validate-setq graphql-indent-level 4))
