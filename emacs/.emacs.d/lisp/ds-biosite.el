@@ -661,8 +661,8 @@ statement spanning multiple lines; otherwise, return nil."
 (fset #'js--proper-indentation #'ds/biosite-js--proper-indentation)
 (fset #'js--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
 
-(fset #'typescript--proper-indentation #'ds/biosite-js--proper-indentation)
-(fset #'typescript--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
+;; (fset #'typescript--proper-indentation #'ds/biosite-js--proper-indentation)
+;; (fset #'typescript--multi-line-declaration-indentation #'ds/biosite-js--multi-line-declaration-indentation)
 
 
 
