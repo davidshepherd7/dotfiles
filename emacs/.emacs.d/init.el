@@ -2086,6 +2086,13 @@ Taken from sgml-pretty-print, hacked to not add newlines before end tags."
 (defun ds/sgml-pretty-print-buffer ()
   (interactive)
   (ds/sgml-pretty-print (point-min) (point-max)))
+
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
 (use-package graphql-mode
   :ensure t
   :config
