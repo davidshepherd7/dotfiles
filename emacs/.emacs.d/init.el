@@ -1516,14 +1516,14 @@ $0")
                              "CSS"
                              ))
 
-  (setq python-docsets '(
-                         "Python 3"
-                         "NumPy"
-                         "SciPy"
-                         ;; "SymPy"
-                         ;; "scikit-learn"
-                         ;; "toolz"
-                         ))
+  (setq ds/python-docsets '(
+                            "Python 3"
+                            ;; "NumPy"
+                            ;; "SciPy"
+                            ;; "SymPy"
+                            ;; "scikit-learn"
+                            ;; "toolz"
+                            ))
 
   (setq ds/js-docsets '(
                         "MomentJS"
@@ -1549,7 +1549,7 @@ $0")
   (setq ds/ansible-docsets '("Ansible"))
 
   (setq ds/docsets
-        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets))
+        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets ds/python-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1567,7 +1567,7 @@ $0")
   (defmacro ds/set-docsets-fn (docsets)
     `(lambda () (setq-local helm-dash-docsets ,docsets)))
 
-  (add-hook 'python-mode-hook (ds/set-docsets-fn python-docsets))
+  (add-hook 'python-mode-hook (ds/set-docsets-fn ds/python-docsets))
   (add-hook 'emacs-lisp-mode-hook (ds/set-docsets-fn '("Emacs Lisp")))
   (add-hook 'c++-mode-hook (ds/set-docsets-fn' ("C++")))
   (add-hook 'js-mode-hook (ds/set-docsets-fn ds/js-docsets))
