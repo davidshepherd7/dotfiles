@@ -89,32 +89,6 @@
      nil t)))
 
 
-;; Electric newlines
-(defun ds/enclosing-paren ()
-  "Return the opening parenthesis of the enclosing parens, or nil
-        if not inside any parens."
-  (let ((ppss (syntax-ppss)))
-    (when (nth 1 ppss)
-      (char-after (nth 1 ppss)))))
-
-(defun ds/python-electric-newline ()
-  (let ((paren (ds/enclosing-paren)))
-    (if (not (or (eq paren ?\{)
-                 (eq paren ?\[)
-                 (eq paren ?\()
-                 (looking-back "\\blambda\\b.*" nil)))
-        'after
-      nil)))
-
-(defun ds/setup-python-electric-layout ()
-  (make-local-variable 'electric-layout-rules)
-  (add-to-list 'electric-layout-rules (cons ?: #'ds/python-electric-newline))
-  )
-
-(electric-layout-mode 1)
-(add-hook 'python-mode-hook #'ds/setup-python-electric-layout)
-
-
 (defun ds/shell-to-python ()
   (interactive)
   (let ((shellified (-->
