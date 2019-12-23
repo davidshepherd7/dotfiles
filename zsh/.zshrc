@@ -183,11 +183,6 @@ export LESS="-F -R -X -S"
 
 # Emacs
 # ============================================================
-# For some reason this runs an emacs daemon if emacs is not already running and
-# you try to run an emacsclient
-export EDITOR="emacsclient -c -n"
-export ALTERNATE_EDITOR=''
-
 # Use E for sudo edit
 alias E="SUDO_EDITOR=\"emacsclient -c\" sudo -e"
 
@@ -208,68 +203,6 @@ export MAKEFLAGS="-j$NJOBS"
 export CTEST_PARALLEL_LEVEL="$NJOBS"
 export CTEST_OUTPUT_ON_FAILURE="yes"
 
-# # Use GNU gold instead of ld for linking
-# export PATH="/usr/lib/gold-ld:${PATH}"
-
-
-# PATH additions
-# ============================================================
-# Add my scripts to PATH
-PATH="$PATH:$HOME/bin"
-export PATH="$PATH:$HOME/Dropbox/bin"
-
-# # Add emacs if it's there
-# emacsdir="$HOME/code/emacs/mybin"
-# if [[ -d $emacsdir ]]; then
-#     export PATH="$emacsdir:$PATH"
-# fi
-
-# Add general binaries
-export PATH="$HOME/code/bin:$PATH"
-
-
-# classifier scripts
-export PATH="$PATH:$HOME/Dropbox/jobs/awe/r-classifier/bin"
-
-
-# cask (for emacs)
-caskdir="$HOME/.cask/bin"
-if [[ -d $caskdir ]]; then
-    export PATH="$PATH:$caskdir"
-fi
-
-# homebrew
-brewdir="$HOME/code/linuxbrew/bin"
-if [[ -d "$brewdir" ]]; then
-    export PATH="$brewdir:$PATH"
-fi
-brewdir="/local/david-builds/linuxbrew/bin"
-if [[ -d "$brewdir" ]]; then
-    export PATH="$brewdir:$PATH"
-fi
-
-export PATH="$PATH:$HOME/code/google_appengine"
-
-# Ruby gems
-gemdir="$HOME/.gem/ruby/2.1.0/bin"
-export PATH="$PATH:$gemdir"
-
-
-# Cool compiler (for course)
-export PATH="$PATH:$HOME/Dropbox/education/compilers/cool/bin"
-
-
-# Python
-# ============================================================
-
-# python's paths
-export PYTHONPATH="$PYTHONPATH:$HOME/programming/:$HOME/programming/helperscripts/python/"
-export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/programming"
-export PYTHONPATH="$PYTHONPATH:$HOME/workflows/cloudworkflowsimulator/scripts/"
-export PYTHONPATH="$PYTHONPATH:$HOME/Dropbox/education"
-
-export PYTHONPATH="$PYTHONPATH:$HOME/code/google_appengine/lib/webapp2-2.5.1"
-
 
 # Java
 # ============================================================
@@ -278,12 +211,6 @@ export ANT_ARGS='-emacs -logger org.apache.tools.ant.listener.AnsiColorLogger'
 
 # Tell Java what type of window manager XMonad is so that GUI apps work.
 export _JAVA_AWT_WM_NONREPARENTING=1
-
-# Go
-# ============================================================
-
-export GOPATH="$HOME/code/go"
-export PATH="$PATH:$HOME/code/go/bin"
 
 
 
@@ -357,10 +284,6 @@ function ndb() {
 
     node --inspect "$target" "$@"
 }
-
-export PATH="$HOME/.npm-global/bin:$PATH"
-export MANPATH="$HOME/.npm-global/share/man:$MANPATH"
-
 
 # Python
 
