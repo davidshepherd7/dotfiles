@@ -2053,6 +2053,10 @@ for a file to visit if current buffer is not visiting a file."
   (global-set-key (kbd "M-.") #'dumb-jump-go)
   (global-set-key (kbd "M-,") #'dumb-jump-back)
   )
+
+(use-package make-mode
+  :config
+  (validate-setq makefile-mode-map (make-sparse-keymap)))
 (use-package graphql-mode
   :ensure t
   :config
