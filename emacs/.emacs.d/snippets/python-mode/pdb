@@ -1,5 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: t
+# key: pdb
 # --
-def test_$1() -> None:
-    $0
+import pdb; pdb.set_trace()

@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: boolarg
+# --
+parser.add_argument("$1", default=False, action="store_true")

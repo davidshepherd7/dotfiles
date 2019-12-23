@@ -1,0 +1,71 @@
+#! /usr/bin/env python3
+
+import sys
+import argparse
+import os
+import subprocess
+import json
+
+
+def parse_arguments(argv):
+    parser = argparse.ArgumentParser(
+        "set your slack status message, call with no flags to clear"
+    )
+    parser.add_argument("--text")
+    parser.add_argument("--emoji")
+
+    parser.add_argument(
+        "--available", help="Set your status as callable", action="store_true"
+    )
+
+    args = parser.parse_args(argv)
+
+    if args.available and (args.text is not None or args.emoji is not None):
+        raise Exception("Cannot set --available with specific text/emoji")
+
+    return args
+
+
+def main(argv):
+    args = parse_arguments(argv)
+
+    token = os.environ.get("WAVE_SLACK_STATUS_BOT_TOKEN")
+    if token is None:
+        print(
+            "Error: you need to set the environment variable WAVE_SLACK_STATUS_BOT_TOKEN to your token.",
+            file=sys.stderr,
+        )
+        return 1
+
+    if args.available:
+        text = "call me"
+        emoji = ":phone:"
+    else:
+        text = args.text
+        emoji = args.emoji
+
+    body = {"profile": {"status_text": text, "status_emoji": emoji}}
+
+    # https://api.slack.com/methods/users.profile.set
+    _ = subprocess.check_output(
+        [
+            "curl",
+            "-X",
+            "POST",
+            "https://slack.com/api/users.profile.set",
+            "-d",
+            json.dumps(body),
+            "-H",
+            f"Authorization: Bearer {token}",
+            "-f",
+            "-H",
+            "Content-Type: application/json; charset=utf8",
+            "-sS",
+        ]
+    )
+    return 0
+
+
+# If this script is run from a shell then run main() and return the result.
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

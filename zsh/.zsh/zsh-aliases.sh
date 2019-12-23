@@ -404,7 +404,6 @@ pdfpages ()
 
 
 # New feh wallpaper
-alias wallpaper='feh --bg-scale $HOME/Dropbox/other/wallpapers -zr'
 
 
 alias whitespaceclean="sed -i 's/[ \t]*$//'"
@@ -641,3 +640,6 @@ edit-deb()
     # Delete the temp directory because these things can be very big
     rm -rf "$tempfile"
 }
+
+alias git-clean-branches='git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d'
+

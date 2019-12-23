@@ -1,5 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: t
+# key: init
 # --
-def test_$1() -> None:
+def __init__(self$1) -> None:
     $0

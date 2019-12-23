@@ -1,0 +1,48 @@
+#!/bin/bash -eu
+
+set -o pipefail
+
+usage() {
+    cat <<EOF >&2
+Usage: /home/david/bin/upgrade-terraform [ARGS]
+
+    --version, -v: The version to install [required]
+    --help, -h:    Show this help
+
+EOF
+}
+
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            usage
+            exit 1
+            ;;
+        -v|--version)
+            shift
+            version="$1"
+            ;;
+        *)
+            echo "Unrecognised argument $1" >&2
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+
+
+TEMP="$(mktemp -d -t "terraform-$USER.XXXXXX" --tmpdir)"
+
+cd "$TEMP"
+wget "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_linux_amd64.zip"
+
+atool -x "terraform_${version}_linux_amd64.zip"
+
+mv terraform ~/bin/terraform
+
+terraform --version
+
+rm -r "$TEMP"

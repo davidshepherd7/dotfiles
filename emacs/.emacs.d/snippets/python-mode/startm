@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: startm
+# --
+"""
+TODO(david)
+"""
+
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+$0

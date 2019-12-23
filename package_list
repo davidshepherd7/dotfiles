@@ -64,7 +64,6 @@ pdftk
 nodejs-legacy
 csv2latex
 diffpdf
-tinyproxy
 android-tools-adb
 android-tools-fastboot
 zsh
@@ -115,3 +114,4 @@ glipper
 cargo
 R
 pasystray
+pavucontrol

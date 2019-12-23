@@ -1,5 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: t
+# key: logger
 # --
-def test_$1() -> None:
-    $0
+logger = logging.getLogger(__name__)

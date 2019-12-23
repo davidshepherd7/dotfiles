@@ -74,7 +74,7 @@ super + F12
     keybinds.sh gb
 
 super + f
-    urxvt -e ~/code/monorepo/money-srv/bin/runin local sql
+    urxvt -e psql -U chimelife -h localhost wavelocal
 
 super + F
     urxvt -e psql -U hafnium hafnium
