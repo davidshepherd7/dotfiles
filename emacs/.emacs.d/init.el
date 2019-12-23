@@ -326,7 +326,7 @@
   :config (global-anzu-mode))
 
 ;; Treat space-like characters as spaces
-(setq search-whitespace-regexp "[-_ 	\n]")
+;; (setq search-whitespace-regexp "[-_ 	\n]")
 
 (defun ds/string-symbol-at-point ()
   (symbol-name (or (symbol-at-point)
