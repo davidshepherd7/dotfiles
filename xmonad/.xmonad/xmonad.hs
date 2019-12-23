@@ -1,6 +1,7 @@
 -- Main/utilities
 import XMonad
 import Data.Monoid
+import Data.List
 import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -48,6 +49,9 @@ import XMonad.Hooks.EwmhDesktops
 -- To match on the WM_NAME, you can use 'title' in the same way that
 -- 'className' and 'resource' are used below.
 
+isInfixOfQuery :: String -> Query String -> Query Bool
+isInfixOfQuery needle haystackQuery = fmap (\haystack -> (isInfixOf haystack needle)) haystackQuery
+
 myManageHook =
   composeAll
   [
@@ -64,6 +68,9 @@ myManageHook =
 
   -- Robot framework dialogs
   , className =? "Toplevel" --> doFloat
+
+  -- Android Emulator crap
+  , isInfixOfQuery "Android Emulator -" title --> doFloat
 
   , isFullscreen --> doFullFloat
   ]
