@@ -16,7 +16,7 @@
     command = diffpdf
 
 [push]
-	default = matching
+	default = nothing
 
 [alias]
 
