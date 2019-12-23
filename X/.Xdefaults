@@ -95,5 +95,5 @@ URxvt.scrollTtyKeypress: true
 
 ! Enable extensions (default includes searchable-scrollback, matcher allows
 ! clickable URLs).
-URxvt.perl-ext-common: default,matcher
+URxvt.perl-ext-common: default,matcher,selection-to-clipboard
 URxvt.matcher.button: 2
