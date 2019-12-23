@@ -20,4 +20,10 @@
 ;;    (info line-start (file-name) ":" line ":" column ": note:" (message) line-end))
 ;;   :modes python-mode)
 
+(defun ds/asterisk-conf-windows ()
+  (interactive)
+  (when (s-contains-p (buffer-file-name) "/asterisk-logic/")
+    (conf-windows-mode)))
+(add-hook 'conf-mode-hook #'ds/asterisk-conf-windows)
+
 ;; (add-to-list 'flycheck-checkers 'python-dmypy t)
