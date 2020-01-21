@@ -1476,6 +1476,7 @@ $0")
 
   (add-hook 'yaml-mode-hook (lambda () (validate-setq indent-tabs-mode nil)))
   (add-hook 'yaml-mode-hook (lambda () (validate-setq yaml-indent-offset 2)))
+  (add-hook 'yaml-mode-hook #'flycheck-mode)
   )
 
 (use-package feature-mode
