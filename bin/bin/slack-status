@@ -5,6 +5,7 @@ import argparse
 import os
 import subprocess
 import json
+import datetime
 
 
 def parse_arguments(argv):
@@ -14,9 +15,10 @@ def parse_arguments(argv):
     parser.add_argument("--text")
     parser.add_argument("--emoji")
 
-    parser.add_argument(
-        "--available", help="Set your status as callable", action="store_true"
-    )
+    parser.add_argument("--available", action="store_true")
+    parser.add_argument("--lunch", action="store_true")
+    parser.add_argument("--uk", action="store_true")
+    parser.add_argument("--senegal", action="store_true")
 
     args = parser.parse_args(argv)
 
@@ -37,9 +39,20 @@ def main(argv):
         )
         return 1
 
+    utc_offset = (datetime.datetime.now()).astimezone().strftime("%z")[:3]
+
     if args.available:
-        text = "call me"
+        text = "Available"
         emoji = ":phone:"
+    elif args.lunch:
+        text = "Out for lunch"
+        emoji = ":burrito:"
+    elif args.uk:
+        text = f"Timezone: UTC{utc_offset}"
+        emoji = ":uk:"
+    elif args.senegal:
+        text = "Timezone: UTC{utc_offset}"
+        emoji = ":flag-sn:"
     else:
         text = args.text
         emoji = args.emoji
