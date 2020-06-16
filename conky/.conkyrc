@@ -38,4 +38,5 @@ TEXT
  ${execi 0.1 local-ip}    \
  ${battery}  \
                                                               \
- ${time %H:%M  %d/%m/%Y} #
+ \
+  ${time %H:%M} ${color grey}(${tztime Europe/London %H:%M UK})$color ${time %d/%m/%Y}
