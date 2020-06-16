@@ -13,8 +13,8 @@ own_window_type panel
 disable_auto_reload yes # autoreload + panel + xmonad doesn't work well..
 minimum_size 1600 18
 alignment tl
-xinerama_head 3
-gap_x 0
+xinerama_head 0
+gap_x 5
 gap_y 0
 
 
