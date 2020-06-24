@@ -11,7 +11,7 @@
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
 (defun prettify-lambda ()
-  (add-to-list 'prettify-symbols-alist '("lambda" . 955)))
+  (setq prettify-symbols-alist '(("lambda" . 955))))
 
 (add-hook 'python-mode-hook #'prettify-symbols-mode)
 (add-hook 'python-mode-hook #'prettify-lambda)
