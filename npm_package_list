@@ -2,8 +2,6 @@ csslint
 jshint
 htmlhint
 js-beautify
-jscs
 n
 npm
 eslint-cli
-gulp

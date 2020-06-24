@@ -13,7 +13,7 @@ own_window_type panel
 disable_auto_reload yes # autoreload + panel + xmonad doesn't work well..
 minimum_size 1600 18
 alignment tl
-xinerama_head 0
+xinerama_head 1
 gap_x 5
 gap_y 0
 
@@ -33,7 +33,7 @@ TEXT
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
- apt-get: ${execi 300 apt upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
+ apt-get: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
  layout: ${execi 0.1 keyboard-layout.sh }    \
  ${execi 0.1 local-ip}    \
  ${battery}  \

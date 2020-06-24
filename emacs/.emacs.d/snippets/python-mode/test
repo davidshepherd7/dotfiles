@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: test
+# --
+import pytest
+from typing import Any, Dict, List
+import unittest.mock as mock
+from unittest.mock import Mock
+
+from unittests.fixtures import f
+from unittests import model_factories as mf

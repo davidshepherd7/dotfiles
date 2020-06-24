@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: enum
+# --
+from enum import Enum
+
+class $1(Enum):
+    $0

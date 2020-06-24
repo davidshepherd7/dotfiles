@@ -18,3 +18,9 @@ alias all-bills-tests="cd ~/code/monorepo && make m.typecheck && cd money-srv &&
 alias psql-prod-tunnel-up="gcloud compute ssh mm-db-followers-9j0t --zone europe-west1-c --project wavemm-174408 -- -L 55432:localhost:5432  -o ExitOnForwardFailure=yes -N -f -MS '/tmp/runin-ssh.{pid}:%r@%h'"
 
 alias psql-prod-tunnel-down="gcloud compute ssh mm-db-followers-9j0t -- -S '/tmp/runin-ssh.{pid}:%r@%h' -O exit"
+
+
+alias test-kubectl="kubectl --context=gke_david-k8s-experiments_europe-west1-b_test-cluster"
+
+
+alias check-migration-cycle="mm m.migrate && ~/code/monorepo/money-srv/bin/runin local alembic downgrade -1 && ~/code/monorepo/money-srv/bin/runin local alembic upgrade +1 && ~/code/monorepo/money-srv/bin/runin local alembic downgrade -1 && ~/code/monorepo/money-srv/bin/runin local alembic upgrade +1"

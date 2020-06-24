@@ -52,13 +52,13 @@
   (define-key evil-insert-state-map [escape] 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "<f35>") 'evil-normal-state)
 
-  ;; Double tap n for normal state
-  (use-package key-chord
-    :ensure t
-    :config
-    (key-chord-mode 1)
-    (key-chord-define evil-insert-state-map "ii" #'evil-change-to-initial-state)
-    )
+  ;; ;; Double tap n for normal state
+  ;; (use-package key-chord
+  ;;   :ensure t
+  ;;   :config
+  ;;   (key-chord-mode 1)
+  ;;   (key-chord-define evil-insert-state-map "ii" #'evil-change-to-initial-state)
+  ;;   )
 
   ;; Go to normal state on focus out
   (add-hook 'focus-out-hook #'evil-change-to-initial-state)
@@ -249,6 +249,13 @@
 
   (define-key evil-normal-state-map (kbd "q") #'quoted-insert)
 
+  ;; (defun ds/quoted-insert-or-quit (arg)
+  ;;   "Quit if in a read only mode, otherwise as `quoted-insert'."
+  ;;   (interactive "*p")
+  ;;   (if buffer-read-only
+  ;;       (quit-window)
+  ;;     (quoted-insert arg)))
+
   (defun ds/newline-below ()
     "Open a newline below this line"
     (interactive)
@@ -393,7 +400,6 @@
   ;; ============================================================
 
   ;; Use insert state by default in some modes
-  (add-hook 'git-commit-mode-hook #'evil-insert-state)
   (add-hook 'emerge-startup-hook #'evil-insert-state)
   (add-to-list 'evil-insert-state-modes 'deft-mode)
   (add-to-list 'evil-insert-state-modes 'makey-key-mode)

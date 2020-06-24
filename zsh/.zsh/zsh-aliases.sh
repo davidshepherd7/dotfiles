@@ -643,3 +643,14 @@ edit-deb()
 
 alias git-clean-branches='git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d'
 
+
+alias gpr="echo 'CHECK THAT YOU DONT NEED ANY MIGRATIONS' && hub pull-request -b dev -p"
+
+
+lingq()
+{
+    (
+        cd ~/code/LingQ-to-Anki
+        poetry run ./main.py import --username davidshepherd7 --password "$LINGQ_PASSWORD" --deck French --model 'Basic (and reversed card)' --language fr
+    )
+}

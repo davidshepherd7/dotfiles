@@ -62,6 +62,13 @@ myManageHook =
   -- Virtual box is currently completely broken if you don't allow it to resize
   , className =? "VirtualBox" --> doFloat
 
+  , className =? "SchemeGraphics" --> doFloat
+  , className =? "zoom" --> doFloat
+
+  -- Popups
+  , className =? "Zenity" --> doFloat
+  , className =? "davidshepherd7.xtip" --> doFloat
+
   -- Gloss games
   , title =? "Pong" --> doFloat
   , title =? "Conway" --> doFloat
@@ -174,6 +181,7 @@ main = do
         -- Unbind some keys
         `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-.", "M-,", "M-t", "M-m", "M-p", "M-P", "M-k"]
         `additionalKeysP` myKeys
+        `removeMouseBindings` [(mod4Mask, button3)]
 
 -- Some additional keybinds, mostly inspired by chromes tab management
 -- keybinds and whatever else I was used to using.

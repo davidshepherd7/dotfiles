@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: dataclass
+# --
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class $0

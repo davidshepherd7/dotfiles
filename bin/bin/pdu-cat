@@ -2,7 +2,5 @@
 
 set -o pipefail
 
-SCRIPTDIR="$( cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd )"
-cd "$SCRIPTDIR"
-
-/usr/bin/python3 ~/code/monorepo/wavesms/bin/pdu-cat "$@"
+source ~/code/monorepo/wavesms/.wavesms-venv/bin/activate
+python3 ~/code/monorepo/wavesms/bin/pdu-cat "$@"

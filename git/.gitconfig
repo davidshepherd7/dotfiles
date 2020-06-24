@@ -30,7 +30,11 @@ lg = log --branches --remotes --tags --color --graph --pretty=format:'%Cred%h%Cr
 
 lg = !"git lg1"
 
+lp = "log -p --reverse dev.."
+
 pull-request = "!sensible-browser \"$(git remote get-url \"$1\")/pull-request/new\"" #
+
+recent = "!git branch --sort=-committerdate | grep 'david/'"
 
 # Mercurial commands
 up = checkout

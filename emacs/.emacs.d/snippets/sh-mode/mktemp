@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: mktemp
+# --
+${1:tempfile}=\$(mktemp "/tmp/${2:`(file-name-base)`}-temp-$USER.XXXXX")
+trap "rm -f \$$1" EXIT

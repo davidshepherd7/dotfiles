@@ -6,5 +6,5 @@
 
 set -o pipefail
 
-SCRIPTDIR="\$( cd "\$(dirname "\$(readlink -f "\${BASH_SOURCE[0]}")")" && pwd )"
-cd "$SCRIPTDIR/../"
+# Portably go to the directory that this script is in
+cd "$(dirname \${BASH_SOURCE[0]})"

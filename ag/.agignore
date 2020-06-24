@@ -29,3 +29,4 @@ swagger/*
 
 # Wave stuff
 webp.js
+*.dat

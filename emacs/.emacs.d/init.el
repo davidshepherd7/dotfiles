@@ -584,6 +584,12 @@ index in STRING."
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+;; This needs to go after SML is loaded so that the mode line colours are
+;; correct, but before language configs so that they can have access to keymaps.
+(load-file "~/.emacs.d/lisp/ds-evil.el")
+
+
+
 ;; Load configs from other files
 (load-file "~/.emacs.d/lisp/ds-cpp.el")
 (load-file "~/.emacs.d/lisp/ds-latex.el")
@@ -621,10 +627,6 @@ index in STRING."
 (load-file "~/.emacs.d/lisp/ds-helm.el")
 (load-file "~/.emacs.d/lisp/ds-ivy.el")
 
-
-;; This needs to go after SML is loaded so that the mode line colours are
-;; correct.
-(load-file "~/.emacs.d/lisp/ds-evil.el")
 
 (load-file "~/.emacs.d/lisp/ds-toggle-electricity.el")
 
@@ -917,8 +919,7 @@ For magit versions > 2.1.0"
   (validate-setq magit-save-repository-buffers 'dontask)
   (setq magit-push-always-verify nil) ;; sometimes exists?
 
-  (setq git-commit-major-mode 'markdown-mode)
-  (validate-setq git-commit-summary-max-length 100)
+  (validate-setq git-commit-summary-max-length 120)
 
   ;; Move prev/next message commands because the overlap normal keys
   (define-key git-commit-mode-map (kbd "M-n") nil)
@@ -1349,6 +1350,12 @@ $0")
   (add-to-list 'afp-fill-comments-only-mode-list 'c++-mode)
   )
 
+(defun ds/unfill-paragraph ()
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
 
 ;; Packages to help remember keys
 ;; ============================================================
@@ -1519,6 +1526,7 @@ $0")
 
   (setq ds/python-docsets '(
                             "Python 3"
+                            "SQLAlchemy"
                             ;; "NumPy"
                             ;; "SciPy"
                             ;; "SymPy"
@@ -1549,8 +1557,8 @@ $0")
 
   (setq ds/ansible-docsets '("Ansible"))
 
-  (setq ds/docsets
-        (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets ds/python-docsets))
+  (defun ds/docsets ()
+    (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets ds/python-docsets))
 
   (defun ds/fix-docset-url (x)
     (s-replace " " "_" x))
@@ -1560,7 +1568,7 @@ $0")
 
   (defun ds/install-docsets ()
     (interactive)
-    (--> ds/docsets
+    (--> (ds/docsets)
          (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
          (-map #'ds/fix-docset-url it)
          (-each it #'helm-dash-async-install-docset)))

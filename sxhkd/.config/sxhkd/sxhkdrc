@@ -44,6 +44,8 @@ KP_Down
 KP_Next
     sensible-browser
 
+super + button3
+    cd ~/code/xtip && python3 -m xtip
 
 # function keys
 XF86AudioMute
@@ -62,7 +64,7 @@ XF86MonBrightnessDown
     xbacklight -20
 
 Print
-    gnome-screenshot -a
+    shutter
 
 super + F10
     keybinds.sh pl david-gb-colemak
@@ -74,7 +76,7 @@ super + F12
     keybinds.sh gb
 
 super + f
-    urxvt -e psql -U chimelife -h localhost wavelocal
+    urxvt -e pgcli -U chimelife -h localhost wavelocal
 
 super + F
     urxvt -e psql -U hafnium hafnium
