@@ -74,6 +74,8 @@ xcape_str=$xcape_str'#105=Shift_L|underscore;'
 xcape_str=$xcape_str'#64=Shift_L|dollar;'
 # xcape_str=$xcape_str'#92=Shift_L|asciicircum;' # doesn't work :(
 
+xcape_str=$xcape_str'#133=Shift_L|percent;'
+
 # # Symbols bound to something else using xcape, so don't press them!
 # xmodmap -e "keysym 9 = 9 $UbKS $UBKS $UBKS"
 # xmodmap -e "keysym 0 = 0 $UBKS $UBKS $UBKS"
