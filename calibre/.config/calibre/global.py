@@ -27,7 +27,7 @@ library_path = u'/home/david/Dropbox/ebooks'
 language = 'en_GB'
  
 # output format
-# The default output format for ebook conversions.
+# The default output format for e-book conversions.
 output_format = 'mobi'
  
 # input format order
@@ -71,7 +71,7 @@ mark_new_books = False
 saved_searches = cPickle.loads('\x80\x02}q\x01.')
  
 # user categories
-# User-created tag browser categories
+# User-created Tag browser categories
 user_categories = cPickle.loads('\x80\x02}q\x01.')
  
 # manage device metadata
@@ -87,8 +87,12 @@ limit_search_columns = False
 limit_search_columns_to = cPickle.loads('\x80\x02]q\x01(U\x05titleq\x02U\x07authorsq\x03U\x04tagsq\x04U\x06seriesq\x05U\tpublisherq\x06e.')
  
 # use primary find in search
-# Characters typed in the search box will match their accented versions, based on the language you have chosen for the calibre interface. For example, in  English, searching for n will match ñ and n, but if your language is Spanish it will only match n. Note that this is much slower than a simple search on very large libraries.
+# Characters typed in the search box will match their accented versions, based on the language you have chosen for the calibre interface. For example, in English, searching for n will match both ñ and n, but if your language is Spanish it will only match n. Note that this is much slower than a simple search on very large libraries. Also, this option will have no effect if you turn on case-sensitive searching
 use_primary_find_in_search = True
+ 
+# case sensitive
+# Make searches case-sensitive
+case_sensitive = False
  
 # migrated
 # For Internal use. Don't modify.
