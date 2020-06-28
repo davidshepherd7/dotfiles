@@ -49,6 +49,21 @@
 (add-hook 'python-mode-hook #'ds/python-setup-indent)
 
 
+(setq python-font-lock-keywords
+      (append python-font-lock-keywords
+              '(;; this is the full string.
+                ;; group 1 is the quote type and a closing quote is matched
+                ;; group 2 is the string part
+                ("f\\(['\"]\\{1,3\\}\\)\\(.+?\\)\\1"
+                 ;; these are the {keywords}
+                 ("{\\([^}]*?\\)}"
+                  ;; Pre-match form
+                  (progn (goto-char (match-beginning 0)) (match-end 0))
+                  ;; Post-match form
+                  (goto-char (match-end 0))
+                  ;; face for this match
+                  (1 font-lock-variable-name-face t))))))
+
 ;; Function to toggle true/false
 ;; ============================================================
 
