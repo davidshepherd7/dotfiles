@@ -49,8 +49,8 @@
 (add-hook 'python-mode-hook #'ds/python-setup-indent)
 
 
-(setq python-font-lock-keywords
-      (append python-font-lock-keywords
+(setq python-font-lock-keywords-maximum-decoration
+      (append python-font-lock-keywords-maximum-decoration
               '(;; this is the full string.
                 ;; group 1 is the quote type and a closing quote is matched
                 ;; group 2 is the string part
