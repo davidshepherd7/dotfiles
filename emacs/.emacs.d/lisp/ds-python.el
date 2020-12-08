@@ -126,8 +126,8 @@
 
 ;; Shut up the warnining about my pycompile checker binary
 (put 'flycheck-python-pycompile-executable 'safe-local-variable (lambda (value) (equal value  "/home/david/.pyenv/versions/3.7.4/bin/python3")))
-(put 'flycheck-python-mypy-executable 'safe-local-variable (lambda (value) (equal value  "/home/david/code/monorepo/money-srv/.money-srv-venv/bin/mypy")))
-(put 'flycheck-ds/python-dmypy-executable 'safe-local-variable (lambda (value) (equal value "/home/david/code/monorepo/money-srv/.money-srv-venv/bin/dmypy")))
+(put 'flycheck-python-mypy-executable 'safe-local-variable (lambda (value) t))
+(put 'flycheck-ds-python-dmypy-executable 'safe-local-variable (lambda (value) t))
 
 ;; ;; Load lsp, but turn off most features by default (they slow things down and I
 ;; ;; don't need them).
@@ -162,31 +162,28 @@
 ;; (validate-setq lsp-pyls-plugins-yapf-enabled nil)
 
 
-(flycheck-define-checker ds/python-dmypy
+(flycheck-define-checker ds-python-dmypy
   "Mypy syntax and type checker daemon.
 
 See URL `http://mypy-lang.org/'."
   :command ("dmypy"
             "run"
-            ;; TODO make these configurable by dir-locals
-            "src"
-            "../wavelib"
-            "unittests"
             "--"
-            "--follow-imports=error"
-            )
+            "--show-column-numbers"
+            (config-file "--config-file" flycheck-python-mypy-ini)
+            source-original)
   :error-patterns
   ((error line-start (file-name) ":" line (optional ":" column)
           ": error:" (message) line-end)
    (warning line-start (file-name) ":" line (optional ":" column)
-            ": warning:" (message) line-end))
+            ": warning:" (message) line-end)
+   (info line-start (file-name) ":" line (optional ":" column)
+         ": note:" (message) line-end))
   :modes python-mode
   ;; Ensure the file is saved, to work around
   ;; https://github.com/python/mypy/issues/4746.
   :predicate flycheck-buffer-saved-p
-  :next-checkers (python-flake8)
-  ;; TODO use a dir-local for this
-  :working-directory (lambda (_) "/home/david/code/monorepo/money-srv/")
-  )
+  :working-directory flycheck-mypy--find-project-root)
+(add-to-list 'flycheck-checkers 'ds-python-dmypy)
 
 (add-to-list 'flycheck-checkers 'ds/python-dmypy)
