@@ -415,6 +415,7 @@
   (add-to-list 'evil-insert-state-modes 'deft-mode)
   (add-to-list 'evil-insert-state-modes 'makey-key-mode)
   (add-to-list 'evil-insert-state-modes 'git-rebase-mode)
+  (add-to-list 'evil-insert-state-modes 'git-commit-mode)
   (add-to-list 'evil-insert-state-modes 'diff-mode)
   (add-to-list 'evil-insert-state-modes 'special-mode)
   (add-to-list 'evil-insert-state-modes 'anki-mode)
