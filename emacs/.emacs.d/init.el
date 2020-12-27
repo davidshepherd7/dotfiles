@@ -91,13 +91,8 @@
 ;; Pretty colours
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
-;; (load-theme 'adwaita t)
 
-(when (>= emacs-major-version 26)
-  (require 'validate)
-  (validate-setq debugger-stack-frame-as-list t)
-  )
-
+(validate-setq debugger-stack-frame-as-list t)
 
 (defun starting-comment-p ()
   "Are we starting to insert a c/java mode comment?"
@@ -618,7 +613,7 @@ index in STRING."
   (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
   ;; Use everywhere
-  (projectile-global-mode)
+  (projectile-mode)
 
   (validate-setq projectile-use-git-grep t)
 
@@ -1026,7 +1021,6 @@ For magit versions > 2.1.0"
   (define-key markdown-mode-map (kbd "C-c") nil)
 
   (defun ds/locally-keep-ws-before-point ()
-    (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
     (validate-setq ws-butler-keep-whitespace-before-point t))
   (add-hook 'markdown-mode-hook #'ds/locally-keep-ws-before-point)
 
@@ -1260,6 +1254,7 @@ $0")
   :diminish ws-butler-mode
   :config
   (validate-setq ws-butler-keep-whitespace-before-point nil)
+  (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
   (ws-butler-global-mode))
 
 (use-package aggressive-fill-paragraph
