@@ -1,5 +1,6 @@
-
 (require 's)
+(require 'f)
+(require 'projectile)
 
 
 (defun ds/asterisk-conf-windows ()

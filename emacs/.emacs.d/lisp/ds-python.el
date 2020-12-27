@@ -46,33 +46,13 @@
 ;;   (add-hook 'jedi:doc-hook #'evil-emacs-state)
 ;;   )
 
-;; Mode hooks
-;; ============================================================
-(add-hook 'python-mode-hook 'ds/python-keybinds)
-
-(defun ds/python-keybinds ()
-  (interactive)
-  ;; (use-local-map '()) ;; disable all keys
-  (local-set-key (kbd "C-`") #'next-error)
-  (local-set-key (kbd "C-¬") #'previous-error)
-
-  ;; ;; Some things copied from python mode that were actually useful:
-  ;; (local-set-key [remap delete-forward-char] 'py-electric-delete)
-  ;; (local-set-key [remap delete-char] 'py-electric-delete)
-  ;; (local-set-key [remap delete-backward-char] 'py-electric-backspace)
-  ;; (local-set-key [remap newline] 'py-newline-and-indent)
-  ;; (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
-
-  (local-set-key [tab] #'indent-for-tab-command)
-  (local-unset-key (kbd "<backtab>"))
-  )
 
 (defun ds/python-setup-indent ()
   (setq-local indent-tabs-mode nil)
   (setq-local python-indent-offset 4))
 (add-hook 'python-mode-hook #'ds/python-setup-indent)
 
-
+;; Font lock for f-strings
 (setq python-font-lock-keywords-maximum-decoration
       (append python-font-lock-keywords-maximum-decoration
               '(;; this is the full string.
@@ -87,45 +67,6 @@
                   (goto-char (match-end 0))
                   ;; face for this match
                   (1 font-lock-variable-name-face t))))))
-
-;; Function to toggle true/false
-;; ============================================================
-
-(defun python-toggle-bool ()
-  "Toggle next bool from point (True or False)."
-  (interactive)
-  (save-excursion
-    ;; Find next true or false
-    (re-search-forward "True\\|False" nil nil)
-    (backward-word)
-
-    ;; Store the word
-    (let ((t-or-f-string (buffer-substring (point) (save-excursion (forward-word) (point)))))
-
-      ;; Delete and replace with other word
-      (kill-word 1)
-      (if (equal t-or-f-string "True")
-          (insert "False")
-        (insert "True")))))
-
-
-(defun auto-pep8-buffer ()
-  "Run autopep8 on the current buffer"
-  (interactive)
-
-  ;; E701 is multiple statements on one line (colon), i.e. one line
-  ;; functions
-
-  ;; E26 is "Format block comments" - destroys commented out code so don't
-  ;; use
-
-  ;; E226 is whitespace around *, don't always want this in dense maths
-  (progn
-    (shell-command-on-region
-     (point-min)
-     (point-max)
-     "autopep8 --aggressive --ignore=E226 -ignore=E701 -"
-     nil t)))
 
 
 (defun ds/shell-to-python ()
@@ -215,22 +156,10 @@ See URL `http://mypy-lang.org/'."
   :working-directory ds/flycheck-mypy-find-project-root)
 (add-to-list 'flycheck-checkers 'ds-python-dmypy)
 
-(flycheck-define-checker ds/python-pyflakes
-  "A Python syntax and style checker using the pyflakes utility.
-To override the path to the pyflakes executable, set
-`flycheck-python-pyflakes-executable'.
-See URL `http://pypi.python.org/pypi/pyflakes'."
-  :command ("pyflakes" source-inplace)
-  :error-patterns
-  ((error line-start (file-name) ":" line ":" (message) line-end))
-  :modes python-mode)
 
-;; It's too annoying for now...
-;; (add-to-list 'flycheck-checkers 'ds/python-pyflakes)
 
 ;; Magic imports
 ;; ============================================================
-
 
 ;; TODO: add stdlib modules to paths
 
@@ -285,6 +214,10 @@ See URL `http://pypi.python.org/pypi/pyflakes'."
 (define-key python-mode-map (kbd "C-,") #'ds/import)
 
 
+
+;; Dicts to/from kwargs
+;; ============================================================
+
 (defun ds/kwargs-to-dict (start end)
   "Convert selected python kwargs to a dictionary"
   (interactive (list (region-beginning) (region-end)))
@@ -315,5 +248,4 @@ See URL `http://pypi.python.org/pypi/pyflakes'."
 
       (goto-char (point-max))
       (re-search-backward "},?" nil)
-      (replace-match "" nil nil)
-      )))
+      (replace-match "" nil nil))))
