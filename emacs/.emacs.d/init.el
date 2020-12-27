@@ -162,7 +162,7 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; save point in file
-(setq-default save-place t)
+(setq-default save-place-mode t)
 
 ;; Auto-newlines after { } etc.
 ;; (add-hook 'c-mode-common-hook '(lambda () (c-toggle-auto-newline 1)))
