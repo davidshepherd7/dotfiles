@@ -4,6 +4,8 @@
 (require 's)
 (require 'f)
 (require 'page-break-lines)
+(require 'use-package)
+(require 'projectile)
 
 ;; Automatically use python mode from "python-mode.el"
 (require 'python)
