@@ -185,6 +185,12 @@
 ;; (validate-setq lsp-pyls-plugins-pyflakes-enabled nil)
 ;; (validate-setq lsp-pyls-plugins-yapf-enabled nil)
 
+(defun ds/flycheck-mypy-find-project-root (_checker)
+  "Compute an appropriate working-directory for flycheck-mypy.
+This is either a parent directory containing a flycheck-mypy.ini, or nil."
+  (and
+   buffer-file-name
+   (locate-dominating-file buffer-file-name "mypy.ini")))
 
 (flycheck-define-checker ds-python-dmypy
   "Mypy syntax and type checker daemon.
@@ -206,7 +212,7 @@ See URL `http://mypy-lang.org/'."
   ;; Ensure the file is saved, to work around
   ;; https://github.com/python/mypy/issues/4746.
   :predicate flycheck-buffer-saved-p
-  :working-directory flycheck-mypy--find-project-root)
+  :working-directory ds/flycheck-mypy-find-project-root)
 (add-to-list 'flycheck-checkers 'ds-python-dmypy)
 
 (flycheck-define-checker ds/python-pyflakes
