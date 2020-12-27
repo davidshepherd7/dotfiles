@@ -122,3 +122,4 @@ xcape
 qemu-user-static
 shutter
 rename
+libjansson-dev
