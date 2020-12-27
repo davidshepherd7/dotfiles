@@ -4,54 +4,12 @@
 [submodule ".emacs.d/-f"]
 	path = .emacs.d/-f
 	url = git@github.com:davidshepherd7/aggressive-fill-paragraph-mode.git
-[submodule ".emacs.d/aggressive-fill-paragraph-mode"]
-	path = .emacs.d/aggressive-fill-paragraph-mode
-	url = git@github.com:davidshepherd7/aggressive-fill-paragraph-mode.git
-[submodule ".emacs.d/frames-only-mode"]
-	path = .emacs.d/frames-only-mode
-	url = git@github.com:davidshepherd7/frames-only-mode.git
-[submodule ".emacs.d/electric-spacing"]
-	path = .emacs.d/electric-spacing
-	url = git@github.com:davidshepherd7/electric-spacing.git
-[submodule "emacs/.emacs.d/electric-operator"]
-	path = emacs/.emacs.d/electric-operator
-	url = git@github.com:davidshepherd7/electric-operator.git
-[submodule "emacs/.emacs.d/replace-pairs"]
-	path = emacs/.emacs.d/replace-pairs
-	url = git@github.com:davidshepherd7/replace-pairs.git
 [submodule "zsh/.zsh/completion/zsh-completions"]
 	path = zsh/.zsh/completion/zsh-completions
 	url = git://github.com/zsh-users/zsh-completions.git
-[submodule "emacs/.emacs.d/fill-function-arguments"]
-	path = emacs/.emacs.d/fill-function-arguments
-	url = git@github.com:davidshepherd7/fill-function-arguments.git
-[submodule "emacs/.emacs.d/sql-indent"]
-	path = emacs/.emacs.d/sql-indent
-	url = git@github.com:davidshepherd7/sql-indent.git
 [submodule "zsh/.zsh/plugins/zsh-autosuggestions"]
 	path = zsh/.zsh/plugins/zsh-autosuggestions
 	url = git://github.com/zsh-users/zsh-autosuggestions
 [submodule "zsh/.zsh/plugins/zsh-syntax-highlighting"]
 	path = zsh/.zsh/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule "emacs/.emacs.d/hideshowvis"]
-	path = emacs/.emacs.d/hideshowvis
-	url = git@github.com:davidshepherd7/hideshowvis.git
-[submodule "emacs/.emacs.d/terminal-here"]
-	path = emacs/.emacs.d/terminal-here
-	url = git@github.com:davidshepherd7/terminal-here.git
-[submodule "emacs/.emacs.d/dropbox-conflicts-el"]
-	path = emacs/.emacs.d/dropbox-conflicts-el
-	url = git@github.com:jezcope/dropbox-conflicts-el.git
-[submodule "emacs/.emacs.d/vc-packages/robot-mode"]
-	path = emacs/.emacs.d/vc-packages/robot-mode
-	url = git@github.com:davidshepherd7/robot-mode.git
-[submodule "emacs/.emacs.d/vc-packages/anki-mode"]
-	path = emacs/.emacs.d/vc-packages/anki-mode
-	url = git@github.com:davidshepherd7/anki-mode.git
-[submodule "emacs/.emacs.d/vc-packages/nand2tetris.el"]
-	path = emacs/.emacs.d/vc-packages/nand2tetris.el
-	url = git@github.com:CestDiego/nand2tetris.el.git
-[submodule "emacs/.emacs.d/vc-packages/markdown-mode"]
-	path = emacs/.emacs.d/vc-packages/markdown-mode
-	url = git@github.com:davidshepherd7/markdown-mode.git
