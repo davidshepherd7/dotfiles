@@ -21,7 +21,8 @@
  '(package-selected-packages
    '(ivy-prescient editorconfig f dumb-jump swift-mode jedi csharp-mode graphql-mode terraform-mode lsp-mode blacken forge kotlin-mode google-translate sql-indent evil-nerd-commenter highlight-indentation scala-mode rjsx-mode evil-goggles slime-company slime racer rainbow-mode rust-mode counsel-dash smartparens tide edit-list bm xelb visual-regexp request circe sqlup-mode sass-mode refine irony modern-cpp-font-lock web-mode php-mode terminal-here package-lint el-mock ivy-hydra counsel-projectile counsel helm-unicode hideshowvis ggtags frames-only-mode less-css-mode vimish-fold undo-tree sed-mode arduino-mode bbdb dockerfile-mode docker swiper lorem-ipsum validate hambuger-menu hambuger-menu-mode ivy subword-mode company company-flx evil-args typescript-mode company-anaconda flycheck flycheck-clojure clojure-mode yasnippet yaml-mode ws-butler which-key wgrep-ag web-beautify use-package super-save smooth-scrolling smex smart-mode-line sequences scratch rtags rainbow-delimiters pos-tip paradox page-break-lines package-utils nlinum nameless multiple-cursors monky mmm-mode matlab-mode magit list-register key-chord julia-mode json-mode js2-mode javadoc-lookup imenu-anywhere ido-ubiquitous hl-sexp highlight-tail highlight-chars helm-projectile helm-ls-hg helm-ls-git helm-descbinds helm-dash haskell-mode go-mode fuzzy flycheck-package flycheck-cask flx-ido feature-mode expand-region evil-surround evil-matchit evil ess discover diff-hl deft debbugs crux control-mode coffee-mode cmake-mode camcorder avy auto-complete auctex anzu ansi aggressive-indent ag ack ace-jump-mode))
  '(safe-local-variable-values
-   '((flycheck-checker quote ds/python-dmypy)
+   '((checkdoc-package-keywords-flag)
+     (flycheck-checker quote ds/python-dmypy)
      (flycheck-checker . "ds/python-dmypy")
      (flycheck-python-dmypy-executable . "~/code/monorepo/money-srv/.money-srv-venv/bin/mypy")
      (outline-minor-mode)
@@ -79,6 +80,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-goggles-change-face ((t (:inherit diff-removed))))
  '(evil-goggles-delete-face ((t (:inherit diff-removed))))
  '(evil-goggles-paste-face ((t (:inherit diff-added))))
  '(evil-goggles-undo-redo-add-face ((t (:inherit diff-added))))
