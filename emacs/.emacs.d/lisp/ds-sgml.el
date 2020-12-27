@@ -2,7 +2,6 @@
 (require 'sgml-mode)
 
 (use-package sgml-mode
-  :ensure t
   :config
   (add-hook 'sgml-mode-hook #'set-tab))
 

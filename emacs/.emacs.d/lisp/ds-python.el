@@ -20,13 +20,11 @@
 (add-hook 'python-mode-hook #'flycheck-mode)
 
 (use-package blacken
-  :ensure t
   :config
   (add-hook 'python-mode-hook #'blacken-mode))
 
 
 ;; (use-package jedi
-;;   :ensure t
 ;;   :config
 ;;   (add-hook 'python-mode-hook 'jedi:setup)
 

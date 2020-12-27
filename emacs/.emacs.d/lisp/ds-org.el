@@ -1,5 +1,4 @@
 (use-package org
-  :ensure t
   :config
   (progn
     (require 'org)

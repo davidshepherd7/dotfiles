@@ -1,5 +1,4 @@
 (use-package evil
-  :ensure t
   :config
 
   ;; Keep the byte compiler happy
@@ -54,7 +53,6 @@
 
   ;; ;; Double tap n for normal state
   ;; (use-package key-chord
-  ;;   :ensure t
   ;;   :config
   ;;   (key-chord-mode 1)
   ;;   (key-chord-define evil-insert-state-map "ii" #'evil-change-to-initial-state)
@@ -212,7 +210,6 @@
   (define-key evil-normal-state-map "^" #'evil-join)
 
   (use-package smartparens
-    :ensure t
     :config
 
     ;; move by sexp
@@ -235,6 +232,20 @@
     ;; Not really evil-mode, but uses smartparens:
     (global-set-key (kbd "C-M-t") #'sp-transpose-hybrid-sexp)
     )
+
+  ;; Handle camelcase nicely
+  (define-category ?U "Uppercase")
+  (define-category ?u "Lowercase")
+  (modify-category-entry (cons ?A ?Z) ?U)
+  (modify-category-entry (cons ?a ?z) ?u)
+  (make-variable-buffer-local 'evil-cjk-word-separating-categories)
+
+  (add-hook 'subword-mode-hook
+            (lambda ()
+              (if subword-mode
+                  (push '(?u . ?U) evil-cjk-word-separating-categories)
+                (setq evil-cjk-word-separating-categories
+                      (default-value 'evil-cjk-word-separating-categories)))))
 
   ;; Insertion
   ;; ============================================================
@@ -456,7 +467,6 @@
   )
 
 (use-package evil-surround
-  :ensure t
   :config
   ;; Disable default keys
   (validate-setq evil-surround-mode-map (make-sparse-keymap))
@@ -467,14 +477,12 @@
 
 
 (use-package evil-matchit
-  :ensure t
   :config
   (validate-setq evilmi-may-jump-by-percentage nil)
   (evilmi-init-plugins)
   (define-key evil-normal-state-map (kbd "%") #'evilmi-jump-items))
 
 (use-package evil-goggles
-  :ensure t
   :config
   (evil-goggles-mode)
 
@@ -489,7 +497,6 @@
 
 ;; Just for the comment text objects
 (use-package evil-nerd-commenter
-  :ensure t
   :config
   (define-key evil-inner-text-objects-map (kbd ";") #'evilnc-inner-comment)
   (define-key evil-outer-text-objects-map (kbd ";") #'evilnc-outer-commenter))

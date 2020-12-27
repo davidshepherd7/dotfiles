@@ -2,7 +2,6 @@
 (set 'helm-command-prefix-key "C-\\ c")
 
 (use-package helm
-  :ensure t
 
   :config
   (require 'helm)
@@ -24,7 +23,6 @@
 
 ;; Use fuzzy matching with helm
 (use-package flx
-  :ensure t
 
   :config
 
@@ -80,8 +78,7 @@ It is meant to use with `filter-one-by-one' slot."
 
 
 
-;; (use-package helm-projectile
-;;   :ensure t)
+;; (use-package helm-projectile)
 
 ;; (require 'helm)
 ;; (require 'helm-config)
@@ -130,7 +127,7 @@ It is meant to use with `filter-one-by-one' slot."
   :config (progn
             (global-set-key (kbd "M-F") #'helm-swoop)
             (define-key helm-swoop-edit-map (kbd "C-s") #'helm-swoop--edit-complete))
-  :ensure t)
+  )
 
 
 

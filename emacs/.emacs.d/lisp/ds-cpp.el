@@ -2,6 +2,9 @@
 (require 'cc-mode)
 (require 's)
 
+(define-key c-mode-map (kbd "C-c") nil)
+(add-hook 'c-mode-hook #'set-tab)
+
 ;; Don't auto align macro newline escapes, it's not always consistent with how
 ;; other people write them
 (validate-setq c-auto-align-backslashes nil)
@@ -143,7 +146,6 @@ access functions are BAD for class access (too much copying)."
 (add-hook 'c++-mode-hook #'ds/cpp-flycheck)
 
 (use-package modern-cpp-font-lock
-  :ensure t
   :config
   (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode))
 

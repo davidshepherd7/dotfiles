@@ -31,8 +31,6 @@
 
 
 (use-package typescript-mode
-  :ensure t
-
   :config
 
   (require 'flycheck)
@@ -101,7 +99,6 @@
 
 
 (use-package tide
-  :ensure t
   :config
   (defun setup-tide-mode ()
     (interactive)

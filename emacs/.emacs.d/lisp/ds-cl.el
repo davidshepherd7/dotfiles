@@ -8,7 +8,6 @@
   (slime-switch-to-output-buffer))
 
 (use-package slime
-  :ensure t
   :config
   (setq inferior-lisp-program "/usr/bin/sbcl")
   (setq slime-contribs '(slime-fancy))
@@ -36,7 +35,6 @@
   (define-key slime-repl-mode-map (kbd "M-i") nil))
 
 (use-package slime-company
-  :ensure t
   :config
 
   (defun ds/slime-company-setup ()

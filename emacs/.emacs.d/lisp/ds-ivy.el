@@ -1,9 +1,8 @@
 
 ;; Still need this for a few things
-(use-package helm :ensure t)
+(use-package helm)
 
 (use-package ivy
-  :ensure t
   :diminish "ivy"
   :config
 
@@ -61,10 +60,9 @@
   (setf (alist-get t ivy-sort-matches-functions-alist) #'ds/ivy-sort-by-length)
   )
 
-(use-package ivy-hydra :ensure t)
+(use-package ivy-hydra)
 
 (use-package counsel
-  :ensure t
   :config
 
   (global-set-key (kbd "M-\\") #'counsel-M-x)
@@ -78,7 +76,6 @@
   )
 
 (use-package counsel-projectile
-  :ensure t
   :config
 
   (with-eval-after-load 'projectile
@@ -88,7 +85,6 @@
   )
 
 (use-package ivy-prescient
-  :ensure t
   :config
   (ivy-prescient-mode)
   )

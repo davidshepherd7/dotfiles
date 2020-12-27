@@ -142,5 +142,4 @@
   import static java.util.Collections.unmodifiableCollection;"))
 
 
-(use-package javadoc-lookup
-  :ensure t)
+(use-package javadoc-lookup)

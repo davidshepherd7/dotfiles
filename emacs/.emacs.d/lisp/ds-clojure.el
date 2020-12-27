@@ -1,7 +1,6 @@
 
 
 (use-package cider
-  :ensure t
   :config
 
   (-each (list (cons (kbd "C-h") nil)
@@ -15,7 +14,6 @@
   )
 
 (use-package clojure-mode
-  :ensure t
   :config
 
   (add-hook 'clojure-mode-hook #'aggressive-indent-mode)

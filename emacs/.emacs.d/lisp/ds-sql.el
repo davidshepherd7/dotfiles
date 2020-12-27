@@ -3,7 +3,6 @@
 (require 'sql)
 
 (use-package sqlup-mode
-  :ensure t
   :diminish sqlup-mode
   :config
   (add-to-list 'sqlup-blacklist "user")
@@ -22,7 +21,6 @@
 
 
 (use-package sql-indent
-  :ensure t
   :config
   (add-hook 'sql-mode-hook #'sqlind-minor-mode)
   (setq-default sqlind-indentation-offsets-alist

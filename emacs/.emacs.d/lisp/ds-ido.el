@@ -4,7 +4,6 @@
 
 ;; Use ido
 (use-package ido
-  :ensure t
 
   :config
   (progn
@@ -15,7 +14,6 @@
 
     ;; and for some other places
     (use-package ido-ubiquitous
-      :ensure t
       :config (ido-ubiquitous-mode))
 
     ;; Change some keys in ido
@@ -147,30 +145,28 @@ predicate PRED used to filter them."
 
 ;; Even better fuzzy search for ido
 (use-package flx-ido
-  :ensure t
   :config (progn (flx-ido-mode 1)
-		 (setq ido-use-faces nil)))
+		         (setq ido-use-faces nil)))
 
 ;; smex: ido based completion for commands
 (use-package smex
-  :ensure t
   :config (progn ;; Change the main keybinding
-	    (global-set-key [remap execute-extended-command] 'smex)
+	        (global-set-key [remap execute-extended-command] 'smex)
 
-	    ;; Another key: only list commands relevant to this major mode.
-	    (global-set-key (kbd "M-|") 'smex-major-mode-commands)
+	        ;; Another key: only list commands relevant to this major mode.
+	        (global-set-key (kbd "M-|") 'smex-major-mode-commands)
 
-	    ;; Tell the prompt that I changed the binding for running commands
-	    ;; (elsewhere)
-	    (set 'smex-prompt-string "M-\\: ")
+	        ;; Tell the prompt that I changed the binding for running commands
+	        ;; (elsewhere)
+	        (set 'smex-prompt-string "M-\\: ")
 
-	    ;; Put its save file in .emacs.d
-	    (set 'smex-save-file "~/.emacs.d/smex-items")
+	        ;; Put its save file in .emacs.d
+	        (set 'smex-save-file "~/.emacs.d/smex-items")
 
-	    ;; Change some keys in smex itself
-	    (defun smex-prepare-ido-bindings ()
-	      (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
-	      (define-key ido-completion-map (kbd "M-.") 'smex-find-function))))
+	        ;; Change some keys in smex itself
+	        (defun smex-prepare-ido-bindings ()
+	          (define-key ido-completion-map (kbd "<f1>") 'smex-describe-function)
+	          (define-key ido-completion-map (kbd "M-.") 'smex-find-function))))
 
 
 ;; keybinds

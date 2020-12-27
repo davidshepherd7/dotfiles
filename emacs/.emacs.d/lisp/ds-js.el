@@ -2,6 +2,19 @@
 
 (require 'js)
 (require 'simple)
+(require 'compile)
+(require 'use-package)
+(require 'validate)
+
+;; Add parsing of jshint output in compilation mode
+(add-to-list 'compilation-error-regexp-alist-alist '(jshint "^\\(.*\\): line \\([0-9]+\\), col \\([0-9]+\\), " 1 2 3))
+(add-to-list 'compilation-error-regexp-alist 'jshint)
+
+;; set up tab key
+(add-hook 'js-mode-hook 'set-tab)
+
+;; indent by 2
+(validate-setq js-indent-level 2)
 
 (validate-setq js-switch-indent-offset js-indent-level)
 
@@ -101,7 +114,6 @@
 
 
 (use-package json-mode
-  :ensure t
   :config
 
   (defun setup-json-indent ()

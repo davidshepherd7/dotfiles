@@ -14,9 +14,9 @@
 ;; things are loaded.
 
 
-;; Use C-\ p as prefix for projectile
-(defvar projectile-keymap-prefix)
-(setq projectile-keymap-prefix (kbd "C-\\ p"))
+;; ;; Use C-\ p as prefix for projectile
+;; (defvar projectile-keymap-prefix)
+;; (setq projectile-keymap-prefix (kbd "C-\\ p"))
 
 (global-set-key (kbd "C-\\") ctl-x-map)
 
@@ -31,44 +31,34 @@
 (require 'hi-lock)
 
 
-;; Set up "package" package manager etc.
+;; Set up "straight.el" package manager etc.
 ;; ============================================================
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
 
-
-;; Some packages I want to play with, so store version controlled copies
-;; outside of package.el's control. Recursively add the relevant dirs to
-;; the load path.
-(let ((base "~/.emacs.d/vc-packages"))
-  (add-to-list 'load-path base)
-  (dolist (f (directory-files base))
-    (let ((name (concat base "/" f)))
-      (when (and (file-directory-p name)
-                 (not (equal f ".."))
-                 (not (equal f ".")))
-        (add-to-list 'load-path name)))))
-
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;; Install and load use-package, a nice macro for keeping package config all
 ;; wrapped up together
-(package-install 'use-package)
-(require 'ert) ; Need this for now...
-(load-library "bind-key")
-(load-library "use-package")
+(straight-use-package 'use-package)
+(require 'straight)
+(setq straight-use-package-by-default t)
 (require 'use-package)
 
-;; add some packages for improving package.el
-(use-package package-utils :ensure t)
-(use-package paradox :ensure t)
+(use-package diminish)
 
 ;; Get a setq which is checked against defcustom types
-(use-package validate :ensure t)
+(use-package validate)
 
 ;; Functions/packages used in multiple files
 ;; ============================================================
@@ -78,12 +68,14 @@
   "Are we using my prefered emacs version or newer?")
 
 ;; some useful libraries
-(use-package dash :ensure t)
-(use-package s :ensure t)
+(use-package dash)
+(use-package s)
+(use-package f)
 
 ;; Keep the compiler happy
 (require 'dash)
 (require 's)
+(require 'f)
 
 (load-file "~/.emacs.d/lisp/string-manip.el")
 
@@ -118,7 +110,7 @@
        (looking-back "/")))
 
 (use-package aggressive-indent
-  :ensure t
+
   :diminish aggressive-indent-mode
   :config
   ;; Enable in modes where it's safe
@@ -187,7 +179,6 @@
 
 ;; Draw a line accross the screen instead of ^L for page breaks
 (use-package page-break-lines
-  :ensure t
   :diminish page-break-lines-mode
   :config (global-page-break-lines-mode t))
 
@@ -233,19 +224,19 @@
 
   )
 
-(use-package hi-lock-mode
-  ;; There's also some customisation stuff at the top of init.el to prevent
-  ;; it from binding to C-x.
+;; (use-package hi-lock-mode
+;;   :disable
+;;   ;; There's also some customisation stuff at the top of init.el to prevent
+;;   ;; it from binding to C-x.
+;;   :config
+;;   (global-hi-lock-mode)
 
-  :config
-  (global-hi-lock-mode)
+;;   (defun ds/highlight-spaces-after-tabs ()
+;;     (interactive)
+;;     (highlight-regexp "^		*  *"))
 
-  (defun ds/highlight-spaces-after-tabs ()
-    (interactive)
-    (highlight-regexp "^		*  *"))
-
-  (add-hook 'prog-mode-hook #'ds/highlight-spaces-after-tabs)
-  (add-hook 'sgml-mode-hook #'ds/highlight-spaces-after-tabs))
+;;   (add-hook 'prog-mode-hook #'ds/highlight-spaces-after-tabs)
+;;   (add-hook 'sgml-mode-hook #'ds/highlight-spaces-after-tabs))
 
 ;; Don't create lockfiles (only safe on single user systems and in ~/ dir
 ;; technically, but I don't think I'll ever be messing with admin server
@@ -321,7 +312,6 @@
 
 ;; show number of matches when searching
 (use-package anzu
-  :ensure t
   :diminish anzu-mode
   :config (global-anzu-mode))
 
@@ -350,25 +340,8 @@
   ;; No ensure: it's built in
   :diminish subword-mode
   :config
-
   (global-subword-mode 1)
-  (define-key subword-mode-map [remap transpose-words] nil)
-
-  ;; Also handle CamelCase in evil mode
-  (require 'evil)
-  (define-category ?U "Uppercase")
-  (define-category ?u "Lowercase")
-  (modify-category-entry (cons ?A ?Z) ?U)
-  (modify-category-entry (cons ?a ?z) ?u)
-  (make-variable-buffer-local 'evil-cjk-word-separating-categories)
-
-  (add-hook 'subword-mode-hook
-            (lambda ()
-              (if subword-mode
-                  (push '(?u . ?U) evil-cjk-word-separating-categories)
-                (setq evil-cjk-word-separating-categories
-                      (default-value 'evil-cjk-word-separating-categories)))))
-  )
+  (define-key subword-mode-map [remap transpose-words] nil))
 
 
 (defun un-camelcase-string (s &optional sep start)
@@ -400,7 +373,6 @@ index in STRING."
 
 ;; Make losing focus save buffers
 (use-package super-save
-  :ensure t
   :diminish super-save-mode
   :config
   (super-save-mode +1))
@@ -427,7 +399,6 @@ index in STRING."
 ;; Use frames instead of emacs "windows"
 ;; ============================================================
 (use-package frames-only-mode
-  :ensure t
   :config
   (frames-only-mode 1))
 
@@ -463,11 +434,10 @@ index in STRING."
 
 ;; Auto complete
 ;;================================================================
-(use-package fuzzy :ensure t :disabled)
-(use-package pos-tip :ensure t :disabled)
+(use-package fuzzy :disabled)
+(use-package pos-tip :disabled)
 (use-package auto-complete
   :disabled
-  :ensure t
   :config
   (require 'auto-complete-config)
   (require 'fuzzy)
@@ -500,7 +470,6 @@ index in STRING."
   )
 
 (use-package company
-  :ensure t
   :diminish company-mode
   :config
   (global-company-mode)
@@ -534,7 +503,6 @@ index in STRING."
 ;; Undo tree
 ;;================================================================
 (use-package undo-tree
-  :ensure t
   :diminish undo-tree-mode
   :demand
   :bind (("C-z" . undo-tree-undo)
@@ -561,7 +529,6 @@ index in STRING."
 
 ;; Pretty modeline
 (use-package smart-mode-line
-  :ensure t
   :config
   (setq sml/no-confirm-load-theme t)
 
@@ -579,59 +546,139 @@ index in STRING."
   )
 
 
-;; Load my other config files
+(use-package hydra
+  :config
+  ;; A more readable blue
+  (set-face-attribute 'hydra-face-blue nil :foreground "RoyalBlue1")
+
+  (define-key help-map (kbd "n") #'man)
+
+  (defhydra hydra-help (:exit t)
+    ;; Better to exit after any command because otherwise helm gets in a
+    ;; mess, set hint to nil: written out manually.
+
+    "
+  Describe        ^^Keys                    ^^Search                    ^^Documentation
+  ---------------------------------------------------------------------------------------
+  _f_unction        _k_eybinding              _a_propros                  _i_nfo
+  _p_ackage         _w_here-is                _d_oc strings               _n_: man
+  _m_ode            _b_: show all bindings    _s_: info by symbol         _h_elm-dash
+  _v_ariable
+
+  "
+    ;; Boring help commands...
+    ("e" view-echo-area-messages "messages")
+    ("l" view-lossage "lossage")
+    ("C" describe-coding-system "coding-system")
+    ("I" describe-input-method "input-method")
+
+
+    ;; Documentation
+    ("i" info nil)
+    ("n" man nil)
+    ("h" helm-dash)
+
+    ;; Keybinds
+    ("b" describe-bindings nil)
+    ("c" describe-key-briefly nil)
+    ("k" describe-key nil)
+    ("w" where-is nil)
+
+    ;; Search
+    ("a" apropos-command nil)
+    ("d" apropos-documentation nil)
+    ("s" info-lookup-symbol nil)
+
+    ;; Describe
+    ("f" describe-function nil)
+    ("p" describe-package nil)
+    ("m" describe-mode nil)
+    ("v" describe-variable nil)
+    ("y" describe-syntax nil)
+
+    ;; quit
+    ("q" help-quit "quit"))
+  (global-set-key (kbd "<f1>") #'hydra-help/body)
+  (global-set-key (kbd "C-<f1>") help-map)
+  )
+
+;; Projectile
 ;; ============================================================
+(use-package projectile
+  :diminish projectile-mode
+  :init
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
+  ;; kill all projectile keys
+  (setq projectile-mode-map (make-sparse-keymap))
 
-;; This needs to go after SML is loaded so that the mode line colours are
-;; correct, but before language configs so that they can have access to keymaps.
-(load-file "~/.emacs.d/lisp/ds-evil.el")
+  :config
 
+  ;; Use projectile to open files by default, if available.
+  (defun maybe-projectile-find-file ()
+    (interactive)
+    (if (projectile-project-p)
+        (counsel-projectile-find-file)
+      (call-interactively #'counsel-find-file)))
+  (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
 
+  ;; Use everywhere
+  (projectile-global-mode)
 
-;; Load configs from other files
-(load-file "~/.emacs.d/lisp/ds-cpp.el")
-(load-file "~/.emacs.d/lisp/ds-latex.el")
-(load-file "~/.emacs.d/lisp/ds-scheme.el")
-(load-file "~/.emacs.d/lisp/ds-octave.el")
-(load-file "~/.emacs.d/lisp/ds-matlab.el")
-(load-file "~/.emacs.d/lisp/ds-org.el")
-(load-file "~/.emacs.d/lisp/ds-python.el")
-(load-file "~/.emacs.d/lisp/ds-cl.el")
-(load-file "~/.emacs.d/lisp/ds-unicode-entry.el")
-(load-file "~/.emacs.d/lisp/ds-haskell.el")
-(load-file "~/.emacs.d/lisp/ds-elisp.el")
-(load-file "~/.emacs.d/lisp/ds-java.el")
-(load-file "~/.emacs.d/lisp/ds-js.el")
-(load-file "~/.emacs.d/lisp/ds-sql.el")
-(load-file  "~/.emacs.d/lisp/ds-cmake.el")
-(load-file  "~/.emacs.d/lisp/ds-sgml.el")
-(load-file  "~/.emacs.d/lisp/ds-css.el")
-(load-file  "~/.emacs.d/lisp/ds-sh.el")
-(load-file  "~/.emacs.d/lisp/ds-clojure.el")
-(load-file  "~/.emacs.d/lisp/ds-typescript.el")
-(load-file  "~/.emacs.d/lisp/ds-rust.el")
-(load-file  "~/.emacs.d/lisp/ds-ess.el")
+  (validate-setq projectile-use-git-grep t)
 
-(load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
-(load-file  "~/.emacs.d/lisp/ds-wave.el")
+  (global-set-key (kbd "<f8>") #'projectile-ag)
+  (global-set-key (kbd "C-\\ o") #'projectile-toggle-between-implementation-and-test)
 
-;; Major changes to keybinds
-;; Needs to after other file loads so that hooks are in scope
-(load-file "~/.emacs.d/lisp/ds-sensible-keys.el")
+  (validate-setq projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
 
-;; Helm or ido. Goes after keybinds so that we can temporarily override
-;; them with helm keys
-;; (load-file "~/.emacs.d/lisp/ds-ido.el")
-(load-file "~/.emacs.d/lisp/ds-helm.el")
-(load-file "~/.emacs.d/lisp/ds-ivy.el")
+  (require 'hydra)
 
+  (defun ds/projectile-project-root-nothrow ()
+    (condition-case nil
+        (projectile-project-root)
+      (error nil)))
 
-(load-file "~/.emacs.d/lisp/ds-toggle-electricity.el")
+  (defhydra hydra-projectile (:color teal
+                                     :hint nil)
+    "
+     PROJECTILE: %(or (ds/projectile-project-root-nothrow) \"Not in a project\")
 
-;; TODO: make this a package?
-(load-file "~/.emacs.d/lisp/s-interactive.el")
+     Find File            Search/Tags          Buffers                Cache
+------------------------------------------------------------------------------------------
+_s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache clear
+ _ff_: file dwim       _g_: update gtags      _b_: switch to buffer  _x_: remove known project
+ _fd_: file curr dir   _o_: multi-occur     _s-k_: Kill all buffers  _X_: cleanup non-existing
+  _r_: recent file                                               ^^^^_z_: cache current
+  _d_: dir
+
+"
+    ("a"   projectile-ag)
+    ("b"   projectile-switch-to-buffer)
+    ("c"   projectile-invalidate-cache)
+    ("d"   projectile-find-dir)
+    ("s-f" projectile-find-file)
+    ("ff"  projectile-find-file-dwim)
+    ("fd"  projectile-find-file-in-directory)
+    ("g"   ggtags-update-tags)
+    ("s-g" ggtags-update-tags)
+    ("i"   projectile-ibuffer)
+    ("K"   projectile-kill-buffers)
+    ("s-k" projectile-kill-buffers)
+    ("m"   projectile-multi-occur)
+    ("o"   projectile-multi-occur)
+    ("s-p" projectile-switch-project "switch project")
+    ("p"   projectile-switch-project)
+    ("s"   projectile-switch-project)
+    ("r"   projectile-recentf)
+    ("x"   projectile-remove-known-project)
+    ("X"   projectile-cleanup-known-projects)
+    ("z"   projectile-cache-current-file)
+    ("`"   hydra-projectile-other-window/body "other window")
+    ("q"   nil "cancel" :color blue))
+
+  (define-key projectile-mode-map (kbd "C-\\ p") #'hydra-projectile/body)
+  )
+
 
 ;; Save command history between sessions
 ;; ===============================================================
@@ -885,6 +932,7 @@ If point was already at that position, move point to beginning of line."
 ;; ============================================================
 
 ;; set to use ssh
+(require 'tramp)
 (validate-setq tramp-default-method "ssh")
 
 ;; store backups on my computer
@@ -930,14 +978,11 @@ For magit versions > 2.1.0"
 
 
   ;; Remove some magit keys that interfere
-  (define-key magit-mode-map (kbd "M-w") nil)
-
-  :ensure t)
+  (define-key magit-mode-map (kbd "M-w") nil))
 
 
 ;; Show changes vs VC in sidebar
 (use-package diff-hl
-  :ensure t
   :diminish diff-hl-mode
   :init (setq diff-hl-command-prefix (kbd "C-\\ v"))
   :config (global-diff-hl-mode))
@@ -950,12 +995,13 @@ For magit versions > 2.1.0"
 ;; ============================================================
 
 (use-package names-dev
+  ;; This is loaded by names
+  :straight nil
   :ensure names)
 
 (add-to-list 'auto-mode-alist (cons "Cask" #'emacs-lisp-mode))
 
 (use-package hl-sexp
-  :ensure t
   :config
   (add-hook 'emacs-lisp-mode-hook #'hl-sexp-mode))
 
@@ -963,8 +1009,6 @@ For magit versions > 2.1.0"
 ;; ============================================================
 
 (use-package markdown-mode
-  :load-path "~/.emacs.d/vc-packages/markdown-mode"
-  ;; :ensure t
   :config
   ;; run markdown-mode on files ending in .md
   (validate-setq auto-mode-alist
@@ -999,7 +1043,6 @@ For magit versions > 2.1.0"
 ;; ============================================================
 
 (use-package goto-last-change
-  :ensure t
   :config (global-set-key (kbd "C-\\ C-x") 'goto-last-change))
 
 
@@ -1027,97 +1070,16 @@ For magit versions > 2.1.0"
 ;; ============================================================
 
 (use-package list-register
-  :ensure t
   :config
   (global-set-key (kbd "C-\\ r v") 'list-register)
   (global-set-key (kbd "C-\\ r s") 'copy-to-register)
   (global-set-key (kbd "C-\\ r i") 'insert-register))
 
 
-;; Projectile
-;; ============================================================
-(use-package projectile
-  ;; :ensure t
-  :diminish projectile-mode
-  :init
-
-  ;; kill all projectile keys
-  (validate-setq projectile-mode-map (make-sparse-keymap))
-
-  :config
-
-  ;; Use projectile to open files by default, if available.
-  (defun maybe-projectile-find-file ()
-    (interactive)
-    (if (projectile-project-p)
-        (counsel-projectile-find-file)
-      (call-interactively #'counsel-find-file)))
-  (global-set-key (kbd "C-k") 'maybe-projectile-find-file)
-
-  ;; Use everywhere
-  (projectile-global-mode)
-
-  (validate-setq projectile-use-git-grep t)
-
-  (global-set-key (kbd "<f8>") #'projectile-ag)
-
-  (validate-setq projectile-tags-command "ctags-exuberant -eR -f \"%s\" %s")
-
-  (require 'hydra)
-
-  (defun ds/projectile-project-root-nothrow ()
-    (condition-case nil
-        (projectile-project-root)
-      (error nil)))
-
-  (defhydra hydra-projectile (:color teal
-                                     :hint nil)
-    "
-     PROJECTILE: %(or (ds/projectile-project-root-nothrow) \"Not in a project\")
-
-     Find File            Search/Tags          Buffers                Cache
-------------------------------------------------------------------------------------------
-_s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache clear
- _ff_: file dwim       _g_: update gtags      _b_: switch to buffer  _x_: remove known project
- _fd_: file curr dir   _o_: multi-occur     _s-k_: Kill all buffers  _X_: cleanup non-existing
-  _r_: recent file                                               ^^^^_z_: cache current
-  _d_: dir
-
-"
-    ("a"   projectile-ag)
-    ("b"   projectile-switch-to-buffer)
-    ("c"   projectile-invalidate-cache)
-    ("d"   projectile-find-dir)
-    ("s-f" projectile-find-file)
-    ("ff"  projectile-find-file-dwim)
-    ("fd"  projectile-find-file-in-directory)
-    ("g"   ggtags-update-tags)
-    ("s-g" ggtags-update-tags)
-    ("i"   projectile-ibuffer)
-    ("K"   projectile-kill-buffers)
-    ("s-k" projectile-kill-buffers)
-    ("m"   projectile-multi-occur)
-    ("o"   projectile-multi-occur)
-    ("s-p" projectile-switch-project "switch project")
-    ("p"   projectile-switch-project)
-    ("s"   projectile-switch-project)
-    ("r"   projectile-recentf)
-    ("x"   projectile-remove-known-project)
-    ("X"   projectile-cleanup-known-projects)
-    ("z"   projectile-cache-current-file)
-    ("`"   hydra-projectile-other-window/body "other window")
-    ("q"   nil "cancel" :color blue))
-
-  (define-key projectile-mode-map (kbd "C-\\ p") #'hydra-projectile/body)
-  )
-
-
-
 ;; yasnippet?
 ;; ============================================================
 
 (use-package yasnippet
-  :ensure t
   :diminish yas-minor-mode
   :config
 
@@ -1226,7 +1188,6 @@ $0")
 ;; deft (note taking)
 ;; ============================================================
 (use-package deft
-  :ensure t
   :config
   (setq deft-directory "~/Dropbox/notes")
   (setq deft-extension "md")
@@ -1252,30 +1213,7 @@ $0")
     (deft)
     ))
 
-;; javascript
-;; ============================================================
-
-;; Add parsing of jshint output in compilation mode
-(add-to-list 'compilation-error-regexp-alist-alist '(jshint "^\\(.*\\): line \\([0-9]+\\), col \\([0-9]+\\), " 1 2 3))
-(add-to-list 'compilation-error-regexp-alist 'jshint)
-
-;; set up tab key
-(add-hook 'js-mode-hook 'set-tab)
-
-;; indent by 2
-(validate-setq js-indent-level 2)
-
-
-;; C mode
-;; ============================================================
-
-(define-key c-mode-map (kbd "C-c") nil)
-(add-hook 'c-mode-hook #'set-tab)
-
-
 (use-package avy
-  :ensure t
-
   :config
   ;; favour home row keys
   (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
@@ -1289,14 +1227,12 @@ $0")
 
 
 (use-package expand-region
-  :ensure t
   :bind ("C-a" . er/expand-region))
 
 ;; Tagging
 ;; ============================================================
 
 ;; (use-package ggtags
-;;   :ensure t
 ;;   :config
 ;;   (add-hook 'prog-mode-hook #'ggtags-mode)
 ;;   (define-key ggtags-mode-map (kbd "C-c") nil)
@@ -1307,7 +1243,6 @@ $0")
 
 
 ;; (use-package imenu-anywhere
-;;   :ensure t
 ;;   :config
 ;;   (global-set-key (kbd "M-,") #'imenu-anywhere)
 ;;   )
@@ -1326,7 +1261,6 @@ $0")
 
 ;; Automatically clean whitespace in lines that we have touched
 (use-package ws-butler
-  :ensure t
   :diminish ws-butler-mode
   :config
   (validate-setq ws-butler-keep-whitespace-before-point nil)
@@ -1362,72 +1296,12 @@ $0")
 ;; ============================================================
 
 (use-package discover
-  :config (global-discover-mode)
-  :ensure t)
-
-
-(use-package hydra
-  :ensure t
-  :config
-  ;; A more readable blue
-  (set-face-attribute 'hydra-face-blue nil :foreground "RoyalBlue1")
-
-  (define-key help-map (kbd "n") #'man)
-
-  (defhydra hydra-help (:exit t)
-    ;; Better to exit after any command because otherwise helm gets in a
-    ;; mess, set hint to nil: written out manually.
-
-    "
-  Describe        ^^Keys                    ^^Search                    ^^Documentation
-  ---------------------------------------------------------------------------------------
-  _f_unction        _k_eybinding              _a_propros                  _i_nfo
-  _p_ackage         _w_here-is                _d_oc strings               _n_: man
-  _m_ode            _b_: show all bindings    _s_: info by symbol         _h_elm-dash
-  _v_ariable
-
-  "
-    ;; Boring help commands...
-    ("e" view-echo-area-messages "messages")
-    ("l" view-lossage "lossage")
-    ("C" describe-coding-system "coding-system")
-    ("I" describe-input-method "input-method")
-
-
-    ;; Documentation
-    ("i" info nil)
-    ("n" man nil)
-    ("h" helm-dash)
-
-    ;; Keybinds
-    ("b" describe-bindings nil)
-    ("c" describe-key-briefly nil)
-    ("k" describe-key nil)
-    ("w" where-is nil)
-
-    ;; Search
-    ("a" apropos-command nil)
-    ("d" apropos-documentation nil)
-    ("s" info-lookup-symbol nil)
-
-    ;; Describe
-    ("f" describe-function nil)
-    ("p" describe-package nil)
-    ("m" describe-mode nil)
-    ("v" describe-variable nil)
-    ("y" describe-syntax nil)
-
-    ;; quit
-    ("q" help-quit "quit"))
-  (global-set-key (kbd "<f1>") #'hydra-help/body)
-  (global-set-key (kbd "C-<f1>") help-map)
-  )
+  :config (global-discover-mode))
 
 
 ;; Auto generated for all keys, but not as nicely layed out as
 ;; hydra/discover-mode.
 (use-package which-key
-  :ensure t
   :diminish which-key-mode
   :init
 
@@ -1476,7 +1350,6 @@ $0")
   :load-path "~/.emacs.d/replace-pairs")
 
 (use-package yaml-mode
-  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
   (validate-setq yaml-indent-offset 2)
@@ -1488,7 +1361,6 @@ $0")
   )
 
 (use-package feature-mode
-  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.feature$" . feature-mode))
   (define-key feature-mode-map (kbd "C-c") nil)
@@ -1500,6 +1372,7 @@ $0")
 ;; My lex mode
 (use-package lex-mode
   :load-path "~/.emacs.d/lex-mode"
+  :straight nil
   :config
   (add-to-list 'auto-mode-alist '("\\.lex\\'" . lex-mode))
   (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
@@ -1507,7 +1380,6 @@ $0")
 
 
 (use-package helm-dash
-  :ensure t
   :config
 
   (validate-setq helm-dash-min-length 0)
@@ -1600,7 +1472,6 @@ $0")
 
 
 (use-package multiple-cursors
-  :ensure t
   :config
 
   (require 'hydra)
@@ -1626,7 +1497,6 @@ $0")
 
 ;; Use rainbow delimeters to highlight mismatched parens.
 (use-package rainbow-delimiters
-  :ensure t
   :diminish rainbow-delimiters-mode
   :config
   ;; Use everywhere sensible
@@ -1644,7 +1514,6 @@ $0")
                       :inherit 'error))
 
 (use-package nameless
-  :ensure t
   :config
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
   (define-key nameless-mode-map (kbd "_") #'nameless-insert-name-or-self-insert))
@@ -1652,19 +1521,16 @@ $0")
 
 (use-package beacon
   :disabled
-  :ensure t
   :config
   (add-hook 'text-mode-hook 'beacon-mode))
 
 (use-package smooth-scrolling
-  :ensure t
   :config
 
   ;; Keep n lines of context around point (usually...)
   (validate-setq smooth-scroll-margin 3))
 
 (use-package flycheck
-  :ensure t
   :diminish flycheck-mode
   :config
 
@@ -1686,7 +1552,6 @@ $0")
   (setq-default flycheck-disabled-checkers
                 (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))
   (use-package flycheck-cask
-    :ensure t
     :config
     (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
     )
@@ -1727,24 +1592,18 @@ $0")
 (add-hook 'typescript-mode-hook #'suppress-multiline-string-indent-mode)
 
 
-(use-package crux
-  :ensure t
-  )
+(use-package crux)
 
 (use-package ag
-  :ensure t
   :config
   ;; Include hidden files
   (add-to-list 'ag-arguments "--hidden")
   (validate-setq ag-group-matches nil)
   )
 
-(use-package scratch
-  :ensure t
-  )
+(use-package scratch)
 
 (use-package highlight-symbol
-  :ensure t
   :diminish highlight-symbol-mode
   :config
   (add-hook 'prog-mode-hook #'highlight-symbol-mode)
@@ -1774,7 +1633,6 @@ $0")
   )
 
 ;; (use-package ediff
-;;   :ensure t
 ;;   :config
 
 ;;   (defun ds/kill-ediff-buffers ()
@@ -1832,12 +1690,10 @@ for a file to visit if current buffer is not visiting a file."
   (occur "[^[:ascii:]]"))
 
 (use-package swiper
-  :ensure t
   :init
   (global-set-key (kbd "C-S-f") #'swiper))
 
 (use-package conf-mode
-  :ensure t
   :config
   (add-hook 'conf-mode-hook #'set-tab)
 
@@ -1877,20 +1733,20 @@ for a file to visit if current buffer is not visiting a file."
   (add-to-list 'load-path dir))
 
 
-(use-package hideshowvis
-  :load-path "~/.emacs.d/hideshowvis/"
-  :config
-  (set-face-attribute 'hs-face nil :foreground "saddle brown" :background nil)
-  (set-face-attribute 'hs-fringe-face nil :foreground "saddle brown" :background nil)
-  (set-face-attribute 'hideshowvis-hidable-face nil :foreground "grey20" :box nil)
+;; (use-package hideshowvis
+;;   :load-path "~/.emacs.d/hideshowvis/"
+;;   :config
+;;   (set-face-attribute 'hs-face nil :foreground "saddle brown" :background nil)
+;;   (set-face-attribute 'hs-fringe-face nil :foreground "saddle brown" :background nil)
+;;   (set-face-attribute 'hideshowvis-hidable-face nil :foreground "grey20" :box nil)
 
-  (validate-setq hideshowvis-hidden-marker " ⬵ ")
-  (validate-setq hideshowvis-fringe-hidden-marker 'right-arrow)
-  (validate-setq hideshowvis-fringe-hideable-marker 'down-arrow)
-  (hideshowvis-symbols)
+;;   (validate-setq hideshowvis-hidden-marker " ⬵ ")
+;;   (validate-setq hideshowvis-fringe-hidden-marker 'right-arrow)
+;;   (validate-setq hideshowvis-fringe-hideable-marker 'down-arrow)
+;;   (hideshowvis-symbols)
 
-  ;; Turn on for buffer with (hideshowvis-mode), kinda slow...
-  )
+;;   ;; Turn on for buffer with (hideshowvis-mode), kinda slow...
+;;   )
 
 (use-package terminal-here
   :load-path "~/.emacs.d/terminal-here"
@@ -1918,22 +1774,20 @@ for a file to visit if current buffer is not visiting a file."
 ;;   )
 
 
-(use-package smalltalk-mode
-  :load-path "~/.emacs.d/vc-packages/smalltalk-mode/smalltalk-mode.el"
-  :config
-  (add-to-list 'auto-mode-alist (cons "\.st$" #'smalltalk-mode)))
+;; (use-package smalltalk-mode
+;;   :load-path "~/.emacs.d/vc-packages/smalltalk-mode/smalltalk-mode.el"
+;;   :config
+;;   (add-to-list 'auto-mode-alist (cons "\.st$" #'smalltalk-mode)))
 
 
 ;; https://github.com/k-talo/volatile-highlights.el
 
 ;; (use-package volatile-highlights
-;;   :ensure t
 ;;   :config
 ;;   (volatile-highlights-mode)
 ;;   )
 
 (use-package highlight-indentation
-  :ensure t
   :config
   (add-hook 'python-mode-hook #'highlight-indentation-mode)
   (add-hook 'yaml-mode-hook #'highlight-indentation-mode)
@@ -1943,7 +1797,6 @@ for a file to visit if current buffer is not visiting a file."
   )
 
 (use-package midnight
-  :ensure t
   :config
   ;; Clean up every hour
   (validate-setq midnight-period (* 60 60))
@@ -1961,7 +1814,6 @@ for a file to visit if current buffer is not visiting a file."
 
 
 (use-package visual-regexp
-  :ensure t
   :config
 
   (defalias 'visual-regexp-replace #'vr/replace)
@@ -1975,11 +1827,11 @@ for a file to visit if current buffer is not visiting a file."
   :load-path  "~/.emacs.d/vc-packages/anki-mode"
   )
 
-(use-package nand2tetris
-  :load-path "~/.emacs.d/vc-cackages/nand2tetris.el"
-  :config
-  (add-to-list 'auto-mode-alist (cons "\.hdl$" #'nand2tetris-mode))
-  (validate-setq nand2tetris-core-base-dir "~/Dropbox/education/nand2tetris"))
+;; (use-package nand2tetris
+;;   :load-path "~/.emacs.d/vc-cackages/nand2tetris.el"
+;;   :config
+;;   (add-to-list 'auto-mode-alist (cons "\.hdl$" #'nand2tetris-mode))
+;;   (validate-setq nand2tetris-core-base-dir "~/Dropbox/education/nand2tetris"))
 
 (defun ds/insert-uuid ()
   (interactive)
@@ -2052,7 +1904,6 @@ for a file to visit if current buffer is not visiting a file."
     (ds/tick-current-test)))
 
 (use-package google-translate
-  :ensure t
   :config
   (validate-setq google-translate-default-source-language "French")
   (validate-setq google-translate-default-target-language "English")
@@ -2073,7 +1924,6 @@ for a file to visit if current buffer is not visiting a file."
 
   )
 (use-package dumb-jump
-  :ensure t
   :config
   (validate-setq dumb-jump-selector 'ivy)
   (global-set-key (kbd "M-.") #'dumb-jump-go)
@@ -2120,7 +1970,6 @@ Taken from sgml-pretty-print, hacked to not add newlines before end tags."
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 (use-package graphql-mode
-  :ensure t
   :config
   (validate-setq graphql-indent-level 4))
 
@@ -2153,3 +2002,60 @@ Taken from sgml-pretty-print, hacked to not add newlines before end tags."
       (compile compile-command t)
       (with-current-buffer (get-buffer "*compilation*")
         (inferior-python-mode)))))
+
+
+
+
+;; Load my other config files
+;; ============================================================
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
+;; This needs to go after SML is loaded so that the mode line colours are
+;; correct, but before language configs so that they can have access to keymaps.
+(load-file "~/.emacs.d/lisp/ds-evil.el")
+
+
+
+;; Load configs from other files
+(load-file "~/.emacs.d/lisp/ds-cpp.el")
+(load-file "~/.emacs.d/lisp/ds-latex.el")
+(load-file "~/.emacs.d/lisp/ds-scheme.el")
+(load-file "~/.emacs.d/lisp/ds-octave.el")
+(load-file "~/.emacs.d/lisp/ds-matlab.el")
+(load-file "~/.emacs.d/lisp/ds-org.el")
+(load-file "~/.emacs.d/lisp/ds-python.el")
+(load-file "~/.emacs.d/lisp/ds-cl.el")
+(load-file "~/.emacs.d/lisp/ds-unicode-entry.el")
+(load-file "~/.emacs.d/lisp/ds-haskell.el")
+(load-file "~/.emacs.d/lisp/ds-elisp.el")
+(load-file "~/.emacs.d/lisp/ds-java.el")
+(load-file "~/.emacs.d/lisp/ds-js.el")
+(load-file "~/.emacs.d/lisp/ds-sql.el")
+(load-file  "~/.emacs.d/lisp/ds-cmake.el")
+;; (load-file  "~/.emacs.d/lisp/ds-sgml.el")
+(load-file  "~/.emacs.d/lisp/ds-css.el")
+(load-file  "~/.emacs.d/lisp/ds-sh.el")
+(load-file  "~/.emacs.d/lisp/ds-clojure.el")
+(load-file  "~/.emacs.d/lisp/ds-typescript.el")
+(load-file  "~/.emacs.d/lisp/ds-rust.el")
+(load-file  "~/.emacs.d/lisp/ds-ess.el")
+
+(load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
+(load-file  "~/.emacs.d/lisp/ds-wave.el")
+
+;; Major changes to keybinds
+;; Needs to after other file loads so that hooks are in scope
+(load-file "~/.emacs.d/lisp/ds-sensible-keys.el")
+
+;; Helm or ido. Goes after keybinds so that we can temporarily override
+;; them with helm keys
+;; (load-file "~/.emacs.d/lisp/ds-ido.el")
+(load-file "~/.emacs.d/lisp/ds-helm.el")
+(load-file "~/.emacs.d/lisp/ds-ivy.el")
+
+
+(load-file "~/.emacs.d/lisp/ds-toggle-electricity.el")
+
+;; TODO: make this a package?
+(load-file "~/.emacs.d/lisp/s-interactive.el")
