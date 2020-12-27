@@ -1,4 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: typevar
+# key: trace
 # --
-$1 = TypeVar('$1')
+import autologging
+
+
+@autologging.traced()

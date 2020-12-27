@@ -13,6 +13,7 @@
     (define-key org-mode-map  (kbd "C-'") nil)
     (define-key org-mode-map  (kbd "C-a") nil)
     (define-key org-mode-map (kbd "M-e") nil)
+    (define-key org-mode-map (kbd "TAB") nil)
 
     (define-key org-mode-map  (kbd "C-t") #'org-todo)
     (define-key org-mode-map  (kbd "C-.") #'org-time-stamp-inactive)
@@ -21,6 +22,7 @@
     ;; Pretty indents
     (add-hook 'org-mode-hook #'org-indent-mode)
 
+    ;; TODO disable whitespace cleanup on curent line
 
     (setq org-link-frame-setup (quote ((vm . vm-visit-folder-other-frame)
                                        (vm-imap . vm-visit-imap-folder-other-frame)
@@ -54,6 +56,10 @@
       (lambda () (interactive) (org-insert-heading-after-current) (evil-insert nil)))
     (define-key org-mode-map (kbd "M-<return>") #'org-insert-heading-after-current)
 
+    (define-key org-mode-map (kbd "M-s") #'org-schedule)
+
+    (validate-setq org-agenda-files '("~/.tt"))
+
     ))
 
 ;; (defun aggressive-fill-paragraph ()
@@ -66,3 +72,33 @@
 ;;   (add-hook 'post-command-hook #'fill-paragraph nil t))
 
 ;; (add-hook 'org-mode-hook 'set-auto-fill-hook)
+
+(defun ds/org-to-quip (text)
+  (--> text
+       (replace-regexp-in-string "^\\*" "" it)
+       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+       ))
+
+
+(defun ds/copy-as-quip (beg end)
+  (interactive "r")
+  (kill-new (ds/org-to-quip (buffer-substring-no-properties beg end))))
+
+(defun ds/org-goto-first-todo ()
+  "Jump to the first TODO entry in the buffer."
+  (interactive)
+  (goto-char (point-min))
+  (outline-next-heading)
+  (while (not (org-entry-is-todo-p))
+    (forward-line 1)))
+
+(defun ds/show-wave-todo-list ()
+  ;; If the file is already open in another frame then just opening it in the
+  ;; normal way again doesn't display it in the new frame. So we use find-file
+  ;; manually instead.
+  (find-file "~/.tt/wave-todo.org")
+  (ds/org-goto-first-todo)
+  (recenter 3))

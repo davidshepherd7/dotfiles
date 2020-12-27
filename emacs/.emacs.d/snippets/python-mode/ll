@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: typevar
+# key: ll
 # --
-$1 = TypeVar('$1')
+logger.error(f"$1: \{$1\}")

@@ -41,8 +41,11 @@ wget "https://releases.hashicorp.com/terraform/${version}/terraform_${version}_l
 
 atool -x "terraform_${version}_linux_amd64.zip"
 
-mv terraform ~/bin/terraform
+sudo mkdir -p /opt/bin
+sudo mv terraform /opt/bin/terraform
 
 terraform --version
 
 rm -r "$TEMP"
+
+echo "Installed terraform to /opt/bin, make sure that directory is in your \$PATH"

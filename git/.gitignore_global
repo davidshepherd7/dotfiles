@@ -68,8 +68,6 @@ GTAGS
 .~lock.*
 
 # Outputs/images
-*.png
-*.svg
 *.ps
 *.dvi
 

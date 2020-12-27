@@ -1,7 +1,7 @@
 #! /bin/zsh
 
 # Use better top with colours and stuff:
-alias top='htop || top'
+# alias top='htop || top'
 
 # Tail -F isn't really tail anymore...c all it rcat(refresh cat)
 alias rcat='tail -F -n 100000'
@@ -40,6 +40,9 @@ alias jc='sudo journalctl'
 alias sc='sudo systemctl'
 
 alias sl='sl -e'
+
+# Many machines don't know what urxvt is, which makes htop fall over
+alias ssh="TERM=xterm ssh"
 
 # pdf viewer, disconnect from shell entirely and write stdout/stderr to a
 # temp file (temp files are cleaned on reboot).
@@ -651,6 +654,8 @@ lingq()
 {
     (
         cd ~/code/LingQ-to-Anki
-        poetry run ./main.py import --username davidshepherd7 --password "$LINGQ_PASSWORD" --deck French --model 'Basic (and reversed card)' --language fr
+        poetry run ./main.py import --username davidshepherd7 --password "$LINGQ_PASSWORD" --deck French --model 'Basic (and reversed card)' --language fr --mark-known
     )
 }
+
+alias zero-pad="rename -v -e 's/\d+/sprintf(\"%05d\",$&)/e'"

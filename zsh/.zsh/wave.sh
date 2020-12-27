@@ -24,3 +24,20 @@ alias test-kubectl="kubectl --context=gke_david-k8s-experiments_europe-west1-b_t
 
 
 alias check-migration-cycle="mm m.migrate && ~/code/monorepo/money-srv/bin/runin local alembic downgrade -1 && ~/code/monorepo/money-srv/bin/runin local alembic upgrade +1 && ~/code/monorepo/money-srv/bin/runin local alembic downgrade -1 && ~/code/monorepo/money-srv/bin/runin local alembic upgrade +1"
+
+
+android_emulator() {
+    ~/Android/Sdk/tools/emulator -avd "Nexus_5_API_27" || true
+}
+
+android_clean() {
+    adb shell pm clear com.wave.personal.dbg
+    adb shell pm clear com.sendwave.agent.dbg
+}
+
+alias kubectl-mm="kubectl --context mm-ng"
+
+mmlogs() {
+    cd ~/code/monorepo
+    unbuffer docker-compose logs --tail 100 -tf web worker amqp_events | grep -v 'Bad Network Fallback command' | sed -E -e 's/ #[a-zA-Z0-9_]+=.*//g'
+}

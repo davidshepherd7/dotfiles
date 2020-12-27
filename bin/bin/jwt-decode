@@ -1,0 +1,17 @@
+#!/bin/bash -eu
+
+set -o pipefail
+
+# Portably go to the directory that this script is in
+cd "$(dirname ${BASH_SOURCE[0]})"
+
+header="$(printf "%s" "$1" | cut -d "." -f 1 | base64 -d)"
+body="$(printf "%s" "$1" | cut -d "." -f 2 | base64 -d)"
+
+echo "Header:"
+echo "$header" | jq
+echo "Body"
+echo "$body" | jq
+
+echo "Expiration as an iso string: $(echo "$body" | jq '.exp | todate' || true)"
+echo "Issued at as an iso string: $(echo "$body" | jq '.iat | todate' || true)"

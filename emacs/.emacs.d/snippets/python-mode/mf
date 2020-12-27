@@ -1,4 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: typevar
+# key: mf
 # --
-$1 = TypeVar('$1')
+from unittests import model_factories as mf

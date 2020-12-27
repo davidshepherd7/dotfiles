@@ -19,6 +19,12 @@ super + m
 super + a
     sensible-browser 'mail.google.com'
 
+super + c
+    emacsclient -c -e '(ds/show-wave-todo-list)'
+
+super + v
+    emacsclient -e '(org-agenda-list)'
+
 super + p
     helm-dmenu.sh
 

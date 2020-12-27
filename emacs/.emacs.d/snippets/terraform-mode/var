@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: var
+# --
+variable "$1" {
+  type = $2
+  description = "$0"
+}

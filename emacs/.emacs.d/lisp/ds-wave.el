@@ -17,15 +17,23 @@
                  (string-equal (file-name-extension it) "py"))
             (projectile-current-project-files)))
 
+;; TODO(david): pick match with shortest file basename
+
 (defun ds/python-test-file (filename-or-path)
-  (f-join (projectile-project-root)
-          (--first (s-contains-p "test" it t)
-                   (ds/python-related-files filename-or-path))))
+  (--> filename-or-path
+       (ds/python-related-files it)
+       (--filter (s-contains-p "test_" (f-base it) t) it)
+       (--min-by (length (f-base it)) it)
+       (f-join (projectile-project-root) it)))
 
 (defun ds/python-non-test-file (filename-or-path)
-  (f-join (projectile-project-root)
-          (--first (not (s-contains-p "test" it t))
-                   (ds/python-related-files (s-replace "test_" "" filename-or-path)))))
+  (--> filename-or-path
+       (s-replace "test_" "" it)
+       (ds/python-related-files it)
+       (--filter (not (s-contains-p "test_" (f-base it) t)) it)
+       (--min-by (length (f-base it)) it)
+       (f-join (projectile-project-root) it)
+       ))
 
 (defun ds/python-switch-to-test-file ()
   (interactive)

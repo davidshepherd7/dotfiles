@@ -21,3 +21,4 @@ hg/.hgex
 /bin/bin/chromedriver
 /parallel/.parallel/tmp/linelen-david-wave
 /bin/bin/terraform
+/bin/bin/cask

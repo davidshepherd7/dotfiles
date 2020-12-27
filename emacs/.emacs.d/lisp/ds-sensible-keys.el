@@ -293,7 +293,7 @@ the line break."
 
 ;; Utilities
 (global-set-key (kbd "<f7>") 'projectile-vc)
-(global-set-key (kbd "M-<f7>") 'magit-status)
+(global-set-key (kbd "M-<f7>") #'magit-file-dispatch)
 
 ;; paging
 (defun window-half-height () (max 1 (/ (1- (window-height (selected-window))) 2)))

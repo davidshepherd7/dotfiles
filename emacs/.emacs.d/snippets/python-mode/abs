@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: abs
+# --
+from abc import ABC, abstractmethod
+class $1(ABC):
+    @abstractmethod
+    def $0():
+        pass

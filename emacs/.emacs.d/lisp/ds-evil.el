@@ -410,6 +410,8 @@
   (add-to-list 'evil-insert-state-modes 'anki-mode-menu-mode)
   (add-to-list 'evil-insert-state-modes 'xref--xref-buffer-mode)
 
+  (add-hook 'magit-blame-mode-hook #'evil-insert-state)
+
 
   ;; Square brackets
   ;; ============================================================

@@ -703,7 +703,8 @@ index in STRING."
    ((derived-mode-p 'typescript-mode)
     "npm run build")
 
-   ((derived-mode-p 'scheme-mode) (concat "\\racket -t " (file-name-nondirectory (buffer-file-name))))
+   ((derived-mode-p 'scheme-mode) (concat "./run.sh -f " (buffer-file-name)))
+   ;; ((derived-mode-p 'scheme-mode) (concat "\\racket -t " (file-name-nondirectory (buffer-file-name))))
 
    ((equal (buffer-name) "sxhkdrc") "killall sxhkd -SIGUSR1")
 
@@ -1852,10 +1853,10 @@ for a file to visit if current buffer is not visiting a file."
     (delete-horizontal-space)))
 (advice-add #'fixup-whitespace :after #'fixup-whitespace-prog-mode-dot)
 
-(use-package dropbox-conflicts
-  :load-path "~/.emacs.d/dropbox-conflicts-el/"
-  :config
-  (dropbox-conflicts-mode))
+;; (use-package dropbox-conflicts
+;;   :load-path "~/.emacs.d/dropbox-conflicts-el/"
+;;   :config
+;;   (dropbox-conflicts-mode))
 
 (defun ds/reload-dir-locals ()
   (interactive)
@@ -2053,8 +2054,24 @@ for a file to visit if current buffer is not visiting a file."
 (use-package google-translate
   :ensure t
   :config
-  (validate-setq google-translate-default-source-language "Polish")
-  (validate-setq google-translate-default-target-language "English"))
+  (validate-setq google-translate-default-source-language "French")
+  (validate-setq google-translate-default-target-language "English")
+
+  ;; This... kinda works. It seems to give worse translations than the UI and I
+  ;; haven't found a nice way to get the end of the string.
+  (defun ds/translate-string ()
+    (interactive)
+    (let* ((start-of-string (+ (nth 8 (syntax-ppss)) 1))
+           (end-of-string (point))
+           (json (google-translate-request
+                  "fr"
+                  "en"
+                  (buffer-substring-no-properties start-of-string end-of-string)))
+           (translated (google-translate-json-translation json)))
+      (kill-region start-of-string end-of-string)
+      (insert translated)))
+
+  )
 (use-package dumb-jump
   :ensure t
   :config
@@ -2106,3 +2123,33 @@ Taken from sgml-pretty-print, hacked to not add newlines before end tags."
   :ensure t
   :config
   (validate-setq graphql-indent-level 4))
+
+(defun ds/insert-ansi-code ()
+  (interactive)
+  (let* ((colours '(("Default" . "0")
+                    ("Black" . "0;30")
+                    ("Red" . "0;31")
+                    ("Green" . "0;32")
+                    ("Yellow" . "0;33")
+                    ("Blue" . "0;34")
+                    ("Magenta" . "0;35")
+                    ("Cyan" . "0;36")
+                    ("White" . "0;37")))
+         (colour-name (completing-read "Colour: " (map-keys colours)))
+         (colour-code (map-elt colours colour-name nil #'equal)))
+    (insert (concat "\\033[" colour-code "m"))))
+
+;; for testsin
+(defun spacemacs/python-execute-file (arg)
+  "Execute a python script in a shell."
+  (interactive "P")
+  ;; set compile command to buffer-file-name
+  ;; universal argument put compile buffer in comint mode
+  (let ((universal-argument t)
+        (compile-command (format "python %s" (file-name-nondirectory
+                                              buffer-file-name))))
+    (if arg
+        (call-interactively 'compile)
+      (compile compile-command t)
+      (with-current-buffer (get-buffer "*compilation*")
+        (inferior-python-mode)))))

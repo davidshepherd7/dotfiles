@@ -86,3 +86,9 @@
 
   (global-set-key (kbd "C-k") #'counsel-projectile-find-file)
   )
+
+(use-package ivy-prescient
+  :ensure t
+  :config
+  (ivy-prescient-mode)
+  )

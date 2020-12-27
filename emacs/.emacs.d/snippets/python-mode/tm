@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: tm
+# --
+def test_$1(requests_mocker: requests_mock.Mocker) -> None:
+    requests_mocker.post(
+        $0
+    )

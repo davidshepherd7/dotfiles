@@ -85,6 +85,7 @@ tmux
 pandoc
 stow
 sqlite3
+libsqlite3-dev
 xcb
 libxcb-keysyms1-dev
 libxcb-util0-dev
@@ -118,3 +119,6 @@ pavucontrol
 yamllint
 bundler
 xcape
+qemu-user-static
+shutter
+rename

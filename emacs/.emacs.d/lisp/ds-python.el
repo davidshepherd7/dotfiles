@@ -2,6 +2,7 @@
 (require 'validate)
 (require 'flycheck)
 (require 's)
+(require 'f)
 (require 'page-break-lines)
 
 ;; Automatically use python mode from "python-mode.el"
@@ -23,13 +24,35 @@
   :config
   (add-hook 'python-mode-hook #'blacken-mode))
 
+
+;; (use-package jedi
+;;   :ensure t
+;;   :config
+;;   (add-hook 'python-mode-hook 'jedi:setup)
+
+;;   (validate-setq jedi:complete-on-dot t)
+
+
+;;   (define-key jedi-mode-map (kbd "C-c ?") nil)
+;;   (define-key jedi-mode-map (kbd "C-c .") nil)
+;;   (define-key jedi-mode-map (kbd "C-c ,") nil)
+;;   (define-key jedi-mode-map (kbd "C-c /") nil)
+
+
+;;   (define-key jedi-mode-map (kbd "M-.") #'jedi:goto-definition)
+;;   (define-key jedi-mode-map (kbd "M-,") #'jedi:goto-definition-pop-marker)
+;;   (define-key jedi-mode-map (kbd "C-?") #'jedi:show-doc)
+
+;;   (add-hook 'jedi:doc-hook #'evil-emacs-state)
+;;   )
+
 ;; Mode hooks
 ;; ============================================================
 (add-hook 'python-mode-hook 'ds/python-keybinds)
 
 (defun ds/python-keybinds ()
   (interactive)
-  (use-local-map '()) ;; disable all keys
+  ;; (use-local-map '()) ;; disable all keys
   (local-set-key (kbd "C-`") #'next-error)
   (local-set-key (kbd "C-¬") #'previous-error)
 
@@ -41,6 +64,7 @@
   ;; (local-set-key [remap newline-and-indent] 'py-newline-and-indent)
 
   (local-set-key [tab] #'indent-for-tab-command)
+  (local-unset-key (kbd "<backtab>"))
   )
 
 (defun ds/python-setup-indent ()
@@ -169,9 +193,8 @@ See URL `http://mypy-lang.org/'."
   :command ("dmypy"
             "run"
             "--"
-            "--show-column-numbers"
-            (config-file "--config-file" flycheck-python-mypy-ini)
-            source-original)
+            "src" "../wavelib" "unittests" "conftest.py"
+            )
   :error-patterns
   ((error line-start (file-name) ":" line (optional ":" column)
           ": error:" (message) line-end)
@@ -186,4 +209,105 @@ See URL `http://mypy-lang.org/'."
   :working-directory flycheck-mypy--find-project-root)
 (add-to-list 'flycheck-checkers 'ds-python-dmypy)
 
-(add-to-list 'flycheck-checkers 'ds/python-dmypy)
+(flycheck-define-checker ds/python-pyflakes
+  "A Python syntax and style checker using the pyflakes utility.
+To override the path to the pyflakes executable, set
+`flycheck-python-pyflakes-executable'.
+See URL `http://pypi.python.org/pypi/pyflakes'."
+  :command ("pyflakes" source-inplace)
+  :error-patterns
+  ((error line-start (file-name) ":" line ":" (message) line-end))
+  :modes python-mode)
+
+;; It's too annoying for now...
+;; (add-to-list 'flycheck-checkers 'ds/python-pyflakes)
+
+;; Magic imports
+;; ============================================================
+
+
+;; TODO: add stdlib modules to paths
+
+;; TODO: add directories to possible paths
+
+;; TODO: complete possible symbols by regexing files?
+
+;; TODO: extend existing import lines? Or just use isort for that?
+
+(defun ds/import (insert-here)
+  "Insert an import statement at the start of the file."
+  (interactive "P")
+  (let* ((files (--> (projectile-current-project-files)
+                     (-filter (lambda (path) (s-ends-with-p ".py" path)) it)))
+         (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
+         (file (completing-read "import file: " files nil nil default-input))
+         (individual-symbol (read-from-minibuffer "symbol: "))
+         (import-statement (ds/path-to-import-statement file individual-symbol)))
+    (if insert-here
+        (insert (s-concat import-statement "\n"))
+      (ds/insert-as-import import-statement))))
+
+(defun ds/path-to-import-statement (path symbol)
+  (let* ((module (--> path
+                      (s-trim it)
+                      (f-join (projectile-project-root) it)
+                      (file-relative-name it (projectile-project-root))
+                      (s-chop-prefix "money-srv/src/" it)
+                      (s-chop-prefix "wavesms/src/" it)
+                      (s-chop-prefix "wavemodem/src/" it)
+                      (s-chop-prefix "wavelib/" it)
+                      (s-chop-suffix ".py" it)
+                      (s-replace "/" "." it)
+                      )))
+    (if (equal symbol "")
+        (s-concat "import " module)
+      (s-concat "from " module " import " symbol))))
+
+(defun ds/pick-import-location ()
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "import\\|defun\\|class")
+    (beginning-of-line)
+    (point)))
+
+(defun ds/insert-as-import (line)
+  (save-excursion
+    (goto-char (ds/pick-import-location))
+    (insert (s-concat line "\n"))
+    (message "Added import: %s" line)))
+
+(define-key python-mode-map (kbd "C-,") #'ds/import)
+
+
+(defun ds/kwargs-to-dict (start end)
+  "Convert selected python kwargs to a dictionary"
+  (interactive (list (region-beginning) (region-end)))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region start end)
+      (goto-char (point-min))
+      (insert "{")
+      (while (re-search-forward "\\([a-zA-Z_]*\\)=" nil t)
+        (replace-match "\"\\1\": " nil nil))
+      (goto-char (point-max))
+      (insert "}"))))
+
+(defun ds/dict-to-kwargs (start end)
+  "Convert selected dictionary into kwargs (must select entire an dict)"
+  (interactive (list (region-beginning) (region-end)))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region start end)
+
+      (goto-char (point-min))
+      (re-search-forward "{" nil)
+      (replace-match "" nil nil)
+
+      (goto-char (point-min))
+      (while (re-search-forward "\"\\([a-zA-Z_0-9]*\\)\":" nil t)
+        (replace-match "\\1=" nil nil))
+
+      (goto-char (point-max))
+      (re-search-backward "},?" nil)
+      (replace-match "" nil nil)
+      )))
