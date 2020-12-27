@@ -70,6 +70,9 @@
 
 (js-extra-keywords 'js-mode)
 
+(defun ds/switch-to-related (ext &optional current-file-in)
+  (let ((current-file (or current-file-in (buffer-file-name))))
+    (find-file (concat (file-name-sans-extension current-file) ext))))
 
 (defun ds/switch-to-html ()
   (interactive)
