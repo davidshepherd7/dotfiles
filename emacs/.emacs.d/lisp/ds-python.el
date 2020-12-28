@@ -161,26 +161,53 @@ See URL `http://mypy-lang.org/'."
 ;; Magic imports
 ;; ============================================================
 
-;; TODO: add stdlib modules to paths
+(defvar ds/python-stdlib
+  '("abc" "anydbm" "argparse" "array" "asynchat" "asyncore" "atexit" "base64"
+    "BaseHTTPServer" "bisect" "bz2" "calendar" "cgitb" "cmd" "codecs"
+    "collections" "commands" "compileall" "ConfigParser" "contextlib" "Cookie"
+    "copy" "cPickle" "cProfile" "cStringIO" "csv" "datetime" "dataclasses" "dbhash" "dbm"
+    "decimal" "difflib" "dircache" "dis" "doctest" "dumbdbm" "EasyDialogs"
+    "errno" "exceptions" "filecmp" "fileinput" "fnmatch" "fractions"
+    "functools" "gc" "gdbm" "getopt" "getpass" "gettext" "glob" "grp" "gzip"
+    "hashlib" "heapq" "hmac" "imaplib" "imp" "inspect" "itertools" "json"
+    "linecache" "locale" "logging" "mailbox" "math" "mhlib" "mmap"
+    "multiprocessing" "operator" "optparse" "os" "pdb" "pickle" "pipes"
+    "pkgutil" "platform" "plistlib" "pprint" "profile" "pstats" "pwd" "pyclbr"
+    "pydoc" "Queue" "random" "re" "readline" "resource" "reprlib" "rlcompleter"
+    "robotparser" "sched" "select" "shelve" "shlex" "shutil" "signal"
+    "SimpleXMLRPCServer" "site" "sitecustomize" "smtpd" "smtplib" "socket"
+    "SocketServer" "sqlite3" "string" "StringIO" "struct" "subprocess" "sys"
+    "sysconfig" "tabnanny" "tarfile" "tempfile" "textwrap" "threading" "time"
+    "timeit" "trace" "traceback" "typing" "unittest" "urllib" "urllib2" "urlparse"
+    "usercustomize" "uuid" "warnings" "weakref" "webbrowser" "whichdb" "xml"
+    "xmlrpclib" "zipfile" "zipimport" "zlib" "builtins" "__builtin__"))
 
-;; TODO: add directories to possible paths
-
-;; TODO: complete possible symbols by regexing files?
+(defvar ds/python-third-party-libs
+  '("requests" "pytest" "freezegun"))
 
 ;; TODO: extend existing import lines? Or just use isort for that?
+
+(defun ds/python-importable-symbols (path)
+  (when (f-exists-p path)
+    (with-temp-buffer
+      (shell-command (concat "sed -n -e 's/^def \\([a-zA-Z][a-zA-Z0-9_]*\\).*/\\1/p' -e 's/^class \\([a-zA-Z][a-zA-Z0-9_]*\\).*/\\1/p' " path) t "*python-importable-symbols-errors*")
+      (--> (buffer-substring (point-min) (point-max))
+           (s-split "\n" it)))))
 
 (defun ds/import (insert-here)
   "Insert an import statement at the start of the file."
   (interactive "P")
   (let* ((files (--> (projectile-current-project-files)
-                     (-filter (lambda (path) (s-ends-with-p ".py" path)) it)))
-         (default-input (when (symbol-at-point) (symbol-name (symbol-at-point))))
-         (file (completing-read "import file: " files nil nil default-input))
-         (individual-symbol (read-from-minibuffer "symbol: "))
-         (import-statement (ds/path-to-import-statement file individual-symbol)))
+                     (-filter (lambda (path) (or (s-ends-with-p ".py" path) (s-contains-p "_test" path))) it)
+                     (append ds/python-stdlib ds/python-third-party-libs it)))
+         (default-symbol (when (symbol-at-point) (symbol-name (symbol-at-point))))
+         (file (completing-read "import file: " files))
+         (file-symbols (ds/python-importable-symbols (f-join (projectile-project-root) file)))
+         (individual-symbol (completing-read "symbol(s): " file-symbols default-symbol))
+         (import-statement-line (ds/path-to-import-statement file individual-symbol)))
     (if insert-here
-        (insert (s-concat import-statement "\n"))
-      (ds/insert-as-import import-statement))))
+        (insert import-statement-line)
+      (ds/insert-as-import import-statement-line))))
 
 (defun ds/path-to-import-statement (path symbol)
   (let* ((module (--> path
@@ -208,7 +235,7 @@ See URL `http://mypy-lang.org/'."
 (defun ds/insert-as-import (line)
   (save-excursion
     (goto-char (ds/pick-import-location))
-    (insert (s-concat line "\n"))
+    (insert line)
     (message "Added import: %s" line)))
 
 (define-key python-mode-map (kbd "C-,") #'ds/import)
