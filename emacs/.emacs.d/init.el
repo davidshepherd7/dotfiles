@@ -955,9 +955,9 @@ For magit versions > 2.1.0"
 
   (define-key magit-mode-map (kbd "C-v") #'endless/visit-pull-request-url)
 
-  (validate-setq magit-revert-buffers 'silent)
+  ;; (validate-setq magit-revert-buffers 'silent)
   (validate-setq magit-save-repository-buffers 'dontask)
-  (setq magit-push-always-verify nil) ;; sometimes exists?
+  ;; (setq magit-push-always-verify nil) ;; sometimes exists?
 
   (validate-setq git-commit-summary-max-length 120)
 
