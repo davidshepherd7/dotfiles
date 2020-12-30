@@ -91,7 +91,8 @@
   (interactive)
   (goto-char (point-min))
   (outline-next-heading)
-  (while (not (org-entry-is-todo-p))
+  (while (and (not (org-entry-is-todo-p))
+              (not (equal (point-at-eol) (point-max))))
     (forward-line 1)))
 
 (defun ds/show-wave-todo-list ()
