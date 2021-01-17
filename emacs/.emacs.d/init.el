@@ -53,6 +53,8 @@
 (straight-use-package 'use-package)
 (require 'straight)
 (setq straight-use-package-by-default t)
+(setq straight-vc-git-default-protocol 'ssh)
+(setq straight-vc-git-force-protocol t)
 (require 'use-package)
 
 (use-package diminish)
@@ -976,10 +978,10 @@ For magit versions > 2.1.0"
 ;; Emacs package creation
 ;; ============================================================
 
-(use-package names-dev
-  ;; This is loaded by names
-  :straight nil
-  :ensure names)
+;; (use-package names-dev
+;;   ;; This is loaded by names
+;;   :straight nil
+;;   :ensure names)
 
 (add-to-list 'auto-mode-alist (cons "Cask" #'emacs-lisp-mode))
 
@@ -1349,16 +1351,6 @@ $0")
   (add-hook 'feature-mode-hook #'set-tab)
   (add-hook 'feature-mode-hook  (lambda () (define-key orgtbl-mode-map (kbd "C-c") nil)))
   )
-
-
-;; My lex mode
-(use-package lex-mode
-  :load-path "~/.emacs.d/lex-mode"
-  :straight nil
-  :config
-  (add-to-list 'auto-mode-alist '("\\.lex\\'" . lex-mode))
-  (add-to-list 'auto-mode-alist '("\\.flex\\'" . lex-mode))
-  :demand)
 
 
 (use-package helm-dash
@@ -1956,7 +1948,14 @@ for a file to visit if current buffer is not visiting a file."
       (with-current-buffer (get-buffer "*compilation*")
         (inferior-python-mode)))))
 
-
+(use-package wgrep
+  :config
+  ;; For some reason I needed to load this manually
+  (add-to-list 'load-path "~/.emacs.d/straight/repos/Emacs-wgrep")
+  (require 'wgrep-ag)
+  )
+(use-package terraform-mode)
+(use-package kotlin-mode)
 
 
 ;; Load my other config files
