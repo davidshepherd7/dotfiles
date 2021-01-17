@@ -11,6 +11,8 @@ stow_file()
     stow "$1" -t "$HOME" --ignore=".dropbox.attr"
 }
 
+mkdir -p ~/.config
+
 stow_file zsh
 stow_file conky
 stow_file git
@@ -24,6 +26,7 @@ stow_file psql
 stow_file ag
 stow_file parallel
 stow_file R
+stow_file tint2
 
 # Cases which need dirs creating
 mkdir -p ~/.ccache

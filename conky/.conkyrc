@@ -11,7 +11,7 @@ own_window_argb_value 150
 own_window yes
 own_window_type panel
 disable_auto_reload yes # autoreload + panel + xmonad doesn't work well..
-minimum_size 1600 18
+# minimum_size 1600 18
 alignment tl
 xinerama_head 1
 gap_x 5
@@ -25,7 +25,7 @@ update_interval 0.2
 # Dropbox: ${execi 6 dropbox status | sed -n 1p}    \
 
 TEXT
- (${desktop}/${desktop_number}) \
+ ${desktop} \
                                \
  ${color blue} ${cpugraph cpu0 15, 60} \
  ${color green} ${memgraph 15, 60} \
@@ -33,11 +33,11 @@ TEXT
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
- free: ${fs_free /dev/sda}    \
- apt-get: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
- layout: ${execi 0.1 keyboard-layout.sh }    \
- ${execi 0.1 local-ip}    \
+ disk: ${fs_free /dev/sda}    \
+ apt: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
+ xkb: ${execi 0.1 keyboard-layout.sh }    \
+ ip: ${execi 0.1 local-ip}    \
  ${battery}  \
-                                                              \
+                                               \
  \
   ${time %H:%M} ${color grey}(${tztime Europe/London %H:%M UK})$color ${time %d/%m/%Y}

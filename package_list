@@ -90,7 +90,7 @@ xcb
 libxcb-keysyms1-dev
 libxcb-util0-dev
 shellcheck
-trayer
+tint2
 gdebi
 anki
 rlwrap
