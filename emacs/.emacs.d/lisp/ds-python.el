@@ -178,7 +178,7 @@ See URL `http://mypy-lang.org/'."
     "SimpleXMLRPCServer" "site" "sitecustomize" "smtpd" "smtplib" "socket"
     "SocketServer" "sqlite3" "string" "StringIO" "struct" "subprocess" "sys"
     "sysconfig" "tabnanny" "tarfile" "tempfile" "textwrap" "threading" "time"
-    "timeit" "trace" "traceback" "typing" "unittest" "urllib" "urllib2" "urlparse"
+    "timeit" "trace" "traceback" "typing" "typing_extensions" "unittest" "urllib" "urllib2" "urlparse"
     "usercustomize" "uuid" "warnings" "weakref" "webbrowser" "whichdb" "xml"
     "xmlrpclib" "zipfile" "zipimport" "zlib" "builtins" "__builtin__"))
 
@@ -190,7 +190,11 @@ See URL `http://mypy-lang.org/'."
 (defun ds/python-importable-symbols (path)
   (when (f-exists-p path)
     (with-temp-buffer
-      (shell-command (concat "sed -n -e 's/^def \\([a-zA-Z][a-zA-Z0-9_]*\\).*/\\1/p' -e 's/^class \\([a-zA-Z][a-zA-Z0-9_]*\\).*/\\1/p' " path) t "*python-importable-symbols-errors*")
+      (shell-command (concat "sed -n "
+                             "-e 's/^def \\([a-zA-Z][a-zA-Z0-9_]*\\).*/\\1/p' "
+                             "-e 's/^class \\([a-zA-Z][a-zA-Z0-9_]*\\).*/\\1/p' "
+                             "-e 's/^\\([a-zA-Z0-9_]*\\) *=.*/\\1/p' "
+                             path) t "*python-importable-symbols-errors*")
       (--> (buffer-substring (point-min) (point-max))
            (s-split "\n" it)))))
 
@@ -203,7 +207,7 @@ See URL `http://mypy-lang.org/'."
          (default-symbol (when (symbol-at-point) (symbol-name (symbol-at-point))))
          (file (completing-read "import file: " files))
          (file-symbols (ds/python-importable-symbols (f-join (projectile-project-root) file)))
-         (individual-symbol (completing-read "symbol(s): " file-symbols default-symbol))
+         (individual-symbol (completing-read "symbol(s): " file-symbols nil nil default-symbol))
          (import-statement-line (ds/path-to-import-statement file individual-symbol)))
     (if insert-here
         (insert import-statement-line)
@@ -228,7 +232,8 @@ See URL `http://mypy-lang.org/'."
 (defun ds/pick-import-location ()
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward "import\\|defun\\|class")
+    (re-search-forward "^def\\|^class" nil 'noerror)
+    (re-search-backward "^import\\|^from" nil 'noerror)
     (beginning-of-line)
     (point)))
 
