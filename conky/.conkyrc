@@ -33,6 +33,7 @@ TEXT
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
+ free: ${fs_free /dev/sda}    \
  apt-get: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
  layout: ${execi 0.1 keyboard-layout.sh }    \
  ${execi 0.1 local-ip}    \
