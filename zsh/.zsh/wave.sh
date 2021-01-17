@@ -41,3 +41,6 @@ mmlogs() {
     cd ~/code/monorepo
     unbuffer docker-compose logs --tail 100 -tf web worker amqp_events | grep -v 'Bad Network Fallback command' | sed -E -e 's/ #[a-zA-Z0-9_]+=.*//g'
 }
+
+# Get kotlin tools on my path
+PATH="$PATH:/opt/android-studio/plugins/Kotlin/kotlinc/bin/"

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: tagd
+# --
+class $1(TypedDict):
+    tag: Literal["${1:$(s-dashed-words yas-text)`}"]
+    $0
