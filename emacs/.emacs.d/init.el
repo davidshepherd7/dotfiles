@@ -2006,8 +2006,5 @@ for a file to visit if current buffer is not visiting a file."
 (load-file "~/.emacs.d/lisp/ds-helm.el")
 (load-file "~/.emacs.d/lisp/ds-ivy.el")
 
-
-(load-file "~/.emacs.d/lisp/ds-toggle-electricity.el")
-
 ;; TODO: make this a package?
 (load-file "~/.emacs.d/lisp/s-interactive.el")
