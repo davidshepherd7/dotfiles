@@ -222,8 +222,8 @@ See URL `http://mypy-lang.org/'."
                       (s-replace "/" "." it)
                       )))
     (if (equal symbol "")
-        (s-concat "import " module)
-      (s-concat "from " module " import " symbol))))
+        (s-concat "import " module "\n")
+      (s-concat "from " module " import " symbol "\n"))))
 
 (defun ds/pick-import-location ()
   (save-excursion

@@ -718,33 +718,24 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   (save-excursion (goto-char (point-min))
                   (looking-at-p "#!")))
 
-(defun compile-default-command ()
+(defun ds/compile-default-command ()
   (interactive)
   (cond
    ;; Files with hashbang should be run
-   ((and (buffer-has-hashbang)
-         (buffer-file-name))
+   ((and (buffer-has-hashbang) (buffer-file-name))
     (concat "./" (file-name-nondirectory (buffer-file-name))))
 
-   ;; emacs lisp should be tested by running a new emacs instance in batch
-   ;; mode
-   ((derived-mode-p 'emacs-lisp-mode)
-    "\\emacs --debug-init --batch -u $USER")
+   ;; emacs lisp should be tested by running a new emacs instance in batch mode
+   ((derived-mode-p 'emacs-lisp-mode) "\\emacs --debug-init --batch -u $USER")
 
    ((derived-mode-p 'tex-mode)
     (concat "latexmk -C && latexmk -pdf" " " (file-name-nondirectory (buffer-file-name))))
 
-   ((derived-mode-p 'js-mode)
-    "gulp --silent --reporter=simple --nolint && refresh-browser.sh")
+   ((derived-mode-p 'typescript-mode 'javascript-mode) "npm run build")
 
-   ;; For our nodejs typescript project
-   ((derived-mode-p 'typescript-mode)
-    "npm run build")
-
-   ((derived-mode-p 'scheme-mode) (concat "./run.sh -f " (buffer-file-name)))
-   ;; ((derived-mode-p 'scheme-mode) (concat "\\racket -t " (file-name-nondirectory (buffer-file-name))))
-
+   ;; Some config files
    ((equal (buffer-name) "sxhkdrc") "killall sxhkd -SIGUSR1")
+   ((equal (buffer-name) ".conkyrc") "killall conky -SIGUSR1")
 
    ;; make is probably a good default for anything else
    (t "make")))
@@ -753,7 +744,7 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
   (interactive)
   ;; Run compile with a specially chosen default command
   (setq backup-compile-command compile-command)
-  (setq compile-command (compile-default-command))
+  (setq compile-command (ds/compile-default-command))
   (condition-case nil (call-interactively #'compile)
     ;; If we quit then revert compile command (so that it isn't in the
     ;; history).
