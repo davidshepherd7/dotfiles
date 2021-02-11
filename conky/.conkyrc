@@ -29,7 +29,7 @@ conky.text = [[
  ${color yellow} ${diskiograph_write 15, 60} \
  ${color } \
                                \
- disk: ${fs_free /dev/sda}    \
+ disk: ${execi 1 df /home -h | awk '{print $2}' | tail -n1 }    \
  apt: ${execi 300 apt-get upgrade --dry-run -q | grep 'to upgrade,' | awk '{print $1}'}    \
  xkb: ${execi 0.1 keyboard-layout.sh }    \
  ip: ${execi 0.1 local-ip}    \
