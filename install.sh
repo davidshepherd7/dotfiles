@@ -79,3 +79,9 @@ sudo mv /usr/share/X11/xkb/symbols/pl.temp /usr/share/X11/xkb/symbols/pl
 sudo cp /usr/share/X11/xkb/symbols/fr /usr/share/X11/xkb/symbols/fr.bak
 sudo cat /usr/share/X11/xkb/symbols/fr ./french-gb-colemak | sudo tee /usr/share/X11/xkb/symbols/fr.temp >/dev/null
 sudo mv /usr/share/X11/xkb/symbols/fr.temp /usr/share/X11/xkb/symbols/fr
+
+
+# Copy dir local files into code
+if [ -e ~/code/monorepo ]; then
+    stow_file monorepo
+fi
