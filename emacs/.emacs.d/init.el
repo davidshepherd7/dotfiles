@@ -90,6 +90,8 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+(setq garbage-collection-messages t)
+
 ;; Pretty colours
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'shepherd t)
@@ -1727,11 +1729,7 @@ for a file to visit if current buffer is not visiting a file."
   :bind (("C-<f7>" . terminal-here-launch)
          ("C-<f6>" . terminal-here-project-launch))
   :config
-  (defun external-shell-in-project-build ()
-    "Start urxvt in the current project's build directory"
-    (interactive)
-    (terminal-here-launch-in-directory (f-join (projectile-project-root) "build")))
-  (global-set-key (kbd "<M-f6>") 'external-shell-in-project-build))
+  (validate-setq terminal-here-linux-terminal-command 'urxvt))
 
 (use-package robot-mode
   :load-path "~/.emacs.d/vc-packages/robot-mode/")

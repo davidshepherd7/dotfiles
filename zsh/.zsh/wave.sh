@@ -44,3 +44,6 @@ mmlogs() {
 
 # Get kotlin tools on my path
 PATH="$PATH:/opt/android-studio/plugins/Kotlin/kotlinc/bin/"
+
+
+alias toolsn="~/code/monorepo/money-srv/bin/runin local tool sn"

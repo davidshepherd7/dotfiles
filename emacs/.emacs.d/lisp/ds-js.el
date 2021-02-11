@@ -122,7 +122,8 @@
   (defun setup-json-indent ()
     (interactive)
     (setq-local indent-tabs-mode nil)
-    (setq-local js-indent-level 4))
+    ;; (setq-local js-indent-level 4)
+    )
   (add-hook 'json-mode-hook #'setup-json-indent)
 
   (add-hook 'json-mode-hook (lambda () (biosite-mode 0)) t)

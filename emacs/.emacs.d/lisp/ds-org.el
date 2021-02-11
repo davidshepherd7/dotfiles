@@ -57,7 +57,7 @@
 
     (define-key org-mode-map (kbd "M-s") #'org-schedule)
 
-    (validate-setq org-agenda-files '("~/.tt"))
+    (validate-setq org-agenda-files '("~/Dropbox/org"))
 
     ))
 
@@ -74,12 +74,14 @@
 
 (defun ds/org-to-quip (text)
   (--> text
-       (replace-regexp-in-string "^\\*" "" it)
-       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-       (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-       ))
+    (replace-regexp-in-string "^\\*" "" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    ))
 
 
 (defun ds/copy-as-quip (beg end)
@@ -99,6 +101,6 @@
   ;; If the file is already open in another frame then just opening it in the
   ;; normal way again doesn't display it in the new frame. So we use find-file
   ;; manually instead.
-  (find-file "~/.tt/wave-todo.org")
+  (find-file "~/Dropbox/org/wave-todo.org")
   (ds/org-goto-first-todo)
   (recenter 3))

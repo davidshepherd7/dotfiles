@@ -84,7 +84,10 @@
   (global-set-key (kbd "C-k") #'counsel-projectile-find-file)
   )
 
-(use-package ivy-prescient
-  :config
-  (ivy-prescient-mode)
-  )
+;; I think this was consuming so much RAM that it forced constant garbage
+;; collection!
+
+;; (use-package ivy-prescient
+;;   :config
+;;   (ivy-prescient-mode 0)
+;;   )

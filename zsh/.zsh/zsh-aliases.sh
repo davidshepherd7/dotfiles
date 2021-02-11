@@ -645,8 +645,7 @@ edit-deb()
 }
 
 alias git-clean-branches='git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d'
-
-
+alias gcf='git fetch origin dev:dev -u && git remote prune origin && git-clean-branches'
 alias gpr="echo 'CHECK THAT YOU DONT NEED ANY MIGRATIONS' && hub pull-request -b dev -p"
 
 
@@ -659,3 +658,7 @@ lingq()
 }
 
 alias zero-pad="rename -v -e 's/\d+/sprintf(\"%05d\",$&)/e'"
+
+
+# If this doesn't work run ecryptfs-manager and exit first
+alias mount-old-fs="ecryptfs-recover-private /media/david/82ff322c-8d44-49bc-9eae-b3f601f598ed/home/.ecryptfs/david/.Private"
