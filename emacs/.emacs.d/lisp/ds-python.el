@@ -233,3 +233,8 @@ See URL `http://mypy-lang.org/'."
       (goto-char (point-max))
       (re-search-backward "},?" nil)
       (replace-match "" nil nil))))
+
+(use-package py-isort
+  :config
+  ;; Currently requires my patched version of isort
+  (add-hook 'python-mode-hook #'isort-mode))
