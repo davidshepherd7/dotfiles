@@ -1899,8 +1899,7 @@ for a file to visit if current buffer is not visiting a file."
 (use-package dumb-jump
   :config
   (validate-setq dumb-jump-selector 'ivy)
-  (global-set-key (kbd "M-.") #'dumb-jump-go)
-  (global-set-key (kbd "M-,") #'dumb-jump-back)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
   )
 
 (use-package make-mode
