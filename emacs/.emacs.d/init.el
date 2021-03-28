@@ -1204,7 +1204,7 @@ $0")
   (let ((first-list  '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)))
     (validate-setq avy-keys
                    (nconc first-list
-                          (-difference (loop for i from ?a to ?z collect i) first-list))))
+                          (-difference (cl-loop for i from ?a to ?z collect i) first-list))))
 
   (validate-setq avy-dispatch-alist nil)
 
