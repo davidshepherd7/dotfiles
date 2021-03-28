@@ -24,6 +24,7 @@
 (defvar edebug-inhibit-emacs-lisp-mode-bindings)
 (setq global-edebug-prefix "\C-\\X")
 (setq edebug-inhibit-emacs-lisp-mode-bindings t)
+(setq lsp-keymap-prefix "M-#")
 (require 'edebug)
 
 (defvar hi-lock-map)
