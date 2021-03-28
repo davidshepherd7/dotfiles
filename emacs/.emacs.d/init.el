@@ -2006,3 +2006,5 @@ for a file to visit if current buffer is not visiting a file."
 
 ;; TODO: make this a package?
 (load-file "~/.emacs.d/lisp/s-interactive.el")
+
+(load-file "~/.emacs.d/lisp/ds-lsp.el")

@@ -26,27 +26,6 @@
   (add-hook 'python-mode-hook #'blacken-mode))
 
 
-;; (use-package jedi
-;;   :config
-;;   (add-hook 'python-mode-hook 'jedi:setup)
-
-;;   (validate-setq jedi:complete-on-dot t)
-
-
-;;   (define-key jedi-mode-map (kbd "C-c ?") nil)
-;;   (define-key jedi-mode-map (kbd "C-c .") nil)
-;;   (define-key jedi-mode-map (kbd "C-c ,") nil)
-;;   (define-key jedi-mode-map (kbd "C-c /") nil)
-
-
-;;   (define-key jedi-mode-map (kbd "M-.") #'jedi:goto-definition)
-;;   (define-key jedi-mode-map (kbd "M-,") #'jedi:goto-definition-pop-marker)
-;;   (define-key jedi-mode-map (kbd "C-?") #'jedi:show-doc)
-
-;;   (add-hook 'jedi:doc-hook #'evil-emacs-state)
-;;   )
-
-
 (defun ds/python-setup-indent ()
   (setq-local indent-tabs-mode nil)
   (setq-local python-indent-offset 4))
@@ -93,38 +72,6 @@
 (put 'flycheck-python-pycompile-executable 'safe-local-variable (lambda (value) (equal value  "/home/david/.pyenv/versions/3.7.4/bin/python3")))
 (put 'flycheck-python-mypy-executable 'safe-local-variable (lambda (value) t))
 (put 'flycheck-ds-python-dmypy-executable 'safe-local-variable (lambda (value) t))
-
-;; ;; Load lsp, but turn off most features by default (they slow things down and I
-;; ;; don't need them).
-;; (require 'lsp)
-;; (validate-setq lsp-enable-completion-at-point nil)
-;; (validate-setq lsp-enable-symbol-highlighting nil)
-;; (validate-setq lsp-enable-indentation nil)
-;; (validate-setq lsp-enable-on-type-formatting nil)
-;; (validate-setq lsp-enable-xref t)
-;; (validate-setq lsp-before-save-edits nil)
-;; (validate-setq lsp-prefer-flymake :none)
-
-
-;; (require 'lsp-pyls)
-;; (add-hook 'python-mode-hook #'lsp)
-
-;; ;; HACK: use the correct pyls for Wave money-srv, I should make something more
-;; ;; general...
-;; (validate-setq lsp-pyls-server-command '("env" "PATH=/home/david/code/monorepo/money-srv/.money-srv-venv/bin:/home/david/.pyenv/versions/3.7.4/bin:$PATH" "pyls"))
-
-;; ;; (validate-setq lsp-pyls-plugins-jedi-completion-enabled t)
-;; ;; (validate-setq lsp-pyls-plugins-jedi-hover-enabled t)
-;; ;; (validate-setq lsp-pyls-plugins-jedi-references-enabled t)
-;; ;; (validate-setq lsp-pyls-plugins-jedi-signature-help-enabled t)
-;; ;; (validate-setq lsp-pyls-plugins-jedi-symbols-enabled t)
-
-;; ;; Disable most of the extra linters etc for pyls (I'm happy with flycheck for now)
-;; (validate-setq lsp-pyls-plugins-mccabe-enabled nil)
-;; (validate-setq lsp-pyls-plugins-pylint-enabled nil)
-;; (validate-setq lsp-pyls-plugins-pycodestyle-enabled nil)
-;; (validate-setq lsp-pyls-plugins-pyflakes-enabled nil)
-;; (validate-setq lsp-pyls-plugins-yapf-enabled nil)
 
 (defun ds/flycheck-mypy-find-project-root (_checker)
   "Compute an appropriate working-directory for flycheck-mypy.
