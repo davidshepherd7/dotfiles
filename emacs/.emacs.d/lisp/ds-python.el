@@ -13,6 +13,11 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
+
+;; Override fill-function-arguments binding because I use black anyway and
+;; python's autofill is janky.
+(define-key python-mode-map (kbd "M-q") #'fill-paragraph)
+
 (defun prettify-lambda ()
   (setq prettify-symbols-alist '(("lambda" . 955))))
 
