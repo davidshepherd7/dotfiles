@@ -963,9 +963,18 @@ For magit versions > 2.1.0"
   (define-key git-commit-mode-map (kbd "C-c p") #'git-commit-prev-message)
   (define-key git-commit-mode-map (kbd "C-c n") #'git-commit-next-message)
 
+  (global-set-key (kbd "<M-f7>") #'magit-log-buffer-file)
+
 
   ;; Remove some magit keys that interfere
   (define-key magit-mode-map (kbd "M-w") nil))
+
+(use-package git-link
+  :config
+  (validate-setq git-link-open-in-browser t)
+  ;; TODO - this is Wave monorepo-specific
+  (validate-setq git-link-default-branch "dev")
+  )
 
 
 ;; Show changes vs VC in sidebar
@@ -1954,6 +1963,7 @@ for a file to visit if current buffer is not visiting a file."
   )
 (use-package terraform-mode)
 (use-package kotlin-mode)
+(use-package dockerfile-mode)
 
 
 ;; Load my other config files

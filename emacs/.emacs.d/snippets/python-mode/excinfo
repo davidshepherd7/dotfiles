@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: excinfo
+# --
+(type, value, traceback) = sys.exc_info()

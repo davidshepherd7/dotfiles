@@ -234,7 +234,7 @@ See URL `http://mypy-lang.org/'."
       (re-search-backward "},?" nil)
       (replace-match "" nil nil))))
 
-(use-package py-isort
-  :config
-  ;; Currently requires my patched version of isort
-  (add-hook 'python-mode-hook #'isort-mode))
+;; (use-package py-isort
+;;   :config
+;;   ;; Currently requires my patched version of isort
+;;   (add-hook 'python-mode-hook #'py-isort-mode))

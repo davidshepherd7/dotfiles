@@ -11,3 +11,4 @@ poetry
 googletrans
 pgcli
 python-language-server[all]
+slicker

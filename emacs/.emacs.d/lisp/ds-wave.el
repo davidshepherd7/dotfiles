@@ -60,3 +60,8 @@
     (call-interactively #'compile)))
 
 (define-key python-mode-map  (kbd "<f6>") #'ds/money-srv-test)
+
+
+(defun ds/open-with-android-studio ()
+  (interactive)
+  (start-process "android-studio" nil "android-studio" (buffer-file-name)))

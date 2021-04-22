@@ -661,4 +661,4 @@ alias zero-pad="rename -v -e 's/\d+/sprintf(\"%05d\",$&)/e'"
 
 
 # If this doesn't work run ecryptfs-manager and exit first
-alias mount-old-fs="ecryptfs-recover-private /media/david/82ff322c-8d44-49bc-9eae-b3f601f598ed/home/.ecryptfs/david/.Private"
+alias mount-old-fs="sudo ecryptfs-recover-private /media/david/82ff322c-8d44-49bc-9eae-b3f601f598ed/home/.ecryptfs/david/.Private"
