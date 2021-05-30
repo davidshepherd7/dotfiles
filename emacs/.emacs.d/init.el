@@ -1142,7 +1142,7 @@ For magit versions > 2.1.0"
     "Get the correct snippet dir for this buffer's mode
 
 Wrapper function to handle all yasnippets weirdness."
-    (yas--make-directory-maybe (first (yas--guess-snippet-directories))))
+    (yas--make-directory-maybe (car (yas--guess-snippet-directories))))
 
   (defun ds/read-with-default-word-at-point (prompt)
     ;; All this crap is needed to use the word at point as the default value.
