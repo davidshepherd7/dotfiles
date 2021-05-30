@@ -24,3 +24,4 @@ hg/.hgex
 /bin/bin/cask
 /emacs/.emacs.d/projectile-bookmarks.eld
 /bin/bin/android-studio
+/bin/bin/tandem

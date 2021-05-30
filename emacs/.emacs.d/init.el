@@ -971,7 +971,7 @@ For magit versions > 2.1.0"
 
 (use-package git-link
   :config
-  (validate-setq git-link-open-in-browser t)
+  (validate-setq git-link-open-in-browser nil)
   ;; TODO - this is Wave monorepo-specific
   (validate-setq git-link-default-branch "dev")
   )

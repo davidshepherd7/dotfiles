@@ -47,3 +47,13 @@ PATH="$PATH:/opt/android-studio/plugins/Kotlin/kotlinc/bin/"
 
 
 alias toolsn="~/code/monorepo/money-srv/bin/runin local tool sn"
+alias prodrw-toolsn="~/code/monorepo/money-srv/bin/runin prodrw tool sn"
+
+kube_secret(){
+    # Fuzzy matches should be possible, but I can't get xargs to work
+    EDITOR="cat" kubectl --context prod edit secrets credentials \
+        | grep "${1}:" \
+        | sed -e 's/.*: //' \
+        | base64 -d
+    echo ""
+}

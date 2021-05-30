@@ -39,6 +39,8 @@
 
   (add-hook 'typescript-mode-hook #'electric-operator-mode)
 
+  (add-to-list 'auto-mode-alist (cons "\\.tsx" #'typescript-mode))
+
   ;; tide handles formatting on save
   (add-hook 'typescript-mode-hook (lambda () (aggressive-indent-mode 0)))
 
@@ -121,4 +123,3 @@
 
   (add-hook 'typescript-mode-hook #'setup-tide-mode))
 
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))

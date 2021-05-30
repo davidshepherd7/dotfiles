@@ -94,6 +94,10 @@
             (lambda () (interactive)
               (ds/set-mode-line-background ds/mode-line-default-background)))
 
+  ;; Initial states
+  ;; ============================================================
+  (evil-set-initial-state 'messages-buffer-mode 'motion)
+
 
   ;; Movement
   ;; ============================================================

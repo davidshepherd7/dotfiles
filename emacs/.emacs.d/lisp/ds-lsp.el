@@ -16,6 +16,9 @@
 
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
 
+  (define-key lsp-signature-mode-map (kbd "M-n") nil)
+  (define-key lsp-signature-mode-map (kbd "M-p") nil)
+
   ;; Python
   (require 'lsp-pyls)
   (validate-setq lsp-pyls-plugins-autopep8-enabled nil)

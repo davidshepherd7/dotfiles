@@ -12,3 +12,5 @@ googletrans
 pgcli
 python-language-server[all]
 slicker
+pandas
+sympy

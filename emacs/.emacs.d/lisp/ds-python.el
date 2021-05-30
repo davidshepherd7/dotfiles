@@ -175,6 +175,7 @@ See URL `http://mypy-lang.org/'."
                       (s-chop-prefix "wavemodem/src/" it)
                       (s-chop-prefix "wavelib/" it)
                       (s-chop-suffix ".py" it)
+                      (s-chop-suffix "/__init__" it)
                       (s-replace "/" "." it)
                       )))
     (if (equal symbol "")
