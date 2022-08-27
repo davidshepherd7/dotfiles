@@ -17,3 +17,8 @@ xset m 1 0
 # Ubuntu 18.04 is a bit different
 mouse_id="$(xinput --list --short | grep 'Microsoft.*Mouse' | sed -E 's/.*id=([0-9]+).*/\1/')"
 xinput --set-prop "$mouse_id" "libinput Accel Speed" -1
+
+
+xinput --set-prop "$(xinput list --id-only "MOSART Semi. 2.4G Wireless Mouse")" "libinput Accel Speed" -1
+
+xinput --set-prop "$(xinput list --id-only "MOSART Semi. 2.4G Wireless Mouse")" "Device Accel Constant Deceleration" 10

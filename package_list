@@ -123,7 +123,7 @@ git-lfs
 python3-venv
 libpq-dev
 python3-dev
-docker-compose
 libssl-dev
 flameshot
 pwgen
+baobab

@@ -298,3 +298,6 @@ function ndb() {
 # Python
 
 eval "$(pyenv init -)"
+
+# Wave config auto-added by bin/setup
+source /home/david/.waverc

@@ -258,8 +258,8 @@
 (global-auto-revert-mode)
 (validate-setq revert-without-query '(".*"))
 
-;; Automatically add newlines after certain characters (e.g. '{')
-(electric-layout-mode)
+;; ;; Automatically add newlines after certain characters (e.g. '{')
+;; (electric-layout-mode)
 
 ;; Make the rules for electric layout local to buffers (so that different
 ;; modes don't interfere)
@@ -371,7 +371,11 @@ index in STRING."
 (use-package super-save
   :diminish super-save-mode
   :config
-  (super-save-mode +1))
+  (super-save-mode +1)
+
+  ;; TODO: only in my modified version
+  (validate-setq super-save-max-file-characters 80000)
+  )
 
 ;; Keep auto saves and backups in one place out of the way
 (validate-setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
@@ -496,6 +500,8 @@ index in STRING."
   (validate-setq company-dabbrev-downcase nil)
   )
 
+(global-set-key (kbd "C-M-i") #'hippie-expand)
+
 ;; Undo tree
 ;;================================================================
 (use-package undo-tree
@@ -508,6 +514,9 @@ index in STRING."
   ;; Global undo tree mode doesn't work because I've rebound the usual undo keys
   (add-hook 'text-mode-hook (lambda () (undo-tree-mode 1)))
   (add-hook 'prog-mode-hook (lambda () (undo-tree-mode 1)))
+  ;; conf-mode is neither text nor prog!
+  (add-hook 'conf-mode-hook (lambda () (undo-tree-mode 1)))
+  (add-hook 'minibuffer-setup-hook (lambda () (undo-tree-mode 1)))
 
   ;; clean out the undo-tree keymap entry in the keymap list
   (let ((item (assoc 'undo-tree-mode minor-mode-map-alist)))
@@ -969,11 +978,13 @@ For magit versions > 2.1.0"
   ;; Remove some magit keys that interfere
   (define-key magit-mode-map (kbd "M-w") nil))
 
+(use-package forge
+  :straight nil
+  :after magit)
+
 (use-package git-link
   :config
   (validate-setq git-link-open-in-browser nil)
-  ;; TODO - this is Wave monorepo-specific
-  (validate-setq git-link-default-branch "dev")
   )
 
 
@@ -1260,6 +1271,7 @@ $0")
   :config
   (validate-setq ws-butler-keep-whitespace-before-point nil)
   (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
+  (add-hook 'org-mode-hook #'ds/locally-keep-ws-before-point)
   (ws-butler-global-mode))
 
 (use-package aggressive-fill-paragraph
@@ -1273,7 +1285,7 @@ $0")
               'java-mode-hook
               'sh-mode-hook
               'python-mode-hook
-              'org-mode-hook
+              ;; 'org-mode-hook
               'ess-mode-hook
               'js-mode-hook))
 
@@ -1456,31 +1468,6 @@ $0")
   (interactive)
   (insert (format-time-string "%Y-%m-%dT%H:%M:%SZ")))
 
-
-(use-package multiple-cursors
-  :config
-
-  (require 'hydra)
-  (defhydra hydra-multiple-cursors (:hint nil)
-    "
-     ^Up^            ^Down^        ^Miscellaneous^
-----------------------------------------------
-[_p_]   Next    [_n_]   Next    [_l_] Edit lines
-[_P_]   Skip    [_N_]   Skip    [_a_] Mark all
-[_M-p_] Unmark  [_M-n_] Unmark  [_q_] Quit"
-
-  ("l" mc/edit-lines :exit t)
-  ("a" mc/mark-all-like-this :exit t)
-  ("n" mc/mark-next-like-this)
-  ("N" mc/skip-to-next-like-this)
-  ("M-n" mc/unmark-next-like-this)
-  ("p" mc/mark-previous-like-this)
-  ("P" mc/skip-to-previous-like-this)
-  ("M-p" mc/unmark-previous-like-this)
-  ("q" nil))
-
-  )
-
 ;; Use rainbow delimeters to highlight mismatched parens.
 (use-package rainbow-delimiters
   :diminish rainbow-delimiters-mode
@@ -1502,7 +1489,12 @@ $0")
 (use-package nameless
   :config
   (add-hook 'emacs-lisp-mode-hook #'nameless-mode)
-  (define-key nameless-mode-map (kbd "_") #'nameless-insert-name-or-self-insert))
+  (define-key nameless-mode-map (kbd "_") #'nameless-insert-name-or-self-insert)
+
+  ;; Don't affect indentation, otherwise other people's Emacs indent the code
+  ;; differently to mine.
+  (validate-setq nameless-affect-indentation-and-filling nil)
+  )
 
 
 (use-package beacon
@@ -1964,6 +1956,21 @@ for a file to visit if current buffer is not visiting a file."
 (use-package terraform-mode)
 (use-package kotlin-mode)
 (use-package dockerfile-mode)
+(use-package swift-mode)
+
+(use-package back-button
+  :config
+  (back-button-mode 1)
+  (define-key back-button-mode-map (kbd "<M-left>") #'back-button-local-backward)
+  (define-key back-button-mode-map (kbd "<M-right>") #'back-button-local-forward)
+
+  ;; Push more marks to have more places to go back to
+  (defun ds/quiet-push-mark (&optional _) (push-mark nil t))
+  (add-hook 'isearch-mode-hook #'ds/quiet-push-mark)
+  (advice-add #'flycheck-jump-to-error :before #'ds/quiet-push-mark)
+  (advice-add #'next-error :before #'ds/quiet-push-mark)
+
+  )
 
 
 ;; Load my other config files

@@ -103,3 +103,4 @@ workbench.xmi
 # Python
 .virtualenv
 .venv
+/money-srv/src/pyrightconfig.json

@@ -61,7 +61,19 @@
 
 (define-key python-mode-map  (kbd "<f6>") #'ds/money-srv-test)
 
+(defun ds/insert-snapshot-update ()
+  (interactive)
+  (insert " --snapshot-update"))
+(define-key minibuffer-local-map (kbd "M-.") #'ds/insert-snapshot-update)
+
 
 (defun ds/open-with-android-studio ()
   (interactive)
   (start-process "android-studio" nil "android-studio" (buffer-file-name)))
+
+
+(require 'aggressive-fill-paragraph)
+(defun ds/afp-in-semgrep-comment? ()
+  (and (afp-inside-comment?)
+       (string-match-p ".*nosemgrep.*" (afp-current-line))))
+(add-to-list 'afp-suppress-fill-pfunction-list #'ds/afp-in-semgrep-comment?)

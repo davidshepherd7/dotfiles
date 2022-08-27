@@ -27,13 +27,15 @@ alias check-migration-cycle="mm m.migrate && ~/code/monorepo/money-srv/bin/runin
 
 
 android_emulator() {
-    ~/Android/Sdk/tools/emulator -avd "Nexus_5_API_27" || true
+    ~/Android/Sdk/tools/emulator -avd "Pixel_3a_API_30_x86" || true
 }
 
 android_clean() {
     adb shell pm clear com.wave.personal.dbg
     adb shell pm clear com.sendwave.agent.dbg
 }
+
+alias android_activity_stack="adb shell dumpsys activity activities |  sed -En -e '/Stack #/p' -e '/Running activities/,/Run #0/p'"
 
 alias kubectl-mm="kubectl --context mm-ng"
 

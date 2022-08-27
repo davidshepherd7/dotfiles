@@ -646,7 +646,7 @@ edit-deb()
 
 alias git-clean-branches='git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d'
 alias gcf='git branch -f dev origin/dev && git fetch origin dev:dev -u && git remote prune origin && git-clean-branches'
-alias gpr="echo 'CHECK THAT YOU DONT NEED ANY MIGRATIONS' && hub pull-request -b dev -p"
+alias gpr="gh pr create --base dev --repo wavemm/monorepo --web"
 
 
 lingq()

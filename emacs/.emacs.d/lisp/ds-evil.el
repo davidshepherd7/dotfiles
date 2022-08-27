@@ -349,8 +349,8 @@
   (evil-define-text-object ds/evil-a-defun (count &optional beg end type)
     "Select entire buffer"
     (save-mark-and-excursion
-     (mark-defun)
-     (evil-range (region-beginning) (region-end))))
+      (mark-defun)
+      (evil-range (region-beginning) (region-end))))
   (define-key evil-outer-text-objects-map (kbd "f") #'ds/evil-a-defun)
 
 
@@ -386,7 +386,7 @@
   ;; ============================================================
 
   (defvar ds/evil-leader-map (make-sparse-keymap))
-  (define-key evil-normal-state-map (kbd "SPC") ds/evil-leader-map)
+  (define-key evil-motion-state-map (kbd "SPC") ds/evil-leader-map)
 
   (require 'magit-status)
   (define-key magit-mode-map (kbd "SPC") ds/evil-leader-map)

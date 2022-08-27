@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+set -o pipefail
+
+tar_file="$1"
+
+tempdir=$(mktemp "/tmp/upgrade-android-studio-temp-$USER.XXXXX" -d)
+trap "rm -rf $tempdir" EXIT
+sudo tar -xf "$tar_file" --directory "$tempdir"
+
+sudo rm -r /opt/android-studio
+sudo mv "$tempdir/android-studio" /opt/android-studio

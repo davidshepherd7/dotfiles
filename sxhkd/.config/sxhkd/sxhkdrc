@@ -82,7 +82,7 @@ super + F12
     keybinds.sh gb
 
 super + f
-    urxvt -e pgcli -U chimelife -h localhost wavelocal
+    urxvt -e pgcli -U chimelife -h localhost wavelocal --no-warn
 
 super + F
     urxvt -e psql -U hafnium hafnium

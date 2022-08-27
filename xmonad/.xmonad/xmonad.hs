@@ -63,7 +63,9 @@ myManageHook =
   , className =? "VirtualBox" --> doFloat
 
   , className =? "SchemeGraphics" --> doFloat
-  , className =? "zoom" --> doFloat
+  -- , (className =? "zoom" && title /=? "Zoom Meeting") --> doFloat
+  , title =? "Zoom Meeting" --> doShift "2"
+  , className =? "zoom" --> doShift "2"
 
   -- Popups
   , className =? "Zenity" --> doFloat

@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: tool
+# --
+@tool
+def $1(context: ToolContext)->None:
+    $0
+
+    context.print_output(f"Done")

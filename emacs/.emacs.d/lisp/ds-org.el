@@ -59,7 +59,22 @@
 
     (validate-setq org-agenda-files '("~/Dropbox/org"))
 
-    ))
+    (setq org-todo-keywords '((sequence "TODO" "CHASE" "|" "DONE")))
+
+    (defun ds/org-sort-buffer ()
+      (interactive)
+      (save-excursion
+        (set-mark (point-min))
+        (goto-char (point-max))
+        (org-sort-entries nil ?O))))
+
+  (set-face-attribute 'org-level-4 nil :foreground "SkyBlue")
+  (set-face-attribute 'org-level-5 nil :foreground "Grey86")
+  (set-face-attribute 'org-level-6 nil :foreground "Grey86")
+  (set-face-attribute 'org-level-7 nil :foreground "Grey86")
+  (set-face-attribute 'org-level-8 nil :foreground "Grey86")
+
+  )
 
 ;; (defun aggressive-fill-paragraph ()
 ;;   (interactive)
@@ -102,5 +117,14 @@
   ;; normal way again doesn't display it in the new frame. So we use find-file
   ;; manually instead.
   (find-file "~/Dropbox/org/wave-todo.org")
+  (ds/org-goto-first-todo)
+  (recenter 3))
+
+
+(defun ds/show-personal-todo-list ()
+  ;; If the file is already open in another frame then just opening it in the
+  ;; normal way again doesn't display it in the new frame. So we use find-file
+  ;; manually instead.
+  (find-file "~/Dropbox/org/todo.org")
   (ds/org-goto-first-todo)
   (recenter 3))

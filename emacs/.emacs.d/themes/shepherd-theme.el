@@ -38,13 +38,14 @@
  ;; ---------------- Code Highlighting ---------------
  `(font-lock-builtin-face ((t (:foreground "#007bff"))))
  `(font-lock-constant-face ((t (:foreground "firebrick"))))
- `(font-lock-comment-face ((t (:foreground "#858585"))))
+ `(font-lock-comment-face ((t (:foreground "grey66"))))
  `(font-lock-function-name-face ((t (:foreground "#ffe400"))))
  `(font-lock-keyword-face ((t (:foreground "#00f5b6"))))
  `(font-lock-string-face ((t (:foreground "#c346b5"))))
  `(font-lock-variable-name-face ((t (:foreground "#ff6b05"))))
  `(font-lock-type-face ((t (:foreground "#83ff0a"))))
- `(font-lock-warning-face ((t (:foreground "Red")))))
+ `(font-lock-warning-face ((t (:foreground "Red"))))
+ )
 
 ;;;###autoload
 (when load-file-name
