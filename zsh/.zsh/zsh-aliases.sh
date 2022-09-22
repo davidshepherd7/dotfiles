@@ -667,3 +667,5 @@ agmacs()
 {
     ag --line-number --column "$@" | e - --eval "(cd \"$PWD\")" --eval "(ag-mode)"
 }
+
+alias history_off="unset HISTFILE"
