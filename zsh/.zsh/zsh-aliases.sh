@@ -144,16 +144,16 @@ install_packages ()
 
 install_pip_3_packages ()
 {
-    sudo -H pip3 install --upgrade pip
+    pip3 install --upgrade pip
     package_list="$rcdir/pip_3_package_list"
-    < $package_list | xargs sudo -H pip3 install --upgrade
+    < $package_list | xargs pip3 install --upgrade
 }
 
 install_pip_2_packages ()
 {
-    sudo -H pip2 install --upgrade pip
+    pip2 install --upgrade pip
     package_list="$rcdir/pip_2_package_list"
-    < $package_list | xargs sudo -H pip2 install --upgrade
+    < $package_list | xargs pip2 install --upgrade
 }
 
 
