@@ -1271,7 +1271,10 @@ $0")
   (validate-setq ws-butler-keep-whitespace-before-point nil)
   (make-variable-buffer-local 'ws-butler-keep-whitespace-before-point)
   (add-hook 'org-mode-hook #'ds/locally-keep-ws-before-point)
-  (ws-butler-global-mode))
+
+  ;; Don't use globally: I mostly use autoformtters for code now anyway
+  (add-hook 'text-mode-hook #'ws-butler-mode)
+  )
 
 (use-package aggressive-fill-paragraph
   :load-path "~/.emacs.d/aggressive-fill-paragraph-mode"
