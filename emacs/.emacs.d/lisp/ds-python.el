@@ -26,11 +26,6 @@
 (add-hook 'python-mode-hook #'page-break-lines-mode)
 (add-hook 'python-mode-hook #'flycheck-mode)
 
-(use-package blacken
-  :config
-  (add-hook 'python-mode-hook #'blacken-mode))
-
-
 (defun ds/python-setup-indent ()
   (setq-local indent-tabs-mode nil)
   (setq-local python-indent-offset 4))
