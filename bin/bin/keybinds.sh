@@ -46,6 +46,10 @@ xmodmap -e "add Control = $spare_modifier"
 # # Finally use xcape to cause the space bar to generate a space when tapped.
 # xcape_str=$xcape_str"$spare_modifier=space;"
 
+# Broken keys
+xmodmap -e "keycode 87 = a"
+xmodmap -e "keycode 88 = u"
+
 
 # pedal keys
 # ============================================================
