@@ -70,7 +70,7 @@
  ("list-register" . "f8bec5dc3765174de1089549947d9ca9a1cdbe5f")
  ("list-utils" . "ca9654cd1418e874c876c6b3b7d4cd8339bfde77")
  ("lsp-mode" . "e64f604ea405fc26f756fa960f6ac3ad473bd7f9")
- ("lsp-pyright" . "d428dbcf1802fbe147271c8dc74b073bd9cd7403")
+ ("lsp-pyright" . "2fa2c897659909ba9804baba72a108578d007677")
  ("macrostep" . "424e3734a1ee526a1bd7b5c3cd1d3ef19d184267")
  ("magit" . "4ee691cd90a4975b31ba4f3f6fc3ae69a0b0eb62")
  ("makey" . "a61781e69d3b451551e269446e1c5f624ab81137")
