@@ -20,7 +20,9 @@
  '(org-startup-folded nil)
  '(package-selected-packages 'nil)
  '(safe-local-variable-values
-   '((git-link-default-branch . "dev")
+   '((flycheck-checker . "ds-python-dmypy")
+     (flycheck-checker quote ds-python-dmypy)
+     (git-link-default-branch . "dev")
      (checkdoc-package-keywords-flag)
      (flycheck-checker quote ds/python-dmypy)
      (flycheck-checker . "ds/python-dmypy")

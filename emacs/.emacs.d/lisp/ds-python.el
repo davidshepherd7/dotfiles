@@ -106,7 +106,8 @@ See URL `http://mypy-lang.org/'."
   ;; https://github.com/python/mypy/issues/4746.
   :predicate flycheck-buffer-saved-p
   :working-directory ds/flycheck-mypy-find-project-root)
-(add-to-list 'flycheck-checkers 'ds-python-dmypy)
+(add-to-list 'flycheck-checkers 'ds-python-dmypy 'append)
+
 
 
 
