@@ -26,6 +26,7 @@
  ("dockerfile-mode" . "ad06a41259ff2961d603bf23a3a8fbd22dde2161")
  ("dumb-jump" . "ff9fc9360d39f5e07c1f480f8b0656b49606781b")
  ("editorconfig-emacs" . "9dd9789b77521eb9d128f9ebd4cfc7ef45072d0f")
+ ("el-get" . "9a4ab9cc8ae4a9b9a4b232788039cc679a4ba249")
  ("electric-operator" . "281abdae033559fa9a8878ed1dd05a7ade118cfd")
  ("emacs-async" . "d7e7f79ee42311a0187aa2ab4f4e2f8843fa28da")
  ("emacs-hcl-mode" . "e12b1df2ca28d2b06c471cd709c038a2dc0bcdbd")
@@ -76,6 +77,7 @@
  ("melpa" . "502709e2195bf0001891e438081e274fa3824af3")
  ("modern-cpp-font-lock" . "865955d0035382a17a7f03add0d00d0bd812b103")
  ("nav-flash" . "5d4b48567862f6be0ca973d6b1dca90e4815cb9b")
+ ("nongnu-elpa" . "50a8788a8f32f3447ac23746051c23ca4cb52216")
  ("org" . "7fa8173282f85c2ca03cc7f51f28f6adfb250610")
  ("page-break-lines" . "69caea070379f3324c530e96e06625c3cd097cb9")
  ("parseclj" . "eff941126859bc9e949eae5cd6c2592e731629f2")
@@ -104,7 +106,7 @@
  ("spinner" . "61f59fab44d22cd5add61a1baf3f0b88a5d829d7")
  ("sql-indent" . "c338484064beda89e23840718eccf81ffe8b5deb")
  ("sqlup-mode.el" . "3f9df9c88d6a7f9b1ae907e401cad8d3d7d63bbf")
- ("straight.el" . "2d407bccd9378f1d5218f8ba2ae85c6be73fbaf1")
+ ("straight.el" . "f21103d97d180fba0b6e2e86ebb0b6269219ef2c")
  ("super-save" . "59dd592bd8de5be3abd7cc5db1c277e538fd998c")
  ("swift-mode" . "800efe2910e0a8517ac720c8bd0e0714fef142eb")
  ("swiper" . "25439e26a67b54d1f8aab1cbc727228427692ec8")
@@ -122,4 +124,4 @@
  ("ws-butler" . "e3a38d93e01014cd47bf5af4924459bd145fd7c4")
  ("yaml-mode" . "fc5e1c58f94472944c4aa838f00f6adcac6fa992")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6"))
-:beta
+:gamma

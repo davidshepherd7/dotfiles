@@ -1976,8 +1976,6 @@ for a file to visit if current buffer is not visiting a file."
 
 ;; A better, more general replacement for blacken-mode etc.
 (use-package apheleia
-  ;; melpa seems to be broken right now for this package?
-  :straight (apheleia :host github :repo "radian-software/apheleia")
   :config
   (apheleia-global-mode +1)
   )
