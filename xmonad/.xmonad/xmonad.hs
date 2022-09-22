@@ -66,6 +66,7 @@ myManageHook =
   -- , (className =? "zoom" && title /=? "Zoom Meeting") --> doFloat
   , title =? "Zoom Meeting" --> doShift "2"
   , className =? "zoom" --> doShift "2"
+  , className =? "zoom" --> doF W.focusDown
 
   -- Popups
   , className =? "Zenity" --> doFloat
@@ -79,7 +80,7 @@ myManageHook =
   , className =? "Toplevel" --> doFloat
 
   -- Android Emulator crap
-  , isInfixOfQuery "Android Emulator -" title --> doFloat
+  -- , isInfixOfQuery "Android Emulator -" title --> doFloat
 
   , isFullscreen --> doFullFloat
   ]

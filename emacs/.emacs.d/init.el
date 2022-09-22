@@ -977,9 +977,9 @@ For magit versions > 2.1.0"
   ;; Remove some magit keys that interfere
   (define-key magit-mode-map (kbd "M-w") nil))
 
-(use-package forge
-  :straight nil
-  :after magit)
+;; (use-package forge
+;;   :straight nil
+;;   :after magit)
 
 (use-package git-link
   :config
