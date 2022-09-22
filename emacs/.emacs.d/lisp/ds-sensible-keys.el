@@ -151,6 +151,8 @@ the line break."
 ;; (global-set-key (kbd "C-o") 'find-file)
 ;; (global-set-key (kbd "M-o") 'switch-to-buffer)
 
+(global-set-key (kbd "C-M-k") #'make-frame)
+
 
 ;; Use vim/gmail/google-reader like up/down/left/right
 (if colemak-mode
@@ -206,7 +208,10 @@ the line break."
 
     (global-set-key (kbd "M-k") 'backward-paragraph)
     (global-set-key (kbd "C-k") 'previous-line)
-    (global-set-key (kbd "C-M-k") 'backward-sexp)))
+    ;; I never use this, so taking it for something else:
+    ;; (global-set-key (kbd "C-M-k") 'backward-sexp)
+
+    ))
 
 
 ;; Disable insert key, because it sucks

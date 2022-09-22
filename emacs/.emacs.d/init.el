@@ -402,7 +402,6 @@ index in STRING."
   :config
   (frames-only-mode 1))
 
-(global-set-key (kbd "s-k") #'make-frame)
 
 ;; Copy/Paste interaction with other X11 applications
 ;; ============================================================
