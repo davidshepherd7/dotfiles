@@ -17,6 +17,9 @@
   ;; Shut up the file watch questions for money-srv
   (validate-setq lsp-file-watch-threshold 8000)
 
+  ;; Don't show documentation unless I ask for it
+  (validate-setq lsp-signature-auto-activate nil)
+
   ;; But do exclude some junk!
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.mypy_cache\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__pycache__\\'")
@@ -33,7 +36,6 @@
   ;; (validate-setq lsp-pyls-plugins-pyflakes-enabled nil)
   ;; (validate-setq lsp-pyls-plugins-pycodestyle-enabled nil)
   ;; (validate-setq lsp-pyls-plugins-autopep8-enabled nil)
-  ;; (validate-setq lsp-signature-auto-activate nil)
 
   ;; (defun ds/python-lsp ()
   ;;   (interactive)
