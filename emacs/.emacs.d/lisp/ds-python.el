@@ -86,8 +86,6 @@ This is either a parent directory containing a flycheck-mypy.ini, or nil."
 See URL `http://mypy-lang.org/'."
   :command ("dmypy"
             "run"
-            "--"
-            "src" "../wavelib" "unittests" "conftest.py"
             )
   :error-patterns
   ((error line-start (file-name) ":" line (optional ":" column)
