@@ -1,7 +1,12 @@
+(require 'validate)
+(require 'dash)
+(require 'use-package)
+(require 'org)
+
+
 (use-package org
   :config
   (progn
-    (require 'org)
 
     ;; Load org mode when opening .org files
     (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -60,6 +65,9 @@
     (validate-setq org-agenda-files '("~/Dropbox/org"))
 
     (setq org-todo-keywords '((sequence "TODO" "CHASE" "|" "DONE")))
+
+    (validate-setq org-todo-keyword-faces
+                   (list (cons "CHASE" "powder blue")))
 
     (defun ds/org-sort-buffer ()
       (interactive)
