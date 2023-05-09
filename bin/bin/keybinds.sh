@@ -90,4 +90,7 @@ xcape_str=$xcape_str'#133=Shift_L|percent;'
 # Execute all the xcape stuff we just set up:
 xcape -e $xcape_str
 
+# Set the key autorepeat delay shorter (250ms) + rate higher (30 per second)
+xset r rate 250 30
+
 configure-mouse.sh
