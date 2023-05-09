@@ -25,8 +25,13 @@ super + c
 super + v
     emacsclient -e '(org-agenda-list)'
 
+# Disabled b/c I think it's causing emacs to garbage collect a lot? I should try
+# redirecting stdout/stderr and adding nohup etc
+# super + p
+#     helm-dmenu.sh
+
 super + p
-    helm-dmenu.sh
+    dmenu_run
 
 super + P
     dmenu_run

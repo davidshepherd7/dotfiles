@@ -73,6 +73,8 @@ $endif
 set completion-ignore-case On
 set completion-map-case On
 set expand-tilde On
+set colored-stats On
+set colored-completion-prefix On
 
 # Automatically append / to symlinks to directories (as is done with normal
 # directories).
@@ -80,6 +82,10 @@ set mark-symlinked-directories On
 
 # Show list of completions on first tab press if applicable.
 set show-all-if-ambiguous On
+
+
+# Guess an expansion of the current command/argument using the history
+"\e\C-o": dabbrev-expand
 
 
 # Changes to make it more like my emacs

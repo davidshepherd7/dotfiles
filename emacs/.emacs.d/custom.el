@@ -16,11 +16,13 @@
  '(minibuffer-prompt-properties
    '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
  '(minimap-mode t)
- '(org-hide-block-startup t)
+ '(org-cycle-hide-block-startup t)
  '(org-startup-folded nil)
  '(package-selected-packages 'nil)
  '(safe-local-variable-values
-   '((flycheck-checker . "ds-python-dmypy")
+   '((flycheck-checker . python-dmypy)
+     (flycheck-prospector-executable . "~/code/monorepo/tools/wavecli/.wavecli-venv/bin/prospector")
+     (flycheck-checker . "ds-python-dmypy")
      (flycheck-checker quote ds-python-dmypy)
      (git-link-default-branch . "dev")
      (checkdoc-package-keywords-flag)

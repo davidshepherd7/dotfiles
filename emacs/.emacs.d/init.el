@@ -1,3 +1,4 @@
+
 ;; Generic emacs settings, other stuff is in individual files in ./lisp/
 
 ;; test with compile command: \emacs --debug-init --batch -u $USER
@@ -62,6 +63,10 @@
 
 ;; Get a setq which is checked against defcustom types
 (use-package validate)
+
+;; Have to load org first so that we don't accidentally load the non-straight
+;; version of it
+(load-file "~/.emacs.d/lisp/ds-org.el")
 
 ;; Functions/packages used in multiple files
 ;; ============================================================
@@ -1535,6 +1540,9 @@ $0")
     :config
     (add-hook 'flycheck-mode-hook #'flycheck-cask-setup)
     )
+
+  ;; This message popup is annoying
+  (validate-setq flycheck-checker-error-threshold 2000)
   )
 
 (defun ds/disable-mode-if-exists (mode)
@@ -1976,9 +1984,13 @@ for a file to visit if current buffer is not visiting a file."
 
 ;; A better, more general replacement for blacken-mode etc.
 (use-package apheleia
+  ;; melpa seems to be broken right now for this package?
+  ;; :straight (apheleia :host github :repo "radian-software/apheleia")
   :config
   (apheleia-global-mode +1)
   )
+
+(use-package scala-mode)
 
 
 ;; Load my other config files
@@ -1998,7 +2010,6 @@ for a file to visit if current buffer is not visiting a file."
 (load-file "~/.emacs.d/lisp/ds-scheme.el")
 (load-file "~/.emacs.d/lisp/ds-octave.el")
 (load-file "~/.emacs.d/lisp/ds-matlab.el")
-(load-file "~/.emacs.d/lisp/ds-org.el")
 (load-file "~/.emacs.d/lisp/ds-python.el")
 (load-file "~/.emacs.d/lisp/ds-cl.el")
 (load-file "~/.emacs.d/lisp/ds-unicode-entry.el")

@@ -139,7 +139,7 @@ install_packages ()
 {
     sudo apt update
     package_list="$rcdir/package_list"
-    < $package_list | xargs sudo apt install -y -q
+    < $package_list | xargs sudo apt install -y -q --auto-remove
 }
 
 install_pip_3_packages ()
@@ -149,11 +149,11 @@ install_pip_3_packages ()
     < $package_list | xargs pip3 install --upgrade
 }
 
-install_pip_2_packages ()
+install_pipx_packages ()
 {
-    pip2 install --upgrade pip
-    package_list="$rcdir/pip_2_package_list"
-    < $package_list | xargs pip2 install --upgrade
+    package_list="$rcdir/pipx_package_list"
+    < "$package_list" xargs -n 1 pipx install 
+    pipx upgrade-all
 }
 
 
@@ -161,96 +161,96 @@ install_gem_packages () {
     < "$rcdir/gem_package_list" x sudo gem install %
 }
 
-install_npm_packages () {
-    # Update packages
-    if ! grep -q 'prefix' ~/.npmrc; then
-        echo 'prefix=~/.npm-global' >> ~/.npmrc
+    install_npm_packages () {
+        # Update packages
+        if ! grep -q 'prefix' ~/.npmrc; then
+            echo 'prefix=~/.npm-global' >> ~/.npmrc
+        fi
+        mkdir -p ~/.npm-global
+        < "$rcdir/npm_package_list" x npm install -g %
+
+        sudo ~/.npm-global/bin/n lts
+    }
+
+    install_r_packages() {
+        # TODO: make it set up an R directory
+        R < "$rcdir/r_packages" --no-save --no-restore
+    }
+
+    update () {
+        sudo apt update && sudo apt upgrade --assume-yes --quiet &&
+            (
+                # Allow failures in subshell
+                install_packages
+                install_pip_3_packages
+                install_pipx_packages
+                install_gem_packages
+                install_npm_packages
+                install_r_packages
+                recompile_elisp
+            )
+    }
+
+
+    recompile_elisp() {
+        emacs -Q --batch -f batch-byte-compile "$HOME/.emacs.d/init.el" "$HOME/.emacs.d/lisp/"*.el
+    }
+
+    alias pm='sudo pacmatic -S'
+
+
+
+    # Version control aliases
+    # ============================================================
+
+    # Pick correct version control system
+    function h() {
+        if hg root 1>/dev/null 2>&1; then
+            hg "$@"
+        elif git rev-parse --is-inside-work-tree 1>/dev/null 2>&1; then
+            git "$@"
+        else
+            echo "No VC found" 1>&2
+            return 1
+        fi
+    }
+
+    alias hd="hg"
+    alias hglg="hg lg"
+
+    alias hs="h status"
+
+    alias hc="h commit"
+    alias hca="h commit --amend"
+
+    alias hra="hg revert --all"
+    alias hgplain="HGPLAIN=1 hg"
+
+    # Use hub for better github integration, if it exists
+    if [ command -v git-hub > /dev/null 2>&1 ]; then
+        alias hub='git-hub'
+
+        # Use completions for hub tool
+        compdef _hub git-hub
     fi
-    mkdir -p ~/.npm-global
-    < "$rcdir/npm_package_list" x npm install -g %
-
-    sudo ~/.npm-global/bin/n lts
-}
-
-install_r_packages() {
-    # TODO: make it set up an R directory
-    R < "$rcdir/r_packages" --no-save --no-restore
-}
-
-update () {
-    sudo apt update && sudo apt upgrade --assume-yes --quiet &&
-        (
-            # Allow failures in subshell
-            install_packages
-            install_pip_2_packages
-            install_pip_3_packages
-            install_gem_packages
-            install_npm_packages
-            install_r_packages
-            recompile_elisp
-        )
-}
 
 
-recompile_elisp() {
-    emacs -Q --batch -f batch-byte-compile "$HOME/.emacs.d/init.el" "$HOME/.emacs.d/lisp/"*.el
-}
+    alias gs='git status -s -b'
+    alias gd='git diff'
+    alias gdc='git diff --cached'
+    alias gl1='git log -n1 -p'
+    alias gc='git cherry-pick'
+    alias gsri='git stash --keep-index && git stash && git rebase --interactive HEAD~20 && git stash pop && git add -p && git commit --amend && git rebase --continue && git stash pop'
+    alias gap='git add -p'
+    alias gcp='git checkout -p'
+    alias grh='git reset HEAD'
+    alias gau='git add -u :/'
 
-alias pm='sudo pacmatic -S'
-
-
-
-# Version control aliases
-# ============================================================
-
-# Pick correct version control system
-function h() {
-    if hg root 1>/dev/null 2>&1; then
-        hg "$@"
-    elif git rev-parse --is-inside-work-tree 1>/dev/null 2>&1; then
-        git "$@"
-    else
-        echo "No VC found" 1>&2
-        return 1
-    fi
-}
-
-alias hd="hg"
-alias hglg="hg lg"
-
-alias hs="h status"
-
-alias hc="h commit"
-alias hca="h commit --amend"
-
-alias hra="hg revert --all"
-alias hgplain="HGPLAIN=1 hg"
-
-# Use hub for better github integration, if it exists
-if [ command -v git-hub > /dev/null 2>&1 ]; then
-    alias hub='git-hub'
-
-    # Use completions for hub tool
-    compdef _hub git-hub
-fi
-
-
-alias gs='git status -s -b'
-alias gd='git diff'
-alias gdc='git diff --cached'
-alias gl1='git log -n1 -p'
-alias gc='git cherry-pick'
-alias gsri='git stash --keep-index && git stash && git rebase --interactive HEAD~20 && git stash pop && git add -p && git commit --amend && git rebase --continue && git stash pop'
-alias gap='git add -p'
-alias gcp='git checkout -p'
-alias grh='git reset HEAD'
-alias gau='git add -u :/'
-
-alias gss='git stash --keep-index && git stash'
-alias gsk='git stash --keep-index'
-alias gsp='git stash pop'
-alias gri='git rebase --interactive HEAD~20'
-alias grc='git rebase --continue'
+    alias gss='git stash --keep-index && git stash'
+    alias gsk='git stash --keep-index'
+    alias gsp='git stash pop'
+    alias gri='git rebase --interactive HEAD~20'
+    alias grc='git rebase --continue'
 alias glp='git log -p'
 
 alias gitlsuntracked='git ls-files --exclude-standard -o'
@@ -399,6 +399,8 @@ alias emacstest='\emacs --debug-init --batch -u $USER'
 
 
 alias gdbemacs="cd ~/code/emacs/src && sudo gdb emacs $(ps aux | grep -i 'emac[s]' | awk '{print $2}')"
+
+alias magit="emacsclient -n -e '(magit-status)'"
 
 pdfpages ()
 {
@@ -644,9 +646,35 @@ edit-deb()
     rm -rf "$tempfile"
 }
 
-alias git-clean-branches='git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d'
-alias gcf='git branch -f dev origin/dev && git fetch origin dev:dev -u && git remote prune origin && git-clean-branches'
 alias gpr="gh pr create --base dev --repo wavemm/monorepo --web"
+
+git-clean-branches() {
+    git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d 
+}
+
+gcf() {
+    if [ "$(git branch --show-current)" = "dev" ]; then
+        if ! git diff --exit-code --name-only || ! git diff --exit-code --name-only --cached; then
+            echo "Unsaved changes, please stash them."
+        fi
+        git checkout -b david-temp-branch-gcf
+    fi
+    
+    git branch -f dev origin/dev
+    git fetch origin dev:dev -u
+    git remote prune origin
+    git-clean-branches
+
+    if [ "$(git branch --show-current)" = "david-temp-branch-gcf" ]; then
+        git checkout dev
+        git branch -D -f david-temp-branch-gcf
+    fi
+}
+
+alias gcfr="gcf && git rebase dev"
+
+# push.default is simple in my config so this is always something sensible
+alias gpf="git push -v --force-with-lease origin" 
 
 
 lingq()
@@ -669,3 +697,7 @@ agmacs()
 }
 
 alias history_off="unset HISTFILE"
+
+
+alias libcst-venv="source ~/.local/libcst-env/bin/activate"
+alias libcst-check="bash -c 'source ~/.local/libcst-env/bin/activate && pyre check"

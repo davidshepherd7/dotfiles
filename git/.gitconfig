@@ -16,7 +16,7 @@
     command = diffpdf
 
 [push]
-	default = nothing
+	default = simple
 
 [alias]
 
@@ -35,6 +35,12 @@ recent = "!git branch --sort=-committerdate | grep 'david/'"
 up = checkout
 co = checkout
 
+
+find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
+
+recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d) %(objectname:short) %(refname:lstrip=2)\" refs/heads/ | head -n ${1:-10}' "$@"
+
 [include]
     path = ~/.keys/hub-gitconfig
 
@@ -43,3 +49,5 @@ co = checkout
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[init]
+	defaultBranch = main

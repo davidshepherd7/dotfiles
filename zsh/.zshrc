@@ -42,6 +42,10 @@ autoload ~/.zsh/completion/zsh-completions/src/*(:t)
 # compdef _VBoxManage vboxmanage
 # compdef _VBoxHeadless vboxheadless
 
+
+# Autocompletion for individual words, like dabbrev
+bindkey "\e\Co" _history-complete-older
+
 # Add generated python completions
 fpath=(~/.zsh/completion/generated $fpath)
 

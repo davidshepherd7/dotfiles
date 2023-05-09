@@ -1,0 +1,8 @@
+mypy-silent
+docker-compose
+flake8
+pgcli
+slicker
+poetry
+genzshcomp
+googletrans

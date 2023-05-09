@@ -30,3 +30,7 @@ swagger/*
 # Wave stuff
 webp.js
 *.dat
+warehouse/wave/tests
+money-srv/src/support/alembic_data/
+infra-tools/
+tools/wavecli/tests/migrator/fixtures/

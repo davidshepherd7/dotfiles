@@ -15,6 +15,7 @@
 *-x86_64-linux
 *.pyc
 *.elc
+.mypy_cache
 
 # build files
 Makefile.in
@@ -104,3 +105,4 @@ workbench.xmi
 .virtualenv
 .venv
 /money-srv/src/pyrightconfig.json
+/money-srv/pyrightconfig.json

@@ -16,5 +16,5 @@ export MANPATH="$HOME/.npm-global/share/man:$MANPATH"
 
 # For some reason this runs an emacs daemon if emacs is not already running and
 # you try to run an emacsclient
-export EDITOR="emacsclient -c -n"
+export EDITOR="emacsclient -c"
 export ALTERNATE_EDITOR=''

@@ -469,6 +469,92 @@
   (evil-define-motion ds/evil-beginning-of-defun (count) (beginning-of-defun))
   (define-key evil-motion-state-map (kbd "F") #'ds/evil-beginning-of-defun)
 
+
+  ;; Org mode
+  ;; ============================================================
+  
+  (require 'org)
+
+  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+  (define-key org-mode-map (kbd "<tab>") #'org-cycle)
+
+  (evil-define-key 'normal org-mode-map (kbd "C-i") #'org-metaup)
+  (evil-define-key 'normal org-mode-map (kbd "C-h") #'org-metadown)
+  (evil-define-key 'normal org-mode-map (kbd "C-n") #'org-metaleft)
+  (evil-define-key 'normal org-mode-map (kbd "C-e") #'org-metaright)
+
+  (evil-define-key 'motion org-mode-map (kbd "y") #'org-backward-element)
+  (evil-define-key 'motion org-mode-map (kbd "u") #'org-forward-element)
+  (evil-define-key 'motion org-mode-map (kbd "j") #'outline-up-heading)
+
+  (evil-define-key 'motion org-mode-map (kbd "C-b") #'org-beginning-of-line)
+  (evil-define-key 'motion org-mode-map (kbd "C-l") #'org-end-of-line)
+
+  ;; Set up nice new heading insertion TODO: clean up all the boilerplate?
+  (defun ds/org-insert-subheading-after-current ()
+    (interactive)
+    (org-insert-heading-after-current)
+    (org-demote))
+
+  (defun ds/org-insert-superheading-after-current ()
+    (interactive)
+    (org-insert-heading-after-current)
+    (org-promote))
+
+  (defun ds/org-insert-heading ()
+    (interactive)
+    (org-insert-heading)
+    (org-back-to-heading)
+    (let ((org-special-ctrl-a/e t)) (org-beginning-of-line)))
+
+  (defun ds/org-insert-subheading ()
+    (interactive)
+    (org-insert-heading)
+    (org-demote)
+    (org-back-to-heading)
+    (let ((org-special-ctrl-a/e t)) (org-beginning-of-line)))
+  
+  (defun ds/org-insert-superheading ()
+    (interactive)
+    (org-insert-heading)
+    (org-promote)
+    (org-back-to-heading)
+    (let ((org-special-ctrl-a/e t)) (org-beginning-of-line)))
+
+  (evil-define-key 'normal org-mode-map (kbd "<C-return>")
+    (lambda () (interactive) (ds/org-insert-subheading-after-current) (evil-insert nil)))
+  (define-key org-mode-map (kbd "C-<return>") #'ds/org-insert-subheading-after-current)
+  
+  (evil-define-key 'normal org-mode-map (kbd "M-<return>")
+    (lambda () (interactive) (org-insert-heading-after-current) (evil-insert nil)))
+  (define-key org-mode-map (kbd "M-<return>") #'org-insert-heading-after-current)
+
+  (evil-define-key 'normal org-mode-map (kbd "<C-M-return>")
+    (lambda () (interactive) (ds/org-insert-superheading-after-current) (evil-insert nil)))
+  (define-key org-mode-map (kbd "<C-M-return>") #'ds/org-insert-superheading-after-current)
+  
+  (evil-define-key 'normal org-mode-map (kbd "<C-S-return>")
+    (lambda () (interactive) (ds/org-insert-subheading) (evil-insert nil)))
+  (define-key org-mode-map (kbd "C-S-<return>") #'ds/org-insert-subheading)
+  
+  (evil-define-key 'normal org-mode-map (kbd "<M-S-return>")
+    (lambda () (interactive) (ds/org-insert-heading) (evil-insert nil)))
+  (define-key org-mode-map (kbd "<M-S-return>") #'ds/org-insert-heading)
+
+  (evil-define-key 'normal org-mode-map (kbd "<C-M-S-return>")
+    (lambda () (interactive) (ds/org-insert-superheading) (evil-insert nil)))
+  (define-key org-mode-map (kbd "<C-M-S-return>") #'ds/org-insert-superheading)
+
+  ;; TODO: make start of line/subtree always go after heading stars?
+
+  ;; TODO make join line remove headings?
+
+  (use-package evil-org
+    :after org
+    :config
+    (define-key evil-outer-text-objects-map (kbd "u") #'evil-org-a-subtree)
+    (define-key evil-inner-text-objects-map (kbd "u") #'evil-org-inner-subtree)
+    )
   )
 
 (use-package evil-surround

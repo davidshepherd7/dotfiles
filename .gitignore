@@ -14,6 +14,7 @@ hg/.hgex
 
 # Dropbox junk
 *conflicted copy*
+
 /emacs/.emacs.d/vc-packages/projectile/
 /emacs/.emacs.d/smex-items
 /emacs/.emacs.d/savehist
@@ -25,3 +26,5 @@ hg/.hgex
 /emacs/.emacs.d/projectile-bookmarks.eld
 /bin/bin/android-studio
 /bin/bin/tandem
+/bin/bin/circleci
+/bin/bin/pycharm

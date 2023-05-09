@@ -1,7 +1,6 @@
 (require 'validate)
 (require 'dash)
 (require 'use-package)
-(require 'org)
 
 
 (use-package org
@@ -34,32 +33,6 @@
                                        (file . find-file-other-frame)
                                        (wl . wl-other-frame))))
 
-    (require 'evil)
-
-    (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
-    (define-key org-mode-map (kbd "<tab>") #'org-cycle)
-
-    (evil-define-key 'normal org-mode-map (kbd "C-i") #'org-metaup)
-    (evil-define-key 'normal org-mode-map (kbd "C-h") #'org-metadown)
-    (evil-define-key 'normal org-mode-map (kbd "C-n") #'org-metaleft)
-    (evil-define-key 'normal org-mode-map (kbd "C-e") #'org-metaright)
-
-    (evil-define-key 'motion org-mode-map (kbd "y") #'org-backward-element)
-    (evil-define-key 'motion org-mode-map (kbd "u") #'org-forward-element)
-    (evil-define-key 'motion org-mode-map (kbd "j") #'outline-up-heading)
-
-    (defun ds/org-insert-subheading-after-current ()
-      (interactive)
-      (org-insert-heading-after-current)
-      (org-demote))
-
-    (evil-define-key 'normal org-mode-map (kbd "<C-return>")
-      (lambda () (interactive) (ds/org-insert-subheading-after-current) (evil-insert nil)))
-    (define-key org-mode-map (kbd "C-<return>") #'ds/org-insert-subheading-after-current)
-    (evil-define-key 'normal org-mode-map (kbd "M-<return>")
-      (lambda () (interactive) (org-insert-heading-after-current) (evil-insert nil)))
-    (define-key org-mode-map (kbd "M-<return>") #'org-insert-heading-after-current)
-
     (define-key org-mode-map (kbd "M-s") #'org-schedule)
 
     (validate-setq org-agenda-files '("~/Dropbox/org"))
@@ -82,6 +55,8 @@
   (set-face-attribute 'org-level-7 nil :foreground "Grey86")
   (set-face-attribute 'org-level-8 nil :foreground "Grey86")
 
+  ;; Place point just after *** when going to the start of a heading
+  (validate-setq org-special-ctrl-a/e t)
   )
 
 ;; (defun aggressive-fill-paragraph ()
@@ -98,12 +73,12 @@
 (defun ds/org-to-quip (text)
   (--> text
     (replace-regexp-in-string "^\\*" "" it)
-    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
-    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1    *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1  *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1  *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1  *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1  *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1  *" it)
+    (replace-regexp-in-string "^\\(\\s-*\\)\\*\\*" "\\1  *" it)
     ))
 
 

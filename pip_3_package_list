@@ -1,16 +1,9 @@
-genzshcomp
 cytoolz
 scikit-learn
 sympy
-flake8
-docker-compose==1.25.5
 pipenv
-black==18.6b4
 twine
-poetry
-googletrans
-pgcli
 python-language-server[all]
-slicker
 pandas
 sympy
+pipx

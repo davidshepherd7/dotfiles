@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: fixture
+# --
+@pytest.fixture(autouse=True)
+def $0(request: Any) -> Generator[None, None, None]:
+    yield

@@ -28,7 +28,11 @@
 
 (defun ds/python-setup-indent ()
   (setq-local indent-tabs-mode nil)
-  (setq-local python-indent-offset 4))
+  (setq-local python-indent-offset 4)
+  ;; This makes hanging function arguments indent in the same way as black
+  ;; formats them.
+  (setq-local python-indent-def-block-scale 1)
+  )
 (add-hook 'python-mode-hook #'ds/python-setup-indent)
 
 ;; Font lock for f-strings
@@ -101,6 +105,41 @@ See URL `http://mypy-lang.org/'."
   :working-directory ds/flycheck-mypy-find-project-root)
 (add-to-list 'flycheck-checkers 'ds-python-dmypy 'append)
 
+;; pylint is overactive 
+(setq flycheck-checkers (delete 'python-pylint flycheck-checkers))
+
+
+(use-package flycheck-prospector 
+  :config
+  (add-to-list 'flycheck-checkers 'python-prospector)
+  ;; Run prospector if dmypy passes
+  ;; (flycheck-add-next-checker 'ds-python-dmypy 'python-prospector)
+
+  ;; ^ Don't run it, it's slow as hell
+
+  ;; Allow configuring this from dir locals
+  (put 'flycheck-python-prospector-executable 'safe-local-variable (lambda (value) t))
+  )
+
+
+
+
+
+(use-package virtualenvwrapper
+  :config
+  (validate-setq venv-location
+                 (--map
+                  (f-join "/home/david/code/monorepo" it)
+                  (list
+                   "./udp_forwarder/.udp_forwarder-venv"
+                   "./wavemodem/.wavemodem-venv"
+                   "./ussd/.ussd-venv"
+                   "./money-srv/.money-srv-venv"
+                   "./.root-venv"
+                   "./tools/wavecli/.wavecli-venv"
+                   "./wavesms/.wavesms-venv"                        
+                   )))
+  )
 
 
 
@@ -161,17 +200,18 @@ See URL `http://mypy-lang.org/'."
 
 (defun ds/path-to-import-statement (path symbol)
   (let* ((module (--> path
-                      (s-trim it)
-                      (f-join (projectile-project-root) it)
-                      (file-relative-name it (projectile-project-root))
-                      (s-chop-prefix "money-srv/src/" it)
-                      (s-chop-prefix "wavesms/src/" it)
-                      (s-chop-prefix "wavemodem/src/" it)
-                      (s-chop-prefix "wavelib/" it)
-                      (s-chop-suffix ".py" it)
-                      (s-chop-suffix "/__init__" it)
-                      (s-replace "/" "." it)
-                      )))
+                   (s-trim it)
+                   (f-join (projectile-project-root) it)
+                   (file-relative-name it (projectile-project-root))
+                   (s-chop-prefix "money-srv/src/" it)
+                   (s-chop-prefix "money-srv/" it)
+                   (s-chop-prefix "wavesms/src/" it)
+                   (s-chop-prefix "wavemodem/src/" it)
+                   (s-chop-prefix "wavelib/" it)
+                   (s-chop-suffix ".py" it)
+                   (s-chop-suffix "/__init__" it)
+                   (s-replace "/" "." it)
+                   )))
     (if (equal symbol "")
         (s-concat "import " module "\n")
       (s-concat "from " module " import " symbol "\n"))))
@@ -179,8 +219,8 @@ See URL `http://mypy-lang.org/'."
 (defun ds/pick-import-location ()
   (save-excursion
     (goto-char (point-min))
-    (re-search-forward "^def\\|^class" nil 'noerror)
-    (re-search-backward "^import\\|^from" nil 'noerror)
+    (re-search-forward "^def \\|^class " nil 'noerror)
+    (re-search-backward "^import \\|^from " nil 'noerror)
     (beginning-of-line)
     (point)))
 
@@ -233,3 +273,21 @@ See URL `http://mypy-lang.org/'."
 ;;   :config
 ;;   ;; Currently requires my patched version of isort
 ;;   (add-hook 'python-mode-hook #'py-isort-mode))
+
+(defun ds/print-python ()
+  (interactive)
+  (save-excursion
+    (let ((thing (symbol-at-point)))
+      (end-of-line)
+      (newline-and-indent)
+      (insert (s-concat "print(\"####\", " (symbol-name thing) ")")))))
+
+
+(defun ds/arg-spec-to-kwargs (start end)
+  (interactive (list (region-beginning) (region-end)))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region start end)
+      (goto-char (point-min))
+      (while (re-search-forward "\\([a-zA-Z_0-9]*\\):[^,]*," nil t)
+        (replace-match "\\1=\\1," nil nil)))))
