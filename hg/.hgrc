@@ -3,7 +3,7 @@
 %include ~/.keys/hg-keys
 
 [ui]
-username = David Shepherd <david.shepherd@biositesystems.com>
+username = David Nikel-Shepherd <davidshepherd7@gmail.com>
 ignore = ~/.hgignore
 editor = emacsclient -c
 merge = emacsclient
