@@ -154,6 +154,10 @@ install_pipx_packages ()
     package_list="$rcdir/pipx_package_list"
     < "$package_list" xargs -n 1 pipx install 
     pipx upgrade-all
+
+    # We need this exact black version for Wave compat, but pipx doesn't allow
+    # specifying version constraints
+    pipx install black==22.3.0 --force
 }
 
 
@@ -405,6 +409,7 @@ alias magit="emacsclient -n -e '(magit-status)'"
 pdfpages ()
 {
     pdftk A=$1 cat A$2 output "${1:r}_pp${2}.pdf"
+    echo "${1:r}_pp${2}.pdf"
 }
 
 
@@ -652,6 +657,14 @@ git-clean-branches() {
     git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d 
 }
 
+# Clean fetch
+#
+# Fetch dev but don't do anything to the current branch (even if the current
+# branch is dev).
+#
+# Delete any merged branches
+#
+# Delete any branch which has been removed from origin
 gcf() {
     if [ "$(git branch --show-current)" = "dev" ]; then
         if ! git diff --exit-code --name-only || ! git diff --exit-code --name-only --cached; then
@@ -676,6 +689,9 @@ alias gcfr="gcf && git rebase dev"
 # push.default is simple in my config so this is always something sensible
 alias gpf="git push -v --force-with-lease origin" 
 
+gn() {
+    gcf && git checkout dev -b "david/$1"
+}
 
 lingq()
 {
@@ -701,3 +717,8 @@ alias history_off="unset HISTFILE"
 
 alias libcst-venv="source ~/.local/libcst-env/bin/activate"
 alias libcst-check="bash -c 'source ~/.local/libcst-env/bin/activate && pyre check"
+
+
+alias aws-docker='docker run --rm -it -v ~/.aws-wave:/root/.aws -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub amazon/aws-cli:2.13.6'
+source ~/.local/bin/aws_zsh_completer.sh
+complete -C aws_completer aws-docker

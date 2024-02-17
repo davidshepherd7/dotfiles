@@ -2,7 +2,39 @@
 
 set -o pipefail
 
-tar_file="$1"
+if [ $# -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    cat << EOF >&2
+Usage:
+
+    upgrade-android-studio "path to tar file"
+
+OR
+    upgrade-android-studio --download "version number"
+
+    where version number is like 2022.3.1.22
+
+Warning: deletes the entire current contents of /opt/android-studio.
+
+EOF
+    exit 0
+fi
+
+if [ "$1" = "--download" ]; then
+    version_number="$2"
+    
+    download_tempdir=$(mktemp "/tmp/upgrade-android-studio-tarfile-$USER.XXXXXX" -d)
+    filename="android-studio-$version_number-linux.tar.gz"
+    tar_file="$download_tempdir/$filename"
+
+    trap "rm -rf $download_tempdir" EXIT
+    curl "https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$version_number/$filename" \
+         -L \
+         -o "$tar_file" \
+         -f
+else 
+    tar_file="$1"
+fi
+
 
 tempdir=$(mktemp "/tmp/upgrade-android-studio-temp-$USER.XXXXX" -d)
 trap "rm -rf $tempdir" EXIT
@@ -10,3 +42,6 @@ sudo tar -xf "$tar_file" --directory "$tempdir"
 
 sudo rm -r /opt/android-studio
 sudo mv "$tempdir/android-studio" /opt/android-studio
+
+# Check the version
+android-studio -version

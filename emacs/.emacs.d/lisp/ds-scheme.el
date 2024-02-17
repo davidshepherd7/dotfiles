@@ -27,7 +27,7 @@
 ;;   )
 
 ;; make f5 run the current buffer
-(add-hook 'scheme-mode-hook '(lambda() (setq-default require-final-newline nil)))
+(add-hook 'scheme-mode-hook #'(lambda() (setq-default require-final-newline nil)))
 
 ;; Display .rkt (racket) files using scheme mode
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))

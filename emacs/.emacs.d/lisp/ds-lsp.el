@@ -28,10 +28,15 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__pycache__\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]support/alembic_data\\'")
 
+  ;; Looking up references takes a while
+  (validate-setq lsp-response-timeout 30)
+
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
 
   (define-key lsp-signature-mode-map (kbd "M-n") nil)
   (define-key lsp-signature-mode-map (kbd "M-p") nil)
+
+  (define-key lsp-mode-map (kbd "C-<f8>") #'lsp-find-references)
 
 
   ;; Don't init in like every single code directory on my laptop, WTF?

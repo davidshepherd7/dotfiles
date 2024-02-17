@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: paramspec
+# --
+$1 = ParamSpec("$1")

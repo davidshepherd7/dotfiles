@@ -128,3 +128,12 @@ flameshot
 pwgen
 baobab
 mitmproxy
+apt-transport-https 
+ca-certificates 
+gnupg-agent
+software-properties-common
+libgccjit-10-dev
+gcc-10
+libgccjit0
+libjansson4
+libjansson-dev

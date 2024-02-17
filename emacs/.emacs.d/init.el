@@ -544,14 +544,6 @@ index in STRING."
   (sml/setup)
 
   (sml/apply-theme 'dark)
-
-  ;; Shorten some directories to useful stuff
-  (add-to-list 'sml/replacer-regexp-list '("^~/oomph-lib/" ":OL:"))
-  (add-to-list 'sml/replacer-regexp-list
-               '("^~/oomph-lib/user_drivers/micromagnetics" ":OLMM:"))
-  (add-to-list 'sml/replacer-regexp-list '("^~/optoomph/" ":OPTOL:"))
-  (add-to-list 'sml/replacer-regexp-list
-               '("^~/optoomph/user_drivers/micromagnetics" ":OPTOLMM:"))
   )
 
 
@@ -707,12 +699,12 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
 (savehist-mode 1)
 
 ;; Long history for everything
-(validate-setq history-length (* 10 1000)) ;; default value for histories without
+(validate-setq history-length 500) ;; default value for histories without
 ;; their own variable
-(validate-setq kill-ring-max (* 10 1000))
-(validate-setq search-ring-max (* 10 1000))
-(validate-setq regexp-search-ring-max (* 10 1000))
-(validate-setq history-delete-duplicates t)
+(validate-setq kill-ring-max 500)
+(validate-setq search-ring-max 500)
+(validate-setq regexp-search-ring-max 500)
+(validate-setq history-delete-duplicates nil)
 
 
 ;; Compile mode settings
@@ -989,6 +981,9 @@ For magit versions > 2.1.0"
 (use-package git-link
   :config
   (validate-setq git-link-open-in-browser nil)
+  (validate-setq git-link-default-branch "dev")
+  (validate-setq git-link-use-commit nil)
+  (validate-setq git-link-branch-permalinks t)
   )
 
 
@@ -1257,6 +1252,8 @@ $0")
 ;;   (global-set-key (kbd "M-,") #'imenu-anywhere)
 ;;   )
 
+(global-set-key (kbd "M-[") #'imenushow-paren-context-when-offscreen)
+
 ;; Better help commands
 ;; ============================================================
 
@@ -1384,88 +1381,88 @@ $0")
   )
 
 
-(use-package helm-dash
-  :config
+;; (use-package helm-dash
+;;   :config
 
-  (validate-setq helm-dash-min-length 0)
+;;   (validate-setq helm-dash-min-length 0)
 
-  ;; Add dash.el pytoolz scikit-learn by hand :(
+;;   ;; Add dash.el pytoolz scikit-learn by hand :(
 
-  ;; base docsets
-  (setq ds/general-docsets '(
-                             "Emacs Lisp"
-                             "Markdown"
-                             "C"
-                             "C++"
-                             "PostgreSQL"
-                             "CMake"
-                             "CSS"
-                             ))
+;;   ;; base docsets
+;;   (setq ds/general-docsets '(
+;;                              "Emacs Lisp"
+;;                              "Markdown"
+;;                              "C"
+;;                              "C++"
+;;                              "PostgreSQL"
+;;                              "CMake"
+;;                              "CSS"
+;;                              ))
 
-  (setq ds/python-docsets '(
-                            "Python 3"
-                            "SQLAlchemy"
-                            ;; "NumPy"
-                            ;; "SciPy"
-                            ;; "SymPy"
-                            ;; "scikit-learn"
-                            ;; "toolz"
-                            ))
+;;   (setq ds/python-docsets '(
+;;                             "Python 3"
+;;                             "SQLAlchemy"
+;;                             ;; "NumPy"
+;;                             ;; "SciPy"
+;;                             ;; "SymPy"
+;;                             ;; "scikit-learn"
+;;                             ;; "toolz"
+;;                             ))
 
-  (setq ds/js-docsets '(
-                        "MomentJS"
-                        "AngularJS"
-                        "JavaScript"
-                        "CSS"
-                        "HTML"
-                        "Gulp"
-                        "Jasmine"
-                        "Lo-Dash"
-                        "jQuery"
-                        ;; "angular-ui-bootstrap"
-                        ))
+;;   (setq ds/js-docsets '(
+;;                         "MomentJS"
+;;                         "AngularJS"
+;;                         "JavaScript"
+;;                         "CSS"
+;;                         "HTML"
+;;                         "Gulp"
+;;                         "Jasmine"
+;;                         "Lo-Dash"
+;;                         "jQuery"
+;;                         ;; "angular-ui-bootstrap"
+;;                         ))
 
-  (setq ds/html-docsets '(
-                          "CSS"
-                          "HTML"
-                          "Bootstrap 3"
-                          ))
+;;   (setq ds/html-docsets '(
+;;                           "CSS"
+;;                           "HTML"
+;;                           "Bootstrap 3"
+;;                           ))
 
-  (setq ds/shell-docsets '("Bash"))
+;;   (setq ds/shell-docsets '("Bash"))
 
-  (setq ds/ansible-docsets '("Ansible"))
+;;   (setq ds/ansible-docsets '("Ansible"))
 
-  (defun ds/docsets ()
-    (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets ds/python-docsets))
+;;   (defun ds/docsets ()
+;;     (-concat ds/general-docsets ds/js-docsets ds/shell-docsets ds/html-docsets ds/ansible-docsets ds/python-docsets))
 
-  (defun ds/fix-docset-url (x)
-    (s-replace " " "_" x))
+;;   (defun ds/fix-docset-url (x)
+;;     (s-replace " " "_" x))
 
-  (defun ds/installed-docsets ()
-    (-map #'ds/fix-docset-url (helm-dash-installed-docsets)))
+;;   (defun ds/installed-docsets ()
+;;     (-map #'ds/fix-docset-url (helm-dash-installed-docsets)))
 
-  (defun ds/install-docsets ()
-    (interactive)
-    (--> (ds/docsets)
-         (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
-         (-map #'ds/fix-docset-url it)
-         (-each it #'helm-dash-async-install-docset)))
+;;   (defun ds/install-docsets ()
+;;     (interactive)
+;;     (--> (ds/docsets)
+;;          (-filter (lambda (x) (not (-contains? (ds/installed-docsets) x))) it)
+;;          (-map #'ds/fix-docset-url it)
+;;          (-each it #'helm-dash-async-install-docset)))
 
-  (defmacro ds/set-docsets-fn (docsets)
-    `(lambda () (setq-local helm-dash-docsets ,docsets)))
+;;   (defmacro ds/set-docsets-fn (docsets)
+;;     `(lambda () (setq-local helm-dash-docsets ,docsets)))
 
-  (add-hook 'python-mode-hook (ds/set-docsets-fn ds/python-docsets))
-  (add-hook 'emacs-lisp-mode-hook (ds/set-docsets-fn '("Emacs Lisp")))
-  (add-hook 'c++-mode-hook (ds/set-docsets-fn' ("C++")))
-  (add-hook 'js-mode-hook (ds/set-docsets-fn ds/js-docsets))
-  (add-hook 'typescript-mode-hook (ds/set-docsets-fn ds/js-docsets))
-  (add-hook 'cmake-mode-hook (ds/set-docsets-fn '("CMake")))
-  (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
-  (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
-  (add-hook 'css-mode-hook (ds/set-docsets-fn '("CSS")))
-  (add-hook 'html-mode-hook (ds/set-docsets-fn ds/html-docsets))
-  (add-hook 'yaml-mode-hook (ds/set-docsets-fn ds/ansible-docsets))
-  )
+;;   (add-hook 'python-mode-hook (ds/set-docsets-fn ds/python-docsets))
+;;   (add-hook 'emacs-lisp-mode-hook (ds/set-docsets-fn '("Emacs Lisp")))
+;;   (add-hook 'c++-mode-hook (ds/set-docsets-fn' ("C++")))
+;;   (add-hook 'js-mode-hook (ds/set-docsets-fn ds/js-docsets))
+;;   (add-hook 'typescript-mode-hook (ds/set-docsets-fn ds/js-docsets))
+;;   (add-hook 'cmake-mode-hook (ds/set-docsets-fn '("CMake")))
+;;   (add-hook 'sql-mode-hook (ds/set-docsets-fn '("PostgreSQL")))
+;;   (add-hook 'sh-mode-hook (ds/set-docsets-fn '("Bash")))
+;;   (add-hook 'css-mode-hook (ds/set-docsets-fn '("CSS")))
+;;   (add-hook 'html-mode-hook (ds/set-docsets-fn ds/html-docsets))
+;;   (add-hook 'yaml-mode-hook (ds/set-docsets-fn ds/ansible-docsets))
+;;   )
 
 (defun ds/insert-current-date ()
   (interactive)
@@ -1588,8 +1585,6 @@ $0")
   (add-to-list 'ag-arguments "--hidden")
   (validate-setq ag-group-matches nil)
   )
-
-(use-package scratch)
 
 (use-package highlight-symbol
   :diminish highlight-symbol-mode
@@ -1992,6 +1987,36 @@ for a file to visit if current buffer is not visiting a file."
 
 (use-package scala-mode)
 
+(defun ds/switch-to-non-org-buffer ()
+  "For use from the window manager to open something that isn't my todo list."
+  (interactive)
+  (switch-to-buffer nil)
+  ;; If it's an org buffer then pop the buffer stack again
+  (when (s-ends-with? ".org" buffer-file-name)    
+    (switch-to-buffer nil)))
+
+
+;; Only for testing frames-only-mode config
+;;
+;; (use-package po-mode
+;;   :config
+;;   (add-to-list 'frames-only-mode-kill-frame-when-buffer-killed-buffer-list "*foo*")
+;;   (add-to-list 'frames-only-mode-kill-frame-when-buffer-killed-buffer-list '(regexp . "\\*.*\\.po\\*"))
+;;   )
+
+
+;; Feature checks
+;; ============================================================
+
+
+(if (and (fboundp 'native-comp-available-p)
+         (native-comp-available-p))
+    (message "Native compilation is available")
+  (message "Native complation is *not* available"))
+
+(if (functionp 'json-serialize)
+    (message "Native JSON is available")
+  (message "Native JSON is *not* available"))
 
 ;; Load my other config files
 ;; ============================================================
@@ -2044,3 +2069,4 @@ for a file to visit if current buffer is not visiting a file."
 (load-file "~/.emacs.d/lisp/s-interactive.el")
 
 (load-file "~/.emacs.d/lisp/ds-lsp.el")
+(load-file "~/.emacs.d/lisp/ds-treesitter.el")

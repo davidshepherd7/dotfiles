@@ -34,10 +34,10 @@ xcape_str=""
 # # Map an unused modifier's keysym to the spacebar's keycode and make it a
 # # control modifier. It needs to be an existing key so that emacs won't
 # # spazz out when you press it.
-spare_modifier="Hyper_L"
+# spare_modifier="Hyper_L"
 # xmodmap -e "keycode 65 = $spare_modifier"
-xmodmap -e "remove mod4 = $spare_modifier" # hyper_l is mod4 by default
-xmodmap -e "add Control = $spare_modifier"
+# xmodmap -e "remove mod4 = $spare_modifier" # hyper_l is mod4 by default
+# xmodmap -e "add Control = $spare_modifier"
 
 # # Map space to a new keycode which has no corresponding key (to
 # # keep it around for xcape to use).
@@ -53,9 +53,9 @@ xmodmap -e "keycode 88 = u"
 
 # pedal keys
 # ============================================================
-xmodmap -e "keycode any = XF86Tools" -e "keysym XF86Tools = $spare_modifier"
-xmodmap -e "keycode any = XF86Launch5" -e "keysym XF86Launch5 = Alt_L"
-xmodmap -e "keycode any = XF86Launch6" -e "keysym XF86Launch6 = Super_L"
+# xmodmap -e "keycode any = XF86Tools" -e "keysym XF86Tools = $spare_modifier"
+# xmodmap -e "keycode any = XF86Launch5" -e "keysym XF86Launch5 = Alt_L"
+# xmodmap -e "keycode any = XF86Launch6" -e "keysym XF86Launch6 = Super_L"
 
 
 # Generating letters by pressing modifiers (with xcape)

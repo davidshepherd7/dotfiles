@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: isinst
+# --
+if isinstance($1, $2):
+   $0
+elif isinstance($1, TODO):
+     raise NotImplementedError()
+else:
+    assert_never($1)

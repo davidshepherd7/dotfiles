@@ -1,6 +1,6 @@
 
 ;; Still need this for a few things
-(use-package helm)
+;; (use-package helm)
 
 (use-package ivy
   :diminish "ivy"

@@ -45,17 +45,38 @@
 ;; (global-unset-key (kbd "C-\\ o"))
 ;; (define-key python-mode-map (kbd "C-\\ o") #'ds/python-switch-to-test-file)
 
+(defun ds/current-test-function ()
+  (interactive)
+  (when (s-contains-p "test_" buffer-file-name)    
+    (save-excursion
+      (ignore-errors
+        (end-of-line)
+        (re-search-backward "def test_\\|^class Test")
+        (forward-char 7)
+        (thing-at-point 'symbol)))))
+
 
 (defun ds/money-srv-test ()
   "Run tests for a python file in money-srv"
   (interactive)
-  (let* ((default-directory (or (projectile-compilation-dir) (projectile-project-root))) (compilation-read-command t) (test-file (if (s-contains-p "test_" buffer-file-name) buffer-file-name (projectile-find-matching-test buffer-file-name))) (relative-file (file-relative-name test-file (f-join (projectile-project-root) "money-srv")))) (setq compile-command (concat "mm m.typecheck && ./money-srv/bin/run_tests " (shell-quote-argument relative-file))) (call-interactively #'compile)))
+  (let* ((default-directory (or (projectile-compilation-dir) (projectile-project-root)))
+         (compilation-read-command t)
+         (test-file (if (s-contains-p "test_" buffer-file-name) buffer-file-name (projectile-find-matching-test buffer-file-name)))
+         (relative-file (file-relative-name test-file (f-join (projectile-project-root) "money-srv")))
+         (test-fn (ds/current-test-function)))
+    (setq compile-command
+          (concat "mm m.typecheck && ./money-srv/bin/run_tests -v "
+                  (shell-quote-argument relative-file)
+                  (when test-fn
+                    (concat " -k " test-fn))
+                  ))
+    (call-interactively #'compile)))
 
 (define-key python-mode-map  (kbd "<f6>") #'ds/money-srv-test)
 
 (defun ds/insert-snapshot-update ()
   (interactive)
-  (insert " --snapshot-update"))
+  (insert " --snapshot-partial-update"))
 (define-key minibuffer-local-map (kbd "M-.") #'ds/insert-snapshot-update)
 
 
@@ -95,3 +116,22 @@
 
 ;; (advice-add #'flycheck-checker-shell-command :around #'ds/add-wave-venvs-to-path)
 ;; (advice-add #'flycheck-verify-setup :around #'ds/add-wave-venvs-to-path)
+
+(require 'apheleia)
+(add-to-list 'apheleia-formatters (list 'wave-black "~/code/monorepo/.root-venv/bin/black" "-"))
+(add-to-list 'apheleia-mode-alist (cons 'python-mode 'wave-black))
+
+(defvar ds-disable-font-lock-files '())
+(setq ds-disable-font-lock-files '("configvars.py"))
+
+(defun ds/disable-font-lock-large-files ()
+  (interactive)
+  (when (-some
+         (lambda (x) (s-equals-p (f-filename (buffer-file-name)) x))
+         ds-disable-font-lock-files)
+    (font-lock-mode -1)))
+
+(add-to-list 'python-mode-hook #'ds/disable-font-lock-large-files)
+
+
+(add-to-list 'directory-abbrev-alist '("^/money-srv" . "/home/david/code/monorepo/money-srv"))

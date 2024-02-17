@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: static
+# --
+@staticmethod
+def $1() -> $2:
+    $0

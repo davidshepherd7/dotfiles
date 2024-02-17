@@ -1,0 +1,19 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: decorator
+# --
+from typing import TypeVar, Callable
+from typing_extensions import ParamSpec
+
+P = ParamSpec("P")
+RetT_co = TypeVar("RetT_co", covariant=True)
+
+
+def $1() -> Callable[[Callable[P, RetT_co]], Callable[P, RetT_co]]:
+    def decorator(f: Callable[P, RetT_co]) -> Callable[P, RetT_co]:
+        @wraps(f)
+        def wrapped(*args: P.args, **kwargs: P.kwargs) -> RetT_co:
+            return f(*args, **kwargs)
+
+        return wrapped
+
+    return decorator

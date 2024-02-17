@@ -113,13 +113,17 @@
     ;; Rely on tide for formatting
     (aggressive-indent-mode 0)
 
-    (local-set-key (kbd "C-,") #'tide-fix))
+    (local-set-key (kbd "C-,") #'tide-fix)
+
+    (validate-setq tide-format-before-save nil)
+
+    )
 
   ;; aligns annotation to the right hand side
   (setq company-tooltip-align-annotations t)
 
   ;; formats the buffer before saving
-  (add-hook 'before-save-hook #'tide-format-before-save)
+  ;; (add-hook 'before-save-hook #'tide-format-before-save)
 
   (add-hook 'typescript-mode-hook #'setup-tide-mode))
 

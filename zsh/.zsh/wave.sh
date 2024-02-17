@@ -60,8 +60,10 @@ kube_secret(){
     echo ""
 }
 
-# Make semgrep output in Emacs-compatible format
-export WAVE_SEMGREP_EMACS=1
-
 # Playing with semgrep in typecheck
 export WAVE_EXPERIMENTAL_SEMGREP_IN_TYPECHECK=1
+
+# Make semgrep output in Emacs-compatible format
+export WAVE_SEMGREP_REPORTING_STYLE="emacs"
+
+alias coverage_any_version="firefox ~/code/monorepo/money-srv/.money-srv-venv/coverage/*/htmlcov/index.html"

@@ -1,0 +1,21 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: model
+# --
+
+from typing import NewType
+from wavelib.tcids import TCID
+from models.tcids_db import define_tcid_column
+from models.tcids_db import TCIDMixin
+from models.db_types import Base, NativeCountryAware
+
+# TODO: maybe move to types.py
+$1ID = NewType("$1ID", TCID)
+
+# TODO: maybe move to db_types.py
+$1IDColumn = define_tcid_column($1ID)
+
+class $1(Base, NativeCountryAware, TCIDMixin[$1ID]):
+    __tablename__ = "$1s"
+    tcid_prefix = "$2"
+    
+    $1_id = $1IDColumn(primary_key=True, country_locator=lambda instance: instance._country_iso2)
