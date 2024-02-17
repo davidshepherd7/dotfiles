@@ -5,6 +5,8 @@
 [core]
 	editor = emacsclient -c
 	excludesfile = /home/david/.gitignore_global
+    # Try this after April 2024: sudo apt install git-delta
+    #    pager = delta
 
 [difftool]
 	prompt = false
@@ -18,28 +20,61 @@
 [push]
 	default = simple
 
+[merge]
+    # In merge conflicts, show the state before either change as well
+    conflictstyle = zdiff3
+
+[diff]
+    # Supposedly show better diffs of complete functions
+    algorithm = histogram
+    
+    # Show moved lines differently
+	colorMoved = default
+
+[transfer]
+    # Do some checks on data just in case (TODO: is this slower?)
+    fsckobjects = true
+
+[fetch]
+    fsckobjects = true
+
+[receive]
+    fsckobjects = true
+
+[rebase]
+    # Stash current changes before a rebase and unstash after
+    autostash = true
+
+[branch]
+    # Newest branches first
+	sort = -committerdate
+
+[tag]
+    # Newest tags first
+    sort = -taggerdate
+
+# Map github's https urls into ssh because that's almost always what you want
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
+
 [alias]
 
+    lg = log --branches --tags --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)%n' HEAD
 
-lg = log --branches --tags --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)%n' HEAD
+    lp = "log -p --reverse dev.."
 
-lg2 = log --branches --remotes --tags --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' HEAD
+    pull-request = "!sensible-browser \"$(git remote get-url \"$1\")/pull-request/new\"" #
 
-lp = "log -p --reverse dev.."
-
-pull-request = "!sensible-browser \"$(git remote get-url \"$1\")/pull-request/new\"" #
-
-recent = "!git branch --sort=-committerdate | grep 'david/'"
-
-# Mercurial commands
-up = checkout
-co = checkout
+    # Mercurial aliases
+    up = checkout
+    co = checkout
 
 
-find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
-show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
+    find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+    show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
 
-recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d) %(objectname:short) %(refname:lstrip=2)\" refs/heads/ | head -n ${1:-10}' "$@"
+    # Show branches by date with some extra data
+    recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d) %(objectname:short) %(refname:lstrip=2)\" refs/heads/ | head -n ${1:-10}' "$@"
 
 [include]
     path = ~/.keys/hub-gitconfig
@@ -49,5 +84,6 @@ recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(co
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+    
 [init]
 	defaultBranch = main
