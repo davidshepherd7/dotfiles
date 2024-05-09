@@ -142,13 +142,6 @@ install_packages ()
     < $package_list | xargs sudo apt install -y -q --auto-remove
 }
 
-install_pip_3_packages ()
-{
-    pip3 install --upgrade pip
-    package_list="$rcdir/pip_3_package_list"
-    < $package_list | xargs pip3 install --upgrade
-}
-
 install_pipx_packages ()
 {
     package_list="$rcdir/pipx_package_list"

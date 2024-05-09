@@ -1,9 +1,0 @@
-cytoolz
-scikit-learn
-sympy
-pipenv
-twine
-python-language-server[all]
-pandas
-sympy
-pipx
