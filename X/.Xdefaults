@@ -97,3 +97,6 @@ URxvt.scrollTtyKeypress: true
 ! clickable URLs).
 URxvt.perl-ext-common: default,matcher,selection-to-clipboard
 URxvt.matcher.button: 2
+
+! Turn off confirming pasting control characters (zsh handles it well)
+URxvt.perl-ext-common:-confirm-paste
