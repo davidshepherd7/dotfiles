@@ -64,6 +64,8 @@
 ;; Get a setq which is checked against defcustom types
 (use-package validate)
 
+(use-package dash)
+
 ;; Have to load org first so that we don't accidentally load the non-straight
 ;; version of it
 (load-file "~/.emacs.d/lisp/ds-org.el")
@@ -378,8 +380,7 @@ index in STRING."
   :config
   (super-save-mode +1)
 
-  ;; TODO: only in my modified version
-  (validate-setq super-save-max-file-characters 80000)
+  (validate-setq super-save-max-buffer-size 80000)
   )
 
 ;; Keep auto saves and backups in one place out of the way
@@ -979,6 +980,9 @@ For magit versions > 2.1.0"
 ;;   :after magit)
 
 (use-package git-link
+  ;; Use my fork for now
+  :straight
+  (git-link :type git :host github :repo "davidshepherd7/git-link" :branch "permalink-support")
   :config
   (validate-setq git-link-open-in-browser nil)
   (validate-setq git-link-default-branch "dev")

@@ -137,3 +137,6 @@ gcc-10
 libgccjit0
 libjansson4
 libjansson-dev
+libxaw7-dev
+libgif-dev
+libtiff-dev
