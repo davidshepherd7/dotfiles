@@ -59,7 +59,6 @@ silversearcher-ag
 curl
 parallel
 rar
-conky-all
 xbacklight
 tmux
 pandoc
@@ -70,7 +69,7 @@ xcb
 libxcb-keysyms1-dev
 libxcb-util0-dev
 shellcheck
-tint2
+polybar
 gdebi
 anki
 rlwrap
@@ -121,3 +120,4 @@ libxaw7-dev
 libgif-dev
 libtiff-dev
 pipx
+gnome-screensaver

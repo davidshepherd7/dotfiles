@@ -53,6 +53,9 @@ mkdir -p ~/.keysnail/
 mkdir -p ~/.config/
 stow_file flake8
 
+mkdir -p ~/.config/polybar
+stow_file polybar
+
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
 sudo stow hwdb -t /etc/udev/hwdb.d --ignore=".dropbox.attr"
