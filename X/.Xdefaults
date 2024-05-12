@@ -93,10 +93,18 @@ URxvt.scrollWithBuffer: true
 URxvt.scrollTtyOutput: false
 URxvt.scrollTtyKeypress: true
 
-! Enable extensions (default includes searchable-scrollback, matcher allows
-! clickable URLs).
-URxvt.perl-ext-common: default,matcher,selection-to-clipboard
-URxvt.matcher.button: 2
+URxvt.print-pipe: cat > ~/scratch/urxvt-scrollback-$(date '+%Y-%m-%d_%H:%M:%S').txt
 
-! Turn off confirming pasting control characters (zsh handles it well)
-URxvt.perl-ext-common:-confirm-paste
+! Configure extensions: 
+!
+! * default includes searchable-scrollback,
+! * matcher allows clickable URLs
+! * selection-to-clipboard - not sure if I'm using this one
+! * Turn off confirming pasting control characters (zsh handles it well).
+!
+! Must be all on one line and no spaces between them
+URxvt.perl-ext-common: default,matcher,selection-to-clipboard,-confirm-paste
+
+! Configure url launching
+URxvt.matcher.button: 2
+URxvt.keysym.C-period: perl:matcher:last ! C-. to open last url

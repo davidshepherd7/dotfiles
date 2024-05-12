@@ -125,8 +125,7 @@ myLayout = avoidStruts(tiled ||| fullWidth |||
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 
--- Handle fullscreen properly and keep gnome compatability settings.
-myEventHook = fullscreenEventHook <+> handleEventHook gnomeConfig
+myEventHook = handleEventHook gnomeConfig
 
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -167,7 +166,7 @@ myWorkspaces = ["1", "2", "3", "dump"]
 
 main = do
      -- xmproc <- spawnPipe "xmobar ~/.xmobarrc"
-     xmonad $ ewmh gnomeConfig
+     xmonad $ ewmhFullscreen (ewmh gnomeConfig
         { modMask    = mod4Mask -- use super as modifier key
         , borderWidth = 2
         , manageHook = myManageHook
@@ -184,7 +183,7 @@ main = do
         -- Unbind some keys
         `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-.", "M-,", "M-t", "M-m", "M-p", "M-P", "M-k"]
         `additionalKeysP` myKeys
-        `removeMouseBindings` [(mod4Mask, button3)]
+        `removeMouseBindings` [(mod4Mask, button3)]) 
 
 -- Some additional keybinds, mostly inspired by chromes tab management
 -- keybinds and whatever else I was used to using.
