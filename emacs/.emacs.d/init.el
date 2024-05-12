@@ -2016,25 +2016,33 @@ for a file to visit if current buffer is not visiting a file."
 ;;   (add-to-list 'frames-only-mode-kill-frame-when-buffer-killed-buffer-list '(regexp . "\\*.*\\.po\\*"))
 ;;   )
 
-(defun ds/find-file-with-line-number-around (orig-fun filename &rest args)
+(defun ds/find-file-noselect-with-line-number-around (orig-fun filename &rest args)
   "Advice for file-file functions such that when given filenames
-like foo.py:123 emacs opens foo.py at line 123."
+    like foo.py:123 emacs opens foo.py at line 123."
   (save-match-data
     (let* ((matched (string-match "^\\(.*\\):\\([0-9]+\\):?$" filename))
            (line-number (and matched
                              (match-string 2 filename)
                              (string-to-number (match-string 2 filename))))
-           (filename (if matched (match-string 1 filename) filename)))
-      (apply orig-fun filename args)
-      (when line-number
-        ;; goto-line is for interactive use
-        (goto-char (point-min))
-        (forward-line (1- line-number))
-        ))))
+           (filename (if matched (match-string 1 filename) filename))
 
-(advice-add #'find-file :around #'ds/find-file-with-line-number-around)
-(advice-add #'find-file-other-frame :around #'ds/find-file-with-line-number-around)
-(advice-add #'find-file-other-window :around #'ds/find-file-with-line-number-around)
+           ;; Call the underlying function
+           (buf (apply orig-fun filename args)))
+
+      ;; Go to the line number if there was one
+      (when line-number
+        (with-current-buffer buf
+          ;; goto-line is for interactive use
+          (goto-char (point-min))
+          (forward-line (1- line-number))))
+
+      ;; Always need to return the buffer for other things to use
+      buf)))
+;; By advising find-file-noselect instead of find-file we also get this
+;; behaviour in lots of other places, e.g. opening files from emacsclient.
+(advice-add #'find-file-noselect :around #'ds/find-file-noselect-with-line-number-around)
+;; (advice-remove #'find-file-noselect #'ds/find-file-noselect-with-line-number-around)
+
 
 
 ;; Feature checks
