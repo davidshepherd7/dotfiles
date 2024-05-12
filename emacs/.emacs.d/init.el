@@ -2016,6 +2016,26 @@ for a file to visit if current buffer is not visiting a file."
 ;;   (add-to-list 'frames-only-mode-kill-frame-when-buffer-killed-buffer-list '(regexp . "\\*.*\\.po\\*"))
 ;;   )
 
+(defun ds/find-file-with-line-number-around (orig-fun filename &rest args)
+  "Advice for file-file functions such that when given filenames
+like foo.py:123 emacs opens foo.py at line 123."
+  (save-match-data
+    (let* ((matched (string-match "^\\(.*\\):\\([0-9]+\\):?$" filename))
+           (line-number (and matched
+                             (match-string 2 filename)
+                             (string-to-number (match-string 2 filename))))
+           (filename (if matched (match-string 1 filename) filename)))
+      (apply orig-fun filename args)
+      (when line-number
+        ;; goto-line is for interactive use
+        (goto-char (point-min))
+        (forward-line (1- line-number))
+        ))))
+
+(advice-add #'find-file :around #'ds/find-file-with-line-number-around)
+(advice-add #'find-file-other-frame :around #'ds/find-file-with-line-number-around)
+(advice-add #'find-file-other-window :around #'ds/find-file-with-line-number-around)
+
 
 ;; Feature checks
 ;; ============================================================
