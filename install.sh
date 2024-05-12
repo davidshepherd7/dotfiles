@@ -24,7 +24,6 @@ stow_file bin
 stow_file calibre
 stow_file psql
 stow_file ag
-stow_file parallel
 stow_file R
 stow_file tint2
 
