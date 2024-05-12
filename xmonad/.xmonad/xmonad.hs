@@ -22,6 +22,8 @@ import XMonad.Actions.CycleWS
 
 -- No border if in full screen mode
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Tabbed
+import XMonad.Layout.Master
 
 -- More layouts
 import XMonad.Layout.ResizableTile
@@ -103,14 +105,12 @@ myManageHook =
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 
-myLayout = avoidStruts(tiled ||| fullWidth |||
-                       noBorders Full)
+myLayout = avoidStruts(tiled ||| noBorders simpleTabbed ||| primaryAndTabs)
   where
     -- Default tiling algorithm: partitions the screen into two panes
     tiled   = Tall 1 delta ratio
 
-    -- Layout with roughly even sized windows, for the first few anyway..
-    fullWidth = Mirror (Tall 1 delta ratio)
+    primaryAndTabs = mastered delta ratio $ simpleTabbed
 
     -- Default proportion of screen occupied by master pane
     ratio   = 1/2
