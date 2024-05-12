@@ -1559,16 +1559,16 @@ $0")
   )
 
 
+
 ;; Don't indent string blocks
+(defun ds/line-in-string-block? (&rest args)
+  "Does this line either end or start as a string?"
+  (save-excursion
+    (or (progn (beginning-of-line) (nth 3 (syntax-ppss)))
+        (progn (end-of-line) (nth 3 (syntax-ppss))))))
 (define-minor-mode suppress-multiline-string-indent-mode
   "Prevent indent commands from indenting multiline strings"
-
-  (defun ds/line-in-string-block? (&rest args)
-    "Does this line either end or start as a string?"
-    (save-excursion
-      (or (progn (beginning-of-line) (nth 3 (syntax-ppss)))
-          (progn (end-of-line) (nth 3 (syntax-ppss))))))
-
+  :init-value nil
   (let ((indent-functions (list #'indent-for-tab-command
                                 #'indent-region
                                 #'indent-according-to-mode)))

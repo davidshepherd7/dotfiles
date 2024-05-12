@@ -359,12 +359,12 @@ the line break."
 
 ;; Grab text from the main buffer
 (defun isearch-text-grab (movement-function)
-  (isearch-yank-internal '(lambda () (funcall movement-function) (point))))
+  (isearch-yank-internal #'(lambda () (funcall movement-function) (point))))
 
 (define-key isearch-mode-map (kbd "M-l")
-  '(lambda () (interactive) (isearch-text-grab 'forward-word)))
+            #'(lambda () (interactive) (isearch-text-grab 'forward-word)))
 (define-key isearch-mode-map (kbd "C-l")
-  '(lambda () (interactive) (isearch-text-grab 'forward-char)))
+            #'(lambda () (interactive) (isearch-text-grab 'forward-char)))
 (define-key isearch-mode-map (kbd "C-l") 'isearch-yank-line)
 
 ;; Remove keys that overlap main keymap in weird or useless ways
