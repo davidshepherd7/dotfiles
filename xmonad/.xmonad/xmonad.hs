@@ -105,18 +105,30 @@ myManageHook =
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 
-myLayout = avoidStruts(tiled ||| noBorders simpleTabbed ||| primaryAndTabs)
+myLayout = avoidStruts(primarySecondaryAndTabs ||| noBorders simpleTabbed)
   where
     -- Default tiling algorithm: partitions the screen into two panes
     tiled   = Tall 1 delta ratio
 
-    primaryAndTabs = mastered delta ratio $ simpleTabbed
+    -- Three windows, then tabs for any extras after that
+    primarySecondaryAndTabs = mastered delta ratio $
+      Mirror (mastered delta ratio $ Mirror(tabbed shrinkText tabTheme))
 
     -- Default proportion of screen occupied by master pane
     ratio   = 1/2
 
     -- Percent of screen to increment by when resizing panes
     delta   = 10/100
+
+    tabTheme :: Theme = def {
+      activeColor         = "#2b4f98"
+      , inactiveColor       = "#cccccc"
+      , activeBorderColor   = "#2b4f98"
+      , inactiveBorderColor = "#cccccc"
+      , activeTextColor     = "white"
+      , inactiveTextColor   = "black"
+      , decoHeight          = 15
+    }
 
 ------------------------------------------------------------------------
 -- Event handling
@@ -183,7 +195,7 @@ main = do
         -- Unbind some keys
         `removeKeysP` ["M-S-q" ,"M-e", "M-r", "M-S-e", "M-S-r", "M-.", "M-,", "M-t", "M-m", "M-p", "M-P", "M-k"]
         `additionalKeysP` myKeys
-        `removeMouseBindings` [(mod4Mask, button3)]) 
+        `removeMouseBindings` [(mod4Mask, button3)])
 
 -- Some additional keybinds, mostly inspired by chromes tab management
 -- keybinds and whatever else I was used to using.
