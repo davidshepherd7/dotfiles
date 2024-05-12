@@ -2000,6 +2000,14 @@ for a file to visit if current buffer is not visiting a file."
     (switch-to-buffer nil)))
 
 
+;; Minibuffer config
+
+(defun ds/insert-buffer-file-path ()
+  (interactive)
+  (insert (buffer-file-name (window-buffer (minibuffer-selected-window)))))
+(define-key minibuffer-mode-map (kbd "C-.") #'ds/insert-buffer-file-path)
+
+
 ;; Only for testing frames-only-mode config
 ;;
 ;; (use-package po-mode

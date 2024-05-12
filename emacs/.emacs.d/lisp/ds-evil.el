@@ -63,9 +63,9 @@
 
   ;; Also leave insert state when using the menu
   (define-key evil-insert-state-map (kbd "<menu>")
-    (lambda () (interactive)
-      (evil-change-to-initial-state)
-      (call-interactively #'counsel-M-x)))
+              (lambda () (interactive)
+                (evil-change-to-initial-state)
+                (call-interactively #'counsel-M-x)))
 
 
   ;; And when running compile
@@ -552,8 +552,11 @@
   (use-package evil-org
     :after org
     :config
-    (define-key evil-outer-text-objects-map (kbd "u") #'evil-org-a-subtree)
-    (define-key evil-inner-text-objects-map (kbd "u") #'evil-org-inner-subtree)
+
+    ;; TODO: these set it globally which breaks it for other modes.
+
+    ;; (define-key evil-outer-text-objects-map (kbd "u") #'evil-org-a-subtree)
+    ;; (define-key evil-inner-text-objects-map (kbd "u") #'evil-org-inner-subtree)
     )
   )
 

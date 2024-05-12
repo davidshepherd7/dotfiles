@@ -15,7 +15,7 @@
   (validate-setq lsp-auto-configure nil)
 
   ;; Shut up the file watch questions for money-srv
-  (validate-setq lsp-file-watch-threshold 8000)
+  (validate-setq lsp-file-watch-threshold 10000)
 
   ;; Don't show documentation unless I ask for it
   (validate-setq lsp-signature-auto-activate nil)

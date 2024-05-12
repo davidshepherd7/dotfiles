@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: newtype
+# --
+from typing import NewType
+$1 = NewType("$1", $2)

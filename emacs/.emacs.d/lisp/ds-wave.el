@@ -65,12 +65,13 @@
          (relative-file (file-relative-name test-file (f-join (projectile-project-root) "money-srv")))
          (test-fn (ds/current-test-function)))
     (setq compile-command
-          (concat "mm m.typecheck && ./money-srv/bin/run_tests -v "
+          (concat "mm m.static-analysis && ./money-srv/bin/run_tests -v "
                   (shell-quote-argument relative-file)
                   (when test-fn
                     (concat " -k " test-fn))
                   ))
     (call-interactively #'compile)))
+
 
 (define-key python-mode-map  (kbd "<f6>") #'ds/money-srv-test)
 
@@ -119,7 +120,8 @@
 
 (require 'apheleia)
 (add-to-list 'apheleia-formatters (list 'wave-black "~/code/monorepo/.root-venv/bin/black" "-"))
-(add-to-list 'apheleia-mode-alist (cons 'python-mode 'wave-black))
+(add-to-list 'apheleia-formatters (list 'wave-ruff "~/code/monorepo/.root-venv/bin/ruff" "format" "-"))
+(add-to-list 'apheleia-mode-alist (cons 'python-mode 'wave-ruff))
 
 (defvar ds-disable-font-lock-files '())
 (setq ds-disable-font-lock-files '("configvars.py"))
