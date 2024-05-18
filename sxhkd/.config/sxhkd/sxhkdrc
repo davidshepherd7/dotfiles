@@ -16,7 +16,7 @@ super + s
 
 super + S
     emacsclient -c -n -e '(switch-to-buffer nil)'
-    
+
 # Take new note
 super + m
     emacsclient -c -n -e '(new-clean-deft)'
@@ -31,7 +31,9 @@ super + c
 
 # Clipboard menu
 super + v
-    clipmenu
+    clipmenu -i && xdotool key shift+Insert
+
+    # -i = case-insensitive
 
 # Disabled b/c I think it's causing emacs to garbage collect a lot? I should try
 # redirecting stdout/stderr and adding nohup etc
@@ -101,4 +103,3 @@ XF86AudioNext
 
 Pause
     desktop-pause.sh -s
-
