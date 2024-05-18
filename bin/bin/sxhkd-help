@@ -1,0 +1,8 @@
+#!/bin/bash -eu
+
+set -o pipefail
+< ~/.config/sxhkd/sxhkdrc \
+  awk '/^[a-z]/ && last {print $0,"\t",last} {last=""} /^#/{last=$0}'  |\
+    column -t -s $'\t' |\
+    dmenu -l 20 |\
+    > /dev/null

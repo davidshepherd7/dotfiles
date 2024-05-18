@@ -1,67 +1,58 @@
+# Terminal
 super + t
     urxvt
 
+# Monorepo terminal
 super + d
     urxvt -e "$SHELL" -c 'cd "$HOME/code/monorepo" && exec $SHELL'
 
-super + D
-    urxvt -e "$SHELL" -c 'cd "$HOME/code/deliverance" && exec $SHELL'
-
+# Browser
 super + r
     sensible-browser
 
+# Emacs
 super + s
     emacsclient -c -n -e '(ds/switch-to-non-org-buffer)'
 
 super + S
     emacsclient -c -n -e '(switch-to-buffer nil)'
     
+# Take new note
 super + m
     emacsclient -c -n -e '(new-clean-deft)'
 
+# Email
 super + a
     sensible-browser 'mail.google.com'
 
+# Todo list
 super + c
     emacsclient -c -e '(ds/show-wave-todo-list)'
 
+# Clipboard menu
 super + v
-    emacsclient -e '(org-agenda-list)'
+    clipmenu
 
 # Disabled b/c I think it's causing emacs to garbage collect a lot? I should try
 # redirecting stdout/stderr and adding nohup etc
 # super + p
 #     helm-dmenu.sh
 
+# Run
 super + p
     dmenu_run
 
-super + P
-    dmenu_run
-
+# Lock
 super + equal
     gnome-screensaver-command -l
 
+# ipython
 super + period
     urxvt -e ipython3
 
 super + g
     emacs-anywhere.sh
 
-# numpad launchers
-KP_End
-    urxvt
-
-KP_Down
-    emacsclient -c -n -e '(switch-to-buffer nil)'
-
-KP_Next
-    sensible-browser
-
-super + button3
-    cd ~/code/xtip && python3 -m xtip
-
-# function keys
 XF86AudioMute
     amixer -D pulse sset Master mute
 
@@ -78,22 +69,26 @@ XF86MonBrightnessDown
     xbacklight -20
 
 Print
-    shutter
+    flameshot gui
 
+# Help
+super + F1
+    sxhkd-help
+
+# Colemak keyboard
 super + F10
     keybinds.sh pl david-gb-colemak
 
+# Qwerty keyboard
 super + F11
     setxkbmap gb
 
 super + F12
     keybinds.sh gb
 
+# Postgres
 super + f
     urxvt -e pgcli -U chimelife -h localhost wavelocal --no-warn
-
-super + F
-    urxvt -e psql -U hafnium hafnium
 
 XF86AudioPlay
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
@@ -106,3 +101,4 @@ XF86AudioNext
 
 Pause
     desktop-pause.sh -s
+
