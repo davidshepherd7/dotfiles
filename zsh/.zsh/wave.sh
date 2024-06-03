@@ -67,3 +67,6 @@ export WAVE_EXPERIMENTAL_SEMGREP_IN_TYPECHECK=1
 export WAVE_SEMGREP_REPORTING_STYLE="emacs"
 
 alias coverage_any_version="firefox ~/code/monorepo/money-srv/.money-srv-venv/coverage/*/htmlcov/index.html"
+
+# Broken linter
+export BYPASS_RUN_SWIFTLINT=1

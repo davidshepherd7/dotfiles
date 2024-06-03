@@ -183,14 +183,18 @@ See URL `http://mypy-lang.org/'."
       (--> (buffer-substring (point-min) (point-max))
            (s-split "\n" it)))))
 
+;; Separate history so that it doesn't get clogged up with symbols
+(defvar ds/python-file-import-history '())
+
 (defun ds/import (insert-here)
   "Insert an import statement at the start of the file."
   (interactive "P")
   (let* ((files (--> (projectile-current-project-files)
-                     (-filter (lambda (path) (or (s-ends-with-p ".py" path) (s-contains-p "_test" path))) it)
-                     (append ds/python-stdlib ds/python-third-party-libs it)))
+                  (-filter (lambda (path) (or (s-ends-with-p ".py" path) (s-contains-p "_test" path))) it)
+                  (append ds/python-stdlib ds/python-third-party-libs it)))
          (default-symbol (when (symbol-at-point) (symbol-name (symbol-at-point))))
-         (file (completing-read "import file: " files))
+         (default-file (s-snake-case default-symbol))
+         (file (completing-read "import file: " files nil nil default-file 'ds/python-file-import-history))
          (file-symbols (ds/python-importable-symbols (f-join (projectile-project-root) file)))
          (individual-symbol (completing-read "symbol(s): " file-symbols nil nil default-symbol))
          (import-statement-line (ds/path-to-import-statement file individual-symbol)))
