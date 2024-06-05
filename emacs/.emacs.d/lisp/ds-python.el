@@ -234,6 +234,28 @@ See URL `http://mypy-lang.org/'."
     (insert line)
     (message "Added import: %s" line)))
 
+;; Usage: edit ds/import to call this function!
+(defun ds/insert-as-typechecking-import (line)
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^if TYPE_CHECKING:" nil 'noerror)
+    (beginning-of-line)
+    (if (looking-at-p "^if TYPE_CHECKING")
+        (progn
+          (forward-line)
+          (beginning-of-line)
+          (insert "    ")
+          (insert line))
+      (progn
+        (goto-char (ds/pick-import-location))
+        (insert "from typing import TYPE_CHECKING\n")
+        (insert "if TYPE_CHECKING:\n")
+        (insert "    ")
+        (insert line))
+      ))
+  (message "Added type checking import: %s" line))
+
 (define-key python-mode-map (kbd "C-,") #'ds/import)
 
 
