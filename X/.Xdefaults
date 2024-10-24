@@ -71,8 +71,8 @@
 
 
 
-! Nice fonts
-URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
+! Nice fonts, including good unicode symbol support from Symbola
+URxvt*font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true, xft:Symbola
 
 ! Scroll bar
 URxvt*scrollBar: false
