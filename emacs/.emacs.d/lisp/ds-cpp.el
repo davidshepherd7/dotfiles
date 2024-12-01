@@ -2,7 +2,6 @@
 (require 'cc-mode)
 (require 's)
 
-(define-key c-mode-map (kbd "C-c") nil)
 (add-hook 'c-mode-hook #'set-tab)
 
 ;; Don't auto align macro newline escapes, it's not always consistent with how

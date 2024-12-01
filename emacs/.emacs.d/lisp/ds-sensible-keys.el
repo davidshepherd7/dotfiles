@@ -21,8 +21,10 @@
 
 
 ;; kill emacs on a key is dangerous
-(global-unset-key (kbd "C-\\ C-c"))
+(global-unset-key (kbd "C-x C-c"))
 
+;; Don't have the suspend button somewhere that I can press it easily...
+(global-set-key (kbd "C-x C-z") nil)
 
 ;; Unbind old case change keys
 (global-unset-key (kbd "M-'"))
@@ -98,13 +100,13 @@ the line break."
 
 
 ;; Cut
-(global-set-key (kbd "C-x") (lambda () (interactive) (dwim-end-of-line 'kill-region)))
+;; (global-set-key (kbd "C-x") (lambda () (interactive) (dwim-end-of-line 'kill-region)))
 (global-set-key (kbd "M-x") (lambda () (interactive) (dwim-entire-line 'kill-region)))
 (global-set-key (kbd "C-S-x") (lambda () (interactive) (dwim-start-of-line 'kill-region)))
 ;; (global-set-key (kbd "C-M-x") (lambda () (interactive) (function-on-block 'kill-region)))
 
 ;; Copy
-(global-set-key (kbd "C-c") (lambda () (interactive) (dwim-end-of-line 'kill-ring-save)))
+;; (global-set-key (kbd "C-c") (lambda () (interactive) (dwim-end-of-line 'kill-ring-save)))
 (global-set-key (kbd "M-c") (lambda () (interactive) (dwim-entire-line 'kill-ring-save)))
 (global-set-key (kbd "C-S-c") (lambda () (interactive) (dwim-start-of-line 'kill-ring-save)))
 ;; (global-set-key (kbd "C-M-c") (lambda () (interactive) (function-on-block 'kill-ring-save)))
@@ -243,11 +245,8 @@ the line break."
 
 ;; Now assign new keys for the things we just wrote all over
 (global-set-key (kbd "C-\\") ctl-x-map)
-(global-set-key (kbd "C-\\ C-\\") 'exchange-point-and-mark)
+;; (global-set-key (kbd "C-\\ C-\\") 'exchange-point-and-mark)
 ;; (global-set-key (kbd "M-\\") 'execute-extended-command) ;; also menu key
-
-;; Don't have the suspend button somewhere that I can press it easily...
-(global-set-key (kbd "C-\\ C-z") nil)
 
 (global-set-key (kbd "C-l") 'end-of-line)
 (global-set-key (kbd "M-C-l") 'forward-paragraph)
@@ -373,7 +372,6 @@ the line break."
 (define-key isearch-mode-map (kbd "C-q") nil)
 (define-key isearch-mode-map (kbd "C-l") nil)
 ;; (define-key isearch-mode-map (kbd "C-w") nil)
-(define-key isearch-mode-map (kbd "C-x") nil)
 (define-key isearch-mode-map (kbd "C-y") nil)
 (define-key isearch-mode-map (kbd "C-z") nil)
 (define-key isearch-mode-map (kbd "M-y") nil)
@@ -402,9 +400,6 @@ the line break."
 (defun sensible-org-mode-keys ()
   (interactive)
 
-  ;; kill C-c
-  (define-key org-mode-map (kbd "C-c") 'nil)
-
   ;; kill some other over writing commands
   (define-key org-mode-map (kbd "C-k") 'nil)
   (define-key org-mode-map (kbd "C-j") 'nil)
@@ -427,29 +422,6 @@ the line break."
   (add-hook 'org-mode-hook 'sensible-org-mode-keys))
 
 
-;; yas mode
-
-;; (defun sensible-yas-mode-keys ()
-;;   (interactive)
-
-;;   ;; kill C-c
-;;   (define-key yas-minor-mode-map (kbd "C-c") 'nil))
-
-;; (when (boundp 'yas-minor-mode-hook)
-;;   (add-hook 'yas-minor-mode-hook 'sensible-yas-mode-keys))
-
-
-;; Haskell mode
-;; ============================================================
-
-(defun sensible-haskell-keys ()
-  (interactive)
-
-  (define-key haskell-mode-map (kbd "C-c") 'nil)
-  (define-key haskell-mode-map (kbd "C-x") 'nil))
-
-(add-hook 'haskell-mode-hook 'sensible-haskell-keys)
-
 
 ;; emacs lisp mode
 ;; ============================================================
@@ -471,18 +443,6 @@ the line break."
 ;; remove all keybinds from a major mode.
 
 
-;; Bash
-;; ============================================================
-
-
-(defun sensible-bash-keys ()
-  (interactive)
-
-  (define-key sh-mode-map (kbd "C-c") 'nil)
-  (define-key sh-mode-map (kbd "C-x") 'nil))
-
-(add-hook 'sh-mode-hook 'sensible-bash-keys)
-
 
 ;; Mark various regions
 ;; ============================================================
@@ -492,10 +452,6 @@ the line break."
 (global-set-key (kbd "C-a") 'er/expand-region)
 (global-set-key (kbd "C-S-a") (lambda () (interactive) (er/expand-region -1)))
 
-
-
-(require 'cc-mode)
-(define-key c-mode-base-map (kbd "C-c") '())
 
 
 ;; Help mode
