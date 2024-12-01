@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: countrysentry
+# --
+wavelog.report_to_sentry(
+    "$0",
+    level="info",
+    extra_tags={
+        "team": "country-split-edge-cases",
+    },
+)

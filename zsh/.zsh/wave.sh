@@ -6,6 +6,7 @@ alias wl="cd ~/code/monorepo && ~/code/monorepo/money-srv/bin/runin local"
 alias wlt="cd ~/code/monorepo && ~/code/monorepo/money-srv/bin/runin local tool"
 
 alias mm="make -C ~/code/monorepo"
+alias mc="make -C ~/code/monorepo/multi-country"
 
 alias recent-sms="watch -d -n 0.2 -x -- ~/code/monorepo/money-srv/bin/runin local sql -x -c \"SELECT when_created, their_number, body FROM text_messages WHERE when_created > NOW() at time zone 'utc' - interval '1 minutes' ORDER BY when_created DESC LIMIT 100\""
 
@@ -70,3 +71,6 @@ alias coverage_any_version="firefox ~/code/monorepo/money-srv/.money-srv-venv/co
 
 # Broken linter
 export BYPASS_RUN_SWIFTLINT=1
+
+# eslint is unreasonably slow
+export BYPASS_RUN_JS_CODE_QUALITY=1

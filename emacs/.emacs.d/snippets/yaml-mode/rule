@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: rule
+# --
+  - id: $1
+    message: 'TODO'
+    severity: ERROR
+    languages:
+      - python
+    $0
+

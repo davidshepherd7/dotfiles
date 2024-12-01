@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: typechecking
+# --
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    $0

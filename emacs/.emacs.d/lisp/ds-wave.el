@@ -65,7 +65,8 @@
          (relative-file (file-relative-name test-file (f-join (projectile-project-root) "money-srv")))
          (test-fn (ds/current-test-function)))
     (setq compile-command
-          (concat "mm m.static-analysis && ./money-srv/bin/run_tests -v "
+          ;; (concat "mm m.static-analysis && ./money-srv/bin/old_run_tests -v "
+          (concat "mm m.static-analysis && wave m run-tests -- -v "
                   (shell-quote-argument relative-file)
                   (when test-fn
                     (concat " -k " test-fn))

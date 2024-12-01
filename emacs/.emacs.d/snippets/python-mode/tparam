@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: tparam
+# --
+@pytest.mark.parametrize("$1", [$0])
+def test_$2($1) -> None:
+    

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: autouse
+# --
+@pytest.fixture(autouse=True)
+def $1() -> Iterator[None]:
+    yield $0

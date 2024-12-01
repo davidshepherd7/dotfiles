@@ -1,0 +1,18 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: script
+# --
+from framework import db
+from framework.moneyapp import g
+
+@db.script_context()
+def main():
+    # do stuff with g.session
+    g.session.query(...)
+    # commit to release the database lock
+    g.session.commit()
+    
+    # do stuff with output of query
+    
+
+if __name__ == '__main__':
+    main()

@@ -38,9 +38,9 @@ fi
 
 tempdir=$(mktemp "/tmp/upgrade-android-studio-temp-$USER.XXXXX" -d)
 trap "rm -rf $tempdir" EXIT
-sudo tar -xf "$tar_file" --directory "$tempdir"
+tar -xf "$tar_file" --directory "$tempdir"
 
-sudo rm -r /opt/android-studio
+sudo rm -r /opt/android-studio || true
 sudo mv "$tempdir/android-studio" /opt/android-studio
 
 # Check the version
