@@ -186,6 +186,39 @@ See URL `http://mypy-lang.org/'."
 ;; Separate history so that it doesn't get clogged up with symbols
 (defvar ds/python-file-import-history '())
 
+;; Should probably auto generate this list from history of imports but that's
+;; more work..
+(defvar ds/import-known-symbol-files-alist '())
+(setq ds/import-known-symbol-files-alist
+      (-flatten (-map (lambda (x) (-map (lambda (sym) (cons sym (car x))) (cdr x)))
+                      '(
+                        ("money-srv/framework/configvars.py" "db_config" "env_config" "random_check_probability" "deterministic_check_probability")
+                        ("wavelib/wavelib/countries.py"
+                         "ETHIOPIA"
+                         "GHANA"
+                         "NIGERIA"
+                         "SENEGAL"
+                         "COTEDIVOIRE"
+                         "UGANDA"
+                         "QUICQUIDLIBYA"
+                         "MALI"
+                         "BURKINAFASO"
+                         "BENIN"
+                         "TOGO"
+                         "GAMBIA"
+                         "NIGER"
+                         "CAMEROON"
+                         "GUINEA"
+                         "SIERRALEONE"
+                         "GUINEABISSAU")
+                        ("wavelib/wavelib/currencies.py" "M" "C")
+                        ("money-srv/framework/moneyapp.py" "g")
+                        ("money-srv/framework/" "wavelog")
+                        ("money-srv/framework/exceptions.py" "UserFacingError")
+                        ("money-srv/framework/multi_country.py" "get_country" "require_country" "assert_country")
+                        ("money-srv/unittests/decorators.py" "in_country")
+                        ))))
+
 (defun ds/import (insert-here)
   "Insert an import statement at the start of the file."
   (interactive "P")
@@ -193,10 +226,13 @@ See URL `http://mypy-lang.org/'."
                   (-filter (lambda (path) (or (s-ends-with-p ".py" path) (s-contains-p "_test" path))) it)
                   (append ds/python-stdlib ds/python-third-party-libs it)))
          (default-symbol (when (symbol-at-point) (symbol-name (symbol-at-point))))
-         (default-file (s-snake-case default-symbol))
-         (file (completing-read "import file: " files nil nil default-file 'ds/python-file-import-history))
-         (file-symbols (ds/python-importable-symbols (f-join (projectile-project-root) file)))
-         (individual-symbol (completing-read "symbol(s): " file-symbols nil nil default-symbol))
+         (default-symbol-known-file (cdr (assoc default-symbol ds/import-known-symbol-files-alist)))
+         (file (if default-symbol-known-file
+                   default-symbol-known-file
+                 (completing-read "import file: " files nil nil nil 'ds/python-file-import-history)))
+         (individual-symbol (if default-symbol-known-file
+                                default-symbol
+                              (completing-read "symbol(s): " (ds/python-importable-symbols (f-join (projectile-project-root) file)) nil nil default-symbol)))
          (import-statement-line (ds/path-to-import-statement file individual-symbol)))
     (if insert-here
         (insert import-statement-line)
