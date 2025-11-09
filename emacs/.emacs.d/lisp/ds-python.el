@@ -298,8 +298,30 @@
       ))
   (message "Added type checking import: %s" line))
 
-(define-key python-mode-map (kbd "C-,") #'ds/import)
 
+(require 'dumb-jump)
+(defun ds/dumb-import-find-file (symbol)
+  (--> (dumb-jump-fetch-file-results symbol)
+       (plist-get it :results)
+       (-map (lambda (result) (plist-get result :path)) it)
+       (-map (lambda (path) (file-relative-name (expand-file-name path) (project-root (project-current)))) it)
+       (seq-uniq it)
+       (if (= (seq-length it) 1) (seq-first it) (completing-read "files: " it))
+       ))
+
+
+(defun ds/dumb-import ()
+  (interactive)
+  (let* ((symbol (symbol-name (symbol-at-point)))
+         (symbol-known-file (cdr (assoc symbol ds/import-known-symbol-files-alist)))
+         (file (if symbol-known-file
+                   symbol-known-file
+                 (ds/dumb-import-find-file symbol)))
+         (import-statement-line (ds/path-to-import-statement file symbol)))
+    (ds/insert-as-import import-statement-line)))
+
+
+(define-key python-mode-map (kbd "C-,") #'ds/dumb-import)
 
 
 ;; Dicts to/from kwargs
