@@ -1926,6 +1926,8 @@ for a file to visit if current buffer is not visiting a file."
   :config
   (validate-setq graphql-indent-level 4))
 
+(use-package go-mode)
+
 (defun ds/insert-ansi-code ()
   (interactive)
   (let* ((colours '(("Default" . "0")

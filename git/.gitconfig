@@ -1,5 +1,6 @@
 [user]
 	email = davidshepherd7@gmail.com
+    # email = david@wave.com
 	name = David Nikel-Shepherd
 
 [core]
@@ -74,7 +75,7 @@
     show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
 
     # Show branches by date with some extra data
-    recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d) %(objectname:short) %(refname:lstrip=2)\" refs/heads/ | head -n ${1:-10}' "$@"
+    recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d) %(objectname:short) %(refname:lstrip=2)\" refs/heads/ | head -n ${1:-20}' "$@"
 
 [include]
     path = ~/.keys/hub-gitconfig

@@ -1,0 +1,27 @@
+#! /usr/bin/env python3
+
+import sys
+import argparse
+import random
+
+
+def parse_arguments(argv):
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("max", default=None, help="")
+
+    args = parser.parse_args(argv)
+    return args
+
+
+def main(argv):
+    args = parse_arguments(argv)
+
+    print(random.choice(range(int(args.max))) + 1)
+
+    return 0
+
+
+# If this script is run from a shell then run main() and return the result.
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

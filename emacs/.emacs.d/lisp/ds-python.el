@@ -51,6 +51,10 @@
                   ;; face for this match
                   (1 font-lock-variable-name-face t))))))
 
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(pyright "\\([a-zA-Z0-9./_-]*?\\):\\([0-9]*\\):\\([0-9]*\\) - error:" 1 2))
+(add-to-list 'compilation-error-regexp-alist 'pyright)
+
 
 (defun ds/shell-to-python ()
   (interactive)
@@ -77,49 +81,37 @@
 (put 'flycheck-python-mypy-executable 'safe-local-variable (lambda (value) t))
 (put 'flycheck-ds-python-dmypy-executable 'safe-local-variable (lambda (value) t))
 
-(defun ds/flycheck-mypy-find-project-root (_checker)
-  "Compute an appropriate working-directory for flycheck-mypy.
-This is either a parent directory containing a flycheck-mypy.ini, or nil."
-  (and
-   buffer-file-name
-   (locate-dominating-file buffer-file-name "mypy.ini")))
+;; (defun ds/flycheck-mypy-find-project-root (_checker)
+;;   "Compute an appropriate working-directory for flycheck-mypy.
+;; This is either a parent directory containing a flycheck-mypy.ini, or nil."
+;;   (and
+;;    buffer-file-name
+;;    (locate-dominating-file buffer-file-name "mypy.ini")))
 
-(flycheck-define-checker ds-python-dmypy
-  "Mypy syntax and type checker daemon.
+;; (flycheck-define-checker ds-python-dmypy
+;;   "Mypy syntax and type checker daemon.
 
-See URL `http://mypy-lang.org/'."
-  :command ("dmypy"
-            "run"
-            )
-  :error-patterns
-  ((error line-start (file-name) ":" line (optional ":" column)
-          ": error:" (message) line-end)
-   (warning line-start (file-name) ":" line (optional ":" column)
-            ": warning:" (message) line-end)
-   (info line-start (file-name) ":" line (optional ":" column)
-         ": note:" (message) line-end))
-  :modes python-mode
-  ;; Ensure the file is saved, to work around
-  ;; https://github.com/python/mypy/issues/4746.
-  :predicate flycheck-buffer-saved-p
-  :working-directory ds/flycheck-mypy-find-project-root)
-(add-to-list 'flycheck-checkers 'ds-python-dmypy 'append)
+;; See URL `http://mypy-lang.org/'."
+;;   :command ("dmypy"
+;;             "run"
+;;             )
+;;   :error-patterns
+;;   ((error line-start (file-name) ":" line (optional ":" column)
+;;           ": error:" (message) line-end)
+;;    (warning line-start (file-name) ":" line (optional ":" column)
+;;             ": warning:" (message) line-end)
+;;    (info line-start (file-name) ":" line (optional ":" column)
+;;          ": note:" (message) line-end))
+;;   :modes python-mode
+;;   ;; Ensure the file is saved, to work around
+;;   ;; https://github.com/python/mypy/issues/4746.
+;;   :predicate flycheck-buffer-saved-p
+;;   :working-directory ds/flycheck-mypy-find-project-root)
+;; (add-to-list 'flycheck-checkers 'ds-python-dmypy 'append)
 
 ;; pylint is overactive 
 (setq flycheck-checkers (delete 'python-pylint flycheck-checkers))
 
-
-(use-package flycheck-prospector 
-  :config
-  (add-to-list 'flycheck-checkers 'python-prospector)
-  ;; Run prospector if dmypy passes
-  ;; (flycheck-add-next-checker 'ds-python-dmypy 'python-prospector)
-
-  ;; ^ Don't run it, it's slow as hell
-
-  ;; Allow configuring this from dir locals
-  (put 'flycheck-python-prospector-executable 'safe-local-variable (lambda (value) t))
-  )
 
 
 
@@ -192,7 +184,9 @@ See URL `http://mypy-lang.org/'."
 (setq ds/import-known-symbol-files-alist
       (-flatten (-map (lambda (x) (-map (lambda (sym) (cons sym (car x))) (cdr x)))
                       '(
-                        ("money-srv/framework/configvars.py" "db_config" "env_config" "random_check_probability" "deterministic_check_probability")
+                        ("wavelib/wavelib/timelib.py" "now" "MILLISECOND" "SECOND" "MINUTE" "HOUR" "DAY" "WEEK" "MONTH" "YEAR" "Time" "Date" "DateTime" "TimeDelta")
+                        ("money-srv/framework/configvars.py" "db_config" "env_config")
+                        ("money-srv/framework/sampling.py"  "random_check_probability" "deterministic_check_probability")
                         ("wavelib/wavelib/countries.py"
                          "ETHIOPIA"
                          "GHANA"
@@ -210,13 +204,24 @@ See URL `http://mypy-lang.org/'."
                          "CAMEROON"
                          "GUINEA"
                          "SIERRALEONE"
-                         "GUINEABISSAU")
+                         "GUINEABISSAU"
+                         "Country")
+                        ("unittests/fixtures.py" "f")
+                        ("lib/localization/tags.py" "U" "E")
                         ("wavelib/wavelib/currencies.py" "M" "C")
                         ("money-srv/framework/moneyapp.py" "g")
-                        ("money-srv/framework/" "wavelog")
+                        ("money-srv/framework/__init__.py" "wavelog")
                         ("money-srv/framework/exceptions.py" "UserFacingError")
                         ("money-srv/framework/multi_country.py" "get_country" "require_country" "assert_country")
                         ("money-srv/unittests/decorators.py" "in_country")
+                        ("money-srv/unittests/__init__.py" "fxlib")
+                        ;; stdlib
+                        ("typing" "Any" "TypeVar" "Literal" "Final" "cast" "assert_never")
+                        ("decimal" "Decimal")
+                        ("dataclasses" "dataclass")
+                        ("collections.abc" "Sequence" "Iterator")
+                        ("contextvars" "ContextVar")
+                        ("contextlib" "contextmanager" "nullcontext")
                         ))))
 
 (defun ds/import (insert-here)
@@ -247,6 +252,7 @@ See URL `http://mypy-lang.org/'."
                    (s-chop-prefix "money-srv/" it)
                    (s-chop-prefix "wavesms/src/" it)
                    (s-chop-prefix "wavemodem/src/" it)
+                   (s-chop-prefix "tools/wavecli/" it)
                    (s-chop-prefix "wavelib/" it)
                    (s-chop-suffix ".py" it)
                    (s-chop-suffix "/__init__" it)

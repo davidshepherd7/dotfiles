@@ -1,47 +1,46 @@
+# import math
+# import itertools as it
+# import functools as ft
+# import operator as op
+# import sys
+# import os
+# import os.path
 
-import math
-import itertools as it
-import functools as ft
-import operator as op
-import sys
-import os
-import os.path
+# # Plotting
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
+# from matplotlib.pyplot import subplots
+# from matplotlib.pyplot import show as pltshow
 
-# Plotting
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.pyplot import subplots
-from matplotlib.pyplot import show as pltshow
+# # and import some common functions into the global namespace
+# from scipy.linalg import norm, eig
+# from scipy import sin, cos, tan, log, pi, sqrt, exp, mean, log2, log10
+# from math import atan2, acos
 
-# and import some common functions into the global namespace
-from scipy.linalg import norm, eig
-from scipy import sin, cos, tan, log, pi, sqrt, exp, mean, log2, log10
-from math import atan2, acos
+# import sympy
+# from sympy import Rational as rat
+# from sympy import pretty as spretty
 
-import sympy
-from sympy import Rational as rat
-from sympy import pretty as spretty
+# import pandas as pd
+# import scipy as sp
+# import numpy as np
 
-import pandas as pd
-import scipy as sp
-import numpy as np
+# import cytoolz as tlz
 
-import cytoolz as tlz
+# # import oomphpy
+# # import oomphpy.micromagnetics as mm
+# # import oomphpy.tests
+# # import oomphpy.matrices
+# # from oomphpy.matrices import ascii2coo
+# # from oomphpy.matrices import ascii2array
 
-# import oomphpy
-# import oomphpy.micromagnetics as mm
-# import oomphpy.tests
-# import oomphpy.matrices
-# from oomphpy.matrices import ascii2coo
-# from oomphpy.matrices import ascii2array
+# # Give me lists!
 
-# Give me lists!
+# def lmap(*args):
+#     return list(map(*args))
 
-def lmap(*args):
-    return list(map(*args))
+# def lfilter(*args):
+#     return list(filter(*args))
 
-def lfilter(*args):
-    return list(filter(*args))
-
-# Always show plots immediately
-plt.ion()
+# # Always show plots immediately
+# plt.ion()

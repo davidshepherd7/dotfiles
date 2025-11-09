@@ -28,3 +28,6 @@ hg/.hgex
 /bin/bin/tandem
 /bin/bin/circleci
 /bin/bin/pycharm
+/bin/bin/cockroach
+/bin/bin/cockroach-sql
+/bin/bin/csvq

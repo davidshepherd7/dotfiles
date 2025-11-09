@@ -1,7 +1,4 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# key: snoop
+# key: contextvar
 # --
-import snoop
-
-
-@snoop.snoop
+$1 = ContextVar[$0]($1, default=None)

@@ -353,6 +353,20 @@
       (evil-range (region-beginning) (region-end))))
   (define-key evil-outer-text-objects-map (kbd "f") #'ds/evil-a-defun)
 
+  ;; (defun ds/next-indentation-decrease (&optional backward)
+  ;;   (interactive)
+  ;;   (save-match-data
+  ;;     (let* ((pad (save-excursion (back-to-indentation) (current-column)))
+  ;;            (regex (concat "^ \\{0," (number-to-string (- pad 1)) "\\}[^ \\n]")))
+  ;;       (if backward
+  ;;           (re-search-backward regex nil t)
+  ;;         (re-search-forward regex nil t)))))
+
+  ;; (evil-define-text-object ds/evil-a-block (count &optional beg end type)
+  ;;   "Select a block with fixed indentation"
+  ;;   (evil-range (save-excursion (ds/next-indentation-decrease t))
+  ;;               (save-excursion (ds/next-indentation-decrease))))
+  ;; (define-key evil-outer-text-objects-map (kbd "C->") #'ds/evil-a-block)
 
   (use-package evil-args
     :ensure t

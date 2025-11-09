@@ -61,6 +61,15 @@ kube_secret(){
     echo ""
 }
 
+circleci_scp() {
+    local_path="$1"
+    remote_path="$2"
+    shift
+    shift
+    
+    ssh "$@" < "$local_path"  "bash -c 'cat - > $remote_path'"
+}
+
 # Playing with semgrep in typecheck
 export WAVE_EXPERIMENTAL_SEMGREP_IN_TYPECHECK=1
 

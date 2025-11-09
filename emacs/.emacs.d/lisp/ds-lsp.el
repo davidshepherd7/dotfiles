@@ -23,6 +23,10 @@
   ;; Don't truncate logs
   (validate-setq lsp-log-max t)
 
+  ;; lsps emit a lot of info-level "errors" like unused variables. Ignore them.
+  (validate-setq flycheck-navigation-minimum-level 'error)
+  (validate-setq flycheck-error-list-minimum-level 'error)
+
   ;; But do exclude some junk!
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.mypy_cache\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__pycache__\\'")
@@ -68,8 +72,10 @@
                          (lsp)))
   :config
 
-  (validate-setq lsp-pyright-log-level
-                 ;;"trace"
-                 "warning"
-                 )
+  ;; (validate-setq lsp-pyright-log-level
+  ;;                ;;"trace"
+  ;;                "warning"
+  ;;                )
+
+  (add-hook 'python-mode-hook #'lsp-diagnostics-mode)
   )
