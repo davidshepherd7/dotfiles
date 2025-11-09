@@ -224,40 +224,22 @@
                         ("contextlib" "contextmanager" "nullcontext")
                         ))))
 
-(defun ds/import (insert-here)
-  "Insert an import statement at the start of the file."
-  (interactive "P")
-  (let* ((files (--> (projectile-current-project-files)
-                  (-filter (lambda (path) (or (s-ends-with-p ".py" path) (s-contains-p "_test" path))) it)
-                  (append ds/python-stdlib ds/python-third-party-libs it)))
-         (default-symbol (when (symbol-at-point) (symbol-name (symbol-at-point))))
-         (default-symbol-known-file (cdr (assoc default-symbol ds/import-known-symbol-files-alist)))
-         (file (if default-symbol-known-file
-                   default-symbol-known-file
-                 (completing-read "import file: " files nil nil nil 'ds/python-file-import-history)))
-         (individual-symbol (if default-symbol-known-file
-                                default-symbol
-                              (completing-read "symbol(s): " (ds/python-importable-symbols (f-join (projectile-project-root) file)) nil nil default-symbol)))
-         (import-statement-line (ds/path-to-import-statement file individual-symbol)))
-    (if insert-here
-        (insert import-statement-line)
-      (ds/insert-as-import import-statement-line))))
 
 (defun ds/path-to-import-statement (path symbol)
   (let* ((module (--> path
-                   (s-trim it)
-                   (f-join (projectile-project-root) it)
-                   (file-relative-name it (projectile-project-root))
-                   (s-chop-prefix "money-srv/src/" it)
-                   (s-chop-prefix "money-srv/" it)
-                   (s-chop-prefix "wavesms/src/" it)
-                   (s-chop-prefix "wavemodem/src/" it)
-                   (s-chop-prefix "tools/wavecli/" it)
-                   (s-chop-prefix "wavelib/" it)
-                   (s-chop-suffix ".py" it)
-                   (s-chop-suffix "/__init__" it)
-                   (s-replace "/" "." it)
-                   )))
+                      (s-trim it)
+                      (f-join (projectile-project-root) it)
+                      (file-relative-name it (projectile-project-root))
+                      (s-chop-prefix "money-srv/src/" it)
+                      (s-chop-prefix "money-srv/" it)
+                      (s-chop-prefix "wavesms/src/" it)
+                      (s-chop-prefix "wavemodem/src/" it)
+                      (s-chop-prefix "tools/wavecli/" it)
+                      (s-chop-prefix "wavelib/" it)
+                      (s-chop-suffix ".py" it)
+                      (s-chop-suffix "/__init__" it)
+                      (s-replace "/" "." it)
+                      )))
     (if (equal symbol "")
         (s-concat "import " module "\n")
       (s-concat "from " module " import " symbol "\n"))))
@@ -299,8 +281,23 @@
   (message "Added type checking import: %s" line))
 
 
+(defcustom ds/import-find-file-backend
+  'manual
+  "TODO"
+  :group 'ds/import
+  :type '(choice manual lsp dumb-jump))
+
+(validate-setq ds/import-find-file-backend 'dumb-jump)
+
+(defun ds/import-find-file-manual (symbol)
+  (let ((files (--> (projectile-current-project-files)
+                    (-filter (lambda (path) (or (s-ends-with-p ".py" path) (s-contains-p "_test" path))) it)
+                    (append ds/python-stdlib ds/python-third-party-libs it))))
+    (completing-read "import file: " files nil nil nil 'ds/python-file-import-history)))
+
+
 (require 'dumb-jump)
-(defun ds/dumb-import-find-file (symbol)
+(defun ds/import-find-file-dumb-jump (symbol)
   (--> (dumb-jump-fetch-file-results symbol)
        (plist-get it :results)
        (-map (lambda (result) (plist-get result :path)) it)
@@ -309,19 +306,38 @@
        (if (= (seq-length it) 1) (seq-first it) (completing-read "files: " it))
        ))
 
+;; (require 'lsp)
+(defun ds/import-find-file-lsp (symbol)
+  (--> (lsp-request "workspace/symbol" (lsp-make-workspace-symbol-params :query symbol))
+       ;; LSP only seems to support searching for partial matches, we want exact
+       ;; matches only so filter.
+       (seq-filter (lambda (resp) (equal (map-elt resp "name") symbol)) it)
+       (seq-map (lambda (resp)
+                  (--> resp
+                       (map-elt it "location")
+                       (map-elt it "uri")
+                       (s-chop-prefix "file://" it)))
+                it)
+       (seq-uniq it)
+       (if (= (seq-length it) 1) (seq-first it) (completing-read "files: " it))))
 
-(defun ds/dumb-import ()
-  (interactive)
+(defun ds/import (use-lsp)
+  (interactive "P")
   (let* ((symbol (symbol-name (symbol-at-point)))
          (symbol-known-file (cdr (assoc symbol ds/import-known-symbol-files-alist)))
-         (file (if symbol-known-file
-                   symbol-known-file
-                 (ds/dumb-import-find-file symbol)))
+         (file (cond
+                (symbol-known-file symbol-known-file)
+                ((eq ds/import-find-file-backend 'lsp) (ds/import-find-file-lsp symbol))
+                ((eq ds/import-find-file-backend 'dumb-jump) (ds/import-find-file-dumb-jump symbol))
+                ((eq ds/import-find-file-backend 'manual) (ds/import-find-file-manual symbol))))
          (import-statement-line (ds/path-to-import-statement file symbol)))
     (ds/insert-as-import import-statement-line)))
 
 
-(define-key python-mode-map (kbd "C-,") #'ds/dumb-import)
+(define-key python-mode-map (kbd "C-,") #'ds/import)
+
+
+
 
 
 ;; Dicts to/from kwargs
