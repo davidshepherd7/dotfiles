@@ -14,7 +14,7 @@ source "$HOME/.keys/api_keys.sh"
 # Completion
 # ============================================================
 
-zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
+zstyle ':completion:*' completer _expand _complete _ignored _match _prefix
 zstyle ':completion:*' match-original both
 zstyle ':completion:*' max-errors 2
 zstyle :compinstall filename '/home/david/.zshrc'
