@@ -123,3 +123,4 @@ pipx
 gnome-screensaver
 fonts-symbola
 dunst
+python3-demjson

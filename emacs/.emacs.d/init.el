@@ -748,6 +748,8 @@ _s-f_: file            _a_: ag                _i_: Ibuffer           _c_: cache 
    ((equal (buffer-name) "sxhkdrc") "killall sxhkd -SIGUSR1")
    ((equal (buffer-name) ".conkyrc") "killall conky -SIGUSR1")
 
+   ((derived-mode-p 'json-mode) (concat "jsonlint " (buffer-file-name)))
+
    ;; make is probably a good default for anything else
    (t "make")))
 
