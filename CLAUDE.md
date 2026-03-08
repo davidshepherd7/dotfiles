@@ -4,6 +4,8 @@
 
 * Keep things as simple as you can
 * Happy path to the left
+* Parse, don't validate
+
 
 
 ## Shell scripts
