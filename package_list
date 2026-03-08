@@ -3,24 +3,18 @@ rxvt-unicode
 xmonad
 libghc-xmonad-contrib-dev
 build-essential
-python3
 evince
 suckless-tools
 git
-subversion
 htop
 inkscape
 gimp
-python3-scipy
-python3-numpy
-python3-matplotlib
-python3-sympy
+
 feh
 trash-cli
 cowsay
 xclip
 xcompmgr
-cabal-install
 automake
 autoconf
 libtool
@@ -28,10 +22,6 @@ git-gui
 git-doc
 libx11-dev
 libxtst-dev
-gfortran
-ipython3
-ccache
-exuberant-ctags
 a2ps
 evtest
 ubuntu-restricted-extras
@@ -41,17 +31,19 @@ gem
 ruby-dev
 clang
 libclang-dev
-python3-pip
 calibre
+
+# latex
 texinfo
 pdftk
 csv2latex
 diffpdf
+latexmk
+
 android-tools-adb
 android-tools-fastboot
 zsh
 zsh-doc
-latexmk
 astyle
 keychain
 atool
@@ -68,19 +60,14 @@ libsqlite3-dev
 xcb
 libxcb-keysyms1-dev
 libxcb-util0-dev
-shellcheck
 polybar
 gdebi
 anki
 rlwrap
 chromium-browser
-redshift
-ninja-build
-cppcheck
 xdotool
 p7zip-full
 nmap
-arduino-mk
 xvfb
 jq
 ffmpeg
@@ -90,7 +77,6 @@ cgdb
 cargo
 pasystray
 pavucontrol
-yamllint
 bundler
 xcape
 qemu-user-static
@@ -99,7 +85,6 @@ libjansson-dev
 sxhkd
 arandr
 git-lfs
-python3-venv
 libpq-dev
 python3-dev
 libssl-dev
@@ -123,4 +108,18 @@ pipx
 gnome-screensaver
 fonts-symbola
 dunst # notification daemon
+
+# Linters etc
 python3-demjson # jsonlint
+yamllint
+shellcheck
+
+# System python
+python3
+ipython3
+python3-venv
+python3-pip
+python3-scipy
+python3-numpy
+python3-matplotlib
+python3-sympy
