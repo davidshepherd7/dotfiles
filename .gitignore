@@ -33,3 +33,4 @@ hg/.hgex
 /bin/bin/csvq
 /straight-repos.bak/
 /bin/bin/terraformer
+/.claude/settings.local.json

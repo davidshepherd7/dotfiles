@@ -21,7 +21,11 @@
       "Bash(wc *)",
       "Bash(git *)",
       "WebSearch",
-      "Bash(polybar-msg cmd restart)"
+      "Bash(polybar-msg cmd restart)",
+      "Bash(chmod *)",
+      "Bash(shellcheck *)",
+      "Bash(pipx run mypy *)",
+      "Bash(./battery-notify.py --test)"
     ]
   }
 }
