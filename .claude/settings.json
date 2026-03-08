@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(polybar-msg cmd restart)"
+    ]
+  }
+}
