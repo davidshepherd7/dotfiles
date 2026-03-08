@@ -55,6 +55,8 @@ stow_file flake8
 mkdir -p ~/.config/polybar
 stow_file polybar
 
+stow_file dunst
+
 # Note: requires sudo
 sudo mkdir -p /etc/udev/hwdb.d
 sudo stow hwdb -t /etc/udev/hwdb.d --ignore=".dropbox.attr"
