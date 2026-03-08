@@ -135,17 +135,18 @@ alias acs="apt-cache search"
 
 rcdir="$HOME/Dropbox/linux_setup/rcfiles"
 
+# Read a package list file, stripping comments and blank lines
+read_package_list () { sed 's/#.*//' "$1" | grep -v '^\s*$'; }
+
 install_packages ()
 {
     sudo apt update
-    package_list="$rcdir/package_list"
-    < $package_list | xargs sudo apt install -y -q --auto-remove
+    read_package_list "$rcdir/package_list" | xargs sudo apt install -y -q --auto-remove
 }
 
 install_pipx_packages ()
 {
-    package_list="$rcdir/pipx_package_list"
-    < "$package_list" xargs -n 1 pipx install 
+    read_package_list "$rcdir/pipx_package_list" | xargs -n 1 pipx install
     pipx upgrade-all
 
     # We need this exact black version for Wave compat, but pipx doesn't allow
@@ -155,7 +156,7 @@ install_pipx_packages ()
 
 
 install_gem_packages () {
-    < "$rcdir/gem_package_list" x sudo gem install %
+    read_package_list "$rcdir/gem_package_list" | x sudo gem install %
 }
 
 install_npm_packages () {
@@ -164,7 +165,7 @@ install_npm_packages () {
         echo 'prefix=~/.npm-global' >> ~/.npmrc
     fi
     mkdir -p ~/.npm-global
-    < "$rcdir/npm_package_list" x npm install -g %
+    read_package_list "$rcdir/npm_package_list" | x npm install -g %
 
     sudo ~/.npm-global/bin/n lts
 }

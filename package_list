@@ -122,5 +122,5 @@ libtiff-dev
 pipx
 gnome-screensaver
 fonts-symbola
-dunst
-python3-demjson
+dunst # notification daemon
+python3-demjson # jsonlint
