@@ -181,7 +181,7 @@ update () {
             install_packages
             install_pipx_packages
             install_gem_packages
-            install_npm_packages
+            # install_npm_packages
             # install_r_packages
             recompile_elisp
         )
@@ -681,6 +681,8 @@ alias gcfr="gcf && git rebase dev"
 # push.default is simple in my config so this is always something sensible
 alias gpf="git push -v --force-with-lease origin" 
 
+alias abs="git absorb -r"
+
 gn() {
     gcf && git checkout dev -b "david/$1"
 }
@@ -710,3 +712,4 @@ alias history_off="unset HISTFILE"
 alias libcst-venv="source ~/.local/libcst-env/bin/activate"
 alias libcst-check="bash -c 'source ~/.local/libcst-env/bin/activate && pyre check"
 
+alias claude-vm="ssh claude -t 'cd ~/code/monorepo; exec \$SHELL -l'"

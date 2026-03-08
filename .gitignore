@@ -31,3 +31,5 @@ hg/.hgex
 /bin/bin/cockroach
 /bin/bin/cockroach-sql
 /bin/bin/csvq
+/straight-repos.bak/
+/bin/bin/terraformer

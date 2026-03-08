@@ -216,7 +216,7 @@
                         ("money-srv/unittests/decorators.py" "in_country")
                         ("money-srv/unittests/__init__.py" "fxlib")
                         ;; stdlib
-                        ("typing" "Any" "TypeVar" "Literal" "Final" "cast" "assert_never")
+                        ("typing" "Any" "TypeVar" "Literal" "Final" "cast" "assert_never" "LiteralString")
                         ("decimal" "Decimal")
                         ("dataclasses" "dataclass")
                         ("collections.abc" "Sequence" "Iterator")
