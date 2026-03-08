@@ -1,6 +1,26 @@
 {
   "permissions": {
     "allow": [
+      "Edit",
+      "Bash(cat *)",
+      "Bash(cd *)",
+      "Bash(diff *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(rm *)",
+      "Bash(rg *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(tail *)",
+      "Bash(echo *)",
+      "Bash(wc *)",
+      "Bash(git *)",
+      "WebSearch",
       "Bash(polybar-msg cmd restart)"
     ]
   }
