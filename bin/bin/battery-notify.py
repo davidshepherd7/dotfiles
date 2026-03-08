@@ -3,6 +3,7 @@
 
 Run tests: ./battery-notify.py --test
 Type check: pipx run mypy battery-notify.py
+Format: pipx run ruff format battery-notify.py
 """
 
 import subprocess
@@ -30,13 +31,14 @@ def find_threshold(pct: int, thresholds: list[int]) -> int | None:
 
 def get_battery_info() -> str:
     return subprocess.run(
-        ["upower", "-i", DEVICE], capture_output=True, text=True
+        ["upower", "-i", DEVICE], capture_output=True, text=True, check=True
     ).stdout
 
 
 def notify(pct: int) -> None:
     subprocess.run(
-        ["notify-send", "-u", "critical", "Battery Low", f"Battery at {pct}%"]
+        ["notify-send", "-u", "critical", "Battery Low", f"Battery at {pct}%"],
+        check=True,
     )
 
 
@@ -82,6 +84,10 @@ def main() -> None:
     for line in monitor.stdout:
         last_threshold = check_battery(last_threshold)
 
+    monitor.wait()
+    if monitor.returncode != 0:
+        raise Exception(f"gdbus monitor failed with code {monitor.returncode}")
+
 
 if __name__ == "__main__":
     import sys
@@ -95,13 +101,13 @@ if __name__ == "__main__":
 
     class TestParseUpower(unittest.TestCase):
         def test_parse(self):
-            output = "    state:               discharging\n    percentage:          42%\n"
+            output = (
+                "    state:               discharging\n    percentage:          42%\n"
+            )
             assert parse_upower(output) == (42, "discharging")
 
         def test_parse_charging(self):
-            output = (
-                "    state:               charging\n    percentage:          87%\n"
-            )
+            output = "    state:               charging\n    percentage:          87%\n"
             assert parse_upower(output) == (87, "charging")
 
     class TestFindThreshold(unittest.TestCase):
@@ -119,7 +125,9 @@ if __name__ == "__main__":
 
     class TestCheckBattery(unittest.TestCase):
         def _check(self, pct, state, last_threshold):
-            output = f"    state:               {state}\n    percentage:          {pct}%\n"
+            output = (
+                f"    state:               {state}\n    percentage:          {pct}%\n"
+            )
             with patch(__name__ + ".get_battery_info", return_value=output):
                 with patch(__name__ + ".notify") as mock_notify:
                     result = check_battery(last_threshold)

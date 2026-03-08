@@ -25,6 +25,7 @@
       "Bash(chmod *)",
       "Bash(shellcheck *)",
       "Bash(pipx run mypy *)",
+      "Bash(pipx run ruff *)",
       "Bash(./battery-notify.py --test)"
     ]
   }
