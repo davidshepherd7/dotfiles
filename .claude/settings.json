@@ -16,6 +16,7 @@
       "Bash(rg *)",
       "Bash(sed *)",
       "Bash(awk *)",
+      "Bash(tr *)",
       "Bash(tail *)",
       "Bash(echo *)",
       "Bash(wc *)",
