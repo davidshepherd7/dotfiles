@@ -1,7 +1,51 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "bash /home/david/.claude/bin/statusline-command.sh"
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Bash(awk *)",
+      "Bash(cat *)",
+      "Bash(cd *)",
+      "Bash(chmod *)",
+      "Bash(cp *)",
+      "Bash(diff *)",
+      "Bash(echo *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(mv *)",
+      "Bash(rg *)",
+      "Bash(rm *)",
+      "Bash(sed *)",
+      "Bash(tail *)",
+      "Bash(tr *)",
+      "Bash(wc *)",
+
+      "Bash(gh issue *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh repo view *)",
+      "Bash(gh search *)",
+      "Bash(git add *)",
+      "Bash(git blame *)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)",
+      "Bash(git diff *)",
+      "Bash(git fetch *)",
+      "Bash(git log *)",
+      "Bash(git push *)",
+      "Bash(git reflog *)",
+      "Bash(git restore *)",
+      "Bash(git rev-parse *)",
+      "Bash(git show *)",
+      "Bash(git stash *)",
+      "Bash(git status *)"
+    ]
   },
   "hooks": {
     "Notification": [
@@ -16,7 +60,13 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash /home/david/.claude/bin/statusline-command.sh"
+  },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
-  }
+  },
+  "voiceEnabled": true,
+  "model": "opus"
 }
