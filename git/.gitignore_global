@@ -1,6 +1,7 @@
 # Files to ignore with git in any/every project
 
 .david-claude-notes/
+.claude/settings.local.json
 
 # Compiled source #
 *.com

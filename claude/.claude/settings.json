@@ -16,15 +16,15 @@
       "Bash(ls *)",
       "Bash(mkdir *)",
       "Bash(mv *)",
-      "Bash(nl *)", 
+      "Bash(nl *)",
       "Bash(rg *)",
       "Bash(rm *)",
       "Bash(sed *)",
       "Bash(tail *)",
+      "Bash(tac *)",
       "Bash(tr *)",
       "Bash(wc *)",
       "Bash(which *)",
-
       "Bash(gh issue *)",
       "Bash(gh pr checks *)",
       "Bash(gh pr comment *)",
@@ -46,11 +46,15 @@
       "Bash(git push *)",
       "Bash(git reflog *)",
       "Bash(git restore *)",
+      "Bash(git reset *)",
       "Bash(git rev-parse *)",
+      "Bash(git rm *)",
       "Bash(git show *)",
       "Bash(git stash *)",
       "Bash(git status *)"
-    ]
+    ],
+    "deny": [],
+    "defaultMode": "default"
   },
   "model": "opus[1m]",
   "hooks": {
@@ -73,6 +77,5 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
-  "voiceEnabled": true,
-  "model": "opus"
+  "voiceEnabled": true
 }
