@@ -3,6 +3,7 @@
     "allow": [
       "Edit",
       "Bash(awk *)",
+      "Bash(base64 *)",
       "Bash(cat *)",
       "Bash(cd *)",
       "Bash(chmod *)",
@@ -15,12 +16,14 @@
       "Bash(ls *)",
       "Bash(mkdir *)",
       "Bash(mv *)",
+      "Bash(nl *)", 
       "Bash(rg *)",
       "Bash(rm *)",
       "Bash(sed *)",
       "Bash(tail *)",
       "Bash(tr *)",
       "Bash(wc *)",
+      "Bash(which *)",
 
       "Bash(gh issue *)",
       "Bash(gh pr checks *)",
@@ -34,6 +37,8 @@
       "Bash(git add *)",
       "Bash(git blame *)",
       "Bash(git checkout *)",
+      "Bash(git rebase *)",
+      "Bash(git merge *)",
       "Bash(git commit *)",
       "Bash(git diff *)",
       "Bash(git fetch *)",
@@ -47,6 +52,7 @@
       "Bash(git status *)"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "Notification": [
       {
