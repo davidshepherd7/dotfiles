@@ -83,3 +83,9 @@ export BYPASS_RUN_SWIFTLINT=1
 
 # eslint is unreasonably slow
 export BYPASS_RUN_JS_CODE_QUALITY=1
+
+wt() {
+    worktree_name="$1"
+    worktree_dir="${worktree_name#worktree-}"
+    cd "$HOME/code/monorepo/.claude/worktrees/${worktree_dir}"
+}
