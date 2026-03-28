@@ -20,7 +20,9 @@
  '(org-startup-folded nil)
  '(package-selected-packages 'nil)
  '(safe-local-variable-values
-   '((git-link-default-branch . "master")
+   '((flycheck-python-prospector-executable . "~/code/monorepo/money-srv/.money-srv-venv/bin/prospector")
+     (flycheck-checker . ds-python-dmypy)
+     (git-link-default-branch . "master")
      (mangle-whitespace . t)
      (flycheck-checker . python-dmypy)
      (flycheck-prospector-executable . "~/code/monorepo/tools/wavecli/.wavecli-venv/bin/prospector")
