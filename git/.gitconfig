@@ -62,7 +62,8 @@
 
     lg = log --branches --tags --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)%n' HEAD
 
-    lp = "log -p --reverse dev.."
+    lp = "-c diff.external=difft log --ext-diff -p --reverse dev.."
+    lpb = "log -p --reverse dev.."
 
     pull-request = "!sensible-browser \"$(git remote get-url \"$1\")/pull-request/new\"" #
 
