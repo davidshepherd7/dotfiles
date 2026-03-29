@@ -28,7 +28,7 @@
 [diff]
     # Supposedly show better diffs of complete functions
     algorithm = histogram
-    
+
     # Show moved lines differently
 	colorMoved = default
 
@@ -60,9 +60,12 @@
 
 [alias]
 
+    # If this breaks, try running: git remote set-head origin --auto
+    default-branch = !git symbolic-ref refs/remotes/origin/HEAD | cut -f4 -d/
+
     lg = log --branches --tags --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)%n' HEAD
 
-    lp = "-c diff.external=difft log --ext-diff -p --reverse dev.."
+    lp = "!git -c diff.external=difft log --ext-diff -p --reverse $(git default-branch).."
     lpb = "log -p --reverse dev.."
 
     pull-request = "!sensible-browser \"$(git remote get-url \"$1\")/pull-request/new\"" #
@@ -83,6 +86,6 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-    
+
 [init]
 	defaultBranch = main
