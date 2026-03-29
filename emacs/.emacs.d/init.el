@@ -2096,7 +2096,6 @@ for a file to visit if current buffer is not visiting a file."
 (load-file  "~/.emacs.d/lisp/ds-rust.el")
 (load-file  "~/.emacs.d/lisp/ds-ess.el")
 
-(load-file "~/.emacs.d/lisp/ds-oomph-lib.el")
 (load-file  "~/.emacs.d/lisp/ds-wave.el")
 
 ;; Major changes to keybinds
