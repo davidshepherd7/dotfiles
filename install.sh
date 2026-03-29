@@ -70,9 +70,12 @@ sudo cp desktop-session/xsession.desktop /usr/share/xsessions/
 # not idempotent.
 
 
-# Don't store ssh config here because this is public, but we need to make a temp
-# dir in there for connection multiplexing.
+# Make a temp dir in ssh for connection multiplexing.
 mkdir -p ~/.ssh/tmp
+# Make a local config file for non-shared stuff
+touch ~/.ssh/local_config
+stow_file ssh
+
 
 mkdir -p ~/.docsets/
 stow_file docsets

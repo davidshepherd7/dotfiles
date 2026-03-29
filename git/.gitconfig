@@ -77,9 +77,6 @@
     # Show branches by date with some extra data
     recent-branches = !sh -c 'git for-each-ref --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d) %(objectname:short) %(refname:lstrip=2)\" refs/heads/ | head -n ${1:-20}' "$@"
 
-[include]
-    path = ~/.keys/hub-gitconfig
-
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
