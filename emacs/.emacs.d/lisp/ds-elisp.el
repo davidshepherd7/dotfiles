@@ -7,6 +7,9 @@
                                             comment-end "")))
 
 
+(require 'ws-butler)
+(add-hook 'emacs-lisp-mode-hook #'ws-butler-mode)
+
 (defun insert-key-as-kbd (key)
   (interactive "kKey: ")
   (insert (format "(kbd %S)" (key-description key))))

@@ -1385,6 +1385,7 @@ $0")
   (add-hook 'yaml-mode-hook (lambda () (validate-setq indent-tabs-mode nil)))
   (add-hook 'yaml-mode-hook (lambda () (validate-setq yaml-indent-offset 2)))
   (add-hook 'yaml-mode-hook #'flycheck-mode)
+  (add-hook 'yaml-mode-hook #'ws-butler-mode)
   )
 
 (use-package feature-mode
@@ -1694,6 +1695,7 @@ for a file to visit if current buffer is not visiting a file."
 (use-package conf-mode
   :config
   (add-hook 'conf-mode-hook #'set-tab)
+  (add-hook 'conf-mode-hook #'ws-butler-mode)
 
   (add-to-list 'auto-mode-alist (cons "gitconfig$" #'conf-mode))
   (add-to-list 'auto-mode-alist (cons "gitignore$" #'conf-mode))

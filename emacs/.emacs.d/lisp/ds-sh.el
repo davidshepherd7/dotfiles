@@ -12,3 +12,6 @@
 (validate-setq flycheck-shellcheck-follow-sources nil)
 
 (add-hook 'sh-mode-hook #'sh-electric-here-document-mode)
+
+(require 'ws-butler)
+(add-hook 'sh-mode-hook #'ws-butler-mode)

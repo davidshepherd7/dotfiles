@@ -129,6 +129,7 @@
   (add-hook 'json-mode-hook (lambda () (biosite-mode 0)) t)
   (add-hook 'json-mode-hook (lambda () (flycheck-mode 0)) t)
   (add-hook 'json-mode-hook (lambda () (aggressive-fill-paragraph-mode 0)) t)
+  (add-hook 'json-mode-hook #'ws-butler-mode)
 
   (defun ds/set-json-mode (fname)
     (add-to-list 'auto-mode-alist (cons fname 'json-mode)))
