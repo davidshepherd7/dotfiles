@@ -285,7 +285,7 @@
 
 ;; Save point location in files even between sessions
 (require 'saveplace)
-(setq-default save-place t)
+(save-place-mode)
 (setq save-place-file (expand-file-name ".places" user-emacs-directory))
 
 (setq-default tab-width 4)
@@ -293,6 +293,17 @@
 
 ;; Always try to load the newest version of a file (byte-compiled or not).
 (validate-setq load-prefer-newer t)
+
+;; Don't use right-to-left ordering
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(validate-setq bidi-inhibit-bpa t)
+
+;; Emacs normally fontifies (syntax-highlights) text even while you’re actively
+;; typing. This can cause micro-stutters, especially in tree-sitter modes or
+;; large buffers. Shouldn't be noticable to disable.
+(setq redisplay-skip-fontification-on-input t)
+
 
 ;; Fonts
 ;; ============================================================
@@ -314,9 +325,7 @@
 ;; ============================================================
 
 ;; show number of matches when searching
-(use-package anzu
-  :diminish anzu-mode
-  :config (global-anzu-mode))
+(validate-setq isearch-lazy-count t)
 
 ;; Treat space-like characters as spaces
 ;; (setq search-whitespace-regexp "[-_ 	\n]")

@@ -9,7 +9,7 @@
   :config
 
   ;; Read from language servers in big chunks to improve perf
-  (validate-setq read-process-output-max (* 1024 1024))
+  (validate-setq read-process-output-max (* 4 1024 1024))
 
   ;; Don't turn everything on by default, most of the features are over-the-top
   (validate-setq lsp-auto-configure nil)
