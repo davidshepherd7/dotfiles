@@ -85,6 +85,9 @@ setopt rmstarsilent
 # Keep a stack of directories
 setopt autopushd
 
+# Let me paste functions containing comments
+setopt interactive_comments
+
 # History
 # ============================================================
 

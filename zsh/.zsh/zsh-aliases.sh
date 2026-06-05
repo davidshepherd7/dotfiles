@@ -647,7 +647,26 @@ edit-deb()
 alias gpr="gh pr create --base dev --repo wavemm/monorepo --web"
 
 git-clean-branches() {
-    git branch --merged| egrep -v "(^\*|prod|dev)" | xargs -r git branch -d 
+    git branch --merged | egrep -v "(^\*|prod|dev)" | xargs -r git branch -d
+}
+
+git-clean-claude-worktrees () {
+    cutoff=$(date -d "2 weeks ago" +%s)
+    main=$(git rev-parse --show-toplevel)
+
+    git worktree list --porcelain | awk '/^worktree .*\.claude/{print $2}' | while read -r wt; do
+        # skip main worktree
+        if [ "$wt" = "$main" ]; then
+            continue
+        fi
+
+        last=$(git -C "$wt" log -1 --format=%ct 2>/dev/null) || continue
+
+        if [ -n "$last" ] && [ "$last" -lt "$cutoff" ]; then
+            echo "removing $wt (last commit $(date -d "@$last" +%F))"
+            git worktree remove "$wt" --force
+        fi
+    done
 }
 
 # Clean fetch
@@ -669,6 +688,7 @@ gcf() {
     git branch -f dev origin/dev
     git fetch origin dev:dev -u
     git remote prune origin
+    git-clean-claude-worktrees
     git-clean-branches
 
     if [ "$(git branch --show-current)" = "david-temp-branch-gcf" ]; then
