@@ -1,5 +1,6 @@
 vim
 rxvt-unicode
+kitty
 xmonad
 libghc-xmonad-contrib-dev
 build-essential

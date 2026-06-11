@@ -12,4 +12,4 @@ EOF
     exit 0
 fi
 
-cd "$1" && urxvt &
+cd "$1" && kitty &

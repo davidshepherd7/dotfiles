@@ -66,7 +66,9 @@ bindkey "\e${back}" backward-char
 bindkey "\e${forward}" forward-char
 
 bindkey "\C-b" beginning-of-line
+bindkey '\e[H'  beginning-of-line # Home
 bindkey "\C-l" end-of-line
+bindkey '\e[F'  end-of-line # End
 
 # bind vi-find-next-char vi-first-non-blank ??ds
 
@@ -85,6 +87,7 @@ bindkey "\C-y" backward-kill-word
 bindkey "\C-d" kill-word
 
 bindkey "\ed" delete-char
+bindkey '\e[3~' delete-char # Delete
 bindkey "\ey" backward-delete-char
 
 bindkey "\e^y" backward-kill-bashword

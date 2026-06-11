@@ -27,6 +27,7 @@ stow_file ag
 stow_file R
 stow_file tint2
 stow_file claude
+stow_file kitty
 
 # Cases which need dirs creating
 mkdir -p ~/.ccache

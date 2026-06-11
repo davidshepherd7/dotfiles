@@ -1,10 +1,10 @@
 # Terminal
 super + t
-    urxvt
+    kitty
 
 # Monorepo terminal
 super + d
-    urxvt -e "$SHELL" -c 'cd "$HOME/code/monorepo" && exec $SHELL'
+    kitty -e "$SHELL" -c 'cd "$HOME/code/monorepo" && exec $SHELL'
 
 # Browser
 super + r
@@ -50,7 +50,7 @@ super + equal
 
 # ipython
 super + period
-    urxvt -e ipython3
+    kitty -e ipython3
 
 super + g
     emacs-anywhere.sh
@@ -90,7 +90,7 @@ super + F12
 
 # Postgres
 super + f
-    urxvt -e pgcli -U chimelife -h localhost wavelocal --no-warn
+    kitty -e pgcli -U chimelife -h localhost wavelocal --no-warn
 
 XF86AudioPlay
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause

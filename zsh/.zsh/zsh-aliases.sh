@@ -42,7 +42,7 @@ alias sc='sudo systemctl'
 alias sl='sl -e'
 
 # Many machines don't know what urxvt is, which makes htop fall over
-alias ssh="TERM=xterm ssh"
+# alias ssh="TERM=xterm ssh"
 
 # pdf viewer, disconnect from shell entirely and write stdout/stderr to a
 # temp file (temp files are cleaned on reboot).
@@ -62,7 +62,7 @@ alias feh="feh -B black --scale-down -d"
 # New terminal in this folder
 t ()
 {
-    urxvt &
+    kitty &
 }
 
 # xargs with default for -I

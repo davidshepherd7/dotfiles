@@ -1753,7 +1753,7 @@ for a file to visit if current buffer is not visiting a file."
   :bind (("C-<f7>" . terminal-here-launch)
          ("C-<f6>" . terminal-here-project-launch))
   :config
-  (validate-setq terminal-here-linux-terminal-command 'urxvt))
+  (validate-setq terminal-here-linux-terminal-command 'kitty))
 
 (use-package robot-mode
   :load-path "~/.emacs.d/vc-packages/robot-mode/")
