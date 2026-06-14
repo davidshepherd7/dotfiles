@@ -299,10 +299,6 @@ function ndb() {
     node --inspect "$target" "$@"
 }
 
-# Python
-
-# eval "$(pyenv init -)"
-
 # Wave config auto-added by bin/setup
 source /home/david/.waverc
 
@@ -311,15 +307,3 @@ if [ -f '/home/david/google-cloud-sdk/path.zsh.inc' ]; then . '/home/david/googl
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/david/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/david/google-cloud-sdk/completion.zsh.inc'; fi
-
-
-
-
-# TODO remove once done?
-
-pyenv_strip_path() {
-    python3 -c 'import os,sys; p=sys.argv[1]; print(":".join(e for
-  e in p.split(":") if "pyenv" not in e))' "$@"
-}
-export PATH="$(pyenv_strip_path "$PATH")"
-

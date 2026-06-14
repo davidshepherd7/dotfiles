@@ -5,9 +5,6 @@ skip_global_compinit=1
 
 # Set up path etc here so that it's ready sooner
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
 export PATH="$PATH:/opt/bin"
 export PATH="$PATH:$HOME/bin"
 export PATH="$HOME/.npm-global/bin:$PATH"
