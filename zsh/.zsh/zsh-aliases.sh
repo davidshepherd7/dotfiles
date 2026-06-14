@@ -156,7 +156,7 @@ install_pipx_packages ()
 
 
 install_gem_packages () {
-    read_package_list "$rcdir/gem_package_list" | x sudo gem install %
+    read_package_list "$rcdir/gem_package_list" | x gem install %
 }
 
 install_npm_packages () {
@@ -180,11 +180,11 @@ update () {
         (
             # Allow failures in subshell
             install_packages
-            install_pipx_packages
-            install_gem_packages
+            # install_pipx_packages
+            # install_gem_packages
             # install_npm_packages
             # install_r_packages
-            recompile_elisp
+            # recompile_elisp
         )
 }
 
