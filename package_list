@@ -33,6 +33,7 @@ ruby-dev
 clang
 libclang-dev
 calibre
+xvfb
 
 # latex
 texinfo

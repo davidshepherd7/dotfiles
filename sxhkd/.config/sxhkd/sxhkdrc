@@ -1,10 +1,11 @@
 # Terminal
 super + t
-    kitty
+    kitty --single-instance
 
 # Monorepo terminal
+    # kitty --single-instance -e "$SHELL" -c 'cd "$HOME/code/monorepo" && exec $SHELL'
 super + d
-    kitty -e "$SHELL" -c 'cd "$HOME/code/monorepo" && exec $SHELL'
+    kitty --single-instance -e "$SHELL" -c 'cd "$HOME/code/word-game" && exec $SHELL'
 
 # Browser
 super + r
@@ -50,7 +51,7 @@ super + equal
 
 # ipython
 super + period
-    kitty -e ipython3
+    kitty --single-instance -e ipython3
 
 super + g
     emacs-anywhere.sh
@@ -90,7 +91,7 @@ super + F12
 
 # Postgres
 super + f
-    kitty -e pgcli -U chimelife -h localhost wavelocal --no-warn
+    kitty --single-instance -e pgcli -U chimelife -h localhost wavelocal --no-warn
 
 XF86AudioPlay
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause

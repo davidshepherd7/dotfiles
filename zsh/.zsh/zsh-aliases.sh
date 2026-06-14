@@ -62,8 +62,9 @@ alias feh="feh -B black --scale-down -d"
 # New terminal in this folder
 t ()
 {
-    kitty &
+    kitty --single-instance &
 }
+alias kitty="kitty --single-instance"
 
 # xargs with default for -I
 # alias x="xargs -I %"
