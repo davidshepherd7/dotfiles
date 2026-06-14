@@ -109,3 +109,6 @@ workbench.xmi
 .venv
 /money-srv/src/pyrightconfig.json
 /money-srv/pyrightconfig.json
+
+/.sandboxed-tmp/
+/.tmp

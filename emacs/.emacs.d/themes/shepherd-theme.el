@@ -13,7 +13,7 @@
 (deftheme shepherd "A dark theme with strong colours and transparency")
 
 ;; make transparent
-(add-to-list 'default-frame-alist '(alpha 85 85))
+;; (add-to-list 'default-frame-alist '(alpha 85 85))
 
 (custom-theme-set-faces
  'shepherd

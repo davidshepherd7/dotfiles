@@ -66,9 +66,9 @@
          (test-fn (ds/current-test-function)))
     (setq compile-command
           (concat
-           ;; "mm m.static-analysis && wave m run-tests --use-crdb-main -- -v "
-           ;; "mm m.static-analysis && wave m run-tests --use-crdb-ephemeral -- -v "
-           "mm m.static-analysis && wave m run-tests -- -v "
+           ;; "make m.static-analysis && wave m run-tests --use-crdb-main -- -v "
+           ;; "make m.static-analysis && wave m run-tests --use-crdb-ephemeral -- -v "
+           "make m.static-analysis && wave m run-tests -- -v "
            (shell-quote-argument relative-file)
            (when test-fn
              (concat " -k " test-fn))
