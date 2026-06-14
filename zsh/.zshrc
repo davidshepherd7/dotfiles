@@ -34,11 +34,6 @@ fpath=(~/.zsh/completion $fpath)
 fpath=(~/.zsh/completion/zsh-completions/src $fpath)
 autoload ~/.zsh/completion/zsh-completions/src/*(:t)
 
-# Can't get this working with skip_global_compinit=1
-# # fix crazy oracle caps for commands in zsh-completions
-# compdef _VBoxManage vboxmanage
-# compdef _VBoxHeadless vboxheadless
-
 
 # Autocompletion for individual words, like dabbrev
 bindkey "\e\Co" _history-complete-older
@@ -237,22 +232,10 @@ source ${zshdir}/zsh-bindings.sh
 # Load aliases and simple functions
 source ${zshdir}/zsh-aliases.sh
 
-# Load work specific aliases/functions
-# source ${zshdir}/zsh-oomph-aliases.sh
-source ${zshdir}/zsh-classifier-aliases.sh
-
 # e function
 source ${zshdir}/emacs-read-stdin/emacs-read-stdin.sh
 
 source ${zshdir}/wave.sh
-
-source ${zshdir}/zsh-dotnet.sh
-
-if [ -e ~/code/pa-config-files/biosite-vms.bash ]; then
-    autoload bashcompinit
-    bashcompinit
-    source ~/code/pa-config-files/biosite-vms.bash
-fi
 
 # pip completion helpers
 source ${zshdir}/completion/pip.plugin.zsh
