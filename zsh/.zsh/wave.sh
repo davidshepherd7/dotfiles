@@ -76,6 +76,8 @@ export WAVE_EXPERIMENTAL_SEMGREP_IN_TYPECHECK=1
 # Make semgrep output in Emacs-compatible format
 export WAVE_SEMGREP_REPORTING_STYLE="emacs"
 
+export WAVE_USE_PYENV="0"
+
 alias coverage_any_version="firefox ~/code/monorepo/money-srv/.money-srv-venv/coverage/*/htmlcov/index.html"
 
 # Broken linter
@@ -89,3 +91,4 @@ wt() {
     worktree_dir="${worktree_name#worktree-}"
     cd "$HOME/code/monorepo/.claude/worktrees/${worktree_dir}"
 }
+
