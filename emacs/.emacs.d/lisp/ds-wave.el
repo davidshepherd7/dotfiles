@@ -56,23 +56,58 @@
         (thing-at-point 'symbol)))))
 
 
+(defvar ds/wave-test-configs '()       "Per-directory static-analysis + test configurations for `ds/money-srv-test'.
+Each entry is a plist:
+  :name         Human-readable label.
+  :dir          Path fragment matched against the buffer file name to pick
+                the config for the current buffer.
+  :relative-to  Directory, relative to the projectile project root, that the
+                test-file path is made relative to (\"\" means the root).
+  :command      Function of (RELATIVE-FILE TEST-FN) returning the shell command.
+                TEST-FN is nil when point is not inside a specific test.
+
+To support a new directory, add another entry to this list.")
+(setq ds/wave-test-configs
+      (list
+       (list :name "money-srv"
+             :dir "money-srv"
+             :relative-to "money-srv"
+             :command
+             (lambda (relative-file test-fn)
+               (concat
+                ;; "make m.static-analysis && wave m run-tests --use-crdb-main -- -v "
+                ;; "make m.static-analysis && wave m run-tests --use-crdb-ephemeral -- -v "
+                "make m.static-analysis && wave m run-tests -- -v "
+                (shell-quote-argument relative-file)
+                (when test-fn (concat " -k " test-fn)))))
+       (list :name "wavecli"
+             :dir "tools/wavecli"
+             :relative-to ""
+             :command
+             (lambda (relative-file test-fn)
+               (concat
+                "make tw.typecheck tw.semgrep && tools/wavecli/.wavecli-venv/bin/pytest -v "
+                (shell-quote-argument relative-file)
+                (when test-fn (concat " -k " test-fn))))))
+      )
+
+(defun ds/wave-test-config ()
+  "Return the `ds/wave-test-configs' entry matching the current buffer file."
+  (--first (s-contains-p (plist-get it :dir) buffer-file-name) ds/wave-test-configs))
+
 (defun ds/money-srv-test ()
-  "Run tests for a python file in money-srv"
+  "Run static analysis + tests for the current python file.
+The command is chosen from `ds/wave-test-configs' based on the file's
+directory, so the same workflow works across money-srv, wavecli, etc."
   (interactive)
-  (let* ((default-directory (or (projectile-compilation-dir) (projectile-project-root)))
+  (let* ((config (or (ds/wave-test-config)
+                     (user-error "No ds/wave-test-configs entry matches %s" buffer-file-name)))
+         (default-directory (or (projectile-compilation-dir) (projectile-project-root)))
          (compilation-read-command t)
          (test-file (if (s-contains-p "test_" buffer-file-name) buffer-file-name (projectile-find-matching-test buffer-file-name)))
-         (relative-file (file-relative-name test-file (f-join (projectile-project-root) "money-srv")))
+         (relative-file (file-relative-name test-file (f-join (projectile-project-root) (plist-get config :relative-to))))
          (test-fn (ds/current-test-function)))
-    (setq compile-command
-          (concat
-           ;; "make m.static-analysis && wave m run-tests --use-crdb-main -- -v "
-           ;; "make m.static-analysis && wave m run-tests --use-crdb-ephemeral -- -v "
-           "make m.static-analysis && wave m run-tests -- -v "
-           (shell-quote-argument relative-file)
-           (when test-fn
-             (concat " -k " test-fn))
-           ))
+    (setq compile-command (funcall (plist-get config :command) relative-file test-fn))
     (call-interactively #'compile)))
 
 
