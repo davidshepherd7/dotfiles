@@ -80,6 +80,12 @@ To support a new directory, add another entry to this list.")
                 "make m.static-analysis && wave m run-tests -- -v "
                 (shell-quote-argument relative-file)
                 (when test-fn (concat " -k " test-fn)))))
+       (list :name "wavelib"
+             :dir "wavelib"
+             :relative-to "wavelib"
+             :command
+             (lambda (relative-file test-fn)
+               "make m.static-analysis && make wl.test"))
        (list :name "wavecli"
              :dir "tools/wavecli"
              :relative-to ""

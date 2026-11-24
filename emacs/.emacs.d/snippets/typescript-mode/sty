@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: sty
+# --
+export const $1 = style({$0});

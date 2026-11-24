@@ -785,3 +785,6 @@ alias libcst-venv="source ~/.local/libcst-env/bin/activate"
 alias libcst-check="bash -c 'source ~/.local/libcst-env/bin/activate && pyre check"
 
 alias claude-vm="ssh claude -t 'cd ~/code/monorepo; exec \$SHELL -l'"
+
+alias cc="wave sandbox run --agent claude --"
+alias ccw="wave sandbox run --agent claude -- --worktree"

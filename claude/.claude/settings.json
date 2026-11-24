@@ -2,10 +2,9 @@
   "permissions": {
     "allow": [
       "Edit",
-
+      "WebFetch",
       "Bash(claude-editor.sh:*)",
       "Bash(claude-term.sh:*)",
-
       "Bash(awk:*)",
       "Bash(base64:*)",
       "Bash(cat:*)",
@@ -41,10 +40,8 @@
       "Bash(wc:*)",
       "Bash(which:*)",
       "Bash(whoami:*)",
-      "Bash(zip:*)" ,
-
+      "Bash(zip:*)",
       "Bash(chmod:*)",
-
       "Bash(gh issue *)",
       "Bash(gh pr checks *)",
       "Bash(gh pr comment *)",
@@ -54,10 +51,9 @@
       "Bash(gh pr view *)",
       "Bash(gh repo view *)",
       "Bash(gh search *)",
-
       "Bash(git push:*)",
+      "Bash(git pull:*)",
       "Bash(git absorb:*)",
-
       "Bash(git add:*)",
       "Bash(git blame:*)",
       "Bash(git branch:*)",
@@ -96,7 +92,8 @@
       "Bash(git worktree:*)"
     ],
     "deny": [],
-    "defaultMode": "default"
+    "defaultMode": "default",
+    "skipDangerousModePermissionPrompt": true
   },
   "model": "opus[1m]",
   "hooks": {
@@ -116,8 +113,13 @@
     "type": "command",
     "command": "bash /home/david/.claude/bin/statusline-command.sh"
   },
-  "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true
+  "enabledPlugins": {},
+  "effortLevel": "xhigh",
+  "fastModePerSessionOptIn": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
   },
+  "skipAutoPermissionPrompt": true,
   "voiceEnabled": true
 }

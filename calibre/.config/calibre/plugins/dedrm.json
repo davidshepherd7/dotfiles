@@ -1,14 +1,14 @@
 {
-  "bandnkeys": {}, 
+  "adeptkeys": {},
+  "adobewineprefix": "",
+  "androidkeys": {},
+  "bandnkeys": {},
+  "configured": true,
+  "ereaderkeys": {},
+  "kindlekeys": {},
+  "kindlewineprefix": "",
+  "pids": [],
   "serials": [
     "B024150224930MNR"
-  ], 
-  "androidkeys": {}, 
-  "ereaderkeys": {}, 
-  "kindlewineprefix": "", 
-  "configured": true, 
-  "adobewineprefix": "", 
-  "adeptkeys": {}, 
-  "pids": [], 
-  "kindlekeys": {}
+  ]
 }
